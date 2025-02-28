@@ -1,0 +1,18 @@
+/* src/components/buttons/primaryButton.css */
+
+.primary-button {
+    font-family: var(--buttons-font), serif;
+    background-color: var(--primary-regular-color);
+    color: var(--hover-regular-color);
+    border: none;
+    border-radius: 20px;
+    padding: 11px 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.primary-button:hover {
+    background-color: var(--hover-regular-color);
+    color: var(--primary-regular-color);
+}

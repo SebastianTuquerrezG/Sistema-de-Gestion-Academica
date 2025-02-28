@@ -1,0 +1,59 @@
+@import url('../../variables.css');
+@import url('../../typography.css');
+
+.notification {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-radius: 8px;
+    padding: 12px;
+    margin: 8px 0;
+    font-family: var(--text-font), serif;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    position: fixed;
+    top: 100px;
+    left: 0;
+    transform: translateY(-100%);
+    animation: slideIn 0.5s forwards;
+    width: 340px; /* Ancho ajustado */
+    height: 80px; /* Altura ajustada */
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateY(-100%);
+    }
+    to {
+        transform: translateY(0);
+    }
+}
+
+/* Tipos de notificación */
+.success { background-color: var(--confirm-background-color); border-left: 10px solid var(--confirm-border-color); color: var(--confirm-border-color); }
+.info { background-color: var(--info-background-color); border-left: 10px solid var(--info-border-color); color: var(--info-border-color); }
+.error { background-color: var(--error-background-color); border-left: 10px solid var(--error-border-color); color: var(--error-border-color); }
+.security { background-color: var(--security-regular-color); border-left: 10px solid var(--security-border-color); color: var(--security-border-color); }
+
+.content {
+    flex-grow: 1;
+    margin-left: 10px;
+    text-align: start;
+}
+
+strong {
+    font-family: var(--text-font), sans-serif;
+}
+
+p {
+   font-family: var(--text3-font);
+    margin: 4px 0 0;
+}
+
+.close {
+    background: none;
+    border: none;
+    font-size: 18px;
+    cursor: pointer;
+    color: inherit;
+    padding: 0 8px;
+}
