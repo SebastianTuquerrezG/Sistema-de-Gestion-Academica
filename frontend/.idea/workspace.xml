@@ -6,7 +6,6 @@
   <component name="ChangeListManager">
     <list default="true" id="83769bf3-59f3-404e-adab-8bd5c1f178da" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/node_modules/.package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/.package-lock.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -89,11 +88,22 @@
       <workItem from="1740521755642" duration="553000" />
       <workItem from="1740691286174" duration="3539000" />
       <workItem from="1740695191905" duration="381000" />
-      <workItem from="1741698797932" duration="310000" />
+      <workItem from="1741698797932" duration="691000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
 </project>

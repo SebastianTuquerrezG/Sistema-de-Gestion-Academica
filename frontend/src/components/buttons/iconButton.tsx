@@ -1,6 +1,6 @@
 // src/components/buttons/iconButton.tsx
 import React from 'react';
-import '../../assets/css/componets/buttons/iconButton.css';
+import './iconButton.css';
 
 interface IconButtonProps {
     onClick: () => void;

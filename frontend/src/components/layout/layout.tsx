@@ -2,7 +2,7 @@ import Sidebar from "./sidebar";
 import Header from "./header";
 import React from "react";
 
-import "../../assets/css/componets/layout/layout.css";
+import "./layout.css";
 import PageTitle from "../pageTitle/pageTitle.tsx";
 
 const Layout = ({ children }: { children: React.ReactNode }) => {

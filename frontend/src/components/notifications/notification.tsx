@@ -1,5 +1,5 @@
 import React from 'react';
-import styles from '../../assets/css/componets/notifications/notification.module.css';
+import styles from './notification.module.css';
 
 
 interface NotificationProps {

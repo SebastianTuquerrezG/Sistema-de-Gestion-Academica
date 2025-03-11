@@ -1,6 +1,6 @@
 // src/components/buttons/tinyButton.tsx
 import React from 'react';
-import '../../assets/css/componets/buttons/tinyButton.css';
+import './tinyButton.css';
 
 interface TinyButtonProps {
     onClick: () => void;

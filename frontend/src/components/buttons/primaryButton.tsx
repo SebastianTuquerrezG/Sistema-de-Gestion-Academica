@@ -1,6 +1,6 @@
 // src/components/buttons/primaryButton.tsx
 import React from 'react';
-import '../../assets/css/componets/buttons/primaryButton.css';
+import './primaryButton.css';
 
 interface PrimaryButtonProps {
     onClick: () => void;
