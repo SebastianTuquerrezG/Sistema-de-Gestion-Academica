@@ -57,6 +57,12 @@
       <recent name="C:\Users\USUARIO\Documents\Proyectos\Proyecto1\frontend\src\views" />
       <recent name="C:\Users\USUARIO\Documents\Proyectos\Proyecto1\frontend\src\services" />
     </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\USUARIO\Documents\Proyectos\Proyecto1\frontend\src\components\pageTitle" />
+      <recent name="C:\Users\USUARIO\Documents\Proyectos\Proyecto1\frontend\src\components\notifications" />
+      <recent name="C:\Users\USUARIO\Documents\Proyectos\Proyecto1\frontend\src\components\layout" />
+      <recent name="C:\Users\USUARIO\Documents\Proyectos\Proyecto1\frontend\src\components\buttons" />
+    </key>
   </component>
   <component name="RunManager">
     <configuration name="npm dev" type="js.build_tools.npm">
@@ -88,7 +94,7 @@
       <workItem from="1740521755642" duration="553000" />
       <workItem from="1740691286174" duration="3539000" />
       <workItem from="1740695191905" duration="381000" />
-      <workItem from="1741698797932" duration="691000" />
+      <workItem from="1741698797932" duration="1089000" />
     </task>
     <servers />
   </component>
