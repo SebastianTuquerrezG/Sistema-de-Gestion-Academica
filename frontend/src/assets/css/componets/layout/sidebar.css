@@ -1,0 +1,63 @@
+@import url('../../variables.css');
+@import url('../../typography.css');
+@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0');
+
+
+
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 268px;
+    background-color: var(--primary-regular-color); /* Azul oscuro */
+    color: white;
+    overflow: hidden;
+    transition: width 0.3s ease;
+}
+.image{
+    border-bottom: 1px solid var(--hover-regular-color);
+}
+
+.sidebar-image {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 1rem 0;
+
+}
+
+.sidebar-image img {
+    width: 104px;
+    height: 49px;
+}
+
+.menu {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centra los items horizontalmente */
+
+}
+
+.menu-item {
+    display: flex;
+    align-items: start;
+    padding: 8px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+
+}
+
+.menu-item:hover {
+    color: var(--primary-regular-color);
+    background-color: var(--hover-regular-color); /* Azul más claro */
+}
+
+.menu-item .material-symbols-outlined {
+    font-size: 24px;
+    margin-right: 8px;
+}

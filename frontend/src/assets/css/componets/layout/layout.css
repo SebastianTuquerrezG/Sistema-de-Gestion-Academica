@@ -1,0 +1,29 @@
+.layout-container {
+    display: flex;
+    height: 100vh;
+}
+
+.sidebar {
+    width: 268px; /* Ancho del Sidebar */
+}
+
+.content-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.header {
+    height: 75px; /* Altura del Header */
+    border-bottom: 5px var(--hover-regular-color) solid;
+}
+
+.content {
+    flex: 1;
+    padding: 1rem;
+    overflow-y: auto; /* Permite el desplazamiento si el contenido es demasiado grande */
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start; /* Asegura que el contenido comience desde la parte superior */
+    align-items: flex-start; /* Asegura que el contenido esté alineado a la izquierda */
+}

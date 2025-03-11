@@ -1,0 +1,31 @@
+/* src/components/buttons/tinyButton.css */
+@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0');
+
+.tiny-button {
+    font-family: var(--buttons-font), serif;
+    background-color: var(--primary-regular-color);
+    color: var(--hover-regular-color);
+    border: none;
+    border-radius: 30px;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.tiny-button:hover {
+    background-color: var(--hover-regular-color);
+    color: var(--primary-regular-color);
+}
+
+.material-symbols-outlined {
+    font-variation-settings:
+            'FILL' 0,
+            'wght' 400,
+            'GRAD' 0,
+            'opsz' 24;
+}
