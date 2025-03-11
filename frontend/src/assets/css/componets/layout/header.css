@@ -1,0 +1,45 @@
+@import url('../../variables.css');
+@import url('../../typography.css');
+@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0');
+
+.header {
+    position: fixed;
+    top: 0;
+    left: 268px; /* Ancho del Sidebar */
+    height: 75px;
+    width: calc(100% - 268px); /* Resta el ancho del Sidebar */
+    background-color: white;
+    color: var(--primary-regular-color);
+    border-bottom: 5px var(--hover-regular-color) solid;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 1rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.title4 {
+    margin-left: 36px;
+}
+
+.header-button {
+    display: flex;
+    align-items: center;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--primary-regular-color); /* Azul oscuro */
+    margin-right: 36px;
+}
+
+.header-button .material-icons {
+    font-size: 24px;
+    margin-right: 8px;
+}
+
+.user-info {
+    margin-left: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
