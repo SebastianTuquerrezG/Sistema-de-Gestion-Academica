@@ -6,7 +6,7 @@ const Sidebar: React.FC = () => {
         <aside className="sidebar open">
             {/* Imagen */}
             <div className="sidebar-image">
-                <img src="path/to/your/image.jpg" alt="Logo" />
+                <img src="/logo.svg" alt="Logo" />
             </div>
             {/* Menú */}
             <ul className="menu">
