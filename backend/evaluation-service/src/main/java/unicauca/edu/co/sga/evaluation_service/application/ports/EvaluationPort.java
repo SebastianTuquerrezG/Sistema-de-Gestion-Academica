@@ -1,4 +1,4 @@
 package unicauca.edu.co.sga.evaluation_service.application.ports;
 
-public class EvaluationPort {
+public interface EvaluationPort {
 }

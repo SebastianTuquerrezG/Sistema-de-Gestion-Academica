@@ -1,31 +1,36 @@
 package unicauca.edu.co.sga.evaluation_service.domain.models;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import unicauca.edu.co.sga.evaluation_service.domain.enums.GeneralEnums;
 
 import java.util.Date;
 
 @Entity
-@Table(name = "evaluation")
+@Table(name = "subject")
 @Data
 @Builder
-public class Evaluation {
+public class Subject {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(unique = true, nullable = false, updatable = false)
+    @Column(nullable = false, unique = true, updatable = false)
     private int id;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "rubricID", nullable = false, foreignKey = @ForeignKey(name = "fk_rubric"))
-    @JsonBackReference
-    private Rubric rubric;
+    @Column(nullable = false)
+    private String name;
+
+    @Column(nullable = false)
+    private int credits;
 
     @Column(nullable = false, length = 300)
-    private String description;
+    private String objectives;
+
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private GeneralEnums.status status;
 
     @Column(updatable = false)
     @CreationTimestamp
