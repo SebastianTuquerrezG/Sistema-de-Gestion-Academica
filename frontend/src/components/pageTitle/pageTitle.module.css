@@ -2,7 +2,8 @@
     font-family: var(--title-font), serif;
     color: var(--primary-regular-color);
     position: relative;
-    display: inline-block;
+    display: block; /* Cambiar de inline-block a block */
+    width: 100%; /* Ocupar todo el ancho disponible */
 }
 
 .firstWord {

@@ -24,21 +24,6 @@ const App: React.FC = () => {
     return (
         <Layout>
             <IconButton onClick={handleButtonClick} icon="logout">Home</IconButton>
-
-            {/*<div>
-               <PageTitle title="Buttons list" />
-                <div>
-                    <PrimaryButton onClick={handleButtonClick}>Click Me</PrimaryButton>
-                    <TinyButton onClick={handleButtonClick} icon="home" />
-                    <IconButton onClick={handleButtonClick} icon="logout">Home</IconButton>
-                    <Notification
-                        type="error"
-                        title="Texto confirmacion"
-                        message="Mensaje de exito."
-                        onClose={handleNotificationClose}
-                    />
-                </div>
-            </div>*/}
         </Layout>
 
 );
