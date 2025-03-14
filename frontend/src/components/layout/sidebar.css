@@ -28,8 +28,10 @@
 }
 
 .sidebar-image img {
-    width: 104px;
-    height: 49px;
+    width: 60px;
+    height: 65px;
+    padding-bottom: 5px;
+    border-bottom: 1px solid var(--hover-regular-color);
 }
 
 .menu {
