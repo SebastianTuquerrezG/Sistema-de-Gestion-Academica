@@ -1,0 +1,33 @@
+.layout-container {
+    display: flex;
+    height: 100vh;
+}
+
+.sidebar {
+    width: 268px; /* Ancho del Sidebar */
+}
+
+.header {
+    height: 75px; /* Altura del Header */
+    border-bottom: 5px var(--hover-regular-color) solid;
+}
+
+.content-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    width: 100%; /* Asegura que ocupe todo el espacio */
+    margin-left: 268px; /* Ajustar al ancho del sidebar */
+}
+
+.content {
+    flex: 1;
+    width: 100%;
+    padding: 1rem;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: stretch; /* En lugar de flex-start */
+    margin-top: 75px; /* Ajustar al alto del header */
+}

@@ -4,7 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="83769bf3-59f3-404e-adab-8bd5c1f178da" name="Changes" comment="" />
+    <list default="true" id="83769bf3-59f3-404e-adab-8bd5c1f178da" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/layout/sidebar.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/layout/sidebar.css" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -32,9 +35,10 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "ASKED_MARK_IGNORED_FILES_AS_EXCLUDED": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "init",
+    "git-widget-placeholder": "grupo-trso-H2",
     "ignore.virus.scanning.warn.message": "true",
     "last_opened_file_path": "C:/Users/USUARIO/Documents/Proyectos/Proyecto1/frontend/src/views",
     "list.type.of.created.stylesheet": "CSS",
@@ -45,7 +49,7 @@
     "nodejs_interpreter_path": "node",
     "nodejs_package_manager_path": "npm",
     "npm.npm dev.executor": "Run",
-    "ts.external.directory.path": "C:\\Users\\USUARIO\\Documents\\Proyectos\\Proyecto1\\frontend\\node_modules\\typescript\\lib",
+    "ts.external.directory.path": "B:\\Proyectos\\Unicauca\\Proyecto1\\frontend\\node_modules\\typescript\\lib",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
@@ -53,6 +57,12 @@
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\USUARIO\Documents\Proyectos\Proyecto1\frontend\src\views" />
       <recent name="C:\Users\USUARIO\Documents\Proyectos\Proyecto1\frontend\src\services" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\USUARIO\Documents\Proyectos\Proyecto1\frontend\src\components\pageTitle" />
+      <recent name="C:\Users\USUARIO\Documents\Proyectos\Proyecto1\frontend\src\components\notifications" />
+      <recent name="C:\Users\USUARIO\Documents\Proyectos\Proyecto1\frontend\src\components\layout" />
+      <recent name="C:\Users\USUARIO\Documents\Proyectos\Proyecto1\frontend\src\components\buttons" />
     </key>
   </component>
   <component name="RunManager">
@@ -70,7 +80,7 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-js-predefined-d6986cc7102b-1632447f56bf-JavaScript-WS-243.25659.40" />
+        <option value="bundled-js-predefined-d6986cc7102b-822845ee3bb5-JavaScript-WS-243.23654.157" />
       </set>
     </attachedChunks>
   </component>
@@ -85,10 +95,23 @@
       <workItem from="1740521755642" duration="553000" />
       <workItem from="1740691286174" duration="3539000" />
       <workItem from="1740695191905" duration="381000" />
+      <workItem from="1741698797932" duration="1089000" />
+      <workItem from="1741930310158" duration="1255000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
 </project>

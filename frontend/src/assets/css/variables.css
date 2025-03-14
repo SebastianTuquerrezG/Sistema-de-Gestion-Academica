@@ -1,0 +1,29 @@
+/* src/css/variables.css */
+:root {
+    /*Regular Colors */
+    --primary-regular-color: #000066;
+    --secondary-regular-color: #9D0311;
+    --tertiary-regular-color: #1D72D3;
+    --error-regular-color:#FF6D0A;
+    --security-regular-color:#E0E0FF;
+    --accesibility-regular-color:#249300 ;
+    --hover-regular-color:#F6F6F6 ;
+    --text-regular-color: #454444;
+
+    /* Dark Colors */
+    --primary-dark-color: #07184A;
+    --secondary-dark-color: #690007;
+    --tertiary-dark-color: #003062;
+
+    /* Other Colors*/
+    --info-background-color: #D6E2FF;
+    --confirm-background-color: #D8EFD1;
+    --error-background-color: #FFDBCC;
+    --info-border-color: #0053A0;
+    --confirm-border-color: #249337;
+    --error-border-color: #8D3800;
+    --security-border-color:#373D92 ;
+
+    --while-color: #FFFFFF;
+    --black-color: #000000;
+}
