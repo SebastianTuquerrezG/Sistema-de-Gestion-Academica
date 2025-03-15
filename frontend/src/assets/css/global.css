@@ -1,9 +1,0 @@
-/* src/css/global.css */
-
-@import url('./variables.css');
-@import url('./typography.css');
-
-body {
-    background-color: var(--while-color);
-    line-height: 1.6;
-}
