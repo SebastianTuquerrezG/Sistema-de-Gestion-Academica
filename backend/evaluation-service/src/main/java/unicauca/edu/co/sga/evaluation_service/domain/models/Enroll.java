@@ -14,7 +14,7 @@ import unicauca.edu.co.sga.evaluation_service.domain.enums.EvaluationStatus;
 @Table(name = "enrollSubjectClass")
 @Data
 @Builder
-public class EnrollSubjectClass {
+public class Enroll {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,7 +31,5 @@ public class EnrollSubjectClass {
     @JsonBackReference
     private Student student;
 
-    @Column(nullable = false)
-    @Enumerated(EnumType.STRING)
-    private EvaluationStatus.evaluation status;
+    private int semester;
 }

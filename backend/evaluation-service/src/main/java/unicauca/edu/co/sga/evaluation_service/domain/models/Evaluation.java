@@ -19,6 +19,11 @@ public class Evaluation {
     @Column(unique = true, nullable = false, updatable = false)
     private int id;
 
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinColumn(name = "enrollID", nullable = false, foreignKey = @ForeignKey(name = "fk_enroll"))
+    @JsonBackReference
+    private Enroll enroll;
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "rubricID", nullable = false, foreignKey = @ForeignKey(name = "fk_rubric"))
     @JsonBackReference

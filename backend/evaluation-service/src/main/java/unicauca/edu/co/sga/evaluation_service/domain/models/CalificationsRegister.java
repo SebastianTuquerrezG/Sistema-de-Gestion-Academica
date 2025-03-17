@@ -6,22 +6,25 @@ import lombok.Builder;
 import lombok.Data;
 
 @Entity
-@Table(name = "enrollEvaluationStudent")
+@Table(name = "calificationsRegister")
 @Data
 @Builder
-public class EnrollEvaluationStudent {
+public class CalificationsRegister {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false, unique = true, updatable = false)
     private int id;
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinColumn(name = "studentID", nullable = false, foreignKey = @ForeignKey(name = "fk_student"))
-    @JsonBackReference
-    private Student student;
+    private float calification;
+
+    private String message;
+
+    private int level;
 
     @ManyToMany(fetch = FetchType.EAGER)
-    @JoinColumn(name = "evaluationID", nullable = false, foreignKey = @ForeignKey(name = "fk_evaluation"))
+    @JoinColumn(name = "evaluationId", nullable = false, foreignKey = @ForeignKey(name = "fk_evaluation"))
     @JsonBackReference
     private Evaluation evaluation;
+
+
 }

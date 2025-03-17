@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Data;
+import org.hibernate.annotations.Fetch;
 
 @Entity
 @Table(name = "course")
@@ -23,7 +24,13 @@ public class Course {
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "subjectID", nullable = false, foreignKey = @ForeignKey(name = "fk_subject"))
+    @JsonBackReference
     private Subject subject;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "raID", nullable = false, foreignKey = @ForeignKey(name = "fk_ra"))
+    @JsonBackReference
+    private RA ra;
 
 
 }
