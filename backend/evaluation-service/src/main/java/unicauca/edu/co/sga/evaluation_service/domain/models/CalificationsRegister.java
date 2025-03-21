@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Data;
+import unicauca.edu.co.sga.evaluation_service.domain.enums.CalificationEnums;
 
 @Entity
 @Table(name = "calificationsRegister")
@@ -15,14 +16,18 @@ public class CalificationsRegister {
     @Column(nullable = false, unique = true, updatable = false)
     private int id;
 
+    @Column(nullable = false)
     private float calification;
 
+    @Column(nullable = false, length = 300)
     private String message;
 
-    private int level;
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private CalificationEnums.level level;
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinColumn(name = "evaluationId", nullable = false, foreignKey = @ForeignKey(name = "fk_evaluation"))
+    @ManyToOne
+    @JoinColumn(name = "evaluationID", nullable = false, foreignKey = @ForeignKey(name = "fk_evaluation"))
     @JsonBackReference
     private Evaluation evaluation;
 

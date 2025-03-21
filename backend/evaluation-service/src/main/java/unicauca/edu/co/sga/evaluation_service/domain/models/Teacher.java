@@ -1,10 +1,13 @@
 package unicauca.edu.co.sga.evaluation_service.domain.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Data;
 import unicauca.edu.co.sga.evaluation_service.domain.enums.GeneralEnums;
 import unicauca.edu.co.sga.evaluation_service.domain.enums.TeacherEnums;
+
+import java.util.Set;
 
 @Entity
 @Table(name = "teacher")
@@ -36,4 +39,8 @@ public class Teacher {
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private TeacherEnums.teacher_type teacherType;
+
+    @ManyToMany(mappedBy = "teacher")
+    @JsonBackReference
+    private Set<Course> course;
 }

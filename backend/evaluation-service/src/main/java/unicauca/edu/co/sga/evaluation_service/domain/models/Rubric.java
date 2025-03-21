@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Data;
 
+import java.util.Set;
+
 @Entity
 @Table(name = "rubric")
 @Data
@@ -16,4 +18,7 @@ public class Rubric {
 
     @Column(nullable = false)
     private String name;
+
+    @OneToMany(mappedBy = "rubric", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Evaluation> evaluation;
 }

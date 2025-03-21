@@ -1,5 +1,6 @@
 package unicauca.edu.co.sga.evaluation_service.domain.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Data;
@@ -8,6 +9,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 import unicauca.edu.co.sga.evaluation_service.domain.enums.GeneralEnums;
 
 import java.util.Date;
+import java.util.Set;
 
 @Entity
 @Table(name = "subject")
@@ -41,4 +43,8 @@ public class Subject {
     @UpdateTimestamp
     @Temporal(TemporalType.DATE)
     private Date updated_at;
+
+    @OneToMany(mappedBy = "subject", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonBackReference
+    private Set<Course> course;
 }

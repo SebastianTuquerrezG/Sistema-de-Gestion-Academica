@@ -4,7 +4,9 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Data;
-import org.hibernate.annotations.Fetch;
+
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "course")
@@ -17,20 +19,26 @@ public class Course {
     @Column(nullable = false, updatable = false, unique = true)
     private int id;
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinColumn(name = "teacherID", nullable = false, foreignKey = @ForeignKey(name = "fk_teacher"))
+    @ManyToMany
+    @JoinTable(name = "course_teacher",
+            joinColumns = @JoinColumn(name = "courseID"),
+            inverseJoinColumns = @JoinColumn(name = "teacherID"))
     @JsonBackReference
-    private Teacher teacher;
+    private Set<Teacher> teacher;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne
     @JoinColumn(name = "subjectID", nullable = false, foreignKey = @ForeignKey(name = "fk_subject"))
     @JsonBackReference
     private Subject subject;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne
     @JoinColumn(name = "raID", nullable = false, foreignKey = @ForeignKey(name = "fk_ra"))
     @JsonBackReference
     private RA ra;
+
+    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonBackReference
+    private Set<Enroll> enroll;
 
 
 }

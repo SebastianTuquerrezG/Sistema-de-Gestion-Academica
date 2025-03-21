@@ -1,9 +1,12 @@
 package unicauca.edu.co.sga.evaluation_service.domain.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Data;
 import unicauca.edu.co.sga.evaluation_service.domain.enums.GeneralEnums;
+
+import java.util.Set;
 
 @Entity
 @Table(name = "student")
@@ -24,4 +27,8 @@ public class Student {
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private GeneralEnums.identificationType identification_type;
+
+    @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonBackReference
+    private Set<Enroll> enroll;
 }
