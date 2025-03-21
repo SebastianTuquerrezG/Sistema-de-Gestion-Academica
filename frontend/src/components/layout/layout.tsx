@@ -12,7 +12,6 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
             <div className="content-container">
                 <Header />
                 <div className="content">
-                    <PageTitle title="Buttons list" />
                     <main className="content">{children}</main>
                 </div>
             </div>

@@ -1,50 +1,29 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-{/*import './assets/css/style.css';
-import PrimaryButton from './components/buttons/primaryButton';
-import TinyButton from "./components/buttons/tinyButton.tsx";
-import PageTitle from "./components/pageTitle/pageTitle.tsx";
-*/}
+import React from "react";
+import ReactDOM from "react-dom/client";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import IconButton from "./components/buttons/iconButton.tsx";
-import './assets/css/global.css';
-
-
+import "./assets/css/global.css";
 
 import Layout from "./components/layout/layout.tsx";
+import Evaluaciones from "./views/Evaluaciones/Evaluaciones.tsx"; // Importa el módulo de Evaluaciones
 
 const App: React.FC = () => {
-    const handleButtonClick = () => {
-        alert('Button clicked!');
-    };
-
-    {/*const handleNotificationClose = () => {
-        alert('Notification closed!');
-    };*/}
-
     return (
-        <Layout>
-            <IconButton onClick={handleButtonClick} icon="logout">Home</IconButton>
+        <Router>
+            <Layout>
+                <Routes>
+                    {/* Ruta principal (puede ser otra si lo necesitas) */}
+                    <Route path="/" element={<h1>Bienvenido al sistema</h1>} />
 
-            {/*<div>
-               <PageTitle title="Buttons list" />
-                <div>
-                    <PrimaryButton onClick={handleButtonClick}>Click Me</PrimaryButton>
-                    <TinyButton onClick={handleButtonClick} icon="home" />
-                    <IconButton onClick={handleButtonClick} icon="logout">Home</IconButton>
-                    <Notification
-                        type="error"
-                        title="Texto confirmacion"
-                        message="Mensaje de exito."
-                        onClose={handleNotificationClose}
-                    />
-                </div>
-            </div>*/}
-        </Layout>
-
-);
+                    {/* Ruta para el módulo de Evaluaciones */}
+                    <Route path="/evaluaciones" element={<Evaluaciones />} />
+                </Routes>
+            </Layout>
+        </Router>
+    );
 };
 
-const rootElement = document.getElementById('app');
+const rootElement = document.getElementById("app");
 
 if (rootElement) {
     const root = ReactDOM.createRoot(rootElement);
