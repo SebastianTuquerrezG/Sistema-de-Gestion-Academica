@@ -1,4 +1,4 @@
 package unicauca.edu.co.sga.evaluation_service.domain.models;
 
-public class Criterion {
+public class Criteria {
 }

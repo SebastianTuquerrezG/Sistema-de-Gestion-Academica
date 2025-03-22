@@ -2,21 +2,18 @@ package unicauca.edu.co.sga.evaluation_service.domain.models;
 
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.Set;
 
-@Entity
-@Table(name = "learningResult")
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Builder
 public class RA {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(nullable = false, unique = true, updatable = false)
-    private int id;
-
-    @OneToMany(mappedBy = "ra", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<Course> course;
+    private Long id;
+    private Set<Long> course;
 }

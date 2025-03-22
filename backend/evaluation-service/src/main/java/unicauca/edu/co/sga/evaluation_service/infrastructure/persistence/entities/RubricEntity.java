@@ -3,6 +3,7 @@ package unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.entiti
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
+import unicauca.edu.co.sga.evaluation_service.domain.models.Evaluation;
 
 import java.util.Set;
 
@@ -11,16 +12,19 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Table(name = "learning_results")
-public class RAEntity {
+@Table(name = "rubric")
+public class RubricEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ra_id", nullable = false, unique = true, updatable = false)
+    @Column(name = "rubric_id", unique = true, nullable = false, updatable = false)
     private Long id;
 
-    @OneToMany(mappedBy = "ra", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Column(nullable = false, length = 100)
+    private String name;
+
+    @OneToMany(mappedBy = "rubric", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    private Set<CourseEntity> course;
+    private Set<EvaluationEntity> evaluation;
 }

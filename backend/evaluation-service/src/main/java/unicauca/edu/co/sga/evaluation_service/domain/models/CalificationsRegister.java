@@ -2,34 +2,20 @@ package unicauca.edu.co.sga.evaluation_service.domain.models;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import unicauca.edu.co.sga.evaluation_service.domain.enums.CalificationEnums;
 
-@Entity
-@Table(name = "calificationsRegister")
+@AllArgsConstructor
+@NoArgsConstructor
 @Data
 @Builder
 public class CalificationsRegister {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(nullable = false, unique = true, updatable = false)
-    private int id;
-
-    @Column(nullable = false)
-    private float calification;
-
-    @Column(nullable = false, length = 300)
+    private Long id;
+    private Double calification;
     private String message;
-
-    @Column(nullable = false)
-    @Enumerated(EnumType.STRING)
-    private CalificationEnums.level level;
-
-    @ManyToOne
-    @JoinColumn(name = "evaluationID", nullable = false, foreignKey = @ForeignKey(name = "fk_evaluation"))
-    @JsonBackReference
-    private Evaluation evaluation;
-
-
+    private CalificationEnums level;
+    private Long evaluation;
 }
