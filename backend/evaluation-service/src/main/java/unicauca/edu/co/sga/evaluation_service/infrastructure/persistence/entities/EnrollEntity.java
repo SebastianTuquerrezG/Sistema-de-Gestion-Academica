@@ -22,11 +22,15 @@ public class EnrollEntity {
     @ManyToOne
     @JoinColumn(name = "course_id", nullable = false, foreignKey = @ForeignKey(name = "fk_course"))
     @JsonBackReference
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private CourseEntity course;
 
     @ManyToOne
     @JoinColumn(name = "student_id", nullable = false, foreignKey = @ForeignKey(name = "fk_student"))
     @JsonBackReference
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private StudentEntity student;
 
     @OneToMany(mappedBy = "enroll", cascade = CascadeType.ALL, orphanRemoval = true)

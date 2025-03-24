@@ -1,9 +1,10 @@
 package unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.repositories;
 
+
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
-import unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.entities.SubjectEntity;
+import unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.entities.CriteriaEntity;
 
 @Repository
-public interface SubjectRepository extends CrudRepository<SubjectEntity, Long> {
+public interface CriteriaRepository extends CrudRepository<CriteriaEntity, Long> {
 }

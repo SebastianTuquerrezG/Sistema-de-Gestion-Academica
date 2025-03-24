@@ -24,16 +24,22 @@ public class CourseEntity {
             joinColumns = @JoinColumn(name = "course_id"),
             inverseJoinColumns = @JoinColumn(name = "teacher_id"))
     @JsonBackReference
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private Set<TeacherEntity> teacher;
 
     @ManyToOne
     @JoinColumn(name = "subject_id", nullable = false, foreignKey = @ForeignKey(name = "fk_subject"))
     @JsonBackReference
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private SubjectEntity subject;
 
     @ManyToOne
     @JoinColumn(name = "ra_id", nullable = false, foreignKey = @ForeignKey(name = "fk_ra"))
     @JsonBackReference
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private RAEntity ra;
 
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
