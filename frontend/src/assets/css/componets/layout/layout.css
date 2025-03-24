@@ -1,40 +1,29 @@
 .layout-container {
-    display: flex;
-    height: 100vh;
-}
-
-.sidebar {
-    width: 268px; /* Ancho del Sidebar */
-    min-width: 268px;
-    position: fixed;
-    top: 0;
-    left: 0;
-    height: 100vh;
-    background-color: var(--primary-regular-color);
-    color: white;
-    overflow: hidden;
-    transition: width 0.3s ease;
+  display: flex;
+  width: 100%;
+  min-height: 100vh;
+  background-color: #f8f9fc;
+  overflow-x: hidden;
 }
 
 .content-container {
-    flex: 1;
-    margin-left: 268px; /* Desplaza el contenido para que no quede oculto */
-    display: flex;
-    flex-direction: column;
-    width: calc(100% - 268px); /* Ajusta el ancho del contenido */
-}
-
-.header {
-    height: 75px; /* Altura del Header */
-    border-bottom: 5px var(--hover-regular-color) solid;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  width: 100%;
 }
 
 .content {
-    flex: 1;
-    padding: 1rem;
-    overflow-y: auto;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: flex-start;
+  flex: 1;
+  padding: 105px 30px 30px 30px; /* 75px header + espacio */
+  overflow-y: auto;
+  box-sizing: border-box;
+}
+
+.page-wrapper {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
 }

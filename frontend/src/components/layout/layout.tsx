@@ -1,22 +1,22 @@
 import Sidebar from "./sidebar";
 import Header from "./header";
 import React from "react";
-
 import "../../assets/css/componets/layout/layout.css";
-import PageTitle from "../pageTitle/pageTitle.tsx";
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
-    return (
-        <div className="layout-container">
-            <Sidebar />
-            <div className="content-container">
-                <Header />
-                <div className="content">
-                    <main className="content">{children}</main>
-                </div>
-            </div>
+  return (
+    <div className="layout-container">
+      <Sidebar />
+      <div className="content-container">
+        <Header />
+        <div className="content">
+          <div className="page-wrapper">
+            {children}
+          </div>
         </div>
-    );
+      </div>
+    </div>
+  );
 };
 
 export default Layout;
