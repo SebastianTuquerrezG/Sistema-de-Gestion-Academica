@@ -16,6 +16,7 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+
 public class Evaluation {
     private Long id;
     private Long enroll;
@@ -24,5 +25,4 @@ public class Evaluation {
     private String description;
     private Date created_at;
     private Date updated_at;
-
 }

@@ -33,11 +33,12 @@ public class EvaluationEntity {
     @JsonBackReference
     private RubricEntity rubric;
 
-    @OneToMany(mappedBy = "evaluation", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "evaluation", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     @JsonManagedReference
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private List<CalificationRegisterEntity> califications;
+
 
     @Column(nullable = false, length = 300)
     private String description;

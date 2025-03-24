@@ -1,4 +1,7 @@
 package unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.repositories;
 
-public class EnrollRepository {
+import org.springframework.data.jpa.repository.JpaRepository;
+import unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.entities.EnrollEntity;
+
+public interface EnrollRepository extends JpaRepository<EnrollEntity, Long> {
 }
