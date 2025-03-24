@@ -22,5 +22,11 @@ public class RAEntity {
     @JsonManagedReference
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
+    private Set<RubricEntity> rubric;
+
+    @OneToMany(mappedBy = "ra", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private Set<CourseEntity> course;
 }

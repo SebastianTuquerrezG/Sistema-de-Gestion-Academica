@@ -1,4 +1,9 @@
 package unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.repositories;
 
-public class CalificationRegisterRepository {
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+import unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.entities.CalificationRegisterEntity;
+
+@Repository
+public interface CalificationRegisterRepository extends CrudRepository<CalificationRegisterEntity, Long> {
 }

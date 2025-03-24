@@ -26,9 +26,8 @@ public class CalificationRegisterEntity {
     @Column(nullable = false, length = 300)
     private String message;
 
-    @Column(nullable = false)
-    @Enumerated(EnumType.STRING)
-    private CalificationEnums level;
+    @Column(nullable = false, length = 100)
+    private String level; //As an example: "Nivel 1", "Nivel 2"
 
     @ManyToOne
     @JoinColumn(name = "evaluation_id", nullable = false, foreignKey = @ForeignKey(name = "fk_evaluation"))

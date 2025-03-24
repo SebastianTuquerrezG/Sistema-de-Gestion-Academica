@@ -52,4 +52,11 @@ public class SubjectEntity {
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private Set<CourseEntity> course;
+
+    @OneToMany(mappedBy = "subject", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private Set<RubricEntity> rubric;
+
 }

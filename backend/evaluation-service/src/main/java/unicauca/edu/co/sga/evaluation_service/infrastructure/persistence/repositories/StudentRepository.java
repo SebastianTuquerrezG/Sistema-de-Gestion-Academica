@@ -1,4 +1,9 @@
 package unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.repositories;
 
-public class StudentRepository {
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+import unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.entities.StudentEntity;
+
+@Repository
+public interface StudentRepository extends CrudRepository<StudentEntity, Long> {
 }

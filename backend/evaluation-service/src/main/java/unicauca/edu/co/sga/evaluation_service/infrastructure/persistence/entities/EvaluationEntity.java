@@ -26,11 +26,15 @@ public class EvaluationEntity {
     @ManyToOne
     @JoinColumn(name = "enroll_id", nullable = false, foreignKey = @ForeignKey(name = "fk_enroll"))
     @JsonBackReference
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private EnrollEntity enroll;
 
     @ManyToOne
     @JoinColumn(name = "rubric_id", nullable = false, foreignKey = @ForeignKey(name = "fk_rubric"))
     @JsonBackReference
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private RubricEntity rubric;
 
     @OneToMany(mappedBy = "evaluation", cascade = CascadeType.ALL, orphanRemoval = true)

@@ -1,24 +1,20 @@
 package unicauca.edu.co.sga.evaluation_service.domain.models;
 
-import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Set;
-
+/**
+ * @apiNote Model of the Performance Class to use in different part of the application.
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Rubric {
+public class PerformanceLevel {
     private Long id;
     private String name;
-    private String study_objective;
-    private String competence;
-    private Set<Long> subject;
-    private Set<Long> ra;
-    private Set<Long> criteria;
-    private Set<Long> evaluation;
+    private String description;
+    private float range_rating; // This could be changed for other type of data
 }
