@@ -1,17 +1,62 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./EvaluacionesCSS/evaluationTable.css";
+import Notification from "../../components/notifications/notification";
 
 const EvaluationTable: React.FC = () => {
   const data = [
-    { criterio: "Genera ideas que dan solución a situaciones planteadas", nivel3: "La idea planteada satisface la necesidad generada y contempla aspectos de creatividad", nivel2: "Genera ideas que dan solución a las situaciones planteadas", nivel1: "Las ideas generadas apuntan a dar solución a la situación planteada pero no alcanzan a plasmarse en el prototipo presentado", porcentaje: 15 },
-    { criterio: "Propuesta de Diseño claro y uso de herramientas acordes con la propuesta", nivel3: "Introduce herramientas computacionales novedosas al diseño trabajado", nivel2: "Propuesta de Diseño claro y uso de herramientas acordes con la propuesta", nivel1: "No hace uso de herramientas adecuadas para presentar el diseño", porcentaje: 30 },
-    { criterio: "Evidencia Funcional del Diseño Propuesto", nivel3: "Utiliza nuevos planteamientos de validación del diseño", nivel2: "Evidencia funcional del diseño propuesto", nivel1: "La validación del diseño, presenta inconsistencias", porcentaje: 20 },
-    { criterio: "Presenta el prototipo y cumple con el diseño planteado", nivel3: "El prototipo está soportado en elementos innovadores, manteniendo el diseño propuesto", nivel2: "Presenta el prototipo y cumple con el diseño planteado", nivel1: "El prototipo funciona de forma intermitente", porcentaje: 35 }
+    {
+      criterio: "Genera ideas que dan solución a situaciones planteadas",
+      nivel3:
+        "La idea planteada satisface la necesidad generada y contempla aspectos de creatividad",
+      nivel2: "Genera ideas que dan solución a las situaciones planteadas",
+      nivel1:
+        "Las ideas generadas apuntan a dar solución a la situación planteada pero no alcanzan a plasmarse en el prototipo presentado",
+      porcentaje: 15,
+    },
+    {
+      criterio:
+        "Propuesta de Diseño claro y uso de herramientas acordes con la propuesta",
+      nivel3:
+        "Introduce herramientas computacionales novedosas al diseño trabajado",
+      nivel2:
+        "Propuesta de Diseño claro y uso de herramientas acordes con la propuesta",
+      nivel1: "No hace uso de herramientas adecuadas para presentar el diseño",
+      porcentaje: 30,
+    },
+    {
+      criterio: "Evidencia Funcional del Diseño Propuesto",
+      nivel3: "Utiliza nuevos planteamientos de validación del diseño",
+      nivel2: "Evidencia funcional del diseño propuesto",
+      nivel1: "La validación del diseño, presenta inconsistencias",
+      porcentaje: 20,
+    },
+    {
+      criterio: "Presenta el prototipo y cumple con el diseño planteado",
+      nivel3:
+        "El prototipo está soportado en elementos innovadores, manteniendo el diseño propuesto",
+      nivel2: "Presenta el prototipo y cumple con el diseño planteado",
+      nivel1: "El prototipo funciona de forma intermitente",
+      porcentaje: 35,
+    },
   ];
 
+  // Estado para almacenar las notificaciones
+  const [notification, setNotification] = useState<{
+    type: "error" | "info";
+    title: string;
+    message: string;
+  } | null>(null);
+
+  // Estado para Detectar cambios sin guardar
+  const [hasChanges, setHasChanges] = useState(false);
+
   // Estado para almacenar las calificaciones ingresadas por fila
-  const [valores, setValores] = useState<(number | "")[]>(Array(data.length).fill(""));
-  const [comentarios, setComentarios] = useState<string[]>(Array(data.length).fill(""));
+  const [valores, setValores] = useState<(number | "")[]>(
+    Array(data.length).fill("")
+  );
+  const [comentarios, setComentarios] = useState<string[]>(
+    Array(data.length).fill("")
+  );
 
   const rangos = [
     { nivel: "nivel3", superior: 5.0, inferior: 4.0, color: "#2e2ebe" },
@@ -20,14 +65,51 @@ const EvaluationTable: React.FC = () => {
   ];
 
   // Función para actualizar el valor de la calificación ingresada
-  const handleChange = (index: number, event: React.ChangeEvent<HTMLInputElement>) => {
-    const value = event.target.value;
-    const newValores = [...valores];
-    newValores[index] = value === "" ? "" : parseFloat(value);
-    setValores(newValores);
+  const handleChange = (
+    index: number,
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    let value = event.target.value;
+
+    // Validar si el valor es un número válido entre 0 y 5
+    const numericValue = parseFloat(value);
+    if (
+      (!isNaN(numericValue) && numericValue > 5) ||
+      /[^\d.]/.test(value) // Evita caracteres no numéricos excepto "."
+    ) {
+      setNotification({
+        type: "error",
+        title: "Error",
+        message: "Rango de calificación [0, 5].",
+      });
+      setValores((prevValores) => {
+        const resetValores = [...prevValores];
+        resetValores[index] = "";
+        return resetValores;
+      });
+      return;
+    }
+
+    // Si el valor es válido, actualizar el estado
+    setValores((prevValores) => {
+      const newValores = [...prevValores];
+      newValores[index] = value === "" ? "" : numericValue;
+      return newValores;
+    });
+    setHasChanges(true);
   };
 
-  const handleCommentChange = (index: number, event: React.ChangeEvent<HTMLTextAreaElement>) => {
+  // Función para evitar que el usuario presione "-"
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === "-") {
+      event.preventDefault(); // Bloquea la tecla "-"
+    }
+  };
+
+  const handleCommentChange = (
+    index: number,
+    event: React.ChangeEvent<HTMLTextAreaElement>
+  ) => {
     const newComentarios = [...comentarios];
     newComentarios[index] = event.target.value;
     setComentarios(newComentarios);
@@ -35,11 +117,59 @@ const EvaluationTable: React.FC = () => {
 
   // Función que obtiene el nivel al que pertenece la calificación
   const getNivel = (valor: number) => {
-    return rangos.find(r => valor >= r.inferior && valor <= r.superior)?.nivel || "";
+    return (
+      rangos.find((r) => valor >= r.inferior && valor <= r.superior)?.nivel ||
+      ""
+    );
   };
+
+  // Función para activar la advertencia cuando el usuario intenta salir con cambios sin guardar
+  useEffect(() => {
+    const handleBeforeUnload = (event: BeforeUnloadEvent) => {
+      if (hasChanges) {
+        event.preventDefault();
+        event.returnValue = ""; // Mensaje de advertencia del navegador
+      }
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, [hasChanges]);
+
+  // Función para mostrar la notificación cuando el usuario intenta salir con cambios sin guardar
+  useEffect(() => {
+    const handleNavigation = (event: Event) => {
+      if (hasChanges) {
+        event.preventDefault();
+        setNotification({
+          type: "info",
+          title: "Atención",
+          message: "Tienes cambios sin guardar.",
+        });
+      }
+    };
+
+    window.addEventListener("popstate", handleNavigation);
+    return () => {
+      window.removeEventListener("popstate", handleNavigation);
+    };
+  }, [hasChanges]);
 
   return (
     <div className="evaluation-table-container">
+      {/* Notificación de advertencia o error */}
+      {notification && (
+        <Notification
+          type={notification.type} // Usa "error" o "info" según corresponda
+          title={notification.title}
+          message={notification.message}
+          onClose={() => setNotification(null)}
+        />
+      )}
+
+      {/* Tabla de evaluación */}
       <table className="evaluation-table">
         <colgroup>
           <>
@@ -60,13 +190,21 @@ const EvaluationTable: React.FC = () => {
             <th colSpan={7}>Descriptores</th>
           </tr>
           <tr>
-            <th id='header-level3'>Nivel 3</th>
-            <th id='header-level2'>Nivel 2</th>
-            <th id='header-level1'>Nivel 1</th>
-            <th id='secondary-title' rowSpan={2}>Porcentaje</th>
-            <th id='secondary-title' rowSpan={2}>Calificación</th>
-            <th id='secondary-title' rowSpan={2}>Ponderación</th>
-            <th id='secondary-title' rowSpan={2}>Comentario</th>
+            <th id="header-level3">Nivel 3</th>
+            <th id="header-level2">Nivel 2</th>
+            <th id="header-level1">Nivel 1</th>
+            <th id="secondary-title" rowSpan={2}>
+              Porcentaje
+            </th>
+            <th id="secondary-title" rowSpan={2}>
+              Calificación
+            </th>
+            <th id="secondary-title" rowSpan={2}>
+              Ponderación
+            </th>
+            <th id="secondary-title" rowSpan={2}>
+              Comentario
+            </th>
           </tr>
           <tr>
             {rangos.map((rango, index) => (
@@ -79,42 +217,64 @@ const EvaluationTable: React.FC = () => {
         <tbody>
           {data.map((row, index) => {
             const valorActual = valores[index];
-            const nivelActual = valorActual === "" ? "" : getNivel(Number(valorActual));
-            const ponderado = valorActual === "" ? "" : ((Number(valorActual) * (row.porcentaje / 100)).toFixed(2));
+            const nivelActual =
+              valorActual === "" ? "" : getNivel(Number(valorActual));
+            const ponderado =
+              valorActual === ""
+                ? ""
+                : (Number(valorActual) * (row.porcentaje / 100)).toFixed(2);
 
             return (
               <tr key={index}>
-                <td id='criterios-column'>{row.criterio}</td>
-                <td style={{ backgroundColor: nivelActual === "nivel3" ? "#2e2ebe" : "transparent", color: nivelActual === "nivel3" ? "white" : "black" }}>
+                <td id="criterios-column">{row.criterio}</td>
+                <td
+                  style={{
+                    backgroundColor:
+                      nivelActual === "nivel3" ? "#2e2ebe" : "transparent",
+                    color: nivelActual === "nivel3" ? "white" : "black",
+                  }}
+                >
                   {row.nivel3}
                 </td>
-                <td style={{ backgroundColor: nivelActual === "nivel2" ? "#22229e" : "transparent", color: nivelActual === "nivel2" ? "white" : "black" }}>
+                <td
+                  style={{
+                    backgroundColor:
+                      nivelActual === "nivel2" ? "#22229e" : "transparent",
+                    color: nivelActual === "nivel2" ? "white" : "black",
+                  }}
+                >
                   {row.nivel2}
                 </td>
-                <td style={{ backgroundColor: nivelActual === "nivel1" ? "#13137c" : "transparent", color: nivelActual === "nivel1" ? "white" : "black" }}>
+                <td
+                  style={{
+                    backgroundColor:
+                      nivelActual === "nivel1" ? "#13137c" : "transparent",
+                    color: nivelActual === "nivel1" ? "white" : "black",
+                  }}
+                >
                   {row.nivel1}
                 </td>
                 <td>{row.porcentaje}%</td>
                 <td>
                   <input
                     type="number"
-                    id={`calificacion-${index}`}   // ID único por fila
+                    id={`calificacion-${index}`} // ID único por fila
                     name={`calificacion-${index}`} // Nombre único por fila
                     placeholder="0.0"
                     value={valores[index] || ""}
                     onChange={(e) => handleChange(index, e)}
+                    onKeyDown={handleKeyDown}
                     step="0.1"
                     min="0"
                     max="5"
                     className="evaluation-input"
                   />
-
                 </td>
                 <td>{ponderado}</td>
                 <td>
                   <div>
                     <textarea
-                      id={`comentario-${index}`}   // ID único por fila
+                      id={`comentario-${index}`} // ID único por fila
                       name={`comentario-${index}`} // Nombre único por fila
                       value={comentarios[index]}
                       onChange={(e) => handleCommentChange(index, e)}
@@ -133,7 +293,11 @@ const EvaluationTable: React.FC = () => {
             <td>TOTAL</td>
             <td>
               {data
-                .reduce((acc, row, index) => acc + (valores[index] || 0) * (row.porcentaje / 100), 0)
+                .reduce(
+                  (acc, row, index) =>
+                    acc + (valores[index] || 0) * (row.porcentaje / 100),
+                  0
+                )
                 .toFixed(2)}
             </td>
           </tr>
@@ -142,15 +306,18 @@ const EvaluationTable: React.FC = () => {
 
       {/* Botón Evaluar */}
       <div className="button-container">
-        <button className="evaluate-button" onClick={() => {
-          const evaluaciones = data.map((row, index) => ({
-            criterio: row.criterio,
-            nivelSeleccionado: getNivel(Number(valores[index])),
-            calificacion: valores[index] || 0,
-            comentario: comentarios[index]
-          }));
-          console.log("Evaluaciones:", JSON.stringify(evaluaciones, null, 2));
-        }}>
+        <button
+          className="evaluate-button"
+          onClick={() => {
+            const evaluaciones = data.map((row, index) => ({
+              criterio: row.criterio,
+              nivelSeleccionado: getNivel(Number(valores[index])),
+              calificacion: valores[index] || 0,
+              comentario: comentarios[index],
+            }));
+            console.log("Evaluaciones:", JSON.stringify(evaluaciones, null, 2));
+          }}
+        >
           Evaluar
         </button>
       </div>
