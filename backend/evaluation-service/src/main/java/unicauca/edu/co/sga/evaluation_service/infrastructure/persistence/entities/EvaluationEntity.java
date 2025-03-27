@@ -1,7 +1,6 @@
 package unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.entities;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.*;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -12,6 +11,8 @@ import java.util.List;
 import java.util.Set;
 
 @Entity
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -25,16 +26,18 @@ public class EvaluationEntity {
 
     @ManyToOne
     @JoinColumn(name = "enroll_id", nullable = false, foreignKey = @ForeignKey(name = "fk_enroll"))
-    @JsonBackReference
+    @JsonIgnore
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
+    @JsonProperty("enroll")
     private EnrollEntity enroll;
 
     @ManyToOne
     @JoinColumn(name = "rubric_id", nullable = false, foreignKey = @ForeignKey(name = "fk_rubric"))
-    @JsonBackReference
+    @JsonIgnore
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
+    @JsonProperty("rubric")
     private RubricEntity rubric;
 
     @OneToMany(mappedBy = "evaluation", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)

@@ -1,15 +1,14 @@
 package unicauca.edu.co.sga.evaluation_service.infrastructure.controllers;
 
+import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import unicauca.edu.co.sga.evaluation_service.application.dto.request.EvaluationRequestDTO;
+import unicauca.edu.co.sga.evaluation_service.application.dto.response.EvaluationResponseDTO;
 import unicauca.edu.co.sga.evaluation_service.application.services.EvaluationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import unicauca.edu.co.sga.evaluation_service.domain.models.Evaluation;
 import unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.entities.EvaluationEntity;
-import unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.repositories.EvaluationRepository;
-
-import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/evaluations")
@@ -22,31 +21,31 @@ public class EvaluationController {
         this.evaluationService = evaluationService;
     }
 
+    //OBTENER EVALUACION POR ID
     @GetMapping("/{id}")
-    public EvaluationEntity getEvaluation(@PathVariable Long id) {
-        return evaluationService.getEvaluationById(id);
+    public ResponseEntity<EvaluationResponseDTO> getEvaluation(@PathVariable Long id) {
+        EvaluationEntity evaluation = evaluationService.getEvaluationById(id);
+        return ResponseEntity.ok(mapToResponseDTO(evaluation));
+    }
+
+    //GUARDAR EVALUACION
+    @PostMapping("/save")
+    public ResponseEntity<EvaluationResponseDTO> createEvaluation(
+            @Valid @RequestBody EvaluationRequestDTO evaluationRequestDTO) {
+        EvaluationEntity savedEvaluation = evaluationService.createEvaluation(evaluationRequestDTO);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(mapToResponseDTO(savedEvaluation));
+    }
+
+    private EvaluationResponseDTO mapToResponseDTO(EvaluationEntity entity) {
+        return EvaluationResponseDTO.builder()
+                .id(entity.getId())
+                .enroll(entity.getEnroll().getId())
+                .rubric(entity.getRubric().getId())
+                .description(entity.getDescription())
+                .created_at(entity.getCreated_at())
+                .updated_at(entity.getUpdated_at())
+                .build();
     }
 }
-    /*@Autowired
-    private EvaluationRepository evaluationRepository;
-
-    // Guardar
-    @PostMapping
-    public Evaluation createEvaluation(@RequestBody Evaluation evaluation) {
-        return evaluationRepository.save(evaluation);
-    }
-
-    // Obtener
-    @GetMapping
-    public List<Evaluation> getAllEvaluations() {
-        return evaluationRepository.findAll();
-    }
-
-    // Obtener por id
-    @GetMapping("/{id}")
-    public Optional<Evaluation> getEvaluationById(@PathVariable Long id) {
-        return evaluationRepository.findById(id);
-    }
-    }*/
-    //NO BORRAR
 

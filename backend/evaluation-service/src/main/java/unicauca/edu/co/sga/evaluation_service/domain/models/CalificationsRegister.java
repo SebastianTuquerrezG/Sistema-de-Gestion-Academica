@@ -16,11 +16,6 @@ public class CalificationsRegister {
     private Long id;
     private Double calification;
     private String message;
-<<<<<<< Updated upstream
-    private CalificationEnums level;
-    private Long evaluation;
-=======
-
     private int level;
 
     @ManyToMany(fetch = FetchType.EAGER)
@@ -28,5 +23,4 @@ public class CalificationsRegister {
     @JsonBackReference
     private Evaluation evaluation;
 
->>>>>>> Stashed changes
 }

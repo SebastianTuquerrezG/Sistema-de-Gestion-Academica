@@ -1,11 +1,10 @@
 package unicauca.edu.co.sga.evaluation_service.application.services;
 
-import org.springframework.ai.evaluation.EvaluationResponse;
-import unicauca.edu.co.sga.evaluation_service.application.dto.request.EvaluationRequestDTO;
-import unicauca.edu.co.sga.evaluation_service.application.dto.response.EvaluationResponseDTO;
-import unicauca.edu.co.sga.evaluation_service.domain.models.Evaluation;
+import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import unicauca.edu.co.sga.evaluation_service.application.dto.request.EvaluationRequestDTO;
 import unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.entities.EnrollEntity;
 import unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.entities.EvaluationEntity;
 import unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.entities.RubricEntity;
@@ -13,42 +12,44 @@ import unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.reposit
 import unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.repositories.EvaluationRepository;
 import unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.repositories.RubricRepository;
 
-import java.util.Optional;
-
 @Service
-//Este servicio se encargara de buscar lo necesario mediante sus ID
+@Transactional
 public class EvaluationService {
-    /*private final EvaluationRepository evaluationRepository;
+    private final EvaluationRepository evaluationRepository;
     private final EnrollRepository enrollRepository;
     private final RubricRepository rubricRepository;
 
     @Autowired
-    public EvaluationService(EvaluationRepository evaluationRepository) {
+    public EvaluationService(EvaluationRepository evaluationRepository,
+                             EnrollRepository enrollRepository,
+                             RubricRepository rubricRepository) {
         this.evaluationRepository = evaluationRepository;
+        this.enrollRepository = enrollRepository;
+        this.rubricRepository = rubricRepository;
     }
 
-    public Evaluation saveEvaluation(Evaluation evaluation) {
+    public EvaluationEntity createEvaluation(EvaluationRequestDTO evaluationRequestDTO) {
+        // VERIFICACIONES
+        EnrollEntity enroll = enrollRepository.findById(evaluationRequestDTO.getEnroll())
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "Enroll no encontrado con id: " + evaluationRequestDTO.getEnroll()));
 
-        EvaluationEntity entity = new EvaluationEntity();
-        entity.setDescription(evaluation.getDescription());
-        entity.setCreated_at(evaluation.getCreated_at());
-        entity.setUpdated_at(evaluation.getUpdated_at());
-        //entity.setEnroll(enroll);
-        //entity.setRubric(rubric);
+        RubricEntity rubric = rubricRepository.findById(evaluationRequestDTO.getRubric())
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "Rubric no encontrado con id: " + evaluationRequestDTO.getRubric()));
 
-        EvaluationEntity savedEntity = evaluationRepository.save(entity);
+        // CREAR NUEVA EVALUACION
+        EvaluationEntity evaluation = new EvaluationEntity();
+        evaluation.setEnroll(enroll);
+        evaluation.setRubric(rubric);
+        evaluation.setDescription(evaluationRequestDTO.getDescription());
 
-        // Mapea la entidad guardada
-        return new Evaluation(savedEntity.getId(), savedEntity.getDescription(), savedEntity.getCreated_at(), savedEntity.getUpdated_at());
-    }*/
-    private final EvaluationRepository evaluationRepository;
-
-    @Autowired
-    public EvaluationService(EvaluationRepository evaluationRepository) {
-        this.evaluationRepository = evaluationRepository;
+        return evaluationRepository.save(evaluation);
     }
 
     public EvaluationEntity getEvaluationById(Long id) {
-        return evaluationRepository.findById(id).orElse(null);
+        return evaluationRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "Evaluation no encontrada con id: " + id));
     }
-    }
+}
