@@ -16,5 +16,4 @@ public interface StudentPort {
     List<StudentResponseDTO> getStudentsByName(String name);
     Optional<StudentResponseDTO> getStudentsByIdentification(Long identification);
     List<StudentResponseDTO> getStudentsByIdentificationType(GeneralEnums.identificationType identificationType);
-    List<StudentResponseDTO> getStudentsByEnroll(Long enrollId);
 }
