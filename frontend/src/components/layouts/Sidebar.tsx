@@ -97,9 +97,9 @@ export default function AppSidebar() {
         <Sidebar>
             <SidebarContent>
                 <SidebarGroup>
-                    <div className="flex items-center justify-center p-4">
+                    <div className="flex h-11 shrink-0 items-center justify-center gap-2 shadow-md px-3">
                         <a href="/">
-                            <img src="/logo.png" alt="Logo" />
+                            <img src="/logos/logo.svg" alt="Logo" className="h-15" />
                         </a>
                     </div>
                     <Separator className="my-3" />
