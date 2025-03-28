@@ -40,7 +40,7 @@ public class RubricEntity {
     private SubjectEntity subject;
 
     @ManyToOne
-    @JoinColumn(name = "ra_id", nullable = false, foreignKey = @ForeignKey(name = "fk_ra"))
+    @JoinColumn(name = "ra_id", nullable = false, foreignKey = @ForeignKey(name = "fk_learning_results"))
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     @JsonBackReference

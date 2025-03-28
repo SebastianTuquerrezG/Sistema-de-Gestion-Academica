@@ -1,15 +1,12 @@
 package unicauca.edu.co.sga.evaluation_service.application.dto.response;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import unicauca.edu.co.sga.evaluation_service.domain.enums.GeneralEnums;
 import unicauca.edu.co.sga.evaluation_service.domain.enums.TeacherEnums;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Builder
 public class TeacherResponseDTO {
     private Long id;

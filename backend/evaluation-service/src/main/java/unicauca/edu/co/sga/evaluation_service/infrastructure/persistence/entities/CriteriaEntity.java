@@ -35,7 +35,7 @@ public class CriteriaEntity {
     @JsonManagedReference
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    private PerformanceEntity performanceLevel;
+    private PerformanceEntity performance_level;
 
 
 }

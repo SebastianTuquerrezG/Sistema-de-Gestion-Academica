@@ -61,11 +61,6 @@ public class TeacherService implements TeacherPort {
     }
 
     @Override
-    public List<TeacherResponseDTO> getTeachersByName(String name) {
-        return List.of();
-    }
-
-    @Override
     public Optional<TeacherResponseDTO> getTeacherByIdentification(Long identification) {
         return Optional.empty();
     }

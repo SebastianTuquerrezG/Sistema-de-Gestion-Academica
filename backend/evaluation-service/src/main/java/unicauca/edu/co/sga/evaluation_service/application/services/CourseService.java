@@ -28,8 +28,8 @@ public class CourseService {
     }
 
     public CourseResponseDTO saveCourseService(CourseRequestDTO courseRequestDTO){
-        Optional<TeacherEntity> teacher = teacherService.getTeacherById(courseRequestDTO.getTeacher());
-        /*Optional<SubjectEntity> subject = subjectService.getSubjectById(courseRequestDTO.getSubject());
+        /*Optional<TeacherEntity> teacher = teacherService.getTeacherById(courseRequestDTO.getTeacher());
+        Optional<SubjectEntity> subject = subjectService.getSubjectById(courseRequestDTO.getSubject());
 
         if (teacher.isEmpty() || subject.isEmpty()){
             return null;
