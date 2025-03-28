@@ -14,7 +14,6 @@ public interface TeacherPort {
     TeacherResponseDTO saveTeacher(TeacherRequestDTO teacher);
     boolean deleteTeacher(Long id);
     boolean updateTeacher(Long id, TeacherRequestDTO teacher);
-    List<TeacherResponseDTO> getTeachersByName(String name);
     Optional<TeacherResponseDTO> getTeacherByIdentification(Long identification);
     Optional<TeacherResponseDTO> getTeacherByName(String name);
     List<TeacherResponseDTO> getTeachersByDegree(String degree);

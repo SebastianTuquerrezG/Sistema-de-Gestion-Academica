@@ -12,8 +12,6 @@ public interface EvaluationPort {
     EvaluationResponseDTO saveEvaluation(EvaluationRequestDTO evaluation);
     boolean deleteEvaluation(Long id);
     boolean updateEvaluation(Long id, EvaluationRequestDTO evaluation);
-    List<EvaluationResponseDTO> getEvaluationsByStudentId(Long studentId);
     List<EvaluationResponseDTO> getEvaluationsByEnrollId(Long enrollId);
-    List<EvaluationResponseDTO> getEvaluationsByCourseId(Long courseId);
     List<EvaluationResponseDTO> getEvaluationsByRubricId(Long rubricId);
 }
