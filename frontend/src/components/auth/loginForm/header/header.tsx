@@ -12,7 +12,7 @@ export default function LoginHeader() {
             />
             <div className="border border-blue h-12"></div>
             <Label className="text-xs md:text-xs">
-                Oficina de Relaciones <br />Interinstitucionales <br />e Internacionales
+                Sistema de Gestión <br />Academica <br />
             </Label>
         </div>
     )

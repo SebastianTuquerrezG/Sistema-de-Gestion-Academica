@@ -11,7 +11,7 @@ export default function TopFooter() {
 
                 <div className="flex gap-5 h-16 items-center">
                     <div className="flex flex-col gap-2 items-start md:items-end">
-                        <p>Oficina de Relaciones Interinstitucionales e Internacionales</p>
+                        <p>Sistema de Gestión Academica</p>
                         <p>Vicerrectoría</p>
                         <p>relacionesinter@unicauca.edu.co</p>
                     </div>
