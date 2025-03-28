@@ -67,6 +67,13 @@ export default function CreateRubric()
 
         localStorage.setItem("rubrica", JSON.stringify(rubricData));
         console.log("Datos guardados en localStorage:", rubricData);
+        try {
+            handleCancel();
+        } catch (error) {
+            console.error("Error al guardar los datos en localStorage:", error);
+            
+        }
+        
     };
     //Funcion que reinicia los valores de levels y rows
     const handleCancel = () => {
@@ -107,8 +114,9 @@ export default function CreateRubric()
                 <CardTitle>Criterios de Evaluación</CardTitle>
                 <CardDescription className="mb-4">A continuación podrá ingregar la información de los criterios de evaluación de la rúbrica y sus niveles </CardDescription>
 
-                <table className="w-full">
-                    <thead>
+                <div className="w-full overflow-auto">
+                    <table className="w-full min-w-max">
+                        <thead>
                         <tr className="title5 bg-[#000066] text-white ">
                             <th className="border p-2 text-center ">Criterio Evaluación</th>
                             {levels.map((level, index) => (
@@ -123,8 +131,8 @@ export default function CreateRubric()
                                 </Button>
                             </th>
                         </tr>
-                    </thead>
-                    <tbody className="text-base">
+                        </thead>
+                        <tbody className="text-base">
                         <tr className="bg-gray-100">
                             <td className="border border-gray-300 px-4 py-2 title5">Nota</td>
                             {levels.map((_, index) => (
@@ -159,8 +167,10 @@ export default function CreateRubric()
                                 </td>
                             </tr>
                         ))}
-                    </tbody>
-                </table>
+                        </tbody>
+                    </table>
+                </div>
+
                 <div className="mt-4">
                     <Button onClick={addRow} className="bg-[#000066] text-white px-4 py-2 rounded">
                         <Plus className="h-4 w-4 mr-2" />
