@@ -13,11 +13,6 @@ export default function Dashboard() {
         <DashboardLayout>
             <Routes>
                 <Route index path="/rubricas" element={<ConsultRubric />} />
-<<<<<<< Updated upstream
-                <Route path="/" element={<ConsultRubric />} />
-=======
-                <Route path="/" element={<ConsultRubric/>} />
->>>>>>> Stashed changes
                 <Route path="/rubricas/crear" element={<CreateRubric />} />
                 <Route path="/rubricas/editar/:id" element={<EditRubricWrapper />} />
             </Routes>
