@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import unicauca.edu.co.sga.evaluation_service.domain.enums.EvaluationStatus;
 
 import java.util.Date;
 import java.util.List;
@@ -46,6 +47,9 @@ public class EvaluationEntity {
     @EqualsAndHashCode.Exclude
     private List<CalificationRegisterEntity> califications;
 
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private EvaluationStatus evaluationStatus;
 
     @Column(nullable = false, length = 300)
     private String description;

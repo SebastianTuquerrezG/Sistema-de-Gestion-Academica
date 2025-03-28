@@ -5,9 +5,20 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotNull;
+
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Builder
 public class CourseRequestDTO {
+
+    @NotNull(message = "El profesor encargado es obligatorio.")
+    private Long teacher;
+
+    @NotNull(message = "La materia asignada es obligatoria.")
+    private Long subject;
+
+    @NotNull(message = "El resultado de aprendizaje del curso es obligatoria.")
+    private Long ra;
 }

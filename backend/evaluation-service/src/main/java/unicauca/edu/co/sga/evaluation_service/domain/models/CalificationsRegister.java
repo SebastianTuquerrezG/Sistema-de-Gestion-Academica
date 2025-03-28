@@ -8,6 +8,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import unicauca.edu.co.sga.evaluation_service.domain.enums.CalificationEnums;
 
+import java.util.Set;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
@@ -17,10 +19,5 @@ public class CalificationsRegister {
     private Double calification;
     private String message;
     private int level;
-
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinColumn(name = "evaluationId", nullable = false, foreignKey = @ForeignKey(name = "fk_evaluation"))
-    @JsonBackReference
-    private Evaluation evaluation;
-
+    private Set<Long> evaluation;
 }

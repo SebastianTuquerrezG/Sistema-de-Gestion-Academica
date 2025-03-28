@@ -4,13 +4,14 @@ import unicauca.edu.co.sga.evaluation_service.application.dto.request.TeacherReq
 import unicauca.edu.co.sga.evaluation_service.application.dto.response.TeacherResponseDTO;
 import unicauca.edu.co.sga.evaluation_service.domain.enums.GeneralEnums;
 import unicauca.edu.co.sga.evaluation_service.domain.enums.TeacherEnums;
+import unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.entities.TeacherEntity;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface TeacherPort {
     List<TeacherResponseDTO> getTeachers();
-    Optional<TeacherResponseDTO> getTeacherById(Long id);
+    Optional<TeacherEntity> getTeacherById(Long id);
     TeacherResponseDTO saveTeacher(TeacherRequestDTO teacher);
     boolean deleteTeacher(Long id);
     boolean updateTeacher(Long id, TeacherRequestDTO teacher);
