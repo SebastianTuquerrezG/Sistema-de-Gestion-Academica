@@ -1,37 +1,52 @@
 import { Button } from "@/components/ui/button";
-import { useState } from "react"
-import { Search, Plus, Filter, Pencil, Trash2 } from "lucide-react"
-import { Input } from "@/components/ui/input"
+import { useEffect, useState } from "react";
+import { Search, Plus, Pencil, Trash2 } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { useNavigate } from "react-router-dom";
 
-"use client"
+"use client";
+
+// Object Rubric
 interface Rubric {
-    id: string
-    nombre: string
-    materia: string
+    id: string;
+    nombre: string;
+    materia: string;
 }
 
-const initialRubrics: Rubric[] = [
-    { id: "IS101", nombre: "Evaluación de Proyecto de Software", materia: "Ingenieria de Software III" },
-    { id: "IS102", nombre: "Evaluación de Prácticas de Programación", materia: "Estructura de Datos" },
-    { id: "IS103", nombre: "Evaluación de Presentación de Arquitectura de Software",
-        materia: "Ingenieria de Software I",},
-    { id: "IS104", nombre: "Evaluación de Documentación Técnica", materia: "Programacion Orientada a objetos" },
-    { id: "IS105", nombre: "Evaluación de Testeo de Software", materia: "Calidad de Software" },
-]
-
 export default function ConsultarRubrica() {
-    const [searchTerm, setSearchTerm] = useState("")
-    const [rubrics] = useState<Rubric[]>(initialRubrics)
+    const [searchTerm, setSearchTerm] = useState("");
+    const [rubrics, setRubrics] = useState<Rubric[]>([]);
+    const navigate = useNavigate(); // Hook to navigate between pages
+
+    useEffect(() => {
+        fetch("/rubricas.json")
+            .then((res) => res.json())
+            .then((data) => setRubrics(data))
+            .catch((error) => console.error(error));
+    }, []);
 
     const filteredRubrics = rubrics.filter(
         (rubric) =>
             rubric.nombre.toLowerCase().includes(searchTerm.toLowerCase()) ||
             rubric.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            rubric.materia.toLowerCase().includes(searchTerm.toLowerCase()),
-    )
+            rubric.materia.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
+    // Funcion para navegar a la pagina de editar
+    const handleEdit = (id: string) => {
+        navigate(`/rubricas/editar/${id}`);
+    };
+    // Function para navegar a la pagina de crear
+    const handleAdd = () => {
+        navigate(`/rubricas/crear`);
+    };
+
+
     return (
         <div>
-            <h2 className="title2 border-b-2 border-red-500 inline-block" style={{ color: "var(--primary-regular-color)" }}>Mis Rubricas</h2>
+            <h2 className="title2 border-b-2 border-red-500 inline-block" style={{ color: "var(--primary-regular-color)" }}>
+                Mis Rubricas
+            </h2>
             <main className="max-w-7xl mx-auto px-4 py-8">
                 <div className="mb-6 flex flex-col sm:flex-row gap-4 justify-between items-start sm:items-center">
                     <div className="relative flex-1 max-w-md">
@@ -45,13 +60,9 @@ export default function ConsultarRubrica() {
                         <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
                     </div>
                     <div className="flex gap-2">
-                        <Button className="outline">
-                            <Plus className="h-4 w-4 mr-2" />
+                        <Button className="outline"  onClick={() => handleAdd()}>
+                            <Plus className="h-4 w-4 mr-2"  />
                             Añadir Rubrica
-                        </Button>
-                        <Button className="outline">
-                            <Filter className="h-4 w-4 mr-2" />
-                            Filtrar
                         </Button>
                     </div>
                 </div>
@@ -73,7 +84,7 @@ export default function ConsultarRubrica() {
                                 <td className="px-6 py-4">{rubric.materia}</td>
                                 <td className="px-6 py-4">
                                     <div className="flex justify-center gap-2">
-                                        <Button variant="ghost" size="icon" className="h-8 w-8">
+                                        <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => handleEdit(rubric.id)}>
                                             <Pencil className="h-4 w-4" />
                                         </Button>
                                         <Button variant="ghost" size="icon" className="h-8 w-8 text-orange-500 hover:text-orange-600">
@@ -88,6 +99,5 @@ export default function ConsultarRubrica() {
                 </div>
             </main>
         </div>
-    )
+    );
 }
-

@@ -1,0 +1,27 @@
+[
+  {
+    "id": "IS101",
+    "nombre": "Evaluación de Proyecto de Software",
+    "materia": "Ingeniería de Software III"
+  },
+  {
+    "id": "IS102",
+    "nombre": "Evaluación de Prácticas de Programación",
+    "materia": "Estructura de Datos"
+  },
+  {
+    "id": "IS103",
+    "nombre": "Evaluación de Presentación de Arquitectura de Software",
+    "materia": "Ingeniería de Software I"
+  },
+  {
+    "id": "IS104",
+    "nombre": "Evaluación de Documentación Técnica",
+    "materia": "Programación Orientada a Objetos"
+  },
+  {
+    "id": "IS105",
+    "nombre": "Evaluación de Testeo de Software",
+    "materia": "Calidad de Software"
+  }
+]
