@@ -30,7 +30,7 @@ public class StudentService implements StudentPort {
 
     @Override
     public Optional<StudentResponseDTO> getStudentById(Long studentId) {
-        return studentRepository.findByIdentification(studentId)
+        return studentRepository.findById(studentId)
                 .map(StudentMapper::toModel)
                 .map(StudentMapper::toDTO);
     }
@@ -56,12 +56,12 @@ public class StudentService implements StudentPort {
 
     @Override
     public boolean updateStudent(Long studentId, StudentRequestDTO student) {
-        Optional<StudentEntity> studentExist = studentRepository.findByIdentification(studentId);
+        Optional<StudentEntity> studentExist = studentRepository.findById(studentId);
         if(studentExist.isPresent()){
             StudentEntity studentEntity = studentExist.orElseThrow(() -> new RuntimeException("Student not found"));
             studentEntity.setName(student.getName());
             studentEntity.setIdentification(student.getIdentification());
-            studentEntity.setIdentification_type(student.getType());
+            studentEntity.setIdentificationType(student.getType());
             studentRepository.save(studentEntity);
             return true;
         }
@@ -85,7 +85,7 @@ public class StudentService implements StudentPort {
 
     @Override
     public List<StudentResponseDTO> getStudentsByIdentificationType(GeneralEnums.identificationType identificationType) {
-        return studentRepository.findByIdentification_type(identificationType).stream()
+        return studentRepository.findByIdentificationType(identificationType).stream()
                 .map(StudentMapper::toModel)
                 .map(StudentMapper::toDTO)
                 .collect(Collectors.toList());

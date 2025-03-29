@@ -13,5 +13,5 @@ import java.util.Optional;
 public interface StudentRepository extends JpaRepository<StudentEntity, Long> {
     List<StudentEntity> findByNameContainingIgnoreCase(String name);
     Optional<StudentEntity> findByIdentification(Long identification);
-    List<StudentEntity> findByIdentification_type(GeneralEnums.identificationType type);
+    List<StudentEntity> findByIdentificationType(GeneralEnums.identificationType type);
 }

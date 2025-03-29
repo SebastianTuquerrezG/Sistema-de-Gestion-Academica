@@ -24,16 +24,10 @@ public class StudentEntity {
     @Column(nullable = false)
     private String name;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private Long identification;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    private GeneralEnums.identificationType identification_type;
-
-    @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonManagedReference
-    @ToString.Exclude
-    @EqualsAndHashCode.Exclude
-    private Set<EnrollEntity> enroll;
+    private GeneralEnums.identificationType identificationType;
 }

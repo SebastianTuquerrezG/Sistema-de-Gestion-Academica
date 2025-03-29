@@ -19,5 +19,4 @@ public class Student {
     private String name;
     private Long identification;
     private GeneralEnums.identificationType identification_type;
-    private Set<Long> enroll;
 }

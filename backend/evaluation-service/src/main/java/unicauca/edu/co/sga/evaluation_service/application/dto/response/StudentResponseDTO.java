@@ -17,5 +17,4 @@ public class StudentResponseDTO {
     private String name;
     private Long identifier;
     private GeneralEnums.identificationType type;
-    private Set<Long> enroll;
 }

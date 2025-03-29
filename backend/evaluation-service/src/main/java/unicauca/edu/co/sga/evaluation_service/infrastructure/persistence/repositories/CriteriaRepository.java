@@ -10,5 +10,5 @@ import java.util.List;
 
 @Repository
 public interface CriteriaRepository extends JpaRepository<CriteriaEntity, Long> {
-    List<CriteriaEntity> findByPerformanceLevelId(Long id);
+    List<CriteriaEntity> findByPerformanceLevelId(Long performanceLevelId);
 }

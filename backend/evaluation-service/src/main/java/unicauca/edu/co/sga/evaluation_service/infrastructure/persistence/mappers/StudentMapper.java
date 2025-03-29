@@ -16,7 +16,6 @@ public class StudentMapper {
                 .name(dto.getName())
                 .identification(dto.getIdentification())
                 .identification_type(dto.getType())
-                .enroll(null)
                 .build();
     }
 
@@ -34,11 +33,7 @@ public class StudentMapper {
                 .id(entity.getId())
                 .name(entity.getName())
                 .identification(entity.getIdentification())
-                .identification_type(entity.getIdentification_type())
-                .enroll(entity.getEnroll() != null
-                        ? entity.getEnroll().stream().map(
-                        EnrollEntity::getId).collect(Collectors.toSet())
-                        : null)
+                .identification_type(entity.getIdentificationType())
                 .build();
     }
 
@@ -47,8 +42,7 @@ public class StudentMapper {
                 .id(domain.getId())
                 .name(domain.getName())
                 .identification(domain.getIdentification())
-                .identification_type(domain.getIdentification_type())
-                .enroll(null)
+                .identificationType(domain.getIdentification_type())
                 .build();
     }
 }

@@ -27,7 +27,7 @@ public class PerformanceEntity {
     @Column(nullable = false)
     private float range_rating; // The points that each level have.
 
-    @OneToMany(mappedBy = "performance_level", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "performanceLevel", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
