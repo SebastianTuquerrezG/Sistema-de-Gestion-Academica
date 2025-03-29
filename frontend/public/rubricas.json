@@ -2,26 +2,394 @@
   {
     "id": "IS101",
     "nombre": "Evaluación de Proyecto de Software",
-    "materia": "Ingeniería de Software III"
+    "materia": "Ingeniería de Software III",
+    "criterios": [
+      {
+        "criterio": "Genera ideas que dan solución a situaciones planteadas",
+        "niveles": [
+          {
+            "nivel": 4,
+            "descripcion": "La idea es innovadora y aporta un valor diferencial significativo",
+            "rango": "4.5 - 5.0"
+          },
+          {
+            "nivel": 3,
+            "descripcion": "La idea planteada satisface la necesidad generada y contempla aspectos de creatividad",
+            "rango": "4.0 - 4.4"
+          },
+          {
+            "nivel": 2,
+            "descripcion": "Genera ideas que dan solución a las situaciones planteadas",
+            "rango": "3.0 - 3.9"
+          },
+          {
+            "nivel": 1,
+            "descripcion": "Las ideas generadas suponen dar solución a la situación planteada pero no atienden a la problemática en el proceso de desarrollo",
+            "rango": "0.0 - 2.9"
+          }
+        ],
+        "porcentaje": 20
+      },
+      {
+        "criterio": "Propuesta de Diseño clara y uso de herramientas acordes con la propuesta",
+        "niveles": [
+          {
+            "nivel": 4,
+            "descripcion": "Utiliza herramientas avanzadas que mejoran significativamente el diseño",
+            "rango": "4.5 - 5.0"
+          },
+          {
+            "nivel": 3,
+            "descripcion": "Introduce herramientas computacionales en el análisis y validación del diseño trabajado",
+            "rango": "4.0 - 4.4"
+          },
+          {
+            "nivel": 2,
+            "descripcion": "Propuesta de Diseño clara y uso de herramientas acordes con la propuesta",
+            "rango": "3.0 - 3.9"
+          },
+          {
+            "nivel": 1,
+            "descripcion": "No hace uso de herramientas adecuadas para presentar el diseño",
+            "rango": "0.0 - 2.9"
+          }
+        ],
+        "porcentaje": 30
+      }
+    ]
   },
   {
     "id": "IS102",
     "nombre": "Evaluación de Prácticas de Programación",
-    "materia": "Estructura de Datos"
+    "materia": "Estructura de Datos",
+    "criterios": [
+      {
+        "criterio": "Implementación de estructuras de datos correctamente",
+        "niveles": [
+          {
+            "nivel": 4,
+            "descripcion": "Uso eficiente de estructuras de datos avanzadas con optimización de memoria y tiempo de ejecución",
+            "rango": "4.5 - 5.0"
+          },
+          {
+            "nivel": 3,
+            "descripcion": "Utiliza estructuras de datos avanzadas y optimizadas para la solución",
+            "rango": "4.0 - 4.4"
+          },
+          {
+            "nivel": 2,
+            "descripcion": "Usa estructuras de datos adecuadas pero sin optimización",
+            "rango": "3.0 - 3.9"
+          },
+          {
+            "nivel": 1,
+            "descripcion": "Implementación incorrecta de estructuras de datos",
+            "rango": "0.0 - 2.9"
+          }
+        ],
+        "porcentaje": 25
+      },
+      {
+        "criterio": "Eficiencia del código",
+        "niveles": [
+          {
+            "nivel": 4,
+            "descripcion": "Código altamente eficiente con una excelente estructura y comentarios claros",
+            "rango": "4.5 - 5.0"
+          },
+          {
+            "nivel": 3,
+            "descripcion": "Código eficiente y bien estructurado",
+            "rango": "4.0 - 4.4"
+          },
+          {
+            "nivel": 2,
+            "descripcion": "Código funcional pero con oportunidades de mejora",
+            "rango": "3.0 - 3.9"
+          },
+          {
+            "nivel": 1,
+            "descripcion": "Código ineficiente o con errores",
+            "rango": "0.0 - 2.9"
+          }
+        ],
+        "porcentaje": 25
+      }
+    ]
   },
   {
     "id": "IS103",
     "nombre": "Evaluación de Presentación de Arquitectura de Software",
-    "materia": "Ingeniería de Software I"
+    "materia": "Ingeniería de Software I",
+    "criterios": [
+      {
+        "criterio": "Claridad en la presentación del diseño",
+        "niveles": [
+          {
+            "nivel": 4,
+            "descripcion": "Presentación sobresaliente con diagramas detallados y excelente justificación del diseño",
+            "rango": "4.5 - 5.0"
+          },
+          {
+            "nivel": 3,
+            "descripcion": "Presentación clara con diagramas bien estructurados",
+            "rango": "4.0 - 4.4"
+          },
+          {
+            "nivel": 2,
+            "descripcion": "Presentación con errores menores en los diagramas",
+            "rango": "3.0 - 3.9"
+          },
+          {
+            "nivel": 1,
+            "descripcion": "Presentación confusa y con errores en los diagramas",
+            "rango": "0.0 - 2.9"
+          }
+        ],
+        "porcentaje": 25
+      }
+    ]
   },
   {
     "id": "IS104",
     "nombre": "Evaluación de Documentación Técnica",
-    "materia": "Programación Orientada a Objetos"
+    "materia": "Programación Orientada a Objetos",
+    "criterios": [
+      {
+        "criterio": "Calidad de la documentación técnica",
+        "niveles": [
+          {
+            "nivel": 4,
+            "descripcion": "Documentación excepcionalmente clara, detallada y con excelente organización",
+            "rango": "4.5 - 5.0"
+          },
+          {
+            "nivel": 3,
+            "descripcion": "Documentación detallada y clara con referencias adecuadas",
+            "rango": "4.0 - 4.4"
+          },
+          {
+            "nivel": 2,
+            "descripcion": "Documentación aceptable pero con información incompleta",
+            "rango": "3.0 - 3.9"
+          },
+          {
+            "nivel": 1,
+            "descripcion": "Documentación confusa o con información insuficiente",
+            "rango": "0.0 - 2.9"
+          }
+        ],
+        "porcentaje": 30
+      }
+    ]
   },
   {
     "id": "IS105",
     "nombre": "Evaluación de Testeo de Software",
-    "materia": "Calidad de Software"
+    "materia": "Calidad de Software",
+    "criterios": [
+      {
+        "criterio": "Cobertura de pruebas",
+        "niveles": [
+          {"nivel": 2, "descripcion": "Pruebas funcionales pero con cobertura limitada", "rango": "3.5 - 5.0"},
+          {"nivel": 1, "descripcion": "Pocas pruebas o con errores", "rango": "0.0 - 3.5"}
+        ],
+        "porcentaje": 35
+      }
+    ]
+  },
+  {
+    "id": "IS106",
+    "nombre": "Evaluación de Desarrollo de Aplicaciones Web",
+    "materia": "Desarrollo Web Avanzado",
+    "criterios": [
+      {
+        "criterio": "Calidad del Código",
+        "niveles": [
+          {
+            "nivel": 5,
+            "descripcion": "Código limpio, modular y optimizado, sin errores",
+            "rango": "4.8 - 5.0"
+          },
+          {
+            "nivel": 4,
+            "descripcion": "Código bien estructurado con mínimas mejoras posibles",
+            "rango": "4.0 - 4.7"
+          },
+          {
+            "nivel": 3,
+            "descripcion": "Código funcional pero con oportunidades de refactorización",
+            "rango": "3.0 - 3.9"
+          },
+          {
+            "nivel": 2,
+            "descripcion": "Código con estructura deficiente pero funcional",
+            "rango": "2.0 - 2.9"
+          },
+          {
+            "nivel": 1,
+            "descripcion": "Código con errores graves o sin estructura clara",
+            "rango": "0.0 - 1.9"
+          }
+        ],
+        "porcentaje": 20
+      },
+      {
+        "criterio": "Interfaz y Experiencia de Usuario",
+        "niveles": [
+          {
+            "nivel": 5,
+            "descripcion": "Interfaz intuitiva, estética y con excelente usabilidad",
+            "rango": "4.8 - 5.0"
+          },
+          {
+            "nivel": 4,
+            "descripcion": "Diseño atractivo y funcional con pocas mejoras posibles",
+            "rango": "4.0 - 4.7"
+          },
+          {
+            "nivel": 3,
+            "descripcion": "Interfaz funcional pero con oportunidades de mejora",
+            "rango": "3.0 - 3.9"
+          },
+          {
+            "nivel": 2,
+            "descripcion": "Diseño con problemas de usabilidad",
+            "rango": "2.0 - 2.9"
+          },
+          {
+            "nivel": 1,
+            "descripcion": "Interfaz confusa o no operativa",
+            "rango": "0.0 - 1.9"
+          }
+        ],
+        "porcentaje": 20
+      },
+      {
+        "criterio": "Uso de Tecnologías Modernas",
+        "niveles": [
+          {
+            "nivel": 5,
+            "descripcion": "Uso de frameworks y herramientas actualizadas de forma eficiente",
+            "rango": "4.8 - 5.0"
+          },
+          {
+            "nivel": 4,
+            "descripcion": "Uso adecuado de tecnologías pero con pequeñas mejoras posibles",
+            "rango": "4.0 - 4.7"
+          },
+          {
+            "nivel": 3,
+            "descripcion": "Uso de tecnologías estándar sin innovación",
+            "rango": "3.0 - 3.9"
+          },
+          {
+            "nivel": 2,
+            "descripcion": "Uso de tecnologías desactualizadas o con fallos",
+            "rango": "2.0 - 2.9"
+          },
+          {
+            "nivel": 1,
+            "descripcion": "No aplica tecnologías adecuadas o no las utiliza",
+            "rango": "0.0 - 1.9"
+          }
+        ],
+        "porcentaje": 20
+      },
+      {
+        "criterio": "Seguridad y Buenas Prácticas",
+        "niveles": [
+          {
+            "nivel": 5,
+            "descripcion": "Implementa medidas de seguridad y buenas prácticas sin fallos",
+            "rango": "4.8 - 5.0"
+          },
+          {
+            "nivel": 4,
+            "descripcion": "Aplicación segura con pequeñas mejoras necesarias",
+            "rango": "4.0 - 4.7"
+          },
+          {
+            "nivel": 3,
+            "descripcion": "Implementación de seguridad básica pero funcional",
+            "rango": "3.0 - 3.9"
+          },
+          {
+            "nivel": 2,
+            "descripcion": "Algunas vulnerabilidades o problemas de seguridad",
+            "rango": "2.0 - 2.9"
+          },
+          {
+            "nivel": 1,
+            "descripcion": "No implementa seguridad ni buenas prácticas",
+            "rango": "0.0 - 1.9"
+          }
+        ],
+        "porcentaje": 20
+      },
+      {
+        "criterio": "Documentación del Proyecto",
+        "niveles": [
+          {
+            "nivel": 5,
+            "descripcion": "Documentación completa, clara y bien organizada",
+            "rango": "4.8 - 5.0"
+          },
+          {
+            "nivel": 4,
+            "descripcion": "Documentación con mínimos errores o incompletudes",
+            "rango": "4.0 - 4.7"
+          },
+          {
+            "nivel": 3,
+            "descripcion": "Documentación básica pero entendible",
+            "rango": "3.0 - 3.9"
+          },
+          {
+            "nivel": 2,
+            "descripcion": "Documentación con errores o información insuficiente",
+            "rango": "2.0 - 2.9"
+          },
+          {
+            "nivel": 1,
+            "descripcion": "No presenta documentación adecuada",
+            "rango": "0.0 - 1.9"
+          }
+        ],
+        "porcentaje": 20
+      }
+    ]
+  },
+  {
+    "id": "IS107",
+    "nombre": "Evaluación de Gestión de Bases de Datos",
+    "materia": "Bases de Datos Avanzadas",
+    "criterios": [
+      {
+        "criterio": "Optimización de consultas",
+        "niveles": [
+          { "nivel": 3, "descripcion": "Consultas optimizadas y eficientes", "rango": "4.0 - 5.0" },
+          { "nivel": 2, "descripcion": "Consultas funcionales pero poco optimizadas", "rango": "3.0 - 3.9" },
+          { "nivel": 1, "descripcion": "Consultas con errores o poco eficientes", "rango": "0.0 - 2.9" }
+        ],
+        "porcentaje": 35
+      }
+    ]
+  },
+  {
+    "id": "IS108",
+    "nombre": "Evaluación de Desarrollo Web",
+    "materia": "Programación Web",
+    "criterios": [
+      {
+        "criterio": "Interfaz de usuario",
+        "niveles": [
+          { "nivel": 3, "descripcion": "Interfaz intuitiva y bien diseñada", "rango": "4.0 - 5.0" },
+          { "nivel": 2, "descripcion": "Interfaz funcional pero con oportunidades de mejora", "rango": "3.0 - 3.9" },
+          { "nivel": 1, "descripcion": "Interfaz poco intuitiva o con errores", "rango": "0.0 - 2.9" }
+        ],
+        "porcentaje": 30
+      }
+    ]
   }
 ]

@@ -1,10 +1,11 @@
+"use client"
+
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 import { Search, Plus, Pencil, Trash2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useNavigate } from "react-router-dom";
 
-"use client";
 
 // Object Rubric
 interface Rubric {
@@ -17,6 +18,8 @@ export default function ConsultarRubrica() {
     const [searchTerm, setSearchTerm] = useState("");
     const [rubrics, setRubrics] = useState<Rubric[]>([]);
     const navigate = useNavigate(); // Hook to navigate between pages
+    const [selectedRubricId, setSelectedRubricId] = useState<string | null>(null);
+
 
     useEffect(() => {
         fetch("/rubricas.json")
@@ -39,6 +42,12 @@ export default function ConsultarRubrica() {
     // Function para navegar a la pagina de crear
     const handleAdd = () => {
         navigate(`/rubricas/crear`);
+    };
+
+    // Función para navegar a RubricDetail
+    const handleDetail = (id: string) => {
+        setSelectedRubricId(id);
+        navigate(`/rubricas/detalle/${id}`);
     };
 
 
@@ -79,9 +88,18 @@ export default function ConsultarRubrica() {
                         <tbody>
                         {filteredRubrics.map((rubric, index) => (
                             <tr key={rubric.id} className={index % 2 === 0 ? "bg-gray-50" : "bg-white"}>
-                                <td className="px-6 py-4">{rubric.id}</td>
-                                <td className="px-6 py-4">{rubric.nombre}</td>
-                                <td className="px-6 py-4">{rubric.materia}</td>
+                                <td className={`px-6 py-4 cursor-pointer ${selectedRubricId === rubric.id ? "text-blue-600" : ""}`}
+                                    onClick={() => handleDetail(rubric.id)}>
+                                    {rubric.id}
+                                </td>
+                                <td className={`px-6 py-4 cursor-pointer ${selectedRubricId === rubric.id ? "text-blue-600" : ""}`}
+                                    onClick={() => handleDetail(rubric.id)}>
+                                    {rubric.nombre}
+                                </td>
+                                <td className={`px-6 py-4 cursor-pointer ${selectedRubricId === rubric.id ? "text-blue-600" : ""}`}
+                                    onClick={() => handleDetail(rubric.id)}>
+                                    {rubric.materia}
+                                </td>
                                 <td className="px-6 py-4">
                                     <div className="flex justify-center gap-2">
                                         <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => handleEdit(rubric.id)}>
