@@ -16,7 +16,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Builder
 public class Teacher {
-    private int id;
+    private Long id;
     private String name;
     private Long identification;
     private String degree;

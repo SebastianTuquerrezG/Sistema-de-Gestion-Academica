@@ -1,5 +1,6 @@
 package unicauca.edu.co.sga.evaluation_service.application.services;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import unicauca.edu.co.sga.evaluation_service.application.dto.request.TeacherRequestDTO;
@@ -8,6 +9,7 @@ import unicauca.edu.co.sga.evaluation_service.application.ports.TeacherPort;
 import unicauca.edu.co.sga.evaluation_service.domain.enums.GeneralEnums;
 import unicauca.edu.co.sga.evaluation_service.domain.enums.TeacherEnums;
 import unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.entities.TeacherEntity;
+import unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.mappers.TeacherMapper;
 import unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.repositories.TeacherRepository;
 
 import java.util.List;
@@ -15,83 +17,111 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class TeacherService implements TeacherPort {
-    @Autowired
     private final TeacherRepository teacherRepository;
-
-    public TeacherService(TeacherRepository teacherRepository) {
-        this.teacherRepository = teacherRepository;
-    }
 
     @Override
     public List<TeacherResponseDTO> getTeachers(){
-        // Get all the teachers from the repository
-        List<TeacherEntity> teachers = teacherRepository.findAll();
-        // Save it into TeacherResponseDTO.
-        return teachers.stream()
-                .map(teacher -> TeacherResponseDTO.builder()
-                        .id(teacher.getId())
-                        .name(teacher.getName())
-                        .identification(teacher.getIdentification())
-                        .teacherType(teacher.getTeacherType())
-                        .degree(teacher.getDegree())
-                        .status(teacher.getStatus())
-                        .build())
+        return teacherRepository.findAll().stream()
+                .map(TeacherMapper::toModel)
+                .map(TeacherMapper::toDTO)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public Optional<TeacherEntity> getTeacherById(Long id){
-        return teacherRepository.findById(id);
+    public Optional<TeacherResponseDTO> getTeacherById(Long id){
+        return teacherRepository.findById(id)
+                .map(TeacherMapper::toModel)
+                .map(TeacherMapper::toDTO);
     }
 
     @Override
     public TeacherResponseDTO saveTeacher(TeacherRequestDTO teacher) {
-        return null;
+        TeacherEntity teacherEntity = TeacherMapper.toEntity(TeacherMapper.toModel(teacher));
+        return TeacherMapper.toDTO(TeacherMapper.toModel(teacherRepository.save(teacherEntity)));
     }
 
     @Override
     public boolean deleteTeacher(Long id) {
-        return false;
+        if (teacherRepository.existsById(id)) {
+            teacherRepository.deleteById(id);
+            return true;
+        } else {
+            return false;
+        }
     }
 
     @Override
     public boolean updateTeacher(Long id, TeacherRequestDTO teacher) {
-        return false;
+        Optional<TeacherEntity> teacherExist = teacherRepository.findById(id);
+        if(teacherExist.isPresent()){
+            TeacherEntity teacherEntity = teacherExist.orElseThrow(() -> new RuntimeException("Teacher not found"));
+            teacherEntity.setName(teacher.getName());
+            teacherEntity.setIdentification(teacher.getIdentification());
+            teacherEntity.setIdentificationType(teacher.getIdentificationType());
+            teacherEntity.setDegree(teacher.getDegree());
+            teacherEntity.setTeacherType(teacher.getTeacherType());
+            teacherEntity.setStatus(teacher.getStatus());
+            teacherRepository.save(teacherEntity);
+            return true;
+        } else {
+            return false;
+        }
     }
 
     @Override
     public Optional<TeacherResponseDTO> getTeacherByIdentification(Long identification) {
-        return Optional.empty();
+        return teacherRepository.findByIdentification(identification)
+                .map(TeacherMapper::toModel)
+                .map(TeacherMapper::toDTO);
     }
 
     @Override
-    public Optional<TeacherResponseDTO> getTeacherByName(String name) {
-        return Optional.empty();
+    public List<TeacherResponseDTO> getTeacherByName(String name) {
+        return teacherRepository.findByNameContainingIgnoreCase(name).stream()
+                .map(TeacherMapper::toModel)
+                .map(TeacherMapper::toDTO)
+                .collect(Collectors.toList());
     }
 
     @Override
     public List<TeacherResponseDTO> getTeachersByDegree(String degree) {
-        return List.of();
+        return teacherRepository.findByDegreeContainingIgnoreCase(degree).stream()
+                .map(TeacherMapper::toModel)
+                .map(TeacherMapper::toDTO)
+                .collect(Collectors.toList());
     }
 
     @Override
     public List<TeacherResponseDTO> getTeachersByIdentificationType(GeneralEnums.identificationType identificationType) {
-        return List.of();
+        return teacherRepository.findByIdentificationType(identificationType).stream()
+                .map(TeacherMapper::toModel)
+                .map(TeacherMapper::toDTO)
+                .collect(Collectors.toList());
     }
 
     @Override
     public List<TeacherResponseDTO> getTeachersByStatus(GeneralEnums.status status) {
-        return List.of();
+        return teacherRepository.findByStatus(status).stream()
+                .map(TeacherMapper::toModel)
+                .map(TeacherMapper::toDTO)
+                .collect(Collectors.toList());
     }
 
     @Override
     public List<TeacherResponseDTO> getTeachersByTeacherType(TeacherEnums teacherType) {
-        return List.of();
+        return teacherRepository.findByTeacherType(teacherType).stream()
+                .map(TeacherMapper::toModel)
+                .map(TeacherMapper::toDTO)
+                .collect(Collectors.toList());
     }
 
     @Override
     public List<TeacherResponseDTO> getTeachersByCourse(Long courseId) {
-        return List.of();
+        return teacherRepository.findByCourseId(courseId).stream()
+                .map(TeacherMapper::toModel)
+                .map(TeacherMapper::toDTO)
+                .collect(Collectors.toList());
     }
 }

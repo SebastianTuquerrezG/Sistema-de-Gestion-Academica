@@ -12,7 +12,7 @@ import java.util.Optional;
 @Repository
 public interface TeacherRepository extends JpaRepository<TeacherEntity, Long> {
     Optional<TeacherEntity> findByIdentification(Long identification);
-    Optional<TeacherEntity> findByNameContainingIgnoreCase(String name);
+    List<TeacherEntity> findByNameContainingIgnoreCase(String name);
     List<TeacherEntity> findByDegreeContainingIgnoreCase(String degree);
     List<TeacherEntity> findByIdentificationType(GeneralEnums.identificationType identifierType);
     List<TeacherEntity> findByStatus(GeneralEnums.status status);

@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import unicauca.edu.co.sga.evaluation_service.domain.enums.GeneralEnums;
+import unicauca.edu.co.sga.evaluation_service.domain.enums.TeacherEnums;
 
 @Data
 @AllArgsConstructor
@@ -16,5 +17,5 @@ public class TeacherRequestDTO {
     private String degree;
     private GeneralEnums.identificationType identificationType;
     private GeneralEnums.status status;
-    private String teacherType;
+    private TeacherEnums teacherType;
 }
