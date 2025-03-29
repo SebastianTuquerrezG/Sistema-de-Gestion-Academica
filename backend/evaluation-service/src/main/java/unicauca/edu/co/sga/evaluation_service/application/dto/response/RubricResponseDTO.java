@@ -10,5 +10,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class RubricResponseDTO {
+    private Long id;
     private String name;
+    private String study_objective;
+    private String competence;
 }

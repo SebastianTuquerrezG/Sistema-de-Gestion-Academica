@@ -10,5 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class CriteriaResponseDTO {
+    private Long id;
     private String description;
+    private Long score;
 }

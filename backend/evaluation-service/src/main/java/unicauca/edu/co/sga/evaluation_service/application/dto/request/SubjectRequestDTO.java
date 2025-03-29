@@ -4,12 +4,15 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import unicauca.edu.co.sga.evaluation_service.domain.enums.GeneralEnums;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class SubjectRequestDTO {
-    private Long id; // Maybe this isn't useful for the frontend.
     private String name;
+    private Integer credits;
+    private String objectives;
+    private GeneralEnums.status status;
 }

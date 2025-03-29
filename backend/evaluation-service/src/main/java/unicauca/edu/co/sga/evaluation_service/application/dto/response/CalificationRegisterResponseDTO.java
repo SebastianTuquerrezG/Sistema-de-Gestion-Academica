@@ -10,5 +10,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class CalificationRegisterResponseDTO {
+    private Long id;
+    private Double calification;
     private String message;
+    private Integer level;
 }

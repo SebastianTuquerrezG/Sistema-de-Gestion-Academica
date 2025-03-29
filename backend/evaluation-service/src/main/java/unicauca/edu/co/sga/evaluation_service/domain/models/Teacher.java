@@ -18,7 +18,7 @@ import java.util.Set;
 public class Teacher {
     private int id;
     private String name;
-    private long identification;
+    private Long identification;
     private String degree;
     private GeneralEnums.identificationType identificationType;
     private GeneralEnums.status status;

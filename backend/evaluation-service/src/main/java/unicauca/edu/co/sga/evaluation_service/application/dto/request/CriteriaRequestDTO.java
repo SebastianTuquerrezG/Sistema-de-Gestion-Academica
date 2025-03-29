@@ -11,4 +11,5 @@ import lombok.NoArgsConstructor;
 @Builder
 public class CriteriaRequestDTO {
     private String description;
+    private Long score;
 }

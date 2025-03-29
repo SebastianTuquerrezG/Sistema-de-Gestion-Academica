@@ -16,5 +16,5 @@ public class PerformanceLevel {
     private Long id;
     private String name;
     private String description;
-    private float range_rating; // This could be changed for other type of data
+    private Double range_rating; // This could be changed for other type of data
 }

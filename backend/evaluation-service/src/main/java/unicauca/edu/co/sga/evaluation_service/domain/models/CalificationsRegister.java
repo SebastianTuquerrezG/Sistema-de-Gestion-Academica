@@ -18,6 +18,6 @@ public class CalificationsRegister {
     private Long id;
     private Double calification;
     private String message;
-    private int level;
+    private Integer level;
     private Set<Long> evaluation;
 }

@@ -11,4 +11,6 @@ import lombok.NoArgsConstructor;
 @Builder
 public class PerformanceLevelRequestDTO {
     private String name;
+    private String description;
+    private Double range;
 }

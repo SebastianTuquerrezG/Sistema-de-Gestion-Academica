@@ -11,4 +11,6 @@ import lombok.NoArgsConstructor;
 @Builder
 public class RubricRequestDTO {
     private String name;
+    private String study_objective;
+    private String competence;
 }

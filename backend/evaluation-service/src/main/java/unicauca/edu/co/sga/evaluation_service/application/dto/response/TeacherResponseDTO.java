@@ -13,6 +13,7 @@ public class TeacherResponseDTO {
     private String name;
     private Long identification;
     private String degree;
+    private GeneralEnums.identificationType identificationType;
     private TeacherEnums teacherType;
     private GeneralEnums.status status;
 }

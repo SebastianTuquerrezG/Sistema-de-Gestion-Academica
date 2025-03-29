@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import unicauca.edu.co.sga.evaluation_service.domain.enums.GeneralEnums;
 
+import java.util.Date;
 import java.util.Set;
 
 
@@ -19,4 +20,5 @@ public class SubjectResponseDTO {
     private Integer credits;
     private String objective;
     private GeneralEnums.status status;
+    private Date updated_at;
 }
