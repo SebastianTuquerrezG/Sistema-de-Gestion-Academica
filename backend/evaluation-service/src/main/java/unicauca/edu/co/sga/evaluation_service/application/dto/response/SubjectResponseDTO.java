@@ -20,5 +20,4 @@ public class SubjectResponseDTO {
     private Integer credits;
     private String objective;
     private GeneralEnums.status status;
-    private Date updated_at;
 }

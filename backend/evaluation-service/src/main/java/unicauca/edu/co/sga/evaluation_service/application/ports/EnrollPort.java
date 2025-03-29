@@ -8,7 +8,7 @@ import java.util.Optional;
 
 public interface EnrollPort {
     List<EnrollResponseDTO> getEnrolls();
-    Optional<EnrollResponseDTO> getEnrollsById();
+    Optional<EnrollResponseDTO> getEnrollsById(Long id);
     EnrollResponseDTO saveEnroll(EnrollRequestDTO enroll);
     boolean deleteEnroll(Long id);
     boolean updateEnroll(Long id, EnrollRequestDTO enroll);

@@ -1,46 +1,88 @@
 package unicauca.edu.co.sga.evaluation_service.application.services;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import unicauca.edu.co.sga.evaluation_service.application.dto.request.CourseRequestDTO;
 import unicauca.edu.co.sga.evaluation_service.application.dto.response.CourseResponseDTO;
+import unicauca.edu.co.sga.evaluation_service.application.ports.CoursePort;
+import unicauca.edu.co.sga.evaluation_service.domain.models.Course;
 import unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.entities.CourseEntity;
 import unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.entities.SubjectEntity;
 import unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.entities.TeacherEntity;
+import unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.mappers.CourseMapper;
 import unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.repositories.CourseRepository;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
-public class CourseService {
+@RequiredArgsConstructor
+public class CourseService implements CoursePort {
 
-    @Autowired
     private final CourseRepository courseRepository;
-    private final TeacherService teacherService;
-    private final SubjectService subjectService;
-    // TODO: Create the RA service to use it here.
 
-    public CourseService(CourseRepository courseRepository, TeacherService teacherService, SubjectService subjectService){
-        this.courseRepository = courseRepository;
-        this.teacherService = teacherService;
-        this.subjectService = subjectService;
+    @Override
+    public List<CourseResponseDTO> getCourses() {
+        return courseRepository.findAll()
+                .stream().map(CourseMapper::toModel)
+                .map(CourseMapper::toDTO)
+                .collect(Collectors.toList());
     }
 
-    public CourseResponseDTO saveCourseService(CourseRequestDTO courseRequestDTO){
-        /*Optional<TeacherEntity> teacher = teacherService.getTeacherById(courseRequestDTO.getTeacher());
-        Optional<SubjectEntity> subject = subjectService.getSubjectById(courseRequestDTO.getSubject());
+    @Override
+    public Optional<CourseResponseDTO> getCourseById(Long id) {
+        return courseRepository.findById(id)
+                .map(CourseMapper::toModel)
+                .map(CourseMapper::toDTO);
+    }
 
-        if (teacher.isEmpty() || subject.isEmpty()){
-            return null;
+    @Override
+    public CourseResponseDTO saveCourse(CourseRequestDTO course) {
+        Course courseModel = CourseMapper.toModel(course);
+        CourseEntity courseEntity = CourseMapper.toEntity(courseModel);
+        return CourseMapper.toDTO(CourseMapper.toModel(courseRepository.save(courseEntity)));
+    }
+
+    @Override
+    public boolean deleteCourse(Long id) {
+        if (courseRepository.existsById(id)){
+            courseRepository.deleteById(id);
+            return true;
         }
-        CourseEntity newCourse = new CourseEntity();
-        newCourse.setTeacher(Set.of(teacher.get()));
-        newCourse.setSubject(subject.get());
-        courseRepository.save(courseRequestDTO);*/
-        // TODO: Create the logic when save a TEACHER and SUBJECT
-        //courseRepository.save(courseRequestDTO);
-        return null;
+        return false;
     }
 
+    @Override
+    public boolean updateCourse(Long id, CourseRequestDTO course) {
+        Optional<CourseEntity> entityExist = courseRepository.findById(id);
+        if (entityExist.isPresent()){
+            CourseEntity courseEntity = entityExist.orElseThrow(() -> new RuntimeException("Not found course Entity"));
+            courseEntity.setTeacher(entityExist.get().getTeacher());
+            courseEntity.setSubject(entityExist.get().getSubject());
+            courseEntity.setRa(entityExist.get().getRa());
+            courseEntity.setEnroll(entityExist.get().getEnroll());
+            courseRepository.save(courseEntity);
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public List<CourseResponseDTO> getCoursesBySubjectId(Long id) {
+        return courseRepository.findBySubjectId(id)
+                .stream().map(CourseMapper::toModel)
+                .map(CourseMapper::toDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<CourseResponseDTO> getCoursesByRAId(Long id) {
+        return courseRepository.findByRaId(id)
+                .stream().map(CourseMapper::toModel)
+                .map(CourseMapper::toDTO)
+                .collect(Collectors.toList());
+    }
 }

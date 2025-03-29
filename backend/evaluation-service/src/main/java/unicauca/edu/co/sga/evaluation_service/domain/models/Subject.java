@@ -23,7 +23,4 @@ public class Subject {
     private Integer credits;
     private String objectives;
     private GeneralEnums.status status;
-    private Date created_at;
-    private Date updated_at;
-    private Set<Long> course;
 }
