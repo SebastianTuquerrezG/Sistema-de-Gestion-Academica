@@ -16,3 +16,4 @@ public interface SubjectPort {
     Optional<SubjectResponseDTO> getByName(String name);
     List<SubjectResponseDTO> getByStatus(GeneralEnums.status status);
 }
+

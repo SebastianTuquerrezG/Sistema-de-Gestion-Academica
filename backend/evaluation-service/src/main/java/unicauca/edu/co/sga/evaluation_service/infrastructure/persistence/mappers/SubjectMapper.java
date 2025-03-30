@@ -30,6 +30,7 @@ public class SubjectMapper {
   public static Subject toModel(SubjectEntity entity){
     return Subject.builder()
             .id(entity.getId())
+            .name(entity.getName())
             .credits(entity.getCredits())
             .status(entity.getStatus())
             .objectives(entity.getObjectives())
@@ -39,6 +40,7 @@ public class SubjectMapper {
   public static SubjectEntity toEntity(Subject domain){
     return SubjectEntity.builder()
             .id(domain.getId())
+            .name(domain.getName())
             .credits(domain.getCredits())
             .status(domain.getStatus())
             .objectives(domain.getObjectives())

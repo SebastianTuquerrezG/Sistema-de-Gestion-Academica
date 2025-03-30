@@ -12,6 +12,5 @@ import java.util.Optional;
 @Repository
 public interface SubjectRepository extends JpaRepository<SubjectEntity, Long> {
     Optional<SubjectEntity> findByNameContainingIgnoreCase(String name);
-
     List<SubjectEntity> findByStatus(GeneralEnums.status status);
 }
