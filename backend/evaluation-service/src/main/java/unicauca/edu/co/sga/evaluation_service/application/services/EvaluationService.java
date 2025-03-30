@@ -5,6 +5,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import unicauca.edu.co.sga.evaluation_service.application.dto.request.EvaluationRequestDTO;
+import unicauca.edu.co.sga.evaluation_service.domain.enums.EvaluationStatus;
 import unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.entities.EnrollEntity;
 import unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.entities.EvaluationEntity;
 import unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.entities.RubricEntity;
@@ -40,9 +41,15 @@ public class EvaluationService {
 
         // CREAR NUEVA EVALUACION
         EvaluationEntity evaluation = new EvaluationEntity();
+
         evaluation.setEnroll(enroll);
         evaluation.setRubric(rubric);
         evaluation.setDescription(evaluationRequestDTO.getDescription());
+        evaluation.setEvaluationStatus(
+                evaluationRequestDTO.getEvaluationStatus() != null
+                        ? evaluationRequestDTO.getEvaluationStatus()
+                        : EvaluationStatus.NO_EVALUADO
+        );
 
         return evaluationRepository.save(evaluation);
     }

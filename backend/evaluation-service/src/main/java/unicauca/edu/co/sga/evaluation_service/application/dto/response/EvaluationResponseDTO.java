@@ -4,8 +4,10 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import unicauca.edu.co.sga.evaluation_service.domain.enums.EvaluationStatus;
 
 import java.util.Date;
+
 
 @Data
 @AllArgsConstructor
@@ -18,6 +20,7 @@ public class EvaluationResponseDTO {
     private String description;
     private Date created_at;
     private Date updated_at;
+    private EvaluationStatus evaluationStatus;
 
     public EvaluationResponseDTO(Long id, Long enroll, Long rubric, String description) {
         this.id = id;
