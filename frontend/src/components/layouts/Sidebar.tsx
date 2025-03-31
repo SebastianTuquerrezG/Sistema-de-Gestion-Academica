@@ -35,11 +35,7 @@ const data = {
                 {
                     title: "Crear",
                     url: "/rubricas/crear",
-                },
-                {
-                    title: "Editar",
-                    url: "/rubricas/editar",
-                },
+                }
             ],
         },
         {
