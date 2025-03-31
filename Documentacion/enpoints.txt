@@ -1,0 +1,15 @@
+http://localhost:5000/api  endpoint general
+
+http://localhost:5000/api/rubricas Crear rúbrica [get, post]
+http://localhost:5000/api/criterios Crear criterios [get, post]
+http://localhost:5000/api/niveles Crear niveles [get, post]
+
+http://localhost:5000/api/rubricas?id=... Crear rúbrica [put, patch]
+http://localhost:5000/api/criterios?id=... Crear criterios [put, patch, delete]
+http://localhost:5000/api/niveles?id=... Crear niveles [put, patch, delete]
+
+http://localhost:5000/api/rubricas/1 Crear rúbrica [getById]
+http://localhost:5000/api/criterios/1 Crear criterios [getById]
+http://localhost:5000/api/niveles/1 Crear niveles [getById]
+
+http://localhost:4200/api  endpoint para acceder a los controladores
