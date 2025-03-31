@@ -9,8 +9,8 @@ import { useNavigate } from "react-router-dom";
 
 // Object Rubric
 interface Rubric {
-    id: string;
-    nombre: string;
+    rubricaId: string;
+    nombreRubrica: string;
     materia: string;
 }
 
@@ -30,8 +30,8 @@ export default function ConsultarRubrica() {
 
     const filteredRubrics = rubrics.filter(
         (rubric) =>
-            rubric.nombre.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            rubric.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            rubric.nombreRubrica.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            rubric.rubricaId.toLowerCase().includes(searchTerm.toLowerCase()) ||
             rubric.materia.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
@@ -87,22 +87,22 @@ export default function ConsultarRubrica() {
                         </thead>
                         <tbody>
                         {filteredRubrics.map((rubric, index) => (
-                            <tr key={rubric.id} className={index % 2 === 0 ? "bg-gray-50" : "bg-white"}>
-                                <td className={`px-6 py-4 cursor-pointer ${selectedRubricId === rubric.id ? "text-blue-600" : ""}`}
-                                    onClick={() => handleDetail(rubric.id)}>
-                                    {rubric.id}
+                            <tr key={rubric.rubricaId} className={index % 2 === 0 ? "bg-gray-50" : "bg-white"}>
+                                <td className={`px-6 py-4 cursor-pointer ${selectedRubricId === rubric.rubricaId ? "text-blue-600" : ""}`}
+                                    onClick={() => handleDetail(rubric.rubricaId)}>
+                                    {rubric.rubricaId}
                                 </td>
-                                <td className={`px-6 py-4 cursor-pointer ${selectedRubricId === rubric.id ? "text-blue-600" : ""}`}
-                                    onClick={() => handleDetail(rubric.id)}>
-                                    {rubric.nombre}
+                                <td className={`px-6 py-4 cursor-pointer ${selectedRubricId === rubric.rubricaId ? "text-blue-600" : ""}`}
+                                    onClick={() => handleDetail(rubric.rubricaId)}>
+                                    {rubric.nombreRubrica}
                                 </td>
-                                <td className={`px-6 py-4 cursor-pointer ${selectedRubricId === rubric.id ? "text-blue-600" : ""}`}
-                                    onClick={() => handleDetail(rubric.id)}>
+                                <td className={`px-6 py-4 cursor-pointer ${selectedRubricId === rubric.rubricaId ? "text-blue-600" : ""}`}
+                                    onClick={() => handleDetail(rubric.rubricaId)}>
                                     {rubric.materia}
                                 </td>
                                 <td className="px-6 py-4">
                                     <div className="flex justify-center gap-2">
-                                        <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => handleEdit(rubric.id)}>
+                                        <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => handleEdit(rubric.rubricaId)}>
                                             <Pencil className="h-4 w-4" />
                                         </Button>
                                         <Button variant="ghost" size="icon" className="h-8 w-8 text-orange-500 hover:text-orange-600">
