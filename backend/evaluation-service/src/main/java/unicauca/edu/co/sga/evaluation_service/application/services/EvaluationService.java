@@ -3,7 +3,9 @@ package unicauca.edu.co.sga.evaluation_service.application.services;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 import unicauca.edu.co.sga.evaluation_service.application.dto.request.EvaluationRequestDTO;
 import unicauca.edu.co.sga.evaluation_service.application.dto.response.EvaluationResponseDTO;
 import unicauca.edu.co.sga.evaluation_service.domain.enums.EvaluationStatus;
@@ -32,6 +34,14 @@ public class EvaluationService {
 
     @Transactional
     public EvaluationResponseDTO createEvaluation(EvaluationRequestDTO evaluationRequestDTO) {
+
+        if (evaluationRepository.existsByEnrollIdAndRubricId(
+                evaluationRequestDTO.getEnroll(),
+                evaluationRequestDTO.getRubric())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "El estudiante ya ha sido evaluado en esta rubrica");
+        }
+
         // VERIFICACIONES
         EnrollEntity enroll = enrollRepository.findById(evaluationRequestDTO.getEnroll())
                 .orElseThrow(() -> new EntityNotFoundException(
