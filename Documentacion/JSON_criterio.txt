@@ -1,0 +1,30 @@
+
+//Petición
+{
+    "crfDescripcion":"Descripcion de criterio",
+    "crfPorcentaje":1.3,
+    "crfNota":5,
+    "crfComentario":"Le faltan cosas",
+    "rubrica_id":1
+}
+
+
+ {//Respuesta
+        "idCriterio": 2,
+        "crfDescripcion": "Cumple con los estándares de calidad",
+        "crfPorcentaje": 0.3,
+        "crfNota": 0.0,
+        "crfComentario": "Comentario 2",
+        "niveles": [
+            {
+                "idNivel": 4,
+                "nivelDescripcion": "Nivel 1",
+                "rangoNota": "3-4"
+            },
+            {
+                "idNivel": 5,
+                "nivelDescripcion": "Nivel 2",
+                "rangoNota": "4-5"
+            }
+        ]
+    },
