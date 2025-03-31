@@ -35,6 +35,13 @@ public class EvaluationService {
     @Transactional
     public EvaluationResponseDTO createEvaluation(EvaluationRequestDTO evaluationRequestDTO) {
 
+        //VALIDA CALIFICACION Y EVIDENCIA COMPLETA
+        if (evaluationRequestDTO.getScore() == null || evaluationRequestDTO.getEvidenceUrl() == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "La evaluacion requiere una calificacion y evidencia");
+        }
+
+        //VALIDA RUBRICA REPETIDA PARA LA EVALUACION
         if (evaluationRepository.existsByEnrollIdAndRubricId(
                 evaluationRequestDTO.getEnroll(),
                 evaluationRequestDTO.getRubric())) {
