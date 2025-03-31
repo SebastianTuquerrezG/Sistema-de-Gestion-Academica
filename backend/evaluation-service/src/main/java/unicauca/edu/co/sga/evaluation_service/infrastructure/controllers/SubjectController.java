@@ -5,13 +5,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import unicauca.edu.co.sga.evaluation_service.application.dto.request.SubjectRequestDTO;
-import unicauca.edu.co.sga.evaluation_service.application.dto.response.EnrollResponseDTO;
 import unicauca.edu.co.sga.evaluation_service.application.dto.response.SubjectResponseDTO;
 import unicauca.edu.co.sga.evaluation_service.application.ports.SubjectPort;
 import unicauca.edu.co.sga.evaluation_service.domain.enums.GeneralEnums;
-import unicauca.edu.co.sga.evaluation_service.domain.exceptions.enroll.EnrollNotFoundException;
-import unicauca.edu.co.sga.evaluation_service.domain.exceptions.subject.SubjectAlreadyExistException;
-import unicauca.edu.co.sga.evaluation_service.domain.exceptions.subject.SubjectNotFoundException;
+import unicauca.edu.co.sga.evaluation_service.domain.exceptions.AlreadyExistException;
+import unicauca.edu.co.sga.evaluation_service.domain.exceptions.NotFoundException;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -32,14 +30,14 @@ public class SubjectController {
     public ResponseEntity<SubjectResponseDTO> getSubjectById(@PathVariable Long id){
         return subjectPort.getSubjectById(id)
                 .map(ResponseEntity::ok)
-                .orElseThrow(() -> new SubjectNotFoundException("Subject " + id + " not found"));
+                .orElseThrow(() -> new NotFoundException("Subject " + id + " not found"));
     }
 
     @PostMapping
     public ResponseEntity<SubjectResponseDTO> createSubject(@Valid @RequestBody SubjectRequestDTO subject){
         Optional<SubjectResponseDTO> existingSubject = subjectPort.getByName(subject.getName());
         if (existingSubject.isPresent()) {
-            throw new SubjectAlreadyExistException("Subject " + subject.getName() + " already exists");
+            throw new AlreadyExistException("Subject " + subject.getName() + " already exists");
         }
         return ResponseEntity.status(HttpStatus.CREATED).body(subjectPort.saveSubject(subject));
     }
@@ -51,14 +49,14 @@ public class SubjectController {
             boolean isUpdated = subjectPort.updateSubject(id, subject);
             return ResponseEntity.ok(isUpdated);
         }
-        throw new EnrollNotFoundException("Subject with ID " + id + " not found.");
+        throw new NotFoundException("Subject with ID " + id + " not found.");
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Boolean> deleteSubject(@PathVariable Long id){
         boolean isDeleted = subjectPort.deleteSubject(id);
         if (!isDeleted) {
-            throw new SubjectNotFoundException("Subject " + id + " not found");
+            throw new NotFoundException("Subject " + id + " not found");
         }
         return ResponseEntity.ok().build();
     }
@@ -67,7 +65,7 @@ public class SubjectController {
     public ResponseEntity<Optional<SubjectResponseDTO>> getSubjectsByName(@RequestParam String name){
         Optional<SubjectResponseDTO> subjects = subjectPort.getByName(name);
         if (subjects.isEmpty()) {
-            throw new SubjectNotFoundException("No students found with name: " + name);
+            throw new NotFoundException("No students found with name: " + name);
         }
         return ResponseEntity.ok(subjects);
     }
@@ -76,7 +74,7 @@ public class SubjectController {
     public ResponseEntity<List<SubjectResponseDTO>> getStudentByStatus(@PathVariable GeneralEnums.status type){
         List<SubjectResponseDTO> subjects = subjectPort.getByStatus(type);
         if (subjects.isEmpty()) {
-            throw new SubjectNotFoundException("No subjects found with that status type: " + type);
+            throw new NotFoundException("No subjects found with that status type: " + type);
         }
         return ResponseEntity.ok(subjects);
     }

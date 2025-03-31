@@ -1,10 +1,12 @@
-package unicauca.edu.co.sga.evaluation_service.infrastructure.config;
+package unicauca.edu.co.sga.evaluation_service.infrastructure.controllers;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.support.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import unicauca.edu.co.sga.evaluation_service.domain.exceptions.AlreadyExistException;
+import unicauca.edu.co.sga.evaluation_service.domain.exceptions.NotFoundException;
 import unicauca.edu.co.sga.evaluation_service.domain.exceptions.student.StudentAlreadyExistException;
 import unicauca.edu.co.sga.evaluation_service.domain.exceptions.student.StudentNotFoundException;
 
@@ -14,13 +16,13 @@ import java.util.Map;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(StudentNotFoundException.class)
-    public ResponseEntity<String> handleStudentNotFound(StudentNotFoundException ex) {
+    @ExceptionHandler(NotFoundException.class)
+    public ResponseEntity<String> handleStudentNotFound(NotFoundException ex) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
     }
 
-    @ExceptionHandler(StudentAlreadyExistException.class)
-    public ResponseEntity<String> handleStudentAlreadyExists(StudentAlreadyExistException ex) {
+    @ExceptionHandler(AlreadyExistException.class)
+    public ResponseEntity<String> handleStudentAlreadyExists(AlreadyExistException ex) {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
     }
 

@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.*;
 import unicauca.edu.co.sga.evaluation_service.application.dto.request.EnrollRequestDTO;
 import unicauca.edu.co.sga.evaluation_service.application.dto.response.EnrollResponseDTO;
 import unicauca.edu.co.sga.evaluation_service.application.ports.EnrollPort;
-import unicauca.edu.co.sga.evaluation_service.domain.exceptions.enroll.EnrollAlreadyExistExcetion;
-import unicauca.edu.co.sga.evaluation_service.domain.exceptions.enroll.EnrollNotFoundException;
+import unicauca.edu.co.sga.evaluation_service.domain.exceptions.AlreadyExistException;
+import unicauca.edu.co.sga.evaluation_service.domain.exceptions.NotFoundException;
 
 import java.util.List;
 import java.util.Optional;
@@ -29,7 +29,7 @@ public class EnrollController {
     public ResponseEntity<EnrollResponseDTO> getEnrollById(@PathVariable Long id){
         return enrollPort.getEnrollsById(id)
                 .map(ResponseEntity::ok)
-                .orElseThrow(() -> new EnrollNotFoundException("Enroll with ID " + id + " not found."));
+                .orElseThrow(() -> new NotFoundException("Enroll with ID " + id + " not found."));
     }
 
     @PostMapping
@@ -38,7 +38,7 @@ public class EnrollController {
         if (existingSemester.isEmpty()){
             return ResponseEntity.status(HttpStatus.CREATED).body(enrollPort.saveEnroll(enroll));
         }
-        throw new EnrollAlreadyExistExcetion("Enroll with ID " + existingSemester.getFirst().getId() + " already exist.");
+        throw new AlreadyExistException("Enroll with ID " + existingSemester.getFirst().getId() + " already exist.");
     }
 
     @PutMapping("/{id}")
@@ -48,14 +48,14 @@ public class EnrollController {
             boolean isUpdated = enrollPort.updateEnroll(id, enroll);
             return ResponseEntity.ok(isUpdated);
         }
-        throw new EnrollNotFoundException("Enroll with ID " + id + " not found.");
+        throw new NotFoundException("Enroll with ID " + id + " not found.");
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Boolean> deleteEnroll(@PathVariable Long id){
         boolean isDeleted = enrollPort.deleteEnroll(id);
         if (!isDeleted){
-            throw new EnrollNotFoundException("Enroll with ID " + id + " not found.");
+            throw new NotFoundException("Enroll with ID " + id + " not found.");
         }
         return ResponseEntity.ok().build();
     }
@@ -64,7 +64,7 @@ public class EnrollController {
     public ResponseEntity<EnrollResponseDTO> getEnrollsByStudentId(@PathVariable Long id){
         List<EnrollResponseDTO> enrollResponseDTO = enrollPort.getEnrollsByStudentId(id);
         if (enrollResponseDTO.isEmpty()){
-            throw new EnrollNotFoundException("Student with ID " + id + " not found.");
+            throw new NotFoundException("Student with ID " + id + " not found.");
         }
         return ResponseEntity.ok(enrollResponseDTO.getFirst());
     }

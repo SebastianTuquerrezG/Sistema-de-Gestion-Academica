@@ -8,8 +8,8 @@ import unicauca.edu.co.sga.evaluation_service.application.dto.request.StudentReq
 import unicauca.edu.co.sga.evaluation_service.application.dto.response.StudentResponseDTO;
 import unicauca.edu.co.sga.evaluation_service.application.ports.StudentPort;
 import unicauca.edu.co.sga.evaluation_service.domain.enums.GeneralEnums;
-import unicauca.edu.co.sga.evaluation_service.domain.exceptions.student.StudentAlreadyExistException;
-import unicauca.edu.co.sga.evaluation_service.domain.exceptions.student.StudentNotFoundException;
+import unicauca.edu.co.sga.evaluation_service.domain.exceptions.AlreadyExistException;
+import unicauca.edu.co.sga.evaluation_service.domain.exceptions.NotFoundException;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -30,14 +30,14 @@ public class StudentController {
     public ResponseEntity<StudentResponseDTO> getStudentById(@PathVariable Long id){
         return studentPort.getStudentById(id)
                .map(ResponseEntity::ok)
-               .orElseThrow(() -> new StudentNotFoundException("Student " + id + " not found"));
+               .orElseThrow(() -> new NotFoundException("Student " + id + " not found"));
     }
 
     @PostMapping
     public ResponseEntity<StudentResponseDTO> createStudent(@Valid @RequestBody StudentRequestDTO student){
         Optional<StudentResponseDTO> existingStudent = studentPort.getStudentsByIdentification(student.getIdentification());
         if (existingStudent.isPresent()) {
-            throw new StudentAlreadyExistException("Student " + student.getIdentification() + " already exists");
+            throw new AlreadyExistException("Student " + student.getIdentification() + " already exists");
         }
         return ResponseEntity.status(HttpStatus.CREATED).body(studentPort.saveStudent(student));
     }
@@ -46,11 +46,11 @@ public class StudentController {
     public ResponseEntity<Boolean> updateStudent(@PathVariable Long id, @Valid @RequestBody StudentRequestDTO student){
         Optional<StudentResponseDTO> existingStudent = studentPort.getStudentsByIdentification(student.getIdentification());
         if (existingStudent.isPresent() && !existingStudent.get().getId().equals(id)) {
-            throw new StudentAlreadyExistException("Student with identification " + student.getIdentification() + " already exists");
+            throw new AlreadyExistException("Student with identification " + student.getIdentification() + " already exists");
         }
         boolean isUpdated = studentPort.updateStudent(id, student);
         if (!isUpdated) {
-            throw new StudentNotFoundException("Student " + id + " not found");
+            throw new NotFoundException("Student " + id + " not found");
         }
         return ResponseEntity.ok().build();
     }
@@ -59,7 +59,7 @@ public class StudentController {
     public ResponseEntity<Boolean> deleteStudent(@PathVariable Long id){
         boolean isDeleted = studentPort.deleteStudent(id);
         if (!isDeleted) {
-            throw new StudentNotFoundException("Student " + id + " not found");
+            throw new NotFoundException("Student " + id + " not found");
         }
         return ResponseEntity.ok().build();
     }
@@ -68,7 +68,7 @@ public class StudentController {
     public ResponseEntity<List<StudentResponseDTO>> getStudentsByName(@RequestParam String name){
         List<StudentResponseDTO> students = studentPort.getStudentsByName(name);
         if (students.isEmpty()) {
-            throw new StudentNotFoundException("No students found with name: " + name);
+            throw new NotFoundException("No students found with name: " + name);
         }
         return ResponseEntity.ok(students);
     }
@@ -77,7 +77,7 @@ public class StudentController {
     public ResponseEntity<StudentResponseDTO> getStudentByIdentification(@RequestParam Long studentId){
         Optional<StudentResponseDTO> student = studentPort.getStudentsByIdentification(studentId);
         if (student.isEmpty()) {
-            throw new StudentNotFoundException("Student with identification " + studentId + " not found");
+            throw new NotFoundException("Student with identification " + studentId + " not found");
         }
         return ResponseEntity.ok(student.get());
     }
@@ -86,7 +86,7 @@ public class StudentController {
     public ResponseEntity<List<StudentResponseDTO>> getStudentByTypeId(@PathVariable GeneralEnums.identificationType type){
         List<StudentResponseDTO> students = studentPort.getStudentsByIdentificationType(type);
         if (students.isEmpty()) {
-            throw new StudentNotFoundException("No students found with identification type: " + type);
+            throw new NotFoundException("No students found with identification type: " + type);
         }
         return ResponseEntity.ok(students);
     }

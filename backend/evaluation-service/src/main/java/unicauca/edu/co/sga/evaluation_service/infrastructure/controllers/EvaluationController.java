@@ -21,13 +21,11 @@ public class EvaluationController {
         this.evaluationService = evaluationService;
     }
 
-    //OBTENER EVALUACION POR ID
     @GetMapping("/{id}")
     public EvaluationResponseDTO getEvaluation(@PathVariable Long id) {
         return evaluationService.getEvaluationById(id);
     }
 
-    //GUARDAR EVALUACION
     @PostMapping("/save")
     public ResponseEntity<EvaluationResponseDTO> createEvaluation(
             @Valid @RequestBody EvaluationRequestDTO requestDTO) {
