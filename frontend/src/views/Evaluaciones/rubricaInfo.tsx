@@ -13,7 +13,6 @@ const InfoRubrica: React.FC = () => {
           <Dropdown 
             label="Estudiante" 
             options={[
-              "Estudiante Elegible", 
               "Jonathan Felipe Hurtado", 
               "Harold Andrés Molano", 
               "Álvaro Javier Arroyo", 

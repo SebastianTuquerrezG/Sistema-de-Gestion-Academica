@@ -11,11 +11,12 @@ type NotificationType = {
 
 const EvaluationTable: React.FC = () => {
   const rangos = [
-    { nivel: "Nivel 5", superior: 0.9, inferior: 0.0, color: "#13137c" },
-    { nivel: "Nivel 4", superior: 1.9, inferior: 1.0, color: "#13137c" },
-    { nivel: "Nivel 3", superior: 2.9, inferior: 2.0, color: "#2e2ebe" },
-    { nivel: "Nivel 2", superior: 3.9, inferior: 3.0, color: "#22229e" },
-    { nivel: "Nivel 1", superior: 5.0, inferior: 4.0, color: "#13137c" },
+
+   // { nivel: "Nivel 3", superior: 5.0, inferior: 4.0, color: "#2e2ebe" },
+   // { nivel: "Nivel 4", superior: 5.0, inferior: 4.0, color: "#2e2ebe" },
+    { nivel: "Nivel 3", superior: 5.0, inferior: 4.0, color: "#2e2ebe" },
+    { nivel: "Nivel 2", superior: 3.0, inferior: 3.9, color: "#22229e" },
+    { nivel: "Nivel 1", superior: 0.0, inferior: 2.9, color: "#13137c" },
   ];
 
   const data = [

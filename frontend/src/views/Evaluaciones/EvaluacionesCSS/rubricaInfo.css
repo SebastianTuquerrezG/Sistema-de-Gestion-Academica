@@ -2,31 +2,30 @@
 @import url('../../../assets/css/variables.css');
 
 .rubrica-info {
-    width: 90%; /* Ocupar el 90% del ancho del layout */
-    max-width: 1000px; /* Evita que se haga muy grande en pantallas grandes */
-    margin: 0 auto; /* Centrado */
+    width: 90%;
+    max-width: 1000px;
+    margin: 0 auto;
     background-color: white;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     padding: 20px;
 }
 
-/* Contenedor principal con dos columnas */
 .rubrica-info-container {
     display: grid;
-    grid-template-columns: 1fr 1fr; /* Dos columnas iguales */
-    column-gap: 50px; /* Espaciado horizontal entre columnas */
-    row-gap: 30px; /* Espaciado vertical entre filas */
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    column-gap: 50px;
+    row-gap: 30px;
+    width: 100%;
 }
 
-/* Cada sección de la información */
 .info-block {
     display: flex;
     flex-direction: column;
-    gap: 15px; /* Más separación entre los elementos */
+    gap: 15px;
+    width: 100%;
 }
 
-/* Etiquetas alineadas a la izquierda */
 .info-block label {
     font-weight: bold;
     font-size: 16px;
@@ -34,7 +33,6 @@
     font-family: var(--text-font);
 }
 
-/* Input de campos estáticos */
 .static-field {
     background-color: #f0f0f0;
     border: 1px solid #ccc;
@@ -45,36 +43,63 @@
     font-family: var(--text-font);
 }
 
-/* Dropdown estilizado */
 .dropdown-container {
+    position: relative;
     display: flex;
-    align-items: center;
+    flex-direction: column;
     width: 100%;
 }
 
-.dropdown-button {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
+.dropdown-label {
+    font-weight: bold;
+    font-size: 16px;
+    margin-bottom: 6px;
+    font-family: var(--text-font);
+}
+
+.dropdown {
     background-color: #f0f0f0;
     border: 1px solid #8f8f8f;
     padding: 12px 16px;
     border-radius: 6px;
     font-size: 16px;
-    cursor: pointer;
-}
-
-/* Hacer que los Dropdowns sean más anchos */
-.dropdown-button {
+    font-family: var(--text-font);
     width: 100%;
-    max-width: 400px; /* Permitir que crezcan más a lo ancho */
+    max-width: 100%;
 }
 
-/* Icono del Dropdown */
-.dropdown-icon {
-    background-color: #1d4ed8;
-    padding: 6px;
-    border-radius: 4px;
-    color: white;
+.dropdown-options {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background: white;
+    border: 1px solid #ccc;
+    border-top: none;
+    max-height: 200px;
+    overflow-y: auto;
+    width: 100%;
+    z-index: 999;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 0 0 6px 6px;
+}
+
+.dropdown-options li {
+    padding: 10px 14px;
+    cursor: pointer;
+    font-family: var(--text-font);
+    font-size: 15px;
+}
+
+.dropdown-options li:hover {
+    background-color: #f0f0f0;
+}
+
+.dropdown-option-empty {
+    padding: 10px 14px;
+    color: gray;
+    font-style: italic;
+    font-family: var(--text-font);
 }
