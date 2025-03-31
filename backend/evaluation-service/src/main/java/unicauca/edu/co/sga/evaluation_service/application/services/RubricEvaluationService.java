@@ -36,7 +36,7 @@ public class RubricEvaluationService implements RubricEvaluationPort {
 
     @Override
     public List<EvaluationResponseViewDTO> getRubricsFromStudentCoursePeriodRubric(Long idStudent, Long idSubject, String semester, Long idRubric) {
-        List<EvaluationEntity> evaluations = evaluationRepository.findEvaluationsByStudentId(studentId);
+        /*List<EvaluationEntity> evaluations = evaluationRepository.findEvaluationsByStudentId(studentId);
 
         if (evaluations.isEmpty()) {
             return null; // O lanzar una excepción
@@ -59,7 +59,9 @@ public class RubricEvaluationService implements RubricEvaluationPort {
                 .studyObjective("Some objective") // Esto depende de tu lógica
                 .califications(califications)
                 .criterias(criterias)
-                .build();
+                .build();*/
+
+        return null;
 
     }
 

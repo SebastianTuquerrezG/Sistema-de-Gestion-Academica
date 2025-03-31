@@ -13,7 +13,7 @@ public interface RubricRepository extends JpaRepository<RubricEntity, Long> {
     Optional<RubricEntity> findByNameContainingIgnoreCase(String name);
     List<RubricEntity> findBySubjectId(Long id);
     List<RubricEntity> findByRaId(Long id);
-    List<RubricEntity> findByCriteriaId(Long id);
+    //List<RubricEntity> findByCriteriaId(Long id);
     List<RubricEntity> findByStatus(GeneralEnums.status status);
 
 }
