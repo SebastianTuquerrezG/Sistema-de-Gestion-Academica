@@ -60,12 +60,12 @@ public class EnrollController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/enrollByStudent/{id}")
+    @GetMapping("/student/{id}")
     public ResponseEntity<EnrollResponseDTO> getEnrollsByStudentId(@PathVariable Long id){
         List<EnrollResponseDTO> enrollResponseDTO = enrollPort.getEnrollsByStudentId(id);
         if (enrollResponseDTO.isEmpty()){
             throw new EnrollNotFoundException("Student with ID " + id + " not found.");
         }
-        return ResponseEntity.ok(enrollPort.getEnrollsByStudentId(id).getFirst());
+        return ResponseEntity.ok(enrollResponseDTO.getFirst());
     }
 }
