@@ -4,9 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.unicauca.modulorubricacriterio.dto.CriterioDTO;
-import org.unicauca.modulorubricacriterio.dto.NivelDTO;
-import org.unicauca.modulorubricacriterio.service.INivelService;
+import org.unicauca.modulorubricacriterio.Fachada.dto.NivelDTO;
+import org.unicauca.modulorubricacriterio.Fachada.service.INivelService;
 
 import java.util.List;
 
@@ -29,7 +28,7 @@ public class NivelController {
     @PostMapping("/niveles")
     public ResponseEntity<NivelDTO>save(@RequestBody NivelDTO nivelDTO) {
         NivelDTO objNivel = this.nivelService.save(nivelDTO);
-        ResponseEntity<NivelDTO>response=new ResponseEntity<>(objNivel, HttpStatus.OK);
+        ResponseEntity<NivelDTO>response=new ResponseEntity<>(objNivel, HttpStatus.CREATED);
         return response;
     }
 
@@ -38,7 +37,7 @@ public class NivelController {
     public ResponseEntity<NivelDTO>update(@RequestBody NivelDTO nivelDTO,@RequestParam("id") Long id) {
         NivelDTO objNivel = this.nivelService.update(id,nivelDTO);
         System.out.println("id recibido"+id);
-        ResponseEntity<NivelDTO>response=new ResponseEntity<>(objNivel, HttpStatus.OK);
+        ResponseEntity<NivelDTO>response=new ResponseEntity<>(objNivel, HttpStatus.ACCEPTED);
         return response;
     }
 
@@ -46,7 +45,7 @@ public class NivelController {
     public ResponseEntity<NivelDTO>delete(@RequestParam("id") Long id) {
         ResponseEntity<NivelDTO>response=new ResponseEntity<>(null, HttpStatus.OK);
         if(nivelService.delete(id)) {
-            response=new ResponseEntity<>(HttpStatus.OK);
+            response=new ResponseEntity<>(HttpStatus.ACCEPTED);
         }
         return response;
     }

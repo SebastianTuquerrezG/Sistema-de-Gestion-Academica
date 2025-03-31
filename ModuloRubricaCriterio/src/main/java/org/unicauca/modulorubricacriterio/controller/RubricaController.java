@@ -4,8 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.unicauca.modulorubricacriterio.dto.RubricaDTO;
-import org.unicauca.modulorubricacriterio.service.IRubricaService;
+import org.unicauca.modulorubricacriterio.Fachada.dto.RubricaDTO;
+import org.unicauca.modulorubricacriterio.Fachada.service.IRubricaService;
 
 import java.util.List;
 
@@ -27,7 +27,7 @@ public class RubricaController {
     @PostMapping("/rubricas")
     public ResponseEntity<RubricaDTO>save(@RequestBody RubricaDTO rubricaDTO) {
         RubricaDTO objRubrica = this.rubricaService.save(rubricaDTO);
-        ResponseEntity<RubricaDTO>response=new ResponseEntity<>(objRubrica, HttpStatus.OK);
+        ResponseEntity<RubricaDTO>response=new ResponseEntity<>(objRubrica, HttpStatus.CREATED);
         return response;
     }
 
@@ -36,16 +36,14 @@ public class RubricaController {
     public ResponseEntity<RubricaDTO>update(@RequestBody RubricaDTO rubricaDTO,@RequestParam("id") Long id) {
         RubricaDTO objRubrica = this.rubricaService.update(id,rubricaDTO);
         System.out.println("id recibido"+id);
-        ResponseEntity<RubricaDTO>response=new ResponseEntity<>(objRubrica, HttpStatus.OK);
+        ResponseEntity<RubricaDTO>response=new ResponseEntity<>(objRubrica, HttpStatus.ACCEPTED);
         return response;
     }
 
-    @DeleteMapping("/rubricas")
-    public ResponseEntity<RubricaDTO>delete(@RequestParam("id") Long id) {
-        ResponseEntity<RubricaDTO>response=new ResponseEntity<>(null, HttpStatus.OK);
-        if(rubricaService.delete(id)) {
-            response=new ResponseEntity<>(HttpStatus.OK);
-        }
+    @PatchMapping("/rubricas")
+    public ResponseEntity<RubricaDTO>delete(@RequestParam("id") Long id, @RequestBody RubricaDTO estado) {
+        RubricaDTO objRubrica = this.rubricaService.delete(id,estado);
+        ResponseEntity<RubricaDTO>response=new ResponseEntity<>(objRubrica, HttpStatus.OK);
         return response;
     }
 

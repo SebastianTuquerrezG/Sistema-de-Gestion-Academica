@@ -4,9 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.unicauca.modulorubricacriterio.dto.CriterioDTO;
-import org.unicauca.modulorubricacriterio.dto.RubricaDTO;
-import org.unicauca.modulorubricacriterio.service.ICriterioService;
+import org.unicauca.modulorubricacriterio.Fachada.dto.CriterioDTO;
+import org.unicauca.modulorubricacriterio.Fachada.service.ICriterioService;
 
 import java.util.List;
 
@@ -36,7 +35,7 @@ public class CriterioController {
     @PostMapping("/criterios")
     public ResponseEntity<CriterioDTO>save(@RequestBody CriterioDTO criterioDTO) {
         CriterioDTO objCriterio = this.criterioService.save(criterioDTO);
-        ResponseEntity<CriterioDTO>response=new ResponseEntity<>(objCriterio, HttpStatus.OK);
+        ResponseEntity<CriterioDTO>response=new ResponseEntity<>(objCriterio, HttpStatus.CREATED);
         return response;
     }
 
@@ -45,7 +44,7 @@ public class CriterioController {
     public ResponseEntity<CriterioDTO>update(@RequestBody CriterioDTO criterioDTO,@RequestParam("id") Long id) {
         CriterioDTO objCriterio = this.criterioService.update(id,criterioDTO);
         System.out.println("id recibido"+id);
-        ResponseEntity<CriterioDTO>response=new ResponseEntity<>(objCriterio, HttpStatus.OK);
+        ResponseEntity<CriterioDTO>response=new ResponseEntity<>(objCriterio, HttpStatus.ACCEPTED);
         return response;
     }
 
@@ -53,7 +52,7 @@ public class CriterioController {
     public ResponseEntity<CriterioDTO>delete(@RequestParam("id") Long id) {
         ResponseEntity<CriterioDTO>response=new ResponseEntity<>(null, HttpStatus.OK);
         if(criterioService.delete(id)) {
-            response=new ResponseEntity<>(HttpStatus.OK);
+            response=new ResponseEntity<>(HttpStatus.ACCEPTED);
         }
         return response;
     }
