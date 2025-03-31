@@ -19,6 +19,7 @@ public class RubricEvaluationController {
 
     private final RubricEvaluationPort rubricEvaluationPort;
 
+
     public RubricEvaluationController(RubricEvaluationPort rubricEvaluationPort) {
         this.rubricEvaluationPort = rubricEvaluationPort;
     }

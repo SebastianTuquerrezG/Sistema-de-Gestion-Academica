@@ -43,5 +43,19 @@ public interface EnrollRepository extends JpaRepository<EnrollEntity, Long> {
             @Param("subjectId") Long subjectId,
             @Param("semester") String semester
     );
+    @Query("SELECT new unicauca.edu.co.sga.evaluation_service.application.dto.response.StudentView.RubricResponseViewDTO(r.name, r.created_at) " +
+            "FROM EnrollEntity e " +
+            "JOIN e.course c " +
+            "JOIN c.subject s " +
+            "JOIN s.rubric r " +
+            "WHERE e.student.id = :studentId " +
+            "AND s.id = :subjectId " +
+            "AND e.semester = :semester")
+    List<RubricResponseViewDTO> findRubricNamesAndDatesBySubject(
+            @Param("studentId") Long studentId,
+            @Param("subjectId") Long subjectId,
+            @Param("semester") String semester
+    );
+
 
 }

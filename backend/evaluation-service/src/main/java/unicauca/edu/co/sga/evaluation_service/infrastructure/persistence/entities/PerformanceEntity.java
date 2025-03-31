@@ -26,6 +26,7 @@ public class PerformanceEntity {
     private String description;
 
     @Column(nullable = false)
+
     private String rango;
 
     /*@OneToMany(mappedBy = "performanceLevel", cascade = CascadeType.ALL, orphanRemoval = true)
