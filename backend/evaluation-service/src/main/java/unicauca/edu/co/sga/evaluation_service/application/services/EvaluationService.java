@@ -5,6 +5,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import unicauca.edu.co.sga.evaluation_service.application.dto.request.EvaluationRequestDTO;
+import unicauca.edu.co.sga.evaluation_service.application.dto.response.EvaluationResponseDTO;
 import unicauca.edu.co.sga.evaluation_service.domain.enums.EvaluationStatus;
 import unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.entities.EnrollEntity;
 import unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.entities.EvaluationEntity;
@@ -29,7 +30,8 @@ public class EvaluationService {
         this.rubricRepository = rubricRepository;
     }
 
-    public EvaluationEntity createEvaluation(EvaluationRequestDTO evaluationRequestDTO) {
+    @Transactional
+    public EvaluationResponseDTO createEvaluation(EvaluationRequestDTO evaluationRequestDTO) {
         // VERIFICACIONES
         EnrollEntity enroll = enrollRepository.findById(evaluationRequestDTO.getEnroll())
                 .orElseThrow(() -> new EntityNotFoundException(
@@ -39,7 +41,7 @@ public class EvaluationService {
                 .orElseThrow(() -> new EntityNotFoundException(
                         "Rubric no encontrado con id: " + evaluationRequestDTO.getRubric()));
 
-        // CREAR NUEVA EVALUACION
+        // CREAR NUEVA EVALUACIÓN
         EvaluationEntity evaluation = new EvaluationEntity();
 
         evaluation.setEnroll(enroll);
@@ -50,13 +52,41 @@ public class EvaluationService {
                         ? evaluationRequestDTO.getEvaluationStatus()
                         : EvaluationStatus.NO_EVALUADO
         );
+        evaluation.setScore(evaluationRequestDTO.getScore());
+        evaluation.setEvidenceUrl(evaluationRequestDTO.getEvidenceUrl());
 
-        return evaluationRepository.save(evaluation);
+        // Guardar y refrescar la entidad
+        EvaluationEntity savedEvaluation = evaluationRepository.saveAndFlush(evaluation);
+
+        // Convertir a DTO
+        return EvaluationResponseDTO.builder()
+                .id(savedEvaluation.getId())
+                .enroll(savedEvaluation.getEnroll().getId())
+                .rubric(savedEvaluation.getRubric().getId())
+                .description(savedEvaluation.getDescription())
+                .evaluationStatus(savedEvaluation.getEvaluationStatus())
+                .score(savedEvaluation.getScore())
+                .evidenceUrl(savedEvaluation.getEvidenceUrl())
+                .created_at(savedEvaluation.getCreated_at())
+                .updated_at(savedEvaluation.getUpdated_at())
+                .build();
     }
 
-    public EvaluationEntity getEvaluationById(Long id) {
-        return evaluationRepository.findById(id)
+    public EvaluationResponseDTO getEvaluationById(Long id) {
+        EvaluationEntity evaluation = evaluationRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(
                         "Evaluation no encontrada con id: " + id));
+
+        return EvaluationResponseDTO.builder()
+                .id(evaluation.getId())
+                .enroll(evaluation.getEnroll().getId())
+                .rubric(evaluation.getRubric().getId())
+                .description(evaluation.getDescription())
+                .evaluationStatus(evaluation.getEvaluationStatus())
+                .score(evaluation.getScore())
+                .evidenceUrl(evaluation.getEvidenceUrl())
+                .created_at(evaluation.getCreated_at())
+                .updated_at(evaluation.getUpdated_at())
+                .build();
     }
 }

@@ -23,18 +23,16 @@ public class EvaluationController {
 
     //OBTENER EVALUACION POR ID
     @GetMapping("/{id}")
-    public ResponseEntity<EvaluationResponseDTO> getEvaluation(@PathVariable Long id) {
-        EvaluationEntity evaluation = evaluationService.getEvaluationById(id);
-        return ResponseEntity.ok(mapToResponseDTO(evaluation));
+    public EvaluationResponseDTO getEvaluation(@PathVariable Long id) {
+        return evaluationService.getEvaluationById(id);
     }
 
     //GUARDAR EVALUACION
     @PostMapping("/save")
     public ResponseEntity<EvaluationResponseDTO> createEvaluation(
-            @Valid @RequestBody EvaluationRequestDTO evaluationRequestDTO) {
-        EvaluationEntity savedEvaluation = evaluationService.createEvaluation(evaluationRequestDTO);
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(mapToResponseDTO(savedEvaluation));
+            @Valid @RequestBody EvaluationRequestDTO requestDTO) {
+        EvaluationResponseDTO response = evaluationService.createEvaluation(requestDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     private EvaluationResponseDTO mapToResponseDTO(EvaluationEntity entity) {

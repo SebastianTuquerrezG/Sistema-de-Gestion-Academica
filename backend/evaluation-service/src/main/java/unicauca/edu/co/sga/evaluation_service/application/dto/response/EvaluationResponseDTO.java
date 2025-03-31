@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import unicauca.edu.co.sga.evaluation_service.domain.enums.EvaluationStatus;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 
@@ -21,6 +22,8 @@ public class EvaluationResponseDTO {
     private Date created_at;
     private Date updated_at;
     private EvaluationStatus evaluationStatus;
+    private BigDecimal score;
+    private String evidenceUrl;
 
     public EvaluationResponseDTO(Long id, Long enroll, Long rubric, String description) {
         this.id = id;
