@@ -16,8 +16,14 @@ import java.math.BigDecimal;
 @Builder
 public class EvaluationRequestDTO {
     private Long enroll;
+
+    @NotNull(message = "El id de la rubrica es requerido")
     private Long rubric;
+
+    @NotBlank(message = "La descripcion es requerida")
     private String description;
+
+    @NotNull(message = "El estado de la evaluacion es requerido")
     private EvaluationStatus evaluationStatus = EvaluationStatus.NO_EVALUADO;
 
     @NotNull(message = "La calificacion es requerida")

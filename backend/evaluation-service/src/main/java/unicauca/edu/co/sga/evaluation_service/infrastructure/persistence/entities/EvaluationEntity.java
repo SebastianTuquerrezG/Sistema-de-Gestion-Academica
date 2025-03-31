@@ -10,7 +10,6 @@ import unicauca.edu.co.sga.evaluation_service.domain.enums.EvaluationStatus;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")

@@ -7,8 +7,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import unicauca.edu.co.sga.evaluation_service.domain.exceptions.AlreadyExistException;
 import unicauca.edu.co.sga.evaluation_service.domain.exceptions.NotFoundException;
-import unicauca.edu.co.sga.evaluation_service.domain.exceptions.student.StudentAlreadyExistException;
-import unicauca.edu.co.sga.evaluation_service.domain.exceptions.student.StudentNotFoundException;
 
 import java.util.HashMap;
 import java.util.Map;

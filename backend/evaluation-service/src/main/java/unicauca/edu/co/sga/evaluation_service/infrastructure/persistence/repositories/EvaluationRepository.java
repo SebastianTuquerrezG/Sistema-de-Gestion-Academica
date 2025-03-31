@@ -9,7 +9,7 @@ import java.util.List;
 
 @Repository
 public interface EvaluationRepository extends JpaRepository<EvaluationEntity, Long> {
-    boolean existsByEnrollIdAndRubricId(Long enrollId, Long rubricId);
+    Boolean existsByEnrollIdAndRubricId(Long enrollId, Long rubricId);
     List<EvaluationEntity> findByEnrollId(Long enrollId);
     List<EvaluationEntity> findByRubricId(Long rubricId);
 }

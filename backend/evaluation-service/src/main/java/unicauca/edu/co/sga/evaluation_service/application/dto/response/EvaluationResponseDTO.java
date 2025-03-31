@@ -19,16 +19,9 @@ public class EvaluationResponseDTO {
     private Long enroll;
     private Long rubric;
     private String description;
-    private Date created_at;
-    private Date updated_at;
     private EvaluationStatus evaluationStatus;
     private BigDecimal score;
     private String evidenceUrl;
-
-    public EvaluationResponseDTO(Long id, Long enroll, Long rubric, String description) {
-        this.id = id;
-        this.enroll = enroll;
-        this.rubric = rubric;
-        this.description = description;
-    }
+    private Date created_at;
+    private Date updated_at;
 }
