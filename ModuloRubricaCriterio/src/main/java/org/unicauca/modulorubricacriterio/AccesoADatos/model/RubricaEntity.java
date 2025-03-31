@@ -31,5 +31,13 @@ public class RubricaEntity {
     private List<CriterioEntity>criterios;
     private EstadosEnum estadoRubrica;
 
+    public RubricaEntity(String nameRubrica, String materia, int nota, String objetivoDeEstudio, List<CriterioEntity> object, EstadosEnum activo) {
+        this.nombreRubrica = nameRubrica;
+        this.materia = materia;
+        this.notaRubrica = nota;
+        this.objetivoEstudio = objetivoDeEstudio;
+        this.criterios = object;
+        this.estadoRubrica = activo;
+    }
 
 }

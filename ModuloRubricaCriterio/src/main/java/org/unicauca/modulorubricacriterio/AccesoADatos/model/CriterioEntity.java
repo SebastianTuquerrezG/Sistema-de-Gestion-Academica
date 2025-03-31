@@ -7,6 +7,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 import java.util.ArrayList;
@@ -40,6 +41,15 @@ public class CriterioEntity {
     @OneToMany(mappedBy = "criterio", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JsonManagedReference
     private List<NivelEntity> niveles;
+
+    public CriterioEntity(RubricaEntity rubrica, String desccripcion, float porcentaje, float nota, String comentario, List<NivelEntity> niveles) {
+        this.rubrica = rubrica;
+        this.crfDescripcion = desccripcion;
+        this.crfPorcentaje = porcentaje;
+        this.crfNota = nota;
+        this.crfComentario = comentario;
+        this.niveles = niveles;
+    }
     
 
 
