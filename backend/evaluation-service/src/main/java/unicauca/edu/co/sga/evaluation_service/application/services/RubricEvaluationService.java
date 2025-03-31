@@ -31,7 +31,7 @@ public class RubricEvaluationService implements RubricEvaluationPort {
 
     @Override
     public List<RubricResponseViewDTO> getRubricsFromStudentCoursePeriod(Long idStudent, Long idSubject, String semester) {
-        return List.of();
+        return enrollRepository.findRubricNamesAndDates(idStudent, idSubject, semester);
     }
 
     @Override
