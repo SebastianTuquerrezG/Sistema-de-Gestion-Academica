@@ -1,7 +1,7 @@
 package unicauca.edu.co.sga.evaluation_service.application.services;
 
 import org.springframework.stereotype.Service;
-import unicauca.edu.co.sga.evaluation_service.application.dto.response.StudentView.CourseResponseViewDTO;
+import unicauca.edu.co.sga.evaluation_service.application.dto.response.StudentView.SubjectResponseViewDTO;
 import unicauca.edu.co.sga.evaluation_service.application.dto.response.StudentView.EvaluationResponseViewDTO;
 import unicauca.edu.co.sga.evaluation_service.application.dto.response.StudentView.RubricResponseViewDTO;
 import unicauca.edu.co.sga.evaluation_service.application.ports.RubricEvaluationPort;
@@ -20,22 +20,23 @@ public class RubricEvaluationService implements RubricEvaluationPort {
     }
 
     @Override
-    public List<CourseResponseViewDTO> getCoursesFromStudentPeriod(Long idStudent, String semester) {
-        return enrollRepository.findCoursesAndTeachersByStudentAndSemester(idStudent, semester);
+    public List<SubjectResponseViewDTO> getSubjectsFromStudentPeriod(Long idStudent, String semester) {
+        System.out.println("entraconsultarmaterias");
+        return enrollRepository.findSubjectsAndTeachersByStudentAndSemester(idStudent, semester);
     }
 
     @Override
     public List<String> getPeriods(Long idStudent) {
-        return List.of();
+        return enrollRepository.findDistinctSemestersByStudentId(idStudent);
     }
 
     @Override
-    public List<RubricResponseViewDTO> getRubricsFromStudentCoursePeriod(Long idStudent, Long idSubject, String semester) {
+    public List<RubricResponseViewDTO> getRubricsFromStudentSubjectPeriod(Long idStudent, Long idSubject, String semester) {
         return enrollRepository.findRubricNamesAndDates(idStudent, idSubject, semester);
     }
 
     @Override
-    public List<EvaluationResponseViewDTO> getRubricsFromStudentCoursePeriodRubric(Long idStudent, Long idSubject, String semester, Long idRubric) {
+    public List<EvaluationResponseViewDTO> getRubricsFromStudentSubjectPeriodRubric(Long idStudent, Long idSubject, String semester, Long idRubric) {
         /*List<EvaluationEntity> evaluations = evaluationRepository.findEvaluationsByStudentId(studentId);
 
         if (evaluations.isEmpty()) {

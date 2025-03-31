@@ -4,7 +4,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-import unicauca.edu.co.sga.evaluation_service.application.dto.response.StudentView.CourseResponseViewDTO;
+import unicauca.edu.co.sga.evaluation_service.application.dto.response.StudentView.SubjectResponseViewDTO;
 import unicauca.edu.co.sga.evaluation_service.application.dto.response.StudentView.RubricResponseViewDTO;
 import unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.entities.EnrollEntity;
 
@@ -16,22 +16,31 @@ public interface EnrollRepository extends JpaRepository<EnrollEntity, Long> {
     List<EnrollEntity> findByCourseId(Long courseId);
     List<EnrollEntity> findBySemester(String semester);
 
-    @Query("SELECT e.course, t FROM EnrollEntity e " +
+    @Query("SELECT NEW unicauca.edu.co.sga.evaluation_service.application.dto.response.StudentView.SubjectResponseViewDTO(" +
+            "s.name, t.name) " +
+            "FROM EnrollEntity e " +
             "JOIN e.course c " +
+            "JOIN c.subject s " +
             "JOIN c.teacher t " +
-            "WHERE e.student.id = :studentId AND e.semester = :semester")
-    List<CourseResponseViewDTO> findCoursesAndTeachersByStudentAndSemester(@Param("studentId") Long studentId, @Param("semester") String semester);
-
-    @Query("SELECT r.name, r.created_at FROM EnrollEntity e " +
-            "JOIN e.course c " +
-            "JOIN c.ra ra " +
-            "JOIN ra.rubric r " +
             "WHERE e.student.id = :studentId " +
-            "AND e.course.id = :courseId " +
+            "AND e.semester = :semester")
+    List<SubjectResponseViewDTO> findSubjectsAndTeachersByStudentAndSemester(@Param("studentId") Long studentId, @Param("semester") String semester);
+
+    @Query("SELECT DISTINCT e.semester FROM EnrollEntity e WHERE e.student.id = :studentId")
+    List<String> findDistinctSemestersByStudentId(@Param("studentId") Long studentId);
+
+
+    @Query("SELECT new unicauca.edu.co.sga.evaluation_service.application.dto.response.StudentView.RubricResponseViewDTO(r.name, r.created_at) " +
+            "FROM EnrollEntity e " +
+            "JOIN e.course c " +
+            "JOIN c.subject s " +
+            "JOIN s.rubric r " +
+            "WHERE e.student.id = :studentId " +
+            "AND s.id = :subjectId " +
             "AND e.semester = :semester")
     List<RubricResponseViewDTO> findRubricNamesAndDates(
             @Param("studentId") Long studentId,
-            @Param("courseId") Long courseId,
+            @Param("subjectId") Long subjectId,
             @Param("semester") String semester
     );
 

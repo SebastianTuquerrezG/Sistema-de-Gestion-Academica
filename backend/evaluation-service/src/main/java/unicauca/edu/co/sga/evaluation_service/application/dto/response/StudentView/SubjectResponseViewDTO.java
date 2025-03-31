@@ -9,9 +9,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class CourseResponseViewDTO {
+public class SubjectResponseViewDTO {
 
-    private String nameCourse;
+    private String nameSubject;
     private String nameTeacher;
 
 }
