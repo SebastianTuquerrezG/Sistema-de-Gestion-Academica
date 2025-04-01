@@ -26,18 +26,17 @@ public class EvaluationService {
     private final RubricRepository rubricRepository;
     private final CriteriaRepository criteriaRepository;
     private final CalificationRegisterRepository calificationRegisterRepository;
-    private final ModelMapper modelMapper;
+    //private final ModelMapper modelMapper;
 
     @Autowired
     public EvaluationService(EvaluationRepository evaluationRepository,
                              EnrollRepository enrollRepository,
-                             RubricRepository rubricRepository, CriteriaRepository criteriaRepository, CalificationRegisterRepository calificationRegisterRepository, ModelMapper modelMapper) {
+                             RubricRepository rubricRepository, CriteriaRepository criteriaRepository, CalificationRegisterRepository calificationRegisterRepository) {
         this.evaluationRepository = evaluationRepository;
         this.enrollRepository = enrollRepository;
         this.rubricRepository = rubricRepository;
         this.criteriaRepository = criteriaRepository;
         this.calificationRegisterRepository = calificationRegisterRepository;
-        this.modelMapper = modelMapper;
     }
 
     public EvaluationEntity createEvaluation(EvaluationRequestDTO evaluationRequestDTO) {
@@ -64,7 +63,7 @@ public class EvaluationService {
                 .orElseThrow(() -> new EntityNotFoundException(
                         "Evaluation no encontrada con id: " + id));
     }
-
+    /*
     public EvaluationResponseViewDTO getEvaluationDetails(Long studentId, Long subjectId,
                                                           String semester, Long rubricId) {
         // 1. Buscar evaluaciones que cumplan todos los criterios
@@ -127,7 +126,7 @@ public class EvaluationService {
         return response;
 
 
-    }
+    }*/
     /*
     public EvaluationResponseViewDTO getEvaluationDetails(Long studentId, Long subjectId,
                                                           String semester, Long rubricId) {

@@ -1,5 +1,6 @@
 package unicauca.edu.co.sga.evaluation_service.infrastructure.controllers;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -9,6 +10,7 @@ import unicauca.edu.co.sga.evaluation_service.application.dto.response.StudentVi
 import unicauca.edu.co.sga.evaluation_service.application.dto.response.StudentView.EvaluationResponseViewDTO;
 import unicauca.edu.co.sga.evaluation_service.application.dto.response.StudentView.RubricResponseViewDTO;
 import unicauca.edu.co.sga.evaluation_service.application.ports.RubricEvaluationPort;
+import unicauca.edu.co.sga.evaluation_service.domain.exceptions.RubricEvaluation.EmptyReturnException;
 
 import java.util.List;
 
@@ -49,8 +51,9 @@ public class RubricEvaluationController {
 
     //Recuperar información de evaluación como descripción rubrica, criterios - niveles - evaluación
     @GetMapping("/{idStudent}/{idSubject}/{semester}/{idRubric}")
-    public ResponseEntity<List<EvaluationResponseViewDTO>> getRubricEvaluation(@PathVariable Long idStudent, @PathVariable Long idSubject, @PathVariable String semester, @PathVariable Long idRubric) {
+    public ResponseEntity<EvaluationResponseViewDTO> getRubricEvaluation(@PathVariable Long idStudent, @PathVariable Long idSubject, @PathVariable String semester, @PathVariable Long idRubric) {
         return ResponseEntity.ok(rubricEvaluationPort.getRubricsFromStudentSubjectPeriodRubric(idStudent, idSubject, semester, idRubric));
+
     }
 
 }

@@ -9,7 +9,6 @@ import unicauca.edu.co.sga.evaluation_service.application.dto.response.StudentVi
 import unicauca.edu.co.sga.evaluation_service.application.services.EvaluationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import unicauca.edu.co.sga.evaluation_service.application.services.ResourceNotFoundException;
 import unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.entities.EvaluationEntity;
 
 @RestController
@@ -49,18 +48,6 @@ public class EvaluationController {
                 .updated_at(entity.getUpdated_at())
                 .build();
     }
-    // Otra versión con parámetros en el path
-    @GetMapping("/students/{studentId}/subjects/{subjectId}/semesters/{semester}/rubrics/{rubricId}")
-    public ResponseEntity<EvaluationResponseViewDTO> getEvaluationDetailsPath(
-            @PathVariable Long studentId,
-            @PathVariable Long subjectId,
-            @PathVariable String semester,
-            @PathVariable Long rubricId) throws ResourceNotFoundException {
 
-        EvaluationResponseViewDTO response = evaluationService
-                .getEvaluationDetails(studentId, subjectId, semester, rubricId);
-
-        return ResponseEntity.ok(response);
-    }
 }
 

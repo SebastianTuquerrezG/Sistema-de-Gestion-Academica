@@ -1,22 +1,30 @@
 package unicauca.edu.co.sga.evaluation_service.application.services;
 
 import org.springframework.stereotype.Service;
-import unicauca.edu.co.sga.evaluation_service.application.dto.response.StudentView.SubjectResponseViewDTO;
-import unicauca.edu.co.sga.evaluation_service.application.dto.response.StudentView.EvaluationResponseViewDTO;
-import unicauca.edu.co.sga.evaluation_service.application.dto.response.StudentView.RubricResponseViewDTO;
+import unicauca.edu.co.sga.evaluation_service.application.dto.response.StudentView.*;
 import unicauca.edu.co.sga.evaluation_service.application.ports.RubricEvaluationPort;
-import unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.repositories.EnrollRepository;
+import unicauca.edu.co.sga.evaluation_service.domain.exceptions.RubricEvaluation.EmptyReturnException;
+import unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.entities.CalificationRegisterEntity;
+import unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.entities.CriteriaEntity;
+import unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.repositories.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class RubricEvaluationService implements RubricEvaluationPort {
 
 
     private final EnrollRepository enrollRepository;
+    private final CriteriaRepository criteriaRepository;
+    private final CalificationRegisterRepository calificationRegisterRepository;
+    private final RubricRepository rubricRepository;
 
-    public RubricEvaluationService(EnrollRepository enrollRepository) {
+    public RubricEvaluationService(EnrollRepository enrollRepository, CriteriaRepository criteriaRepository, CalificationRegisterRepository calificationRegisterRepository, RubricRepository rubricRepository) {
         this.enrollRepository = enrollRepository;
+        this.criteriaRepository = criteriaRepository;
+        this.calificationRegisterRepository = calificationRegisterRepository;
+        this.rubricRepository = rubricRepository;
     }
 
     @Override
@@ -36,33 +44,65 @@ public class RubricEvaluationService implements RubricEvaluationPort {
     }
 
     @Override
-    public List<EvaluationResponseViewDTO> getRubricsFromStudentSubjectPeriodRubric(Long idStudent, Long idSubject, String semester, Long idRubric) {
-        /*List<EvaluationEntity> evaluations = evaluationRepository.findEvaluationsByStudentId(studentId);
+    public EvaluationResponseViewDTO getRubricsFromStudentSubjectPeriodRubric(Long idStudent, Long idSubject, String semester, Long idRubric) {
 
-        if (evaluations.isEmpty()) {
-            return null; // O lanzar una excepción
+        String rubricDescription = String.
+                valueOf(rubricRepository.findRubricDescriptionByStudent(idRubric,idSubject,idStudent,semester).
+                        orElseThrow(() -> new EmptyReturnException("No existe la rubrica"))); //Es el caso de que a la hora de crear la rubrica la descripcion es obligatoria
+
+
+        List<CriteriaEntity> criterias = criteriaRepository
+                .findByRubricAndStudentAndSubject(idRubric,idStudent,idSubject,semester);
+
+
+        if (criterias.isEmpty()) {
+            throw new EmptyReturnException("No hay criterios, por lo menos tiene que haber uno");//A la hora de  crear rubrica tiene que haber por lo menos un criterio
         }
 
-        // Convertir EvaluationEntity a DTO Calification
-        List<Calification> califications = evaluations.stream()
-                .map(e -> new Calification(e.getDescription(), e.getCreatedAt()))
+        List<CalificationRegisterEntity> califications = calificationRegisterRepository
+                .findCalificationsByStudentAndSubject(idStudent, idSubject, semester, idRubric);
+
+
+        EvaluationResponseViewDTO response = new EvaluationResponseViewDTO();
+        response.setDescription(rubricDescription);
+
+        // Mapear criterios con sus niveles
+        List<CriteriaResponseViewDTO> criteriaDTOs = criterias.stream()
+                .map(criteria -> {
+                    CriteriaResponseViewDTO dto = new CriteriaResponseViewDTO();
+                    dto.setDescriptionCriteria(criteria.getDescription());
+                    dto.setPercentage(criteria.getPercentage());
+
+                    // Mapear niveles con sus rangos
+                    List<PerformanceLevelResponseViewDTO> levels = criteria.getLevels().stream()
+                            .map(level -> {
+                                PerformanceLevelResponseViewDTO levelDto = new PerformanceLevelResponseViewDTO();
+                                levelDto.setName(level.getName());
+                                levelDto.setDescription(level.getDescription());
+                                levelDto.setRange(level.getRango()); // Asegurando que se mapee el rango
+                                return levelDto;
+                            })
+                            .collect(Collectors.toList());
+                    dto.setLevels(levels);
+
+                    return dto;
+                })
                 .collect(Collectors.toList());
+        response.setCriterias(criteriaDTOs);
 
-        // Suponiendo que cada evaluación tiene criterios asociados
-        List<Criteria> criterias = evaluations.stream()
-                .flatMap(e -> e.getCriteriaList().stream())  // Extraer los criterios
-                .map(c -> new Criteria(c.getName(), c.getWeight())) // Convertir a DTO
+        // Mapear calificaciones
+        List<CalificationResponseViewDTO> calificationDTOs = califications.stream()
+                .map(cal -> {
+                    CalificationResponseViewDTO calDto = new CalificationResponseViewDTO();
+                    calDto.setCalification(cal.getCalification());
+                    calDto.setMessage(cal.getMessage());
+                    calDto.setLevel(cal.getLevel());
+                    return calDto;
+                })
                 .collect(Collectors.toList());
+        response.setCalifications(calificationDTOs);
 
-        return RubricEvaluation.builder()
-                .calification(evaluations.get(0).getScore()) // Usar la calificación del primer registro
-                .name(evaluations.get(0).getEnroll().getStudent().getName())
-                .studyObjective("Some objective") // Esto depende de tu lógica
-                .califications(califications)
-                .criterias(criterias)
-                .build();*/
-
-        return null;
+        return response;
 
     }
 
