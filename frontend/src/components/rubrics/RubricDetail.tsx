@@ -4,22 +4,26 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
 interface Nivel {
-    nivel: number;
-    descripcion: string;
-    rango: string;
+    idNivel: number;
+    nivelDescripcion: string;
+    rangoNota: string;
 }
 
 interface Criterio {
-    criterio: string;
+    idCriterio: string;
+    crfDescripcion: string;
     niveles: Nivel[];
-    porcentaje: number;
+    crfPorcentaje: number;
 }
 
 interface Rubric {
-    id: string;
-    nombre: string;
+    rubricaId: string;
+    nombreRubrica: string;
     materia: string;
+    notaRubrica: number;
+    objetivoEstudio: string;
     criterios: Criterio[];
+    estado: string;
 }
 
 export default function RubricDetail() {
@@ -30,7 +34,7 @@ export default function RubricDetail() {
         fetch("/rubricas.json")
             .then(res => res.json())
             .then(data => {
-                const foundRubric = data.find((r: Rubric) => r.id === id);
+                const foundRubric = data.find((r: Rubric) => r.rubricaId === id);
                 setRubric(foundRubric || null);
             })
             .catch(error => console.error(error));
@@ -48,11 +52,11 @@ export default function RubricDetail() {
             <div className="flex items-start gap-4 relative">
                 <div className="w-full md:w-1/2 lg:w-1/3">
                     <p className="font-semibold">Identificador:</p>
-                    <p className="border p-2 rounded">{rubric.id}</p>
+                    <p className="border p-2 rounded">{rubric.rubricaId}</p>
                 </div>
                 <div className="w-full md:w-1/2 lg:w-1/3">
                     <p className="font-semibold">Nombre:</p>
-                    <p className="border p-2 rounded">{rubric.nombre}</p>
+                    <p className="border p-2 rounded">{rubric.nombreRubrica}</p>
                 </div>
             </div>
             <div className="flex items-start gap-4 relative">
@@ -60,10 +64,6 @@ export default function RubricDetail() {
                     <p className="font-semibold">Materia:</p>
                     <p className="border p-2 rounded">{rubric.materia}</p>
                 </div>
-                {/*<div className="w-full md:w-1/2 lg:w-1/3">
-                    <p className="font-semibold">Materia:</p>
-                    <p className="border p-2 rounded">{rubric.materia}</p>
-                </div>*/}
             </div>
             <table className="min-w-full bg-white border border-gray-300">
                 <thead>
@@ -76,7 +76,7 @@ export default function RubricDetail() {
                     <th className="border border-gray-300 bg-[#000066] text-white px-4 py-2 text-left">CRITERIOS</th>
                     {rubric.criterios[0]?.niveles.map((nivel, index) => (
                         <th key={index} className="border border-gray-300 bg-[#000066] text-white px-4 py-2 text-center">
-                            {`Nivel ${nivel.nivel}`}<br />{nivel.rango}
+                            {`Nivel ${nivel.idNivel}`}<br />{nivel.rangoNota}
                         </th>
                     ))}
                     <th className="border border-gray-300 bg-[#000066] text-white px-4 py-2 text-center">Porcentaje</th>
@@ -85,11 +85,11 @@ export default function RubricDetail() {
                 <tbody>
                 {rubric.criterios.map((criterio, index) => (
                     <tr key={index}>
-                        <td className="border border-gray-300 px-4 py-2">{criterio.criterio}</td>
+                        <td className="border border-gray-300 px-4 py-2">{criterio.crfDescripcion}</td>
                         {criterio.niveles.map((nivel, i) => (
-                            <td key={i} className="border border-gray-300 px-4 py-2">{nivel.descripcion}</td>
+                            <td key={i} className="border border-gray-300 px-4 py-2">{nivel.nivelDescripcion}</td>
                         ))}
-                        <td className="border border-gray-300 px-4 py-2 text-center">{criterio.porcentaje}%</td>
+                        <td className="border border-gray-300 px-4 py-2 text-center">{criterio.crfPorcentaje}%</td>
                     </tr>
                 ))}
                 </tbody>

@@ -6,27 +6,23 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { useState, useEffect } from "react"
 
-export default function EditRubric({ params }: { params: { id: string } }) {
+export default function EditRubric({ params }: { params: { data: any} }) {
     const navigate = useNavigate()
-    const { id } = params
+    const { data } = params
     const [formData, setFormData] = useState({
-        nombre: "",
+        id: data.id,
+        nombre: data.nombre,
         criterio: "",
         puntuacion: "",
         descripcion: "",
     })
     // Cargar datos de la rúbrica seleccionada
-    useEffect(() => {
-        fetch("/rubricas.json")
-            .then((res) => res.json())
-            .then((data) => {
-                const rubric = data.find((r: any) => r.id === id)
-                if (rubric) {
-                    setFormData(rubric)
-                }
-            })
-            .catch((error) => console.error(error))
-    }, [id])
+   // Cargar datos de la rúbrica seleccionada
+   useEffect(() => {
+       if (data) {
+           setFormData(data);
+       }
+   }, [data]);
 
     // Manejar cambios en los inputs
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
