@@ -1,6 +1,6 @@
 import { RubricInterface } from '../interfaces/RubricInterface';
 
-const baseUrl = 'https://api.example.com';
+const baseUrl = 'http://localhost:5000/api';
 
 
 async function createRubric(rubric: RubricInterface): Promise<RubricInterface> {
