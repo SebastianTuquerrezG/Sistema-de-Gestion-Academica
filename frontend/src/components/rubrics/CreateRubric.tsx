@@ -7,6 +7,9 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "@/components/ui/table";
 import Notification from "@/components/notifications/notification";
+import { createRubric } from "@/services/rubricService";
+import {RubricInterface} from "@/interfaces/RubricInterface.ts";
+
 
 type NotificationType = {
     type: "error" | "info" | "success";
@@ -244,8 +247,8 @@ export default function CreateRubric() {
             return;
         }
 
-        const rubricData = {
-            idRubrica: (document.getElementById("idRubrica") as HTMLInputElement)?.value,
+        const rubricData: RubricInterface = {
+            rubricaId: null ,
             nombreRubrica: (document.getElementById("nombreRubrica") as HTMLInputElement)?.value,
             materia: (document.getElementById("materia") as HTMLInputElement)?.value,
             notaRubrica: parseFloat((document.getElementById("notaRubrica") as HTMLInputElement)?.value || "0"),
@@ -261,23 +264,20 @@ export default function CreateRubric() {
             estado: "ACTIVO"
         };
 
-        localStorage.setItem("rubrica", JSON.stringify(rubricData));
-        console.log("Datos guardados en localStorage:", rubricData);
-
-        setNotification({
-            type: "success",
-            title: "Éxito",
-            message: "La rúbrica ha sido creada correctamente."
-        });
-
         try {
+            createRubric(rubricData).then(r => console.log(r));
+            setNotification({
+                type: "success",
+                title: "Éxito",
+                message: "La rúbrica ha sido creada correctamente."
+            });
             handleCancel();
         } catch (error) {
-            console.error("Error al guardar los datos en localStorage:", error);
+            console.error("Error al crear la rúbrica:", error);
             setNotification({
                 type: "error",
                 title: "Error",
-                message: "Ocurrió un error al guardar la rúbrica."
+                message: "Ocurrió un error al crear la rúbrica."
             });
         }
     };
