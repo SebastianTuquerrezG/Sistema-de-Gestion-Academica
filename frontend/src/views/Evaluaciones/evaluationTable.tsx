@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./EvaluacionesCSS/evaluationTable.css";
 import Notification from "../../components/notifications/notification";
-import PrimaryButton from "../../components/buttons/primaryButton";
+import {Button} from "@/components/ui/button.tsx";
 
 type NotificationType = {
   type: "error" | "info";
@@ -228,9 +228,9 @@ const EvaluationTable: React.FC<Props> = ({ criterios }) => {
       </table>
 
       <div className="button-container">
-        <PrimaryButton onClick={handleGuardarEvaluacion}>
+        <Button onClick={handleGuardarEvaluacion}>
           Guardar evaluación
-        </PrimaryButton>
+        </Button>
       </div>
     </div>
   );
