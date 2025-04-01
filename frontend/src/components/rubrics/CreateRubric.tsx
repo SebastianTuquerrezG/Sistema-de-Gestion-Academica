@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "@/components/ui/table";
 import Notification from "@/components/notifications/notification";
+import { createRubric } from '@/services/rubricService';
 
 type NotificationType = {
     type: "error" | "info" | "success";
@@ -191,7 +192,7 @@ export default function CreateRubric() {
         ]);
     };
 
-    const handleCreate = () => {
+    const handleCreate = async () => {
         // Validar campos obligatorios
         const requiredFields = [
             { field: (document.getElementById("idRubrica") as HTMLInputElement)?.value, name: "ID Rúbrica" },
@@ -245,7 +246,7 @@ export default function CreateRubric() {
         }
 
         const rubricData = {
-            idRubrica: (document.getElementById("idRubrica") as HTMLInputElement)?.value,
+            rubricaId: (document.getElementById("idRubrica") as HTMLInputElement)?.value,
             nombreRubrica: (document.getElementById("nombreRubrica") as HTMLInputElement)?.value,
             materia: (document.getElementById("materia") as HTMLInputElement)?.value,
             notaRubrica: parseFloat((document.getElementById("notaRubrica") as HTMLInputElement)?.value || "0"),
@@ -261,23 +262,24 @@ export default function CreateRubric() {
             estado: "ACTIVO"
         };
 
-        localStorage.setItem("rubrica", JSON.stringify(rubricData));
-        console.log("Datos guardados en localStorage:", rubricData);
-
-        setNotification({
-            type: "success",
-            title: "Éxito",
-            message: "La rúbrica ha sido creada correctamente."
-        });
-
         try {
+            // Call the API to create the rubric
+            const createdRubric = await createRubric(rubricData);
+
+            setNotification({
+                type: "success",
+                title: "Éxito",
+                message: "La rúbrica ha sido creada correctamente."
+            });
+
+            // Reset the form after successful creation
             handleCancel();
         } catch (error) {
-            console.error("Error al guardar los datos en localStorage:", error);
+            console.error("Error al crear la rúbrica:", error);
             setNotification({
                 type: "error",
                 title: "Error",
-                message: "Ocurrió un error al guardar la rúbrica."
+                message: "Ocurrió un error al crear la rúbrica. Por favor, inténtelo de nuevo."
             });
         }
     };

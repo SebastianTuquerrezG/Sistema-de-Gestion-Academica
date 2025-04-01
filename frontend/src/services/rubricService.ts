@@ -3,7 +3,7 @@ import { RubricInterface } from '../interfaces/RubricInterface';
 const baseUrl = 'http://localhost:8080/api';
 
 
-async function createRubric(rubric: RubricInterface): Promise<RubricInterface> {
+export async function createRubric(rubric: RubricInterface): Promise<RubricInterface> {
   const response = await fetch(`${baseUrl}/rubricas`, {
     method: 'POST',
     headers: {
