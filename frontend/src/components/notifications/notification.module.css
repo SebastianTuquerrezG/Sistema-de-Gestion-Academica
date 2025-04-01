@@ -19,6 +19,7 @@
     /* Ancho ajustado */
     height: 80px;
     /* Altura ajustada */
+    z-index: 9999; 
 }
 
 @keyframes slideIn {
