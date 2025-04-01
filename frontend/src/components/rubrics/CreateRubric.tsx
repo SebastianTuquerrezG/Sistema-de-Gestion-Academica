@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Plus, PlusCircle, Trash2 } from "lucide-react";
@@ -6,6 +6,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "@/components/ui/table";
+import Notification from "@/components/notifications/notification";
+
+type NotificationType = {
+    type: "error" | "info" | "success";
+    title: string;
+    message: string;
+};
 
 export default function CreateRubric() {
     const [levels, setLevels] = useState([
@@ -33,7 +40,25 @@ export default function CreateRubric() {
         }
     ]);
 
+    const [notification, setNotification] = useState<NotificationType | null>(null);
+
+    useEffect(() => {
+        if (notification) {
+            const timeout = setTimeout(() => setNotification(null), 4000);
+            return () => clearTimeout(timeout);
+        }
+    }, [notification]);
+
     const addLevel = () => {
+        if (levels.length >= 5) {
+            setNotification({
+                type: "error",
+                title: "Límite alcanzado",
+                message: "No puedes tener más de 5 niveles en una rúbrica."
+            });
+            return;
+        }
+
         const newId = levels.length > 0 ? Math.max(...levels.map(l => l.idNivel)) + 1 : 1;
         const newLevel = {
             idNivel: newId,
@@ -48,13 +73,20 @@ export default function CreateRubric() {
     };
 
     const removeLevel = () => {
-        if (levels.length > 1) {
-            setLevels(levels.slice(0, -1));
-            setRows(rows.map(row => ({
-                ...row,
-                niveles: row.niveles.slice(0, -1)
-            })));
+        if (levels.length <= 1) {
+            setNotification({
+                type: "error",
+                title: "Acción no permitida",
+                message: "Debe haber al menos un nivel en la rúbrica."
+            });
+            return;
         }
+
+        setLevels(levels.slice(0, -1));
+        setRows(rows.map(row => ({
+            ...row,
+            niveles: row.niveles.slice(0, -1)
+        })));
     };
 
     const handleCriterioChange = (rowIndex: number, value: string) => {
@@ -70,6 +102,16 @@ export default function CreateRubric() {
     };
 
     const handlePorcentajeChange = (rowIndex: number, value: string) => {
+        const numericValue = parseFloat(value);
+        if (!isNaN(numericValue) && (numericValue < 0 || numericValue > 1)) {
+            setNotification({
+                type: "error",
+                title: "Error",
+                message: "El porcentaje debe estar entre 0 y 1."
+            });
+            return;
+        }
+
         const newRows = [...rows];
         newRows[rowIndex].crfPorcentaje = value;
         setRows(newRows);
@@ -82,6 +124,15 @@ export default function CreateRubric() {
     };
 
     const addRow = () => {
+        if (rows.length >= 10) {
+            setNotification({
+                type: "error",
+                title: "Límite alcanzado",
+                message: "No puedes tener más de 10 criterios en una rúbrica."
+            });
+            return;
+        }
+
         const newId = rows.length > 0 ? Math.max(...rows.map(r => r.idCriterio)) + 1 : 1;
         setRows([...rows, {
             idCriterio: newId,
@@ -94,9 +145,16 @@ export default function CreateRubric() {
     };
 
     const removeRow = (index: number) => {
-        if (rows.length > 1) {
-            setRows(rows.filter((_, i) => i !== index));
+        if (rows.length <= 1) {
+            setNotification({
+                type: "error",
+                title: "Acción no permitida",
+                message: "Debe haber al menos un criterio en la rúbrica."
+            });
+            return;
         }
+
+        setRows(rows.filter((_, i) => i !== index));
     };
 
     const handleCancel = () => {
@@ -134,10 +192,55 @@ export default function CreateRubric() {
     };
 
     const handleCreate = () => {
-        const totalPercentage = rows.reduce((sum, row) => sum + (parseFloat(row.crfPorcentaje) || 0), 0);
+        // Validar campos obligatorios
+        const requiredFields = [
+            { field: (document.getElementById("idRubrica") as HTMLInputElement)?.value, name: "ID Rúbrica" },
+            { field: (document.getElementById("nombreRubrica") as HTMLInputElement)?.value, name: "Nombre Rúbrica" },
+            { field: (document.getElementById("materia") as HTMLInputElement)?.value, name: "Materia" },
+            { field: (document.getElementById("objetivoEstudio") as HTMLInputElement)?.value, name: "Objetivo de Estudio" }
+        ];
 
-        if (totalPercentage !== 1) {
-            alert("La suma de los porcentajes debe ser exactamente 100% (1 en decimal).");
+        const missingField = requiredFields.find(f => !f.field);
+        if (missingField) {
+            setNotification({
+                type: "error",
+                title: "Campo requerido",
+                message: `El campo "${missingField.name}" es obligatorio.`
+            });
+            return;
+        }
+
+        // Validar descripciones de criterios
+        const emptyCriteria = rows.find(row => !row.crfDescripcion.trim());
+        if (emptyCriteria) {
+            setNotification({
+                type: "error",
+                title: "Campo requerido",
+                message: "Todos los criterios deben tener una descripción."
+            });
+            return;
+        }
+
+        // Validar descripciones de niveles
+        const emptyLevel = rows.some(row =>
+            row.niveles.some(nivel => !nivel.nivelDescripcion.trim())
+        );
+        if (emptyLevel) {
+            setNotification({
+                type: "error",
+                title: "Campo requerido",
+                message: "Todos los niveles deben tener una descripción."
+            });
+            return;
+        }
+
+        const totalPercentage = rows.reduce((sum, row) => sum + (parseFloat(row.crfPorcentaje) || 0), 0);
+        if (Math.abs(totalPercentage - 1) > 0.0001) {
+            setNotification({
+                type: "error",
+                title: "Porcentaje inválido",
+                message: "La suma de los porcentajes debe ser exactamente 100% (1 en decimal)."
+            });
             return;
         }
 
@@ -160,15 +263,36 @@ export default function CreateRubric() {
 
         localStorage.setItem("rubrica", JSON.stringify(rubricData));
         console.log("Datos guardados en localStorage:", rubricData);
+
+        setNotification({
+            type: "success",
+            title: "Éxito",
+            message: "La rúbrica ha sido creada correctamente."
+        });
+
         try {
             handleCancel();
         } catch (error) {
             console.error("Error al guardar los datos en localStorage:", error);
+            setNotification({
+                type: "error",
+                title: "Error",
+                message: "Ocurrió un error al guardar la rúbrica."
+            });
         }
     };
 
     return (
-        <Card className="w-full max-w-[1200px]">
+        <Card className="w-full max-w-[1200px] relative">
+            {notification && (
+                <Notification
+                    type={notification.type}
+                    title={notification.title}
+                    message={notification.message}
+                    onClose={() => setNotification(null)}
+                />
+            )}
+
             <CardHeader>
                 <CardTitle>Crear Rúbrica de Evaluación</CardTitle>
                 <CardDescription>Ingresa los datos de la nueva rúbrica en el formulario.</CardDescription>
