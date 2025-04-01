@@ -38,7 +38,7 @@ const estudiantes: Estudiante[] = [
           descriptores: [
             { nivel: "Nivel 3", texto: "Excelente desempeño" },
             { nivel: "Nivel 4", texto: "Excelente desempeño" },
-           // { nivel: "Nivel 5", texto: "Excelente desempeño" },
+            { nivel: "Nivel 5", texto: "Excelente desempeño" },
             { nivel: "Nivel 2", texto: "Buen desempeño" },
             { nivel: "Nivel 1", texto: "Desempeño insuficiente" }
           ]

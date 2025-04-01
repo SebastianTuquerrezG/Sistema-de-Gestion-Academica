@@ -27,7 +27,7 @@ interface Props {
 const EvaluationTable: React.FC<Props> = ({ criterios }) => {
   const data = criterios;
 
-  // 🔁 Generar niveles dinámicamente
+  // Extraer niveles únicos dinámicamente
   const nivelesUnicos = Array.from(
     new Set(data.flatMap((c) => c.descriptores.map((d) => d.nivel)))
   );
@@ -36,7 +36,6 @@ const EvaluationTable: React.FC<Props> = ({ criterios }) => {
   const rangos = nivelesUnicos.map((nivel, index) => ({
     nivel,
     color: coloresBase[index % coloresBase.length],
-    // Puedes agregar campos de rango si luego los necesitas
   }));
 
   const [notification, setNotification] = useState<NotificationType | null>(null);
@@ -63,6 +62,27 @@ const EvaluationTable: React.FC<Props> = ({ criterios }) => {
   };
 
   const handleGuardarEvaluacion = () => {
+    const incompletos = valores.some((v) => v === "");
+    const comentarioExcedido = comentarios.some((c) => c.length > 250);
+
+    if (incompletos) {
+      setNotification({
+        type: "error",
+        title: "Campos incompletos",
+        message: "Debes ingresar todas las calificaciones antes de guardar.",
+      });
+      return;
+    }
+
+    if (comentarioExcedido) {
+      setNotification({
+        type: "error",
+        title: "Comentario demasiado largo",
+        message: "Cada comentario debe tener máximo 250 caracteres.",
+      });
+      return;
+    }
+
     const evaluacion = data.map((criterio, index) => ({
       criterio: criterio.criterio,
       porcentaje: criterio.porcentaje,
@@ -73,12 +93,13 @@ const EvaluationTable: React.FC<Props> = ({ criterios }) => {
 
     console.log("Evaluación enviada al backend:", evaluacion);
 
-    // Aquí puedes hacer el fetch real si lo deseas:
-    // fetch("/api/evaluaciones", {
-    //   method: "POST",
-    //   headers: { "Content-Type": "application/json" },
-    //   body: JSON.stringify(evaluacion)
-    // });
+    setNotification({
+      type: "info",
+      title: "Éxito",
+      message: "La evaluación fue guardada correctamente.",
+    });
+
+    setHasChanges(false);
   };
 
   useEffect(() => {
@@ -91,6 +112,13 @@ const EvaluationTable: React.FC<Props> = ({ criterios }) => {
     window.addEventListener("beforeunload", handleBeforeUnload);
     return () => window.removeEventListener("beforeunload", handleBeforeUnload);
   }, [hasChanges]);
+
+  useEffect(() => {
+    if (notification) {
+      const timeout = setTimeout(() => setNotification(null), 4000);
+      return () => clearTimeout(timeout);
+    }
+  }, [notification]);
 
   return (
     <div className="evaluation-table-container">
@@ -156,21 +184,30 @@ const EvaluationTable: React.FC<Props> = ({ criterios }) => {
                     step="0.1"
                     min="0"
                     max="5"
+                    placeholder="0.0"
                     className="evaluation-input"
                   />
                 </td>
                 <td>{ponderado}</td>
                 <td>
-                  <textarea
-                    value={comentarios[index]}
-                    onChange={(e) => {
-                      const copy = [...comentarios];
-                      copy[index] = e.target.value;
-                      setComentarios(copy);
-                    }}
-                    className="comment-box"
-                    placeholder="Escribe un comentario..."
-                  />
+                  <div>
+                    <textarea
+                      value={comentarios[index]}
+                      onChange={(e) => {
+                        const copy = [...comentarios];
+                        copy[index] = e.target.value;
+                        setComentarios(copy);
+                      }}
+                      className="comment-box"
+                      placeholder="Escribe un comentario..."
+                      maxLength={250}
+                    />
+                    <div
+                      className={`char-count ${comentarios[index].length === 250 ? "char-limit-reached" : ""}`}
+                    >
+                      {comentarios[index].length}/250
+                    </div>
+                  </div>
                 </td>
               </tr>
             );
