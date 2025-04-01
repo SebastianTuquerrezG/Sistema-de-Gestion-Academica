@@ -1,83 +1,107 @@
 "use client"
 
-import type React from "react"
+import { useEffect, useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Plus, Trash2, PlusCircle } from "lucide-react";
+import { Card, CardHeader, CardContent, CardDescription, CardTitle, CardFooter } from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
-import { Plus, Trash2, CirclePlus } from "lucide-react"
-import {Card,CardHeader,CardContent,CardDescription, CardTitle} from "@/components/ui/card.tsx";
+interface Nivel {
+    idNivel: number;
+    nivelDescripcion: string;
+    rangoNota: string;
+}
+
+interface Criterio {
+    idCriterio: string;
+    crfDescripcion: string;
+    niveles: Nivel[];
+    crfPorcentaje: number;
+}
+
+interface Rubric {
+    idRubrica: string;
+    nombreRubrica: string;
+    materia: string;
+    notaRubrica: number;
+    objetivoEstudio: string;
+    criterios: Criterio[];
+    estado: string;
+}
 
 export default function EditRubric() {
-    // Datos precargados para el ejemplo
-    const [rubricData, setRubricData] = useState({
-        id: "IS102",
-        name: "Evaluación de Proyecto Final",
-        subject: "Ingeniería de Software",
-        maxScore: "3",
-        objective: "Evaluar las competencias adquiridas en el desarrollo del proyecto final",
-    })
+    const { id } = useParams<{ id: string }>();
+    const navigate = useNavigate();
+    const [rubric, setRubric] = useState<Rubric | null>(null);
 
-    // Criterios precargados
-    const [criteria, setCriteria] = useState([
-        {
-            description: "Calidad del código",
-            percentage: "40.00",
-            comment: "Se evalúa la legibilidad, estructura y buenas prácticas",
-            level1: "Código desorganizado con múltiples errores",
-            level2: "Código funcional con estructura básica",
-            level3: "Código bien estructurado siguiendo estándares",
-        },
-        {
-            description: "Documentación",
-            percentage: "30.00",
-            comment: "Se evalúa la completitud y claridad de la documentación",
-            level1: "Documentación escasa o inexistente",
-            level2: "Documentación básica pero incompleta",
-            level3: "Documentación completa y bien estructurada",
-        },
-    ])
+    useEffect(() => {
+        fetch("/rubricas.json")
+            .then(res => res.json())
+            .then(data => {
+                const foundRubric = data.find((r: Rubric) => r.idRubrica === id);
+                setRubric(foundRubric || null);
+            })
+            .catch(error => console.error(error));
+    }, [id]);
 
-    // Función para actualizar los datos del formulario
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-        const { name, value } = e.target
-        setRubricData({
-            ...rubricData,
-            [name]: value,
-        })
+    if (!rubric) {
+        return <p className="text-center text-red-500">Rúbrica no encontrada.</p>;
     }
 
-    // Función para actualizar los criterios
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        const { id, value } = e.target;
+        setRubric((prevData) => prevData ? { ...prevData, [id]: value } : null);
+    };
+
     const handleCriteriaChange = (index: number, field: string, value: string) => {
-        const updatedCriteria = [...criteria]
+        if (!rubric) return;
+        const updatedCriteria = [...rubric.criterios];
         updatedCriteria[index] = {
             ...updatedCriteria[index],
             [field]: value,
-        }
-        setCriteria(updatedCriteria)
-    }
+        };
+        setRubric({ ...rubric, criterios: updatedCriteria });
+    };
 
-    // Función para añadir un nuevo criterio
-    const addCriteria = () => {
-        setCriteria([
-            ...criteria,
-            {
-                description: "",
-                percentage: "0.00",
-                comment: "",
-                level1: "",
-                level2: "",
-                level3: "",
-            },
-        ])
-    }
+    const addLevel = () => {
+        if (!rubric) return;
+        const newLevel: Nivel = { idNivel: rubric.criterios[0].niveles.length + 1, nivelDescripcion: "", rangoNota: "" };
+        const updatedCriteria = rubric.criterios.map(criterio => ({
+            ...criterio,
+            niveles: [...criterio.niveles, newLevel]
+        }));
+        setRubric({ ...rubric, criterios: updatedCriteria });
+    };
 
-    // Función para eliminar un criterio
-    const removeCriteria = (index: number) => {
-        const updatedCriteria = criteria.filter((_, i) => i !== index)
-        setCriteria(updatedCriteria)
-    }
+    const removeLevel = () => {
+        if (!rubric) return;
+        const updatedCriteria = rubric.criterios.map(criterio => ({
+            ...criterio,
+            niveles: criterio.niveles.slice(0, -1)
+        }));
+        setRubric({ ...rubric, criterios: updatedCriteria });
+    };
+
+    const addRow = () => {
+        if (!rubric) return;
+        const newCriterio: Criterio = {
+            idCriterio: (rubric.criterios.length + 1).toString(),
+            crfDescripcion: "",
+            crfPorcentaje: 0,
+            niveles: rubric.criterios[0].niveles.map(nivel => ({ ...nivel, nivelDescripcion: "" }))
+        };
+        setRubric({ ...rubric, criterios: [...rubric.criterios, newCriterio] });
+    };
+
+    const removeRow = (index: number) => {
+        if (!rubric) return;
+        const updatedCriteria = rubric.criterios.filter((_, i) => i !== index);
+        setRubric({ ...rubric, criterios: updatedCriteria });
+    };
 
     return (
         <Card className="w-full max-w-[1200px]">
@@ -86,168 +110,96 @@ export default function EditRubric() {
                 <CardDescription>Ingresa los datos de la nueva rúbrica en el formulario.</CardDescription>
             </CardHeader>
             <CardContent>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                <div>
-                    <label htmlFor="id" className="block mb-2 font-medium">
-                        ID Rúbrica
-                    </label>
-                    <Input id="id" name="id" placeholder="Ej: IS102" value={rubricData.id} onChange={handleInputChange} />
+                <div className="space-y-4">
+                    <div className="grid grid-cols-2 gap-4">
+                        <div className="grid w-full max-w-sm items-center gap-1.5">
+                            <Label htmlFor="idRubrica">ID Rúbrica</Label>
+                            <Input id="idRubrica" placeholder="Ej: IS102" value={rubric.idRubrica} onChange={handleInputChange} />
+                        </div>
+                        <div className="grid w-full max-w-sm items-center gap-1.5">
+                            <Label htmlFor="nombreRubrica">Nombre Rúbrica</Label>
+                            <Input id="nombreRubrica" placeholder="Nombre de la rúbrica" value={rubric.nombreRubrica} onChange={handleInputChange} />
+                        </div>
+                        <div className="grid w-full max-w-sm items-center gap-1.5">
+                            <Label htmlFor="materia">Materia</Label>
+                            <Input id="materia" placeholder="Nombre de la materia" value={rubric.materia} onChange={handleInputChange} />
+                        </div>
+                    </div>
                 </div>
-                <div>
-                    <label htmlFor="name" className="block mb-2 font-medium">
-                        Nombre Rúbrica
-                    </label>
-                    <Input
-                        id="name"
-                        name="name"
-                        placeholder="Nombre de la rúbrica"
-                        value={rubricData.name}
-                        onChange={handleInputChange}
-                    />
-                </div>
-                <div>
-                    <label htmlFor="subject" className="block mb-2 font-medium">
-                        Materia
-                    </label>
-                    <Input
-                        id="subject"
-                        name="subject"
-                        placeholder="Nombre de la materia"
-                        value={rubricData.subject}
-                        onChange={handleInputChange}
-                    />
-                </div>
-                <div>
-                    <label htmlFor="maxScore" className="block mb-2 font-medium">
-                        Nota Máxima Rúbrica
-                    </label>
-                    <Input
-                        id="maxScore"
-                        name="maxScore"
-                        placeholder="Ej: 3"
-                        value={rubricData.maxScore}
-                        onChange={handleInputChange}
-                    />
-                </div>
-            </div>
-                <div className="mb-6">
-                    <label htmlFor="objective" className="block mb-2 font-medium">
-                        Objetivo de Estudio
-                    </label>
-                    <Input
-                        id="objective"
-                        name="objective"
-                        placeholder="Objetivo de la evaluación"
-                        value={rubricData.objective}
-                        onChange={handleInputChange}
-                    />
-                </div>
-                <div className="mb-6">
-
-                    <CardTitle className="mt-6">Criterios de Evaluación</CardTitle>
-                    <CardDescription className="mb-4">Ingresa los criterios de evaluación y sus niveles.</CardDescription>
-
-                    <div className="overflow-x-auto">
-                    <table className="w-full border-collapse">
-                        <thead>
-                        <tr className="bg-[#0a0a6b] text-white">
-                            <th className="p-3 text-left">Criterio Evaluación</th>
-                            <th className="p-3 text-left">Porcentaje</th>
-                            <th className="p-3 text-left">Comentario</th>
-                            <th className="p-3 text-left">
-                                Nivel 1<div className="text-xs">0-1</div>
-                            </th>
-                            <th className="p-3 text-left">
-                                Nivel 2<div className="text-xs">1-2</div>
-                            </th>
-                            <th className="p-3 text-left">
-                                Nivel 3<div className="text-xs">2-3</div>
-                            </th>
-                            <th className="p-3 text-center">
-                                <CirclePlus className="inline-block w-5 h-5" />
-                            </th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {criteria.map((criterion, index) => (
-                            <tr key={index} className="border-b">
-                                <td className="p-2">
+                <CardTitle className="mt-6">Criterios de Evaluación</CardTitle>
+                <CardDescription className="mb-4">Ingresa los criterios de evaluación y sus niveles.</CardDescription>
+                <Table>
+                    <TableHeader>
+                        <TableRow>
+                            <TableHead>Criterio Evaluación</TableHead>
+                            <TableHead>Porcentaje</TableHead>
+                            {rubric.criterios[0]?.niveles.map((nivel, index) => (
+                                <TableHead key={index}>
+                                    <div className="flex flex-col">
+                                        <span>Nivel {nivel.idNivel}</span>
+                                        <span className="text-xs">{nivel.rangoNota}</span>
+                                    </div>
+                                </TableHead>
+                            ))}
+                            <TableHead>
+                                <Button onClick={addLevel} variant="ghost" size="icon">
+                                    <PlusCircle className="h-4 w-4" />
+                                </Button>
+                                <Button onClick={removeLevel} variant="ghost" size="icon" className="text-red-600">
+                                    <Trash2 className="h-4 w-4" />
+                                </Button>
+                            </TableHead>
+                        </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                        {rubric.criterios.map((criterio, rowIndex) => (
+                            <TableRow key={rowIndex}>
+                                <TableCell>
                                     <Textarea
+                                        value={criterio.crfDescripcion}
+                                        onChange={(e) => handleCriteriaChange(rowIndex, "crfDescripcion", e.target.value)}
                                         placeholder="Descripción del criterio"
-                                        value={criterion.description}
-                                        onChange={(e) => handleCriteriaChange(index, "description", e.target.value)}
-                                        className="min-h-[80px] resize-none"
                                     />
-                                </td>
-                                <td className="p-2">
+                                </TableCell>
+                                <TableCell>
                                     <Input
                                         type="number"
+                                        min="0"
+                                        max="1"
                                         step="0.01"
+                                        onChange={(e) => handleCriteriaChange(rowIndex, "crfPorcentaje", e.target.value)}
+                                        value={criterio.crfPorcentaje.toString()}
                                         placeholder="0.00"
-                                        value={criterion.percentage}
-                                        onChange={(e) => handleCriteriaChange(index, "percentage", e.target.value)}
-                                        className="w-24"
                                     />
-                                </td>
-                                <td className="p-2">
-                                    <Textarea
-                                        placeholder="Comentario para el criterio"
-                                        value={criterion.comment}
-                                        onChange={(e) => handleCriteriaChange(index, "comment", e.target.value)}
-                                        className="min-h-[80px] resize-none"
-                                    />
-                                </td>
-                                <td className="p-2">
-                                    <Textarea
-                                        placeholder="Descripción nivel 1"
-                                        value={criterion.level1}
-                                        onChange={(e) => handleCriteriaChange(index, "level1", e.target.value)}
-                                        className="min-h-[80px] resize-none"
-                                    />
-                                </td>
-                                <td className="p-2">
-                                    <Textarea
-                                        placeholder="Descripción nivel 2"
-                                        value={criterion.level2}
-                                        onChange={(e) => handleCriteriaChange(index, "level2", e.target.value)}
-                                        className="min-h-[80px] resize-none"
-                                    />
-                                </td>
-                                <td className="p-2">
-                                    <Textarea
-                                        placeholder="Descripción nivel 3"
-                                        value={criterion.level3}
-                                        onChange={(e) => handleCriteriaChange(index, "level3", e.target.value)}
-                                        className="min-h-[80px] resize-none"
-                                    />
-                                </td>
-                                <td className="p-2 text-center">
-                                    <Button
-                                        variant="ghost"
-                                        size="icon"
-                                        onClick={() => removeCriteria(index)}
-                                        className="text-red-500 hover:text-red-700 hover:bg-red-50"
-                                    >
-                                        <Trash2 className="h-5 w-5" />
+                                </TableCell>
+                                {criterio.niveles.map((nivel, nivelIndex) => (
+                                    <TableCell key={nivelIndex}>
+                                        <Textarea
+                                            value={nivel.nivelDescripcion}
+                                            onChange={(e) => handleCriteriaChange(rowIndex, `niveles.${nivelIndex}.nivelDescripcion`, e.target.value)}
+                                            placeholder={`Descripción nivel ${nivel.idNivel}`}
+                                        />
+                                    </TableCell>
+                                ))}
+                                <TableCell className="text-center">
+                                    <Button onClick={() => removeRow(rowIndex)} variant="ghost" size="icon" className="text-red-600">
+                                        <Trash2 className="h-1 w-1" />
                                     </Button>
-                                </td>
-                            </tr>
+                                </TableCell>
+                            </TableRow>
                         ))}
-                        </tbody>
-                    </table>
-                </div>
-
-                    <Button variant="outline" onClick={addCriteria} className="mt-4 bg-[#0a0a6b] text-white hover:bg-[#0a0a9b]">
-                        <Plus className="mr-2 h-4 w-4" /> Añadir Criterio
+                    </TableBody>
+                </Table>
+                <div className="mt-4">
+                    <Button onClick={addRow}>
+                        <Plus className="h-4 w-4 mr-2" />Añadir Criterio
                     </Button>
-            </div>
-
-                <div className="flex justify-between mt-8">
-                    <Button variant="outline">Cancelar</Button>
-                    <Button className="bg-[#0a0a6b] hover:bg-[#0a0a9b]">Guardar</Button>
                 </div>
             </CardContent>
+            <CardFooter className="flex justify-between">
+                <Button variant="outline" onClick={() => navigate("/rubricas")}>Cancelar</Button>
+                <Button className="bg-[#0a0a6b] hover:bg-[#0a0a9b]">Guardar</Button>
+            </CardFooter>
         </Card>
-    )
+    );
 }
-
