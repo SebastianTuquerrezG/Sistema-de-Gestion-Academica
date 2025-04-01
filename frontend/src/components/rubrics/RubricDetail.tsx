@@ -2,42 +2,17 @@
 
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { getRubricById } from "@/services/rubricService";
 
-interface Nivel {
-    idNivel: number;
-    nivelDescripcion: string;
-    rangoNota: string;
-}
-
-interface Criterio {
-    idCriterio: string;
-    crfDescripcion: string;
-    niveles: Nivel[];
-    crfPorcentaje: number;
-}
-
-interface Rubric {
-    idRubrica: string;
-    nombreRubrica: string;
-    materia: string;
-    notaRubrica: number;
-    objetivoEstudio: string;
-    criterios: Criterio[];
-    estado: string;
-}
 
 export default function RubricDetail() {
     const { id } = useParams<{ id: string }>();
     const [rubric, setRubric] = useState<Rubric | null>(null);
 
     useEffect(() => {
-        fetch("/rubricas.json")
-            .then(res => res.json())
-            .then(data => {
-                const foundRubric = data.find((r: Rubric) => r.idRubrica === id);
-                setRubric(foundRubric || null);
-            })
-            .catch(error => console.error(error));
+        getRubricById(id)
+            .then((data) => setRubric(data))
+            .catch((error) => console.error(error));
     }, [id]);
 
     if (!rubric) {
@@ -52,7 +27,7 @@ export default function RubricDetail() {
             <div className="flex items-start gap-4 relative">
                 <div className="w-full md:w-1/2 lg:w-1/3">
                     <p className="font-semibold">Identificador:</p>
-                    <p className="border p-2 rounded">{rubric.idRubrica}</p>
+                    <p className="border p-2 rounded">{rubric.rubricaId}</p>
                 </div>
                 <div className="w-full md:w-1/2 lg:w-1/3">
                     <p className="font-semibold">Nombre:</p>
