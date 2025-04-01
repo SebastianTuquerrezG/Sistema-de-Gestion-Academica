@@ -9,6 +9,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 import unicauca.edu.co.sga.evaluation_service.domain.enums.GeneralEnums;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -46,12 +47,16 @@ public class RubricEntity {
     @JsonBackReference
     private RAEntity ra;
 
-    @ManyToOne
+    /*@ManyToOne
     @JoinColumn(name = "criteria_id", nullable = false, foreignKey = @ForeignKey(name = "fk_criteria"))
     @JsonBackReference
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    private CriteriaEntity criteria;
+    private CriteriaEntity criteria;*/
+
+    @OneToMany(mappedBy = "rubric", fetch = FetchType.LAZY, cascade = CascadeType.ALL )
+    @JsonManagedReference
+    private List<CriteriaEntity> criterias;
 
     @OneToMany(mappedBy = "rubric", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference

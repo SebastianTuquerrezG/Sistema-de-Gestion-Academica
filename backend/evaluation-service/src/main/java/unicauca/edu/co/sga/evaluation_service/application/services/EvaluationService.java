@@ -94,7 +94,6 @@ public class EvaluationService implements EvaluationPort {
 
     @Override
     public boolean deleteEvaluation(Long id) {
-        //It's not necessary, the evaluations can't be deleted,but can be change of status
         return false;
     }
 

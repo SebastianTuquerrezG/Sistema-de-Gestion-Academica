@@ -1,5 +1,6 @@
 package unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
@@ -25,11 +26,17 @@ public class PerformanceEntity {
     private String description;
 
     @Column(nullable = false)
-    private float range_rating; // The points that each level have.
 
-    @OneToMany(mappedBy = "performanceLevel", cascade = CascadeType.ALL, orphanRemoval = true)
+    private String rango;
+
+    /*@OneToMany(mappedBy = "performanceLevel", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    private Set<CriteriaEntity> criteria;
+    private Set<CriteriaEntity> criteria;*/
+
+    @ManyToOne
+    @JoinColumn(name = "criteria_id")
+    @JsonBackReference
+    private CriteriaEntity criterio;
 }
