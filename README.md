@@ -1,18 +1,22 @@
-# Proyecto 1
-Github dedicado al desarrollo de la materia de proyecto 1. 
 
-## Tecnologias sugeridas:
-### Backend: 
-    Springboot y MySql 
-### Frontend: 
-    Angula con Ts
+# 📚 Sistema de Evaluación Individual
 
+## 🚀 Descripción
 
-## Documentacion:
+Esta rama del proyecto se centra en la **evaluación individual** de un estudiante por parte de un docente. Se implementa un sistema donde los docentes pueden calificar trabajos y asignaciones utilizando rúbricas, proporcionando retroalimentación detallada a cada estudiante.
 
-La documentacion se manejara en el repositorio.
-El modelado sera realizado en PowerDesigner.
+## 🎯 Características Principales
 
-Notas de clase:
-https://unicaucaeduco-my.sharepoint.com/:o:/g/personal/osfehoyos_unicauca_edu_co/EtaFhfdlmnZLhWI_NTnDvDIB17dZf9GLRjbYbll72qHzNg?e=CQuRPE
+✅ Evaluación individual de estudiantes por docentes.
+✅ Uso de rúbricas para la calificación.
+✅ Generación de reportes de desempeño por estudiante.
+✅ Almacenamiento y trazabilidad de las evaluaciones.
+✅ Posibilidad de retroalimentación y ajustes en las calificaciones.
 
+## 🏗️ Arquitectura y Tecnologías
+
+* **Backend: Java Spring**
+* **Frontend:** React con TypeScript.
+* **Base de Datos:** MariaDB.
+* **Mensajería:** RabbitMQ para eventos de evaluación.
+* **Autenticación y Autorización:** JWT.
