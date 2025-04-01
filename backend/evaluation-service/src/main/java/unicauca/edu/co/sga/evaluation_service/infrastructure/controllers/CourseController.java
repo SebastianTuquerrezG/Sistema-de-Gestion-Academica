@@ -64,7 +64,7 @@ public class CourseController {
     public ResponseEntity<CourseResponseDTO> getCourseBySubjectId(@PathVariable Long id){
         List<CourseResponseDTO> course = coursePort.getCoursesBySubjectId(id);
         if (course.isEmpty()){
-            throw new NotFoundException("Course with ID " + id + " not found.");
+            throw new NotFoundException("Course with subject ID " + id + " not found.");
         }
         return ResponseEntity.ok(course.getFirst());
     }
@@ -73,9 +73,17 @@ public class CourseController {
     public ResponseEntity<CourseResponseDTO> getCourseByRaId(@PathVariable Long id){
         List<CourseResponseDTO> course = coursePort.getCoursesByRAId(id);
         if (course.isEmpty()){
-            throw new NotFoundException("Course with ID " + id + " not found.");
+            throw new NotFoundException("Course with ra ID " + id + " not found.");
         }
         return ResponseEntity.ok(course.getFirst());
     }
 
+    @GetMapping("/teacher/{id}")
+    public ResponseEntity<CourseResponseDTO> getCourseByTeacherId(@PathVariable Long id){
+        List<CourseResponseDTO> course = coursePort.getCoursesByTeacherId(id);
+        if (course.isEmpty()){
+            throw new NotFoundException("Course with teacher ID " + id + " not found.");
+        }
+        return ResponseEntity.ok(course.getFirst());
+    }
 }

@@ -1,5 +1,6 @@
 package unicauca.edu.co.sga.evaluation_service.application.services;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,9 +21,11 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class CourseService implements CoursePort {
 
     private final CourseRepository courseRepository;
+    private final CourseMapper courseMapper;
 
     @Override
     public List<CourseResponseDTO> getCourses() {
@@ -72,6 +75,9 @@ public class CourseService implements CoursePort {
 
     @Override
     public List<CourseResponseDTO> getCoursesBySubjectId(Long id) {
+        if (id == null) {
+            throw new IllegalArgumentException("El ID de la materia (subject_id) no puede ser null");
+        }
         return courseRepository.findBySubjectId(id)
                 .stream().map(CourseMapper::toModel)
                 .map(CourseMapper::toDTO)
@@ -81,6 +87,14 @@ public class CourseService implements CoursePort {
     @Override
     public List<CourseResponseDTO> getCoursesByRAId(Long id) {
         return courseRepository.findByRaId(id)
+                .stream().map(CourseMapper::toModel)
+                .map(CourseMapper::toDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<CourseResponseDTO> getCoursesByTeacherId(Long id) {
+        return courseRepository.findByTeacherId(id)
                 .stream().map(CourseMapper::toModel)
                 .map(CourseMapper::toDTO)
                 .collect(Collectors.toList());

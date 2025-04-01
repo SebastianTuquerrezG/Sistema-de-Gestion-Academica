@@ -65,12 +65,12 @@ public class SubjectController {
     public ResponseEntity<Optional<SubjectResponseDTO>> getSubjectsByName(@RequestParam String name){
         Optional<SubjectResponseDTO> subjects = subjectPort.getByName(name);
         if (subjects.isEmpty()) {
-            throw new NotFoundException("No students found with name: " + name);
+            throw new NotFoundException("No subjects found with name: " + name);
         }
         return ResponseEntity.ok(subjects);
     }
 
-    @GetMapping("/status")
+    @GetMapping("/status/{type}")
     public ResponseEntity<List<SubjectResponseDTO>> getStudentByStatus(@PathVariable GeneralEnums.status type){
         List<SubjectResponseDTO> subjects = subjectPort.getByStatus(type);
         if (subjects.isEmpty()) {

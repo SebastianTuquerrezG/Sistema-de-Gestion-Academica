@@ -14,4 +14,5 @@ public interface CoursePort {
     boolean updateCourse(Long id, CourseRequestDTO course);
     List<CourseResponseDTO> getCoursesBySubjectId(Long id);
     List<CourseResponseDTO> getCoursesByRAId(Long id);
+    List<CourseResponseDTO> getCoursesByTeacherId(Long id);
 }

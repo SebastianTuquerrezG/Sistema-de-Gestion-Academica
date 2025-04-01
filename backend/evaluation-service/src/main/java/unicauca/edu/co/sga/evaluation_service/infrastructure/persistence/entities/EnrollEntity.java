@@ -33,11 +33,11 @@ public class EnrollEntity {
     @EqualsAndHashCode.Exclude
     private StudentEntity student;
 
-    @OneToMany(mappedBy = "enroll", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonManagedReference
-    @ToString.Exclude
-    @EqualsAndHashCode.Exclude
-    private Set<EvaluationEntity> evaluation;
+    //@OneToMany(mappedBy = "enroll", cascade = CascadeType.ALL, orphanRemoval = true)
+    //@JsonManagedReference
+    //@ToString.Exclude
+    //@EqualsAndHashCode.Exclude
+    //private Set<EvaluationEntity> evaluation;
 
     @Column(nullable = false, length = 100)
     private String semester;

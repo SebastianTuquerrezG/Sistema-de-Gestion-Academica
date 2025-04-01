@@ -4,7 +4,6 @@ import org.springframework.stereotype.Component;
 import unicauca.edu.co.sga.evaluation_service.application.dto.request.EvaluationRequestDTO;
 import unicauca.edu.co.sga.evaluation_service.application.dto.response.EvaluationResponseDTO;
 import unicauca.edu.co.sga.evaluation_service.domain.models.Evaluation;
-import unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.entities.EnrollEntity;
 import unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.entities.EvaluationEntity;
 import unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.entities.RubricEntity;
 
@@ -52,7 +51,6 @@ public class EvaluationMapper {
     public static EvaluationEntity toEntity(Evaluation domain) {
         return EvaluationEntity.builder()
                 .id(domain.getId())
-                .enroll(new EnrollEntity(domain.getEnroll(), null, null, null, null))
                 .rubric(new RubricEntity(domain.getRubric(), null, null, null, null, null, null, null, null, null, null))
                 .description(domain.getDescription())
                 .created_at(domain.getCreated_at())

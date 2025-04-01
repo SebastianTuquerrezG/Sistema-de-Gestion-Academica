@@ -20,9 +20,6 @@ public class EnrollRequestDTO {
     @NotNull(message = "El curso es obligatorio.")
     private Long course;
 
-    @NotNull(message = "La evaluacion es obligatoria.")
-    private Long evaluation;
-
     @NotNull(message = "El semestre es obligatorio.")
     private String semester;
 }

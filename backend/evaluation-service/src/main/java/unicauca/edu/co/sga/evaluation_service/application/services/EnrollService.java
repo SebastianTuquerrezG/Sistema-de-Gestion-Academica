@@ -7,9 +7,13 @@ import unicauca.edu.co.sga.evaluation_service.application.dto.request.EnrollRequ
 import unicauca.edu.co.sga.evaluation_service.application.dto.response.EnrollResponseDTO;
 import unicauca.edu.co.sga.evaluation_service.application.ports.EnrollPort;
 import unicauca.edu.co.sga.evaluation_service.domain.models.Enroll;
+import unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.entities.CourseEntity;
 import unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.entities.EnrollEntity;
+import unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.entities.StudentEntity;
 import unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.mappers.EnrollMapper;
+import unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.repositories.CourseRepository;
 import unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.repositories.EnrollRepository;
+import unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.repositories.StudentRepository;
 
 import java.util.List;
 import java.util.Optional;
@@ -20,6 +24,8 @@ import java.util.stream.Collectors;
 public class EnrollService implements EnrollPort {
 
     private final EnrollRepository enrollRepository;
+    private final StudentRepository studentRepository;
+    private final CourseRepository courseRepository;
 
     @Override
     public List<EnrollResponseDTO> getEnrolls() {
@@ -55,10 +61,11 @@ public class EnrollService implements EnrollPort {
     public boolean updateEnroll(Long id, EnrollRequestDTO enroll) {
         Optional<EnrollEntity> enrollExist = enrollRepository.findById(id);
         if (enrollExist.isPresent()){
-            EnrollEntity enrollEntity = enrollExist.orElseThrow(() -> new RuntimeException("Not found Enroll Entity"));
-            enrollEntity.setStudent(enrollExist.get().getStudent());
-            enrollEntity.setCourse(enrollExist.get().getCourse());
-            enrollEntity.setEvaluation(enrollExist.get().getEvaluation());
+            EnrollEntity enrollEntity = enrollExist.get();
+            Optional<StudentEntity> studentEntity = studentRepository.findById(enroll.getStudent());
+            Optional<CourseEntity> courseEntity = courseRepository.findById(enroll.getCourse());
+            studentEntity.ifPresent(enrollEntity::setStudent);
+            courseEntity.ifPresent(enrollEntity::setCourse);
             enrollEntity.setSemester(enroll.getSemester());
             enrollRepository.save(enrollEntity);
             return true;

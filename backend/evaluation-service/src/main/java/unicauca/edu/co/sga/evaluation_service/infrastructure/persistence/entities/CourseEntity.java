@@ -19,7 +19,7 @@ public class CourseEntity {
     @Column(name = "course_id", nullable = false, updatable = false, unique = true)
     private Long id;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "course_teacher",
             joinColumns = @JoinColumn(name = "course_id"),
             inverseJoinColumns = @JoinColumn(name = "teacher_id"))

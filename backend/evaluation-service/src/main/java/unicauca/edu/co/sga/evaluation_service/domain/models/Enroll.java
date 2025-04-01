@@ -22,6 +22,5 @@ public class Enroll {
     private Long id;
     private Long course;
     private Long student;
-    private Set<Long> evaluation;
     private String semester;
 }
