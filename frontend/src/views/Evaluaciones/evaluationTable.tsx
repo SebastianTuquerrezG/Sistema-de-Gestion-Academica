@@ -1,53 +1,43 @@
 import React, { useState, useEffect } from "react";
 import "./EvaluacionesCSS/evaluationTable.css";
 import Notification from "../../components/notifications/notification";
+import PrimaryButton from "../../components/buttons/primaryButton";
 
-// Definición de tipo para la notificación
 type NotificationType = {
   type: "error" | "info";
   title: string;
   message: string;
 };
 
-const EvaluationTable: React.FC = () => {
-  const rangos = [
+interface Descriptor {
+  nivel: string;
+  texto: string;
+}
 
-   // { nivel: "Nivel 3", superior: 5.0, inferior: 4.0, color: "#2e2ebe" },
-   // { nivel: "Nivel 4", superior: 5.0, inferior: 4.0, color: "#2e2ebe" },
-    { nivel: "Nivel 3", superior: 5.0, inferior: 4.0, color: "#2e2ebe" },
-    { nivel: "Nivel 2", superior: 3.0, inferior: 3.9, color: "#22229e" },
-    { nivel: "Nivel 1", superior: 0.0, inferior: 2.9, color: "#13137c" },
-  ];
+interface Criterio {
+  criterio: string;
+  porcentaje: number;
+  descriptores: Descriptor[];
+}
 
-  const data = [
-    {
-      criterio: "Genera ideas que dan solución a situaciones planteadas",
-      descriptores: [
-        { nivel: "Nivel 3", texto: "La idea planteada satisface la necesidad generada y contempla aspectos de creatividad" },
-        { nivel: "Nivel 2", texto: "Genera ideas que dan solución a las situaciones planteadas" },
-        { nivel: "Nivel 1", texto: "Las ideas generadas apuntan a dar solución a la situación planteada pero no alcanzan a plasmarse en el prototipo presentado" },
-      ],
-      porcentaje: 15,
-    },
-    {
-      criterio: "Propuesta de Diseño claro y uso de herramientas acordes con la propuesta",
-      descriptores: [
-        { nivel: "Nivel 3", texto: "Introduce herramientas computacionales novedosas al diseño trabajado" },
-        { nivel: "Nivel 2", texto: "Propuesta de Diseño claro y uso de herramientas acordes con la propuesta" },
-        { nivel: "Nivel 1", texto: "No hace uso de herramientas adecuadas para presentar el diseño" },
-      ],
-      porcentaje: 30,
-    },
-    {
-      criterio: "Evidencia Funcional del Diseño Propuesto",
-      descriptores: [
-        { nivel: "Nivel 3", texto: "Utiliza nuevos planteamientos de validación del diseño" },
-        { nivel: "Nivel 2", texto: "Evidencia funcional del diseño propuesto" },
-        { nivel: "Nivel 1", texto: "La validación del diseño, presenta inconsistencias" },
-      ],
-      porcentaje: 20,
-    },
-  ];
+interface Props {
+  criterios: Criterio[];
+}
+
+const EvaluationTable: React.FC<Props> = ({ criterios }) => {
+  const data = criterios;
+
+  // 🔁 Generar niveles dinámicamente
+  const nivelesUnicos = Array.from(
+    new Set(data.flatMap((c) => c.descriptores.map((d) => d.nivel)))
+  );
+
+  const coloresBase = ["#2e2ebe", "#22229e", "#13137c", "#0d0d66", "#050545"];
+  const rangos = nivelesUnicos.map((nivel, index) => ({
+    nivel,
+    color: coloresBase[index % coloresBase.length],
+    // Puedes agregar campos de rango si luego los necesitas
+  }));
 
   const [notification, setNotification] = useState<NotificationType | null>(null);
   const [hasChanges, setHasChanges] = useState(false);
@@ -67,7 +57,28 @@ const EvaluationTable: React.FC = () => {
   };
 
   const getNivel = (valor: number) => {
-    return rangos.find((r) => valor >= r.inferior && valor <= r.superior)?.nivel || "";
+    if (valor >= 4.0) return "Nivel 3";
+    if (valor >= 3.0) return "Nivel 2";
+    return "Nivel 1";
+  };
+
+  const handleGuardarEvaluacion = () => {
+    const evaluacion = data.map((criterio, index) => ({
+      criterio: criterio.criterio,
+      porcentaje: criterio.porcentaje,
+      calificacion: valores[index] || 0,
+      comentario: comentarios[index],
+      nivel: getNivel(Number(valores[index]) || 0),
+    }));
+
+    console.log("Evaluación enviada al backend:", evaluacion);
+
+    // Aquí puedes hacer el fetch real si lo deseas:
+    // fetch("/api/evaluaciones", {
+    //   method: "POST",
+    //   headers: { "Content-Type": "application/json" },
+    //   body: JSON.stringify(evaluacion)
+    // });
   };
 
   useEffect(() => {
@@ -108,8 +119,8 @@ const EvaluationTable: React.FC = () => {
             ))}
           </tr>
           <tr>
-            {rangos.map((r, i) => (
-              <th key={i}>{r.inferior} - {r.superior}</th>
+            {rangos.map((_, i) => (
+              <th key={i}>—</th>
             ))}
           </tr>
         </thead>
@@ -122,17 +133,20 @@ const EvaluationTable: React.FC = () => {
             return (
               <tr key={index}>
                 <td>{row.criterio}</td>
-                {rangos.map((rango, i) => (
-                  <td
-                    key={i}
-                    style={{
-                      backgroundColor: nivelActual === rango.nivel ? rango.color : "transparent",
-                      color: nivelActual === rango.nivel ? "white" : "black",
-                    }}
-                  >
-                    {row.descriptores[i]?.texto || "-"}
-                  </td>
-                ))}
+                {rangos.map((rango, i) => {
+                  const descriptor = row.descriptores.find(d => d.nivel === rango.nivel);
+                  return (
+                    <td
+                      key={i}
+                      style={{
+                        backgroundColor: nivelActual === rango.nivel ? rango.color : "transparent",
+                        color: nivelActual === rango.nivel ? "white" : "black",
+                      }}
+                    >
+                      {descriptor?.texto || "-"}
+                    </td>
+                  );
+                })}
                 <td>{row.porcentaje}%</td>
                 <td>
                   <input
@@ -175,6 +189,12 @@ const EvaluationTable: React.FC = () => {
           </tr>
         </tfoot>
       </table>
+
+      <div className="button-container">
+        <PrimaryButton onClick={handleGuardarEvaluacion}>
+          Guardar evaluación
+        </PrimaryButton>
+      </div>
     </div>
   );
 };

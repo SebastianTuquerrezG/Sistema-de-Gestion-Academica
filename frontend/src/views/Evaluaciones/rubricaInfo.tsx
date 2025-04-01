@@ -1,44 +1,40 @@
 import React from "react";
 import Dropdown from "../../components/utils/dropdown";
 import StaticField from "../../components/utils/staticField";
-import "./EvaluacionesCSS/rubricaInfo.css"; // Importamos el CSS
+import "./EvaluacionesCSS/rubricaInfo.css";
 
-const InfoRubrica: React.FC = () => {
+interface RubricaInfoProps {
+  estudiantes: string[];
+  periodos: string[];
+  materia: string;
+  rubricaNombre: string;
+  onSelectEstudiante: (nombre: string) => void;
+}
+
+const RubricaInfo: React.FC<RubricaInfoProps> = ({
+  estudiantes,
+  periodos,
+  materia,
+  rubricaNombre,
+  onSelectEstudiante,
+}) => {
   return (
     <div className="rubrica-info">
       <div className="rubrica-info-container">
-        
         {/* Columna izquierda */}
         <div className="info-block">
-          <Dropdown 
-            label="Estudiante" 
-            options={[
-              "Jonathan Felipe Hurtado", 
-              "Harold Andrés Molano", 
-              "Álvaro Javier Arroyo", 
-              "Felipe Armand Pino"
-            ]} 
-          />
-          <StaticField label="Rúbrica" value="Evaluación de Proyecto de Software" />
+          <Dropdown label="Estudiante" options={estudiantes} onSelect={onSelectEstudiante} />
+          <StaticField label="Rúbrica" value={rubricaNombre} />
         </div>
 
         {/* Columna derecha */}
         <div className="info-block">
-          <StaticField label="Materia" value="Ingeniería de Software III" />
-          <Dropdown 
-            label="Período" 
-            options={[
-              "Período Elegible", 
-              "2024-I", 
-              "2024-II", 
-              "2025-I"
-            ]} 
-          />
+          <StaticField label="Materia" value={materia} />
+          <Dropdown label="Período" options={periodos} />
         </div>
-        
       </div>
     </div>
   );
 };
 
-export default InfoRubrica;
+export default RubricaInfo;
