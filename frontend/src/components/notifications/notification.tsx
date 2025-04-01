@@ -17,7 +17,9 @@ const Notification: React.FC<NotificationProps> = ({ type, title, message, onClo
                 <strong>{title}</strong>
                 <p>{message}</p>
             </div>
-            <button className={styles.close} onClick={onClose}>x</button>
+            <button className={styles.close} onClick={onClose} aria-label="Close">
+                &times;
+            </button>
         </div>
     );
 };

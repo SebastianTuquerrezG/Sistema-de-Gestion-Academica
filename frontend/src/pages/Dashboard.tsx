@@ -4,6 +4,7 @@ import CreateRubric from "@/components/rubrics/CreateRubric";
 import EditRubric from "@/components/rubrics/EditRubric";
 import ConsultRubric from "@/components/rubrics/ConsultRubric";
 import RubricDetail from "@/components/rubrics/RubricDetail";
+import Evaluaciones from "@/views/Evaluaciones/Evaluaciones";
 
 export default function Dashboard() {
     return (
@@ -13,6 +14,8 @@ export default function Dashboard() {
                 <Route path="/rubricas/crear" element={<CreateRubric />} />
                 <Route path="/rubricas/editar/:id" element={<EditRubric />} />
                 <Route path="/rubricas/detalle/:id" element={<RubricDetail />} />
+                <Route path="/evaluaciones" element={<Evaluaciones/>} />
+
             </Routes>
         </DashboardLayout>
     );

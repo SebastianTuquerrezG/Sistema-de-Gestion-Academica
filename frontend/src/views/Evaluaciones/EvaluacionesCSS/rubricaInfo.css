@@ -1,0 +1,108 @@
+@import url('../../../assets/css/variables.css');
+@import "tailwindcss";
+
+.rubrica-info {
+    width: 90%;
+    max-width: 1000px;
+    margin: 0 auto;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+}
+
+.rubrica-info-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    column-gap: 50px;
+    row-gap: 30px;
+    width: 100%;
+}
+
+.info-block {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    width: 100%;
+}
+
+.info-block label {
+    font-weight: bold;
+    font-size: 16px;
+    margin-bottom: 4px;
+    font-family: var(--text-font);
+}
+
+.static-field {
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+    padding: 10px 15px;
+    border-radius: 6px;
+    font-size: 16px;
+    width: 100%;
+    font-family: var(--text-font);
+}
+
+.dropdown-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    position: relative;
+    /* Permite que el dropdown se posicione correctamente */
+}
+
+.dropdown-label {
+    font-weight: bold;
+    font-size: 16px;
+    margin-bottom: 6px;
+    font-family: var(--text-font);
+}
+
+.dropdown {
+    background-color: #f0f0f0;
+    border: 1px solid #8f8f8f;
+    padding: 12px 16px;
+    border-radius: 6px;
+    font-size: 16px;
+    font-family: var(--text-font);
+    width: 100%;
+    max-width: 100%;
+}
+
+.dropdown-options {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background: white;
+    border: 1px solid #ccc;
+    max-height: 200px;
+    overflow-y: auto;
+    width: 100%;
+    z-index: 1000;
+    /* Asegura que esté por encima de otros elementos */
+    list-style: none;
+    padding: 0;
+    margin-top: 4px;
+    /* Pequeño margen para evitar solapamiento */
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 6px;
+}
+
+.dropdown-options li {
+    padding: 10px 14px;
+    cursor: pointer;
+    font-family: var(--text-font);
+    font-size: 15px;
+}
+
+.dropdown-options li:hover {
+    background-color: #f0f0f0;
+}
+
+.dropdown-option-empty {
+    padding: 10px 14px;
+    color: gray;
+    font-style: italic;
+    font-family: var(--text-font);
+}
