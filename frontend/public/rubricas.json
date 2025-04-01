@@ -1,0 +1,330 @@
+[
+  {
+    "idRubrica": "IS101",
+    "nombreRubrica": "Evaluación de Proyecto de Software",
+    "materia": "Ingeniería de Software III",
+    "notaRubrica": 3,
+    "objetivoEstudio": "Objetivo 1",
+    "criterios": [
+      {
+        "idCriterio": 1,
+        "crfDescripcion": "Cumple con los requisitos del proyecto",
+        "crfPorcentaje": 0.3,
+        "crfNota": 0.0,
+        "crfComentario": "Comentario 1: El proyecto cumple parcialmente con los requisitos establecidos.",
+        "niveles": [
+          {
+            "idNivel": 1,
+            "nivelDescripcion": "No se cumplen los requisitos básicos del proyecto.",
+            "rangoNota": "0-1"
+          },
+          {
+            "idNivel": 2,
+            "nivelDescripcion": "Se cumplen algunos de los requisitos, pero hay áreas clave que no están completas.",
+            "rangoNota": "1-2"
+          },
+          {
+            "idNivel": 3,
+            "nivelDescripcion": "Todos los requisitos del proyecto están cumplidos satisfactoriamente.",
+            "rangoNota": "2-3"
+          }
+        ]
+      },
+      {
+        "idCriterio": 2,
+        "crfDescripcion": "Cumple con los estándares de calidad",
+        "crfPorcentaje": 0.25,
+        "crfNota": 0.0,
+        "crfComentario": "Comentario 2: El proyecto muestra un nivel básico de calidad, pero algunos estándares clave no se cumplen.",
+        "niveles": [
+          {
+            "idNivel": 1,
+            "nivelDescripcion": "La calidad es inaceptable, con múltiples errores y deficiencias.",
+            "rangoNota": "0-1"
+          },
+          {
+            "idNivel": 2,
+            "nivelDescripcion": "La calidad es adecuada, pero hay áreas de mejora significativas.",
+            "rangoNota": "1-2"
+          },
+          {
+            "idNivel": 3,
+            "nivelDescripcion": "La calidad es alta, y se cumplen los estándares establecidos.",
+            "rangoNota": "2-3"
+          }
+        ]
+      },
+      {
+        "idCriterio": 3,
+        "crfDescripcion": "Presentación y documentación del proyecto",
+        "crfPorcentaje": 0.2,
+        "crfNota": 0.0,
+        "crfComentario": "Comentario 3: La presentación es clara, pero la documentación necesita mejoras significativas.",
+        "niveles": [
+          {
+            "idNivel": 1,
+            "nivelDescripcion": "La presentación es desordenada, y la documentación está incompleta.",
+            "rangoNota": "0-1"
+          },
+          {
+            "idNivel": 2,
+            "nivelDescripcion": "La presentación es aceptable, pero la documentación está parcialmente desarrollada.",
+            "rangoNota": "1-2"
+          },
+          {
+            "idNivel": 3,
+            "nivelDescripcion": "La presentación es profesional y la documentación está completa y clara.",
+            "rangoNota": "2-3"
+          }
+        ]
+      },
+      {
+        "idCriterio": 4,
+        "crfDescripcion": "Trabajo en equipo y colaboración",
+        "crfPorcentaje": 0.15,
+        "crfNota": 0.0,
+        "crfComentario": "Comentario 4: El equipo ha trabajado de forma efectiva, aunque la colaboración podría mejorar en algunos aspectos.",
+        "niveles": [
+          {
+            "idNivel": 1,
+            "nivelDescripcion": "No hay evidencia de trabajo en equipo, y la colaboración es deficiente.",
+            "rangoNota": "0-1"
+          },
+          {
+            "idNivel": 2,
+            "nivelDescripcion": "El trabajo en equipo es adecuado, pero se requiere mejorar la colaboración.",
+            "rangoNota": "1-2"
+          },
+          {
+            "idNivel": 3,
+            "nivelDescripcion": "El equipo ha trabajado de manera excelente y ha demostrado una colaboración efectiva.",
+            "rangoNota": "2-3"
+          }
+        ]
+      }
+    ],
+    "estado": "ACTIVO"
+  },
+  {
+    "idRubrica": "IS102",
+    "nombreRubrica": "Evaluación de Proyecto de Software",
+    "materia": "Ingeniería de Software III",
+    "notaRubrica": 3,
+    "objetivoEstudio": "Objetivo 1",
+    "criterios": [
+      {
+        "idCriterio": 1,
+        "crfDescripcion": "Cumple con los requisitos del proyecto",
+        "crfPorcentaje": 0.3,
+        "crfNota": 0.0,
+        "crfComentario": "Comentario 1: El proyecto cumple parcialmente con los requisitos establecidos.",
+        "niveles": [
+          {
+            "idNivel": 1,
+            "nivelDescripcion": "No se cumplen los requisitos básicos del proyecto.",
+            "rangoNota": "0-1"
+          },
+          {
+            "idNivel": 2,
+            "nivelDescripcion": "Se cumplen algunos de los requisitos, pero hay áreas clave que no están completas.",
+            "rangoNota": "1-2"
+          },
+          {
+            "idNivel": 3,
+            "nivelDescripcion": "Todos los requisitos del proyecto están cumplidos satisfactoriamente.",
+            "rangoNota": "2-3"
+          }
+        ]
+      },
+      {
+        "idCriterio": 2,
+        "crfDescripcion": "Cumple con los estándares de calidad",
+        "crfPorcentaje": 0.25,
+        "crfNota": 0.0,
+        "crfComentario": "Comentario 2: El proyecto muestra un nivel básico de calidad, pero algunos estándares clave no se cumplen.",
+        "niveles": [
+          {
+            "idNivel": 1,
+            "nivelDescripcion": "La calidad es inaceptable, con múltiples errores y deficiencias.",
+            "rangoNota": "0-1"
+          },
+          {
+            "idNivel": 2,
+            "nivelDescripcion": "La calidad es adecuada, pero hay áreas de mejora significativas.",
+            "rangoNota": "1-2"
+          },
+          {
+            "idNivel": 3,
+            "nivelDescripcion": "La calidad es alta, y se cumplen los estándares establecidos.",
+            "rangoNota": "2-3"
+          }
+        ]
+      }
+    ],
+    "estado": "ACTIVO"
+  },
+  {
+    "idRubrica": "IS103",
+    "nombreRubrica": "Evaluación de Documentación Técnica",
+    "materia": "Ingeniería de Software III",
+    "notaRubrica": 4,
+    "objetivoEstudio": "Objetivo 2",
+    "criterios": [
+      {
+        "idCriterio": 1,
+        "crfDescripcion": "Claridad en la documentación",
+        "crfPorcentaje": 0.4,
+        "crfNota": 0.0,
+        "crfComentario": "Comentario 1: La documentación tiene áreas confusas que podrían dificultar la comprensión del proyecto.",
+        "niveles": [
+          {
+            "idNivel": 1,
+            "nivelDescripcion": "La documentación está incompleta y carece de claridad.",
+            "rangoNota": "0-1"
+          },
+          {
+            "idNivel": 2,
+            "nivelDescripcion": "La documentación es aceptable, pero algunas secciones son confusas.",
+            "rangoNota": "1-2"
+          },
+          {
+            "idNivel": 3,
+            "nivelDescripcion": "La documentación es clara, completa y bien estructurada.",
+            "rangoNota": "2-3"
+          }
+        ]
+      },
+      {
+        "idCriterio": 2,
+        "crfDescripcion": "Cumplimiento con las buenas prácticas de documentación",
+        "crfPorcentaje": 0.3,
+        "crfNota": 0.0,
+        "crfComentario": "Comentario 2: Algunas buenas prácticas de documentación no se han seguido adecuadamente.",
+        "niveles": [
+          {
+            "idNivel": 1,
+            "nivelDescripcion": "La documentación no sigue las buenas prácticas de formato y estructura.",
+            "rangoNota": "0-1"
+          },
+          {
+            "idNivel": 2,
+            "nivelDescripcion": "Se siguen algunas buenas prácticas, pero otras están ausentes.",
+            "rangoNota": "1-2"
+          },
+          {
+            "idNivel": 3,
+            "nivelDescripcion": "La documentación sigue estrictamente las buenas prácticas de formato y estructura.",
+            "rangoNota": "2-3"
+          }
+        ]
+      },
+      {
+        "idCriterio": 3,
+        "crfDescripcion": "Nivel de detalle en la documentación",
+        "crfPorcentaje": 0.3,
+        "crfNota": 0.0,
+        "crfComentario": "Comentario 3: La documentación es superficial en algunas áreas clave que requieren más detalle.",
+        "niveles": [
+          {
+            "idNivel": 1,
+            "nivelDescripcion": "La documentación carece de detalles importantes, lo que hace que sea difícil de seguir.",
+            "rangoNota": "0-1"
+          },
+          {
+            "idNivel": 2,
+            "nivelDescripcion": "La documentación contiene algunos detalles importantes, pero se necesita más profundidad.",
+            "rangoNota": "1-2"
+          },
+          {
+            "idNivel": 3,
+            "nivelDescripcion": "La documentación es detallada y cubre todos los aspectos necesarios.",
+            "rangoNota": "2-3"
+          }
+        ]
+      }
+    ],
+    "estado": "ACTIVO"
+  },
+  {
+    "idRubrica": "IS104",
+    "nombreRubrica": "Evaluación de Prueba de Software",
+    "materia": "Ingeniería de Software III",
+    "notaRubrica": 5,
+    "objetivoEstudio": "Objetivo 3",
+    "criterios": [
+      {
+        "idCriterio": 1,
+        "crfDescripcion": "Cobertura de pruebas",
+        "crfPorcentaje": 0.4,
+        "crfNota": 0.0,
+        "crfComentario": "Comentario 1: La cobertura de pruebas es limitada y no cubre todos los escenarios posibles.",
+        "niveles": [
+          {
+            "idNivel": 1,
+            "nivelDescripcion": "Las pruebas no cubren la mayoría de los casos importantes.",
+            "rangoNota": "0-1"
+          },
+          {
+            "idNivel": 2,
+            "nivelDescripcion": "Las pruebas cubren algunos casos importantes, pero no todos.",
+            "rangoNota": "1-2"
+          },
+          {
+            "idNivel": 3,
+            "nivelDescripcion": "Las pruebas cubren todos los escenarios posibles y son exhaustivas.",
+            "rangoNota": "2-3"
+          }
+        ]
+      },
+      {
+        "idCriterio": 2,
+        "crfDescripcion": "Automatización de pruebas",
+        "crfPorcentaje": 0.3,
+        "crfNota": 0.0,
+        "crfComentario": "Comentario 2: El proyecto incluye pruebas manuales sin automatización.",
+        "niveles": [
+          {
+            "idNivel": 1,
+            "nivelDescripcion": "No se han utilizado pruebas automatizadas en el proyecto.",
+            "rangoNota": "0-1"
+          },
+          {
+            "idNivel": 2,
+            "nivelDescripcion": "Se han automatizado algunas pruebas, pero no es suficiente.",
+            "rangoNota": "1-2"
+          },
+          {
+            "idNivel": 3,
+            "nivelDescripcion": "Todas las pruebas han sido automatizadas de manera efectiva.",
+            "rangoNota": "2-3"
+          }
+        ]
+      },
+      {
+        "idCriterio": 3,
+        "crfDescripcion": "Eficiencia de las pruebas",
+        "crfPorcentaje": 0.3,
+        "crfNota": 0.0,
+        "crfComentario": "Comentario 3: Las pruebas son eficientes en la mayoría de los casos, pero pueden mejorarse.",
+        "niveles": [
+          {
+            "idNivel": 1,
+            "nivelDescripcion": "Las pruebas son ineficientes y tardan demasiado tiempo en ejecutarse.",
+            "rangoNota": "0-1"
+          },
+          {
+            "idNivel": 2,
+            "nivelDescripcion": "Las pruebas son razonablemente eficientes, pero pueden optimizarse.",
+            "rangoNota": "1-2"
+          },
+          {
+            "idNivel": 3,
+            "nivelDescripcion": "Las pruebas son altamente eficientes y se ejecutan rápidamente.",
+            "rangoNota": "2-3"
+          }
+        ]
+      }
+    ],
+    "estado": "ACTIVO"
+  }
+]
