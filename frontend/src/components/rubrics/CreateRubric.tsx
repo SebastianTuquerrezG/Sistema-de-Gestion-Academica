@@ -1,31 +1,36 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import {Plus, PlusCircle, Trash2} from "lucide-react"
+import { Plus, PlusCircle, Trash2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "@/components/ui/table";
 
-export default function CreateRubric()
-{
+export default function CreateRubric() {
     const [levels, setLevels] = useState(["Nivel 1", "Nivel 2", "Nivel 3"]);
     const [rows, setRows] = useState([
-        { criterioEval: "", notas: Array(levels.length).fill("") },
-        { criterioEval: "", notas: Array(levels.length).fill("") },
-        { criterioEval: "", notas: Array(levels.length).fill("") },
+        { criterioEval: "", notas: Array(levels.length).fill(""), porcentaje: "" },
+        { criterioEval: "", notas: Array(levels.length).fill(""), porcentaje: "" },
+        { criterioEval: "", notas: Array(levels.length).fill(""), porcentaje: "" },
     ]);
 
-    // Add level
     const addLevel = () => {
-        const newLevel = `Nivel ${levels.length + 1}`;
-        setLevels([...levels, newLevel]);
+        setLevels([...levels, `Nivel ${levels.length + 1}`]);
         setRows(rows.map(row => ({ ...row, notas: [...row.notas, ""] })));
     };
-    // Remove level
+
     const removeLevel = () => {
         if (levels.length > 1) {
             setLevels(levels.slice(0, -1));
             setRows(rows.map(row => ({ ...row, notas: row.notas.slice(0, -1) })));
         }
+    };
+
+    const handleCriterioChange = (rowIndex: number, value: string) => {
+        const newRows = [...rows];
+        newRows[rowIndex].criterioEval = value;
+        setRows(newRows);
     };
 
     const handleChange = (rowIndex: number, colIndex: number, value: string) => {
@@ -34,30 +39,43 @@ export default function CreateRubric()
         setRows(newRows);
     };
 
-    // Función para manejar cambios en el criterio de evaluación
-    const handleCriterioChange = (rowIndex: number, value: string) => {
-        const newRows = [...rows];
-        newRows[rowIndex].criterioEval = value;
-        setRows(newRows);
-    };
-
-    // Función para agregar una nueva fila
     const addRow = () => {
-        setRows([...rows, { criterioEval: "", notas: Array(levels.length).fill("") }]);
+        setRows([...rows, { criterioEval: "", notas: Array(levels.length).fill(""), porcentaje: "" }]);
     };
 
-    // Función para eliminar una fila
     const removeRow = (index: number) => {
         if (rows.length > 1) {
             setRows(rows.filter((_, i) => i !== index));
         }
     };
 
-    // Calcular las notas dividiendo 5 entre el número de niveles
-    const notaValue = (5 / levels.length).toFixed(2);
+    const handleCancel = () => {
+        setLevels(["Nivel 1", "Nivel 2", "Nivel 3"]);
+        setRows([
+            {
+                criterioEval: "", notas: Array(3).fill(""),
+                porcentaje: ""
+            },
+            {
+                criterioEval: "", notas: Array(3).fill(""),
+                porcentaje: ""
+            },
+            {
+                criterioEval: "", notas: Array(3).fill(""),
+                porcentaje: ""
+            },
+        ]);
+    };
 
     // Función para manejar la acción del botón "Crear"
     const handleCreate = () => {
+        const totalPercentage = rows.reduce((sum, row) => sum + Number(row.porcentaje || 0), 0);
+
+        if (totalPercentage !== 100) {
+            alert("La suma de los porcentajes debe ser exactamente 100%.");
+            return;
+        }
+
         const rubricData = {
             nombre: (document.getElementById("nombre") as HTMLInputElement)?.value,
             descripcion: (document.getElementById("descripcion-rubrica") as HTMLInputElement)?.value,
@@ -71,110 +89,86 @@ export default function CreateRubric()
             handleCancel();
         } catch (error) {
             console.error("Error al guardar los datos en localStorage:", error);
-            
         }
-        
     };
-    //Funcion que reinicia los valores de levels y rows
-    const handleCancel = () => {
-        setLevels(["Nivel 1", "Nivel 2", "Nivel 3"]); // Restaurar niveles iniciales
-        setRows([
-            { criterioEval: "", notas: Array(3).fill("") },
-            { criterioEval: "", notas: Array(3).fill("") },
-            { criterioEval: "", notas: Array(3).fill("") },
-        ]);
 
-        // Limpiar los campos de entrada del formulario
-        (document.getElementById("nombre") as HTMLInputElement).value = "";
-        (document.getElementById("descripcion-rubrica") as HTMLInputElement).value = "";
-    };
 
     return (
-        <Card id="CrearRubrica" className="w-full max-w-[850px] text-[28px]">
+        <Card className="w-full max-w-[850px]">
             <CardHeader>
                 <CardTitle>Crear Rúbrica de Evaluación</CardTitle>
-                <CardDescription>Ingresa los datos de la nueva rubrica en el formulario.</CardDescription>
+                <CardDescription>Ingresa los datos de la nueva rúbrica en el formulario.</CardDescription>
             </CardHeader>
             <CardContent>
-                <form>
-                    <div className="grid w-full items-center gap-4">
-                        <div className="flex flex-col space-y-1.5">
-                            <Label htmlFor="nombre">Nombre</Label>
-                            <Input id="nombre" placeholder="Nombre de la rubrica" />
-                        </div>
-                        <div className="flex flex-col space-y-1.5">
-                            <Label htmlFor="descripcion-rubrica">Descripción</Label>
-                            <Input id="descripcion-rubrica" placeholder="Descripción del criterio" />
-                        </div>
-                        <div className="flex flex-col space-y-1.5">
-
-                        </div>
+                <div className="space-y-4">
+                    <div>
+                        <Label htmlFor="nombre">Nombre</Label>
+                        <Input id="nombre" placeholder="Nombre de la rúbrica" />
                     </div>
-                </form>
-                <CardTitle>Criterios de Evaluación</CardTitle>
-                <CardDescription className="mb-4">A continuación podrá ingregar la información de los criterios de evaluación de la rúbrica y sus niveles </CardDescription>
-
-                <div className="w-full overflow-auto">
-                    <table className="w-full min-w-max">
-                        <thead>
-                        <tr className="title5 bg-[#000066] text-white ">
-                            <th className="border p-2 text-center ">Criterio Evaluación</th>
+                    <div>
+                        <Label htmlFor="descripcion">Descripción</Label>
+                        <Input id="descripcion" placeholder="Descripción del criterio" />
+                    </div>
+                </div>
+                <CardTitle className="mt-6">Criterios de Evaluación</CardTitle>
+                <CardDescription className="mb-4">Ingresa los criterios de evaluación y sus niveles.</CardDescription>
+                <Table>
+                    <TableHeader>
+                        <TableRow>
+                            <TableHead>Criterio Evaluación</TableHead>
+                            <TableHead>Porcentajes</TableHead>
                             {levels.map((level, index) => (
-                                <th key={index} className="border p-2">{level}</th>
+                                <TableHead key={index}>{level}</TableHead>
                             ))}
-                            <th className=" bg-white px-6 py-3 text-left">
-                                <Button onClick={addLevel} variant="ghost" size="icon" className="h-8 w-8 text-[#000066] hover:text-[#3333FF]">
+                            <TableHead>
+                                <Button onClick={addLevel} variant="ghost" size="icon">
                                     <PlusCircle className="h-4 w-4" />
                                 </Button>
-                                <Button onClick={removeLevel} variant="ghost" size="icon" className="h-8 w-8 text-red-700 hover:text-red-400">
+                                <Button onClick={removeLevel} variant="ghost" size="icon" className="text-red-600">
                                     <Trash2 className="h-4 w-4" />
                                 </Button>
-                            </th>
-                        </tr>
-                        </thead>
-                        <tbody className="text-base">
-                        <tr className="bg-gray-100">
-                            <td className="border border-gray-300 px-4 py-2 title5">Nota</td>
-                            {levels.map((_, index) => (
-                                <td key={index} className="border p-2 text-center title5">{notaValue}</td>
-                            ))}
-                            <td className="border p-2"></td>
-                        </tr>
+                            </TableHead>
+                        </TableRow>
+                    </TableHeader>
+                    <TableBody>
                         {rows.map((row, rowIndex) => (
-                            <tr key={rowIndex}>
-                                <td className="border p-2">
-                                <textarea
-                                    value={row.criterioEval}
-                                    onChange={(e) => handleCriterioChange(rowIndex, e.target.value)}
-                                    placeholder="Descripcion Criterio"
-                                    className="w-full p-1 border"
-                                />
-                                </td>
+                            <TableRow key={rowIndex}>
+                                <TableCell>
+                                    <Textarea value={row.criterioEval} onChange={(e) => handleCriterioChange(rowIndex, e.target.value)} placeholder="Descripción Criterio" />
+                                </TableCell>
+                                <TableCell>
+                                    <div className="flex items-center">
+                                        <Input
+                                            type="number"
+                                            min="0"
+                                            max="100"
+                                            onChange={(e) => {
+                                                const newRows = [...rows];
+                                                newRows[rowIndex].porcentaje = e.target.value;
+                                                setRows(newRows);
+                                            }}
+                                            value={row.porcentaje || 0}
+                                        />
+                                        <span className="ml-1">%</span>
+                                    </div>
+                                </TableCell>
                                 {row.notas.map((nota, colIndex) => (
-                                    <td key={colIndex} className="border p-2">
-                                    <textarea
-                                        value={nota}
-                                        onChange={(e) => handleChange(rowIndex, colIndex, e.target.value)}
-                                        placeholder="Descripción"
-                                        className="w-full p-1 border"
-                                    />
-                                    </td>
+                                    <TableCell key={colIndex}>
+                                        <Textarea value={nota} onChange={(e) => handleChange(rowIndex, colIndex, e.target.value)} placeholder="Descripción" />
+                                    </TableCell>
                                 ))}
-                                <td className="border p-2">
-                                    <Button onClick={() => removeRow(rowIndex)} variant="ghost" size="icon" className="h-8 w-8 text-red-700 hover:text-red-400">
-                                        <Trash2 className="h-4 w-4" />
+                                <TableCell className="text-center">
+                                    <Button onClick={() => removeRow(rowIndex)} variant="ghost" size="icon" className="text-red-600">
+                                        <Trash2 className="h-1 w-1" />
                                     </Button>
-                                </td>
-                            </tr>
+                                </TableCell>
+                            </TableRow>
                         ))}
-                        </tbody>
-                    </table>
-                </div>
-
+                    </TableBody>
+                </Table>
                 <div className="mt-4">
-                    <Button onClick={addRow} className="bg-[#000066] text-white px-4 py-2 rounded">
-                        <Plus className="h-4 w-4 mr-2" />
-                        Añadir Rubrica
+                    <Button onClick={addRow}>
+                        <Plus className="h-4 w-4 mr-2" />Añadir Rubrica
                     </Button>
                 </div>
             </CardContent>
@@ -184,4 +178,4 @@ export default function CreateRubric()
             </CardFooter>
         </Card>
     );
-};
+}
