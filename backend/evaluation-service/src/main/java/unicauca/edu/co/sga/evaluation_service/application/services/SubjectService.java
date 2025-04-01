@@ -6,7 +6,10 @@ import unicauca.edu.co.sga.evaluation_service.application.dto.request.SubjectReq
 import unicauca.edu.co.sga.evaluation_service.application.dto.response.SubjectResponseDTO;
 import unicauca.edu.co.sga.evaluation_service.application.ports.SubjectPort;
 import unicauca.edu.co.sga.evaluation_service.domain.enums.GeneralEnums;
+import unicauca.edu.co.sga.evaluation_service.domain.models.Subject;
 import unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.entities.SubjectEntity;
+import unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.mappers.StudentMapper;
+import unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.mappers.SubjectMapper;
 import unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.repositories.SubjectRepository;
 
 import java.util.List;
@@ -46,29 +49,53 @@ public class SubjectService implements SubjectPort {
     }
 
     @Override
-    public SubjectResponseDTO saveSubject(SubjectRequestDTO subject) {
-        return null;
+    public SubjectResponseDTO saveSubject(SubjectRequestDTO subjectDTO) {
+        Subject subject = SubjectMapper.toModel(subjectDTO);
+        SubjectEntity subjectEntity = SubjectMapper.toEntity(subject);
+        return SubjectMapper.toDTO(
+                SubjectMapper.toModel(
+                        subjectRepository.save(subjectEntity)));
     }
 
     @Override
-    public boolean deleteSubject(Long id) {
-        return false;
+    public boolean deleteSubject(Long subjectId) {
+        if (subjectRepository.existsById(subjectId)) {
+            subjectRepository.deleteById(subjectId);
+            return true;
+        } else {
+            return false;
+        }
     }
 
     @Override
-    public boolean updateSubject(Long id, SubjectRequestDTO subject) {
+    public boolean updateSubject(Long subjectId, SubjectRequestDTO subject) {
+        Optional<SubjectEntity> subjectExist = subjectRepository.findById(subjectId);
+        if(subjectExist.isPresent()){
+            SubjectEntity subjectEntity = subjectExist.orElseThrow(() -> new RuntimeException("Subject not found"));
+            subjectEntity.setName(subject.getName());
+            subjectEntity.setCredits(subject.getCredits());
+            subjectEntity.setObjectives(subject.getObjectives());
+            subjectEntity.setStatus(subject.getStatus());
+            subjectRepository.save(subjectEntity);
+            return true;
+        }
         return false;
     }
 
     @Override
     public Optional<SubjectResponseDTO> getByName(String name) {
-        return Optional.empty();
+        return subjectRepository.findByNameContainingIgnoreCase(name).stream()
+                .map(SubjectMapper::toModel)
+                .map(SubjectMapper::toDTO)
+                .findFirst();
     }
 
     @Override
     public List<SubjectResponseDTO> getByStatus(GeneralEnums.status status) {
-        return List.of();
+        return subjectRepository.findByStatus(status).stream()
+                .map(SubjectMapper::toModel)
+                .map(SubjectMapper::toDTO)
+                .collect(Collectors.toList());
     }
-
 
 }

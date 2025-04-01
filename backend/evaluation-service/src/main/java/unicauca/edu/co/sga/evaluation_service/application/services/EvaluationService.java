@@ -1,55 +1,121 @@
 package unicauca.edu.co.sga.evaluation_service.application.services;
 
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 import unicauca.edu.co.sga.evaluation_service.application.dto.request.EvaluationRequestDTO;
-import unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.entities.*;
-import unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.repositories.*;
+import unicauca.edu.co.sga.evaluation_service.application.dto.response.EvaluationResponseDTO;
+import unicauca.edu.co.sga.evaluation_service.application.ports.EvaluationPort;
+import unicauca.edu.co.sga.evaluation_service.domain.enums.EvaluationStatus;
+import unicauca.edu.co.sga.evaluation_service.domain.exceptions.NotFoundException;
+import unicauca.edu.co.sga.evaluation_service.domain.models.Evaluation;
+import unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.entities.EnrollEntity;
+import unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.entities.EvaluationEntity;
+import unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.entities.RubricEntity;
+import unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.mappers.EvaluationMapper;
+import unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.repositories.EnrollRepository;
+import unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.repositories.EvaluationRepository;
+import unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.repositories.RubricRepository;
 
-
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
-
 @Transactional
-public class EvaluationService {
+@RequiredArgsConstructor
+public class EvaluationService implements EvaluationPort {
     private final EvaluationRepository evaluationRepository;
     private final EnrollRepository enrollRepository;
     private final RubricRepository rubricRepository;
 
-    @Autowired
-    public EvaluationService(EvaluationRepository evaluationRepository,
-                             EnrollRepository enrollRepository,
-                             RubricRepository rubricRepository, CriteriaRepository criteriaRepository, CalificationRegisterRepository calificationRegisterRepository) {
-        this.evaluationRepository = evaluationRepository;
-        this.enrollRepository = enrollRepository;
-        this.rubricRepository = rubricRepository;
-    }
+    @Transactional
+    public EvaluationResponseDTO saveEvaluation(EvaluationRequestDTO evaluationRequestDTO) {
+        if (evaluationRequestDTO.getScore() == null || evaluationRequestDTO.getEvidenceUrl() == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "La evaluacion requiere una calificacion y evidencia");
+        }
+        if (evaluationRepository.existsByEnrollIdAndRubricId(
+                evaluationRequestDTO.getEnroll(),
+                evaluationRequestDTO.getRubric())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "El estudiante ya ha sido evaluado en esta rubrica");
+        }
 
-    public EvaluationEntity createEvaluation(EvaluationRequestDTO evaluationRequestDTO) {
-        // VERIFICACIONES
         EnrollEntity enroll = enrollRepository.findById(evaluationRequestDTO.getEnroll())
-                .orElseThrow(() -> new EntityNotFoundException(
+                .orElseThrow(() -> new NotFoundException(
                         "Enroll no encontrado con id: " + evaluationRequestDTO.getEnroll()));
 
         RubricEntity rubric = rubricRepository.findById(evaluationRequestDTO.getRubric())
-                .orElseThrow(() -> new EntityNotFoundException(
+                .orElseThrow(() -> new NotFoundException(
                         "Rubric no encontrado con id: " + evaluationRequestDTO.getRubric()));
 
-        // CREAR NUEVA EVALUACION
-        EvaluationEntity evaluation = new EvaluationEntity();
-        evaluation.setEnroll(enroll);
-        evaluation.setRubric(rubric);
-        evaluation.setDescription(evaluationRequestDTO.getDescription());
+        Evaluation evaluation = EvaluationMapper.toModel(evaluationRequestDTO);
+        EvaluationEntity evaluationEntity = EvaluationMapper.toEntity(evaluation);
 
-        return evaluationRepository.save(evaluation);
+        evaluationEntity.setEnroll(enroll);
+        evaluationEntity.setRubric(rubric);
+        evaluationEntity.setDescription(evaluationRequestDTO.getDescription());
+        evaluationEntity.setEvaluationStatus(
+                evaluationRequestDTO.getEvaluationStatus() != null
+                        ? evaluationRequestDTO.getEvaluationStatus()
+                        : EvaluationStatus.NO_EVALUADO
+        );
+        evaluationEntity.setScore(evaluationRequestDTO.getScore());
+        evaluationEntity.setEvidenceUrl(evaluationRequestDTO.getEvidenceUrl());
+
+        return EvaluationMapper.toDTO(
+                EvaluationMapper.toModel(
+                        evaluationRepository.saveAndFlush(evaluationEntity))
+        );
     }
 
-    public EvaluationEntity getEvaluationById(Long id) {
-        return evaluationRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(
+    @Override
+    public List<EvaluationResponseDTO> getEvaluations() {
+        return evaluationRepository.findAll().stream()
+                .map(EvaluationMapper::toModel)
+                .map(EvaluationMapper::toDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public Optional<EvaluationResponseDTO> getEvaluationById(Long id) {
+        EvaluationEntity evaluation = evaluationRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException(
                         "Evaluation no encontrada con id: " + id));
+
+        return Optional.of(
+                EvaluationMapper.toDTO(
+                        EvaluationMapper.toModel(evaluation))
+        );
     }
 
+    @Override
+    public boolean deleteEvaluation(Long id) {
+        //It's not necessary, the evaluations can't be deleted,but can be change of status
+        return false;
+    }
+
+    @Override
+    public boolean updateEvaluation(Long id, EvaluationRequestDTO evaluation) {
+        return false;
+    }
+
+    @Override
+    public List<EvaluationResponseDTO> getEvaluationsByEnrollId(Long enrollId) {
+        return evaluationRepository.findByEnrollId(enrollId).stream()
+                .map(EvaluationMapper::toModel)
+                .map(EvaluationMapper::toDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<EvaluationResponseDTO> getEvaluationsByRubricId(Long rubricId) {
+        return evaluationRepository.findByRubricId(rubricId).stream()
+                .map(EvaluationMapper::toModel)
+                .map(EvaluationMapper::toDTO)
+                .collect(Collectors.toList());
+    }
 }

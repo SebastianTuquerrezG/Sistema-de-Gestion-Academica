@@ -12,6 +12,7 @@ import java.util.List;
 
 @Repository
 public interface EvaluationRepository extends JpaRepository<EvaluationEntity, Long> {
+    Boolean existsByEnrollIdAndRubricId(Long enrollId, Long rubricId);
     List<EvaluationEntity> findByEnrollId(Long enrollId);
     List<EvaluationEntity> findByRubricId(Long rubricId);
 

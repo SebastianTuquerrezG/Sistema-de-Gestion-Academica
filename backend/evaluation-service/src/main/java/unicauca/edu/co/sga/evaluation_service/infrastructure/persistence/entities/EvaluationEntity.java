@@ -7,9 +7,9 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import unicauca.edu.co.sga.evaluation_service.domain.enums.EvaluationStatus;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
@@ -62,4 +62,10 @@ public class EvaluationEntity {
     @UpdateTimestamp
     @Temporal(TemporalType.DATE)
     private Date updated_at;
+
+    @Column(name = "score", precision = 5, scale = 2)
+    private BigDecimal score;
+
+    @Column(name = "evidence_url", length = 500)
+    private String evidenceUrl;
 }

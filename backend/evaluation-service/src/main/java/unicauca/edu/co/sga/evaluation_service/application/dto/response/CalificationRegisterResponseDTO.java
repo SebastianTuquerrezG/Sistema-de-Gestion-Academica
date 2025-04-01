@@ -13,5 +13,6 @@ public class CalificationRegisterResponseDTO {
     private Long id;
     private Double calification;
     private String message;
-    private Integer level;
+    private String level;
+    private Long evaluationId;
 }
