@@ -1,5 +1,5 @@
 export interface LevelInterface {
-    levelId: number;
-    levelDescription: string;
-    gradeRange: string;
+    idNivel: number;
+    nivelDescripcion: string;
+    rangoNota: string;
 }
