@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.server.ResponseStatusException;
 import unicauca.edu.co.sga.evaluation_service.application.dto.request.EvaluationRequestDTO;
 import unicauca.edu.co.sga.evaluation_service.application.dto.response.EvaluationResponseDTO;
 import unicauca.edu.co.sga.evaluation_service.application.ports.EvaluationPort;
@@ -41,6 +42,20 @@ public class EvaluationController {
             @Valid @RequestBody EvaluationRequestDTO requestDTO) {
         EvaluationResponseDTO response = evaluationPort.saveEvaluation(requestDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Boolean> updateEvaluation(@PathVariable Long id, @Valid @RequestBody EvaluationRequestDTO evaluationRequestDTO) {
+        try {
+            boolean isUpdated = evaluationPort.updateEvaluation(id, evaluationRequestDTO);
+            return ResponseEntity.ok(isUpdated);
+        } catch (NotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
+        } catch (ResponseStatusException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error al actualizar la evaluación", e);
+        }
     }
 
     @GetMapping("/enroll/{enrollId}")

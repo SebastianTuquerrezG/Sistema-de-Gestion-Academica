@@ -39,12 +39,15 @@ public class CalificationRegisterMapper {
     }
 
     public static CalificationRegisterEntity toEntity(CalificationsRegister domain){
+        EvaluationEntity evaluationEntity = new EvaluationEntity();
+        evaluationEntity.setId(domain.getEvaluation());
+
         return CalificationRegisterEntity.builder()
                 .id(domain.getId())
                 .calification(domain.getCalification())
                 .message(domain.getMessage())
                 .level(domain.getLevel())
-                .evaluation(new EvaluationEntity(domain.getEvaluation(), null, null, null, null, null, null, null, null, null))
+                .evaluation(evaluationEntity)
                 .build();
     }
 }

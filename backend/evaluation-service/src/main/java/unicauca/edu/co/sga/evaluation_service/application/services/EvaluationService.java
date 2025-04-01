@@ -99,8 +99,49 @@ public class EvaluationService implements EvaluationPort {
     }
 
     @Override
-    public boolean updateEvaluation(Long id, EvaluationRequestDTO evaluation) {
-        return false;
+    @Transactional
+    public boolean updateEvaluation(Long id, EvaluationRequestDTO evaluationRequestDTO) {
+        EvaluationEntity existingEvaluation = evaluationRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Evaluation no encontrada con id: " + id));
+
+        try {
+            if (evaluationRequestDTO.getScore() == null || evaluationRequestDTO.getEvidenceUrl() == null) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                        "La evaluacion requiere una calificacion y evidencia");
+            }
+            if (!existingEvaluation.getEnroll().getId().equals(evaluationRequestDTO.getEnroll()) ||
+                    !existingEvaluation.getRubric().getId().equals(evaluationRequestDTO.getRubric())) {
+                if (evaluationRepository.existsByEnrollIdAndRubricId(
+                        evaluationRequestDTO.getEnroll(),
+                        evaluationRequestDTO.getRubric())) {
+                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                            "Ya existe una evaluación para este estudiante y rúbrica");
+                }
+            }
+            EnrollEntity enroll = enrollRepository.findById(evaluationRequestDTO.getEnroll())
+                    .orElseThrow(() -> new NotFoundException(
+                            "Enroll no encontrado con id: " + evaluationRequestDTO.getEnroll()));
+            RubricEntity rubric = rubricRepository.findById(evaluationRequestDTO.getRubric())
+                    .orElseThrow(() -> new NotFoundException(
+                            "Rubric no encontrada con id: " + evaluationRequestDTO.getRubric()));
+
+            existingEvaluation.setEnroll(enroll);
+            existingEvaluation.setRubric(rubric);
+            existingEvaluation.setDescription(evaluationRequestDTO.getDescription());
+            existingEvaluation.setEvaluationStatus(
+                    evaluationRequestDTO.getEvaluationStatus() != null
+                            ? evaluationRequestDTO.getEvaluationStatus()
+                            : EvaluationStatus.NO_EVALUADO
+            );
+            existingEvaluation.setScore(evaluationRequestDTO.getScore());
+            existingEvaluation.setEvidenceUrl(evaluationRequestDTO.getEvidenceUrl());
+            evaluationRepository.saveAndFlush(existingEvaluation);
+            return true;
+        } catch (NotFoundException | ResponseStatusException e) {
+            throw e;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     @Override
