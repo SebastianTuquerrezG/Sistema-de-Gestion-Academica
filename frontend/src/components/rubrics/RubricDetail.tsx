@@ -17,7 +17,7 @@ interface Criterio {
 }
 
 interface Rubric {
-    rubricaId: string;
+    idRubrica: string;
     nombreRubrica: string;
     materia: string;
     notaRubrica: number;
@@ -34,7 +34,7 @@ export default function RubricDetail() {
         fetch("/rubricas.json")
             .then(res => res.json())
             .then(data => {
-                const foundRubric = data.find((r: Rubric) => r.rubricaId === id);
+                const foundRubric = data.find((r: Rubric) => r.idRubrica === id);
                 setRubric(foundRubric || null);
             })
             .catch(error => console.error(error));
@@ -52,7 +52,7 @@ export default function RubricDetail() {
             <div className="flex items-start gap-4 relative">
                 <div className="w-full md:w-1/2 lg:w-1/3">
                     <p className="font-semibold">Identificador:</p>
-                    <p className="border p-2 rounded">{rubric.rubricaId}</p>
+                    <p className="border p-2 rounded">{rubric.idRubrica}</p>
                 </div>
                 <div className="w-full md:w-1/2 lg:w-1/3">
                     <p className="font-semibold">Nombre:</p>
@@ -67,33 +67,33 @@ export default function RubricDetail() {
             </div>
             <table className="min-w-full bg-white border border-gray-300">
                 <thead>
-                <tr>
-                    <th className="border border-gray-300 bg-gray-200 text-white px-4 py-2 text-left"></th>
-                    <th colSpan={rubric.criterios[0]?.niveles.length} className="border border-gray-300 bg-gray-200 text-black px-4 py-2 text-center">DESCRIPTORES</th>
-                    <th className="border border-gray-300 bg-gray-200 text-white px-4 py-2 text-center"></th>
-                </tr>
-                <tr>
-                    <th className="border border-gray-300 bg-[#000066] text-white px-4 py-2 text-left">CRITERIOS</th>
-                    {rubric.criterios[0]?.niveles.map((nivel, index) => (
-                        <th key={index} className="border border-gray-300 bg-[#000066] text-white px-4 py-2 text-center">
-                            {`Nivel ${nivel.idNivel}`}<br />{nivel.rangoNota}
-                        </th>
-                    ))}
-                    <th className="border border-gray-300 bg-[#000066] text-white px-4 py-2 text-center">Porcentaje</th>
-                </tr>
+                    <tr>
+                        <th className="border border-gray-300 bg-gray-200 text-white px-4 py-2 text-left"></th>
+                        <th colSpan={rubric.criterios[0]?.niveles.length} className="border border-gray-300 bg-gray-200 text-black px-4 py-2 text-center">DESCRIPTORES</th>
+                        <th className="border border-gray-300 bg-gray-200 text-white px-4 py-2 text-center"></th>
+                    </tr>
+                    <tr>
+                        <th className="border border-gray-300 bg-[#000066] text-white px-4 py-2 text-left">CRITERIOS</th>
+                        {rubric.criterios[0]?.niveles.map((nivel, index) => (
+                            <th key={index} className="border border-gray-300 bg-[#000066] text-white px-4 py-2 text-center">
+                                {`Nivel ${nivel.idNivel}`}<br />{nivel.rangoNota}
+                            </th>
+                        ))}
+                        <th className="border border-gray-300 bg-[#000066] text-white px-4 py-2 text-center">Porcentaje</th>
+                    </tr>
                 </thead>
                 <tbody>
-                {rubric.criterios.map((criterio, index) => (
-                    <tr key={index}>
-                        <td className="border border-gray-300 px-4 py-2">{criterio.crfDescripcion}</td>
-                        {criterio.niveles.map((nivel, i) => (
-                            <td key={i} className="border border-gray-300 px-4 py-2">{nivel.nivelDescripcion}</td>
-                        ))}
-                        <td className="border border-gray-300 px-4 py-2 text-center">{criterio.crfPorcentaje}%</td>
-                    </tr>
-                ))}
+                    {rubric.criterios.map((criterio, index) => (
+                        <tr key={index}>
+                            <td className="border border-gray-300 px-4 py-2">{criterio.crfDescripcion}</td>
+                            {criterio.niveles.map((nivel, i) => (
+                                <td key={i} className="border border-gray-300 px-4 py-2">{nivel.nivelDescripcion}</td>
+                            ))}
+                            <td className="border border-gray-300 px-4 py-2 text-center">{criterio.crfPorcentaje}%</td>
+                        </tr>
+                    ))}
                 </tbody>
             </table>
         </div>
     );
-    }
+}

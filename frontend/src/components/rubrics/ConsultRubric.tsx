@@ -9,7 +9,7 @@ import { useNavigate } from "react-router-dom";
 
 // Object Rubric
 interface Rubric {
-    rubricaId: string;
+    idRubrica: string;
     nombreRubrica: string;
     materia: string;
 }
@@ -31,7 +31,7 @@ export default function ConsultarRubrica() {
     const filteredRubrics = rubrics.filter(
         (rubric) =>
             rubric.nombreRubrica.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            rubric.rubricaId.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            rubric.idRubrica.toLowerCase().includes(searchTerm.toLowerCase()) ||
             rubric.materia.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
@@ -69,8 +69,8 @@ export default function ConsultarRubrica() {
                         <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
                     </div>
                     <div className="flex gap-2">
-                        <Button className="outline"  onClick={() => handleAdd()}>
-                            <Plus className="h-4 w-4 mr-2"  />
+                        <Button className="outline" onClick={() => handleAdd()}>
+                            <Plus className="h-4 w-4 mr-2" />
                             Añadir Rubrica
                         </Button>
                     </div>
@@ -78,40 +78,40 @@ export default function ConsultarRubrica() {
                 <div>
                     <table className="w-full">
                         <thead>
-                        <tr className="title5 bg-[#000066] text-white ">
-                            <th className="py-3 text-left ">Identificador</th>
-                            <th className="px-6 py-3 text-left">Nombre Rubrica</th>
-                            <th className="px-6 py-3 text-left">Materia</th>
-                            <th className="px-6 py-3 text-center">Acciones</th>
-                        </tr>
+                            <tr className="title5 bg-[#000066] text-white ">
+                                <th className="py-3 text-left ">Identificador</th>
+                                <th className="px-6 py-3 text-left">Nombre Rubrica</th>
+                                <th className="px-6 py-3 text-left">Materia</th>
+                                <th className="px-6 py-3 text-center">Acciones</th>
+                            </tr>
                         </thead>
                         <tbody>
-                        {filteredRubrics.map((rubric, index) => (
-                            <tr key={rubric.rubricaId} className={index % 2 === 0 ? "bg-gray-50" : "bg-white"}>
-                                <td className={`px-6 py-4 cursor-pointer ${selectedRubricId === rubric.rubricaId ? "text-blue-600" : ""}`}
-                                    onClick={() => handleDetail(rubric.rubricaId)}>
-                                    {rubric.rubricaId}
-                                </td>
-                                <td className={`px-6 py-4 cursor-pointer ${selectedRubricId === rubric.rubricaId ? "text-blue-600" : ""}`}
-                                    onClick={() => handleDetail(rubric.rubricaId)}>
-                                    {rubric.nombreRubrica}
-                                </td>
-                                <td className={`px-6 py-4 cursor-pointer ${selectedRubricId === rubric.rubricaId ? "text-blue-600" : ""}`}
-                                    onClick={() => handleDetail(rubric.rubricaId)}>
-                                    {rubric.materia}
-                                </td>
-                                <td className="px-6 py-4">
-                                    <div className="flex justify-center gap-2">
-                                        <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => handleEdit(rubric.rubricaId)}>
-                                            <Pencil className="h-4 w-4" />
-                                        </Button>
-                                        <Button variant="ghost" size="icon" className="h-8 w-8 text-orange-500 hover:text-orange-600">
-                                            <Trash2 className="h-4 w-4" />
-                                        </Button>
-                                    </div>
-                                </td>
-                            </tr>
-                        ))}
+                            {filteredRubrics.map((rubric, index) => (
+                                <tr key={rubric.idRubrica} className={index % 2 === 0 ? "bg-gray-50" : "bg-white"}>
+                                    <td className={`px-6 py-4 cursor-pointer ${selectedRubricId === rubric.idRubrica ? "text-blue-600" : ""}`}
+                                        onClick={() => handleDetail(rubric.idRubrica)}>
+                                        {rubric.idRubrica}
+                                    </td>
+                                    <td className={`px-6 py-4 cursor-pointer ${selectedRubricId === rubric.idRubrica ? "text-blue-600" : ""}`}
+                                        onClick={() => handleDetail(rubric.idRubrica)}>
+                                        {rubric.nombreRubrica}
+                                    </td>
+                                    <td className={`px-6 py-4 cursor-pointer ${selectedRubricId === rubric.idRubrica ? "text-blue-600" : ""}`}
+                                        onClick={() => handleDetail(rubric.idRubrica)}>
+                                        {rubric.materia}
+                                    </td>
+                                    <td className="px-6 py-4">
+                                        <div className="flex justify-center gap-2">
+                                            <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => handleEdit(rubric.idRubrica)}>
+                                                <Pencil className="h-4 w-4" />
+                                            </Button>
+                                            <Button variant="ghost" size="icon" className="h-8 w-8 text-orange-500 hover:text-orange-600">
+                                                <Trash2 className="h-4 w-4" />
+                                            </Button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            ))}
                         </tbody>
                     </table>
                 </div>

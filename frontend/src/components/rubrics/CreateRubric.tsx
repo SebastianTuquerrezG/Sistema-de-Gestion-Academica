@@ -8,39 +8,89 @@ import { Textarea } from "@/components/ui/textarea";
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "@/components/ui/table";
 
 export default function CreateRubric() {
-    const [levels, setLevels] = useState(["Nivel 1", "Nivel 2", "Nivel 3"]);
+    const [levels, setLevels] = useState([
+        { idNivel: 1, nivelDescripcion: "", rangoNota: "0-1" },
+        { idNivel: 2, nivelDescripcion: "", rangoNota: "1-2" },
+        { idNivel: 3, nivelDescripcion: "", rangoNota: "2-3" }
+    ]);
+
     const [rows, setRows] = useState([
-        { criterioEval: "", notas: Array(levels.length).fill(""), porcentaje: "" },
-        { criterioEval: "", notas: Array(levels.length).fill(""), porcentaje: "" },
-        { criterioEval: "", notas: Array(levels.length).fill(""), porcentaje: "" },
+        {
+            idCriterio: 1,
+            crfDescripcion: "",
+            niveles: levels.map(level => ({ ...level, nivelDescripcion: "" })),
+            crfPorcentaje: "",
+            crfNota: 0,
+            crfComentario: ""
+        },
+        {
+            idCriterio: 2,
+            crfDescripcion: "",
+            niveles: levels.map(level => ({ ...level, nivelDescripcion: "" })),
+            crfPorcentaje: "",
+            crfNota: 0,
+            crfComentario: ""
+        }
     ]);
 
     const addLevel = () => {
-        setLevels([...levels, `Nivel ${levels.length + 1}`]);
-        setRows(rows.map(row => ({ ...row, notas: [...row.notas, ""] })));
+        const newId = levels.length > 0 ? Math.max(...levels.map(l => l.idNivel)) + 1 : 1;
+        const newLevel = {
+            idNivel: newId,
+            nivelDescripcion: "",
+            rangoNota: `${newId - 1}-${newId}`
+        };
+        setLevels([...levels, newLevel]);
+        setRows(rows.map(row => ({
+            ...row,
+            niveles: [...row.niveles, { ...newLevel, nivelDescripcion: "" }]
+        })));
     };
 
     const removeLevel = () => {
         if (levels.length > 1) {
             setLevels(levels.slice(0, -1));
-            setRows(rows.map(row => ({ ...row, notas: row.notas.slice(0, -1) })));
+            setRows(rows.map(row => ({
+                ...row,
+                niveles: row.niveles.slice(0, -1)
+            })));
         }
     };
 
     const handleCriterioChange = (rowIndex: number, value: string) => {
         const newRows = [...rows];
-        newRows[rowIndex].criterioEval = value;
+        newRows[rowIndex].crfDescripcion = value;
         setRows(newRows);
     };
 
-    const handleChange = (rowIndex: number, colIndex: number, value: string) => {
+    const handleNivelChange = (rowIndex: number, nivelIndex: number, value: string) => {
         const newRows = [...rows];
-        newRows[rowIndex].notas[colIndex] = value;
+        newRows[rowIndex].niveles[nivelIndex].nivelDescripcion = value;
+        setRows(newRows);
+    };
+
+    const handlePorcentajeChange = (rowIndex: number, value: string) => {
+        const newRows = [...rows];
+        newRows[rowIndex].crfPorcentaje = value;
+        setRows(newRows);
+    };
+
+    const handleComentarioChange = (rowIndex: number, value: string) => {
+        const newRows = [...rows];
+        newRows[rowIndex].crfComentario = value;
         setRows(newRows);
     };
 
     const addRow = () => {
-        setRows([...rows, { criterioEval: "", notas: Array(levels.length).fill(""), porcentaje: "" }]);
+        const newId = rows.length > 0 ? Math.max(...rows.map(r => r.idCriterio)) + 1 : 1;
+        setRows([...rows, {
+            idCriterio: newId,
+            crfDescripcion: "",
+            niveles: levels.map(level => ({ ...level, nivelDescripcion: "" })),
+            crfPorcentaje: "",
+            crfNota: 0,
+            crfComentario: ""
+        }]);
     };
 
     const removeRow = (index: number) => {
@@ -50,37 +100,62 @@ export default function CreateRubric() {
     };
 
     const handleCancel = () => {
-        setLevels(["Nivel 1", "Nivel 2", "Nivel 3"]);
+        setLevels([
+            { idNivel: 1, nivelDescripcion: "", rangoNota: "0-1" },
+            { idNivel: 2, nivelDescripcion: "", rangoNota: "1-2" },
+            { idNivel: 3, nivelDescripcion: "", rangoNota: "2-3" }
+        ]);
         setRows([
             {
-                criterioEval: "", notas: Array(3).fill(""),
-                porcentaje: ""
+                idCriterio: 1,
+                crfDescripcion: "",
+                niveles: [
+                    { idNivel: 1, nivelDescripcion: "", rangoNota: "0-1" },
+                    { idNivel: 2, nivelDescripcion: "", rangoNota: "1-2" },
+                    { idNivel: 3, nivelDescripcion: "", rangoNota: "2-3" }
+                ],
+                crfPorcentaje: "",
+                crfNota: 0,
+                crfComentario: ""
             },
             {
-                criterioEval: "", notas: Array(3).fill(""),
-                porcentaje: ""
-            },
-            {
-                criterioEval: "", notas: Array(3).fill(""),
-                porcentaje: ""
-            },
+                idCriterio: 2,
+                crfDescripcion: "",
+                niveles: [
+                    { idNivel: 1, nivelDescripcion: "", rangoNota: "0-1" },
+                    { idNivel: 2, nivelDescripcion: "", rangoNota: "1-2" },
+                    { idNivel: 3, nivelDescripcion: "", rangoNota: "2-3" }
+                ],
+                crfPorcentaje: "",
+                crfNota: 0,
+                crfComentario: ""
+            }
         ]);
     };
 
-    // Función para manejar la acción del botón "Crear"
     const handleCreate = () => {
-        const totalPercentage = rows.reduce((sum, row) => sum + Number(row.porcentaje || 0), 0);
+        const totalPercentage = rows.reduce((sum, row) => sum + (parseFloat(row.crfPorcentaje) || 0), 0);
 
-        if (totalPercentage !== 100) {
-            alert("La suma de los porcentajes debe ser exactamente 100%.");
+        if (totalPercentage !== 1) {
+            alert("La suma de los porcentajes debe ser exactamente 100% (1 en decimal).");
             return;
         }
 
         const rubricData = {
-            nombre: (document.getElementById("nombre") as HTMLInputElement)?.value,
-            descripcion: (document.getElementById("descripcion-rubrica") as HTMLInputElement)?.value,
-            niveles: levels,
-            criterios: rows,
+            idRubrica: (document.getElementById("idRubrica") as HTMLInputElement)?.value,
+            nombreRubrica: (document.getElementById("nombreRubrica") as HTMLInputElement)?.value,
+            materia: (document.getElementById("materia") as HTMLInputElement)?.value,
+            notaRubrica: parseFloat((document.getElementById("notaRubrica") as HTMLInputElement)?.value || "0"),
+            objetivoEstudio: (document.getElementById("objetivoEstudio") as HTMLInputElement)?.value,
+            criterios: rows.map(row => ({
+                idCriterio: row.idCriterio,
+                crfDescripcion: row.crfDescripcion,
+                crfPorcentaje: parseFloat(row.crfPorcentaje),
+                crfNota: row.crfNota,
+                crfComentario: row.crfComentario,
+                niveles: row.niveles
+            })),
+            estado: "ACTIVO"
         };
 
         localStorage.setItem("rubrica", JSON.stringify(rubricData));
@@ -92,22 +167,35 @@ export default function CreateRubric() {
         }
     };
 
-
     return (
-        <Card className="w-full max-w-[850px]">
+        <Card className="w-full max-w-[1200px]">
             <CardHeader>
                 <CardTitle>Crear Rúbrica de Evaluación</CardTitle>
                 <CardDescription>Ingresa los datos de la nueva rúbrica en el formulario.</CardDescription>
             </CardHeader>
             <CardContent>
                 <div className="space-y-4">
-                    <div>
-                        <Label htmlFor="nombre">Nombre</Label>
-                        <Input id="nombre" placeholder="Nombre de la rúbrica" />
-                    </div>
-                    <div>
-                        <Label htmlFor="descripcion">Descripción</Label>
-                        <Input id="descripcion" placeholder="Descripción del criterio" />
+                    <div className="grid grid-cols-2 gap-4">
+                        <div className="grid w-full max-w-sm items-center gap-1.5">
+                            <Label htmlFor="idRubrica">ID Rúbrica</Label>
+                            <Input id="idRubrica" placeholder="Ej: IS102" />
+                        </div>
+                        <div className="grid w-full max-w-sm items-center gap-1.5">
+                            <Label htmlFor="nombreRubrica">Nombre Rúbrica</Label>
+                            <Input id="nombreRubrica" placeholder="Nombre de la rúbrica" />
+                        </div>
+                        <div className="grid w-full max-w-sm items-center gap-1.5">
+                            <Label htmlFor="materia">Materia</Label>
+                            <Input id="materia" placeholder="Nombre de la materia" />
+                        </div>
+                        <div className="grid w-full max-w-sm items-center gap-1.5">
+                            <Label htmlFor="notaRubrica">Nota Máxima Rúbrica</Label>
+                            <Input id="notaRubrica" type="number" placeholder="Ej: 3" />
+                        </div>
+                        <div className="grid w-full max-w-sm items-center gap-1.5 col-span-2">
+                            <Label htmlFor="objetivoEstudio">Objetivo de Estudio</Label>
+                            <Input id="objetivoEstudio" placeholder="Objetivo de la evaluación" />
+                        </div>
                     </div>
                 </div>
                 <CardTitle className="mt-6">Criterios de Evaluación</CardTitle>
@@ -116,9 +204,15 @@ export default function CreateRubric() {
                     <TableHeader>
                         <TableRow>
                             <TableHead>Criterio Evaluación</TableHead>
-                            <TableHead>Porcentajes</TableHead>
+                            <TableHead>Porcentaje</TableHead>
+                            <TableHead>Comentario</TableHead>
                             {levels.map((level, index) => (
-                                <TableHead key={index}>{level}</TableHead>
+                                <TableHead key={index}>
+                                    <div className="flex flex-col">
+                                        <span>Nivel {level.idNivel}</span>
+                                        <span className="text-xs">{level.rangoNota}</span>
+                                    </div>
+                                </TableHead>
                             ))}
                             <TableHead>
                                 <Button onClick={addLevel} variant="ghost" size="icon">
@@ -134,27 +228,39 @@ export default function CreateRubric() {
                         {rows.map((row, rowIndex) => (
                             <TableRow key={rowIndex}>
                                 <TableCell>
-                                    <Textarea value={row.criterioEval} onChange={(e) => handleCriterioChange(rowIndex, e.target.value)} placeholder="Descripción Criterio" />
+                                    <Textarea
+                                        value={row.crfDescripcion}
+                                        onChange={(e) => handleCriterioChange(rowIndex, e.target.value)}
+                                        placeholder="Descripción del criterio"
+                                    />
                                 </TableCell>
                                 <TableCell>
                                     <div className="flex items-center">
                                         <Input
                                             type="number"
                                             min="0"
-                                            max="100"
-                                            onChange={(e) => {
-                                                const newRows = [...rows];
-                                                newRows[rowIndex].porcentaje = e.target.value;
-                                                setRows(newRows);
-                                            }}
-                                            value={row.porcentaje || 0}
+                                            max="1"
+                                            step="0.01"
+                                            onChange={(e) => handlePorcentajeChange(rowIndex, e.target.value)}
+                                            value={row.crfPorcentaje}
+                                            placeholder="0.00"
                                         />
-                                        <span className="ml-1">%</span>
                                     </div>
                                 </TableCell>
-                                {row.notas.map((nota, colIndex) => (
-                                    <TableCell key={colIndex}>
-                                        <Textarea value={nota} onChange={(e) => handleChange(rowIndex, colIndex, e.target.value)} placeholder="Descripción" />
+                                <TableCell>
+                                    <Textarea
+                                        value={row.crfComentario}
+                                        onChange={(e) => handleComentarioChange(rowIndex, e.target.value)}
+                                        placeholder="Comentario para el criterio"
+                                    />
+                                </TableCell>
+                                {row.niveles.map((nivel, nivelIndex) => (
+                                    <TableCell key={nivelIndex}>
+                                        <Textarea
+                                            value={nivel.nivelDescripcion}
+                                            onChange={(e) => handleNivelChange(rowIndex, nivelIndex, e.target.value)}
+                                            placeholder={`Descripción nivel ${nivel.idNivel}`}
+                                        />
                                     </TableCell>
                                 ))}
                                 <TableCell className="text-center">
@@ -168,7 +274,7 @@ export default function CreateRubric() {
                 </Table>
                 <div className="mt-4">
                     <Button onClick={addRow}>
-                        <Plus className="h-4 w-4 mr-2" />Añadir Rubrica
+                        <Plus className="h-4 w-4 mr-2" />Añadir Criterio
                     </Button>
                 </div>
             </CardContent>
