@@ -1,0 +1,13 @@
+{//Petición
+    "id_criterio":1,
+    "nivelDescripcion":"MEDIO",
+    "rangoNota":"1-10"
+}
+
+//Respuesta
+{
+    "idNivel": 6,
+    "id_criterio": 1,
+    "nivelDescripcion": "MEDIO",
+    "rangoNota": "1-10"
+}
