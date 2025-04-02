@@ -15,12 +15,19 @@ export default function ConsultarRubrica() {
     const navigate = useNavigate(); // Hook to navigate between pages
     const [selectedRubricId, setSelectedRubricId] = useState<string | null>(null);
 
+        useEffect(() => {
+            const fetchRubrics = async () => {
+                try {
+                    const data = await getAllRubrics();
+                    setRubrics(data);
+                } catch (error) {
+                    console.error(error);
+                    setRubrics([]); // Set rubrics to an empty array in case of error
+                }
+            };
 
-    useEffect(() => {
-        getAllRubrics()
-            .then((data) => setRubrics(data))
-            .catch((error) => console.error(error));
-    }, []);
+            fetchRubrics();
+        }, []);
 
     const filteredRubrics = rubrics.filter(
         (rubric) =>

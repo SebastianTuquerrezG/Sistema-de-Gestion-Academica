@@ -11,8 +11,8 @@
     <modules>
         <module>gateway</module>
         <module>eureka-server</module>
-        <module>ModuloRubricaCriterio_Hexagonal</module>
-
+        <module>ModuloRubricaCriterio</module>
+        <module>evaluation-service</module>
     </modules>
     <url/>
     <licenses>
