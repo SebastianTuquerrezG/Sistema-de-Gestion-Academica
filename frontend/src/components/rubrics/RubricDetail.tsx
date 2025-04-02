@@ -3,16 +3,19 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { getRubricById } from "@/services/rubricService";
+import {RubricInterface} from "@/interfaces/RubricInterface.ts";
 
 
 export default function RubricDetail() {
     const { id } = useParams<{ id: string }>();
-    const [rubric, setRubric] = useState<Rubric | null>(null);
+    const [rubric, setRubric] = useState<RubricInterface | null>(null);
 
     useEffect(() => {
-        getRubricById(id)
-            .then((data) => setRubric(data))
-            .catch((error) => console.error(error));
+        if(id){
+            getRubricById(id)
+                .then((data) => setRubric(data))
+                .catch((error) => console.error(error));
+        }
     }, [id]);
 
     if (!rubric) {

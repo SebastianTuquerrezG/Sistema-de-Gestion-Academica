@@ -29,7 +29,7 @@ export async function getAllRubrics(): Promise<RubricInterface[]> {
   return response.json();
 }
 
-async function updateRubric(id: string, updatedRubric: RubricInterface): Promise<RubricInterface | null> {
+export async function updateRubric(id: string, updatedRubric: RubricInterface): Promise<RubricInterface | null> {
   const response = await fetch(`${baseUrl}/rubricas/${id}`, {
     method: 'PUT',
     headers: {
@@ -44,7 +44,7 @@ async function updateRubric(id: string, updatedRubric: RubricInterface): Promise
 }
 
 
-async function deleteRubric(id: string): Promise<boolean> {
+export async function deleteRubric(id: string): Promise<boolean> {
   const response = await fetch(`${baseUrl}/rubricas/${id}`, {
     method: 'DELETE',
   });

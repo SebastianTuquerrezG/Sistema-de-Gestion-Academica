@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { useNavigate } from "react-router-dom";
 import { getAllRubrics } from "@/services/rubricService";
 import { RubricInterface } from "@/interfaces/RubricInterface";
+import { deleteRubric } from "@/services/rubricService";
 
 
 export default function ConsultarRubrica() {
@@ -43,6 +44,16 @@ export default function ConsultarRubrica() {
         setSelectedRubricId(id);
         navigate(`/rubricas/detalle/${id}`);
     };
+
+    // Function to delete a rubric
+    const handleDelete = async (id: string) => {
+        const success = await deleteRubric(id);
+        if(success) {
+            setRubrics(rubrics.filter(rubric => rubric.rubricaId !== id));
+        }else{
+            alert("Error deleting rubric");
+        }
+    }
 
 
     return (
@@ -99,7 +110,7 @@ export default function ConsultarRubrica() {
                                             <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => handleEdit(rubric.rubricaId)}>
                                                 <Pencil className="h-4 w-4" />
                                             </Button>
-                                            <Button variant="ghost" size="icon" className="h-8 w-8 text-orange-500 hover:text-orange-600">
+                                            <Button variant="ghost" size="icon" className="h-8 w-8 text-orange-500 hover:text-orange-600" onClick={() => handleDelete(rubric.rubricaId)}>
                                                 <Trash2 className="h-4 w-4" />
                                             </Button>
                                         </div>
