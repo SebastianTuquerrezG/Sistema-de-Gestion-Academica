@@ -1,10 +1,10 @@
 import { RubricInterface } from '../interfaces/RubricInterface';
 
-const baseUrl = 'http://localhost:5000/api';
+const baseUrl = 'http://localhost:8080/api';
 
 
-async function createRubric(rubric: RubricInterface): Promise<RubricInterface> {
-  const response = await fetch(`${baseUrl}/rubrics`, {
+export async function createRubric(rubric: RubricInterface): Promise<RubricInterface> {
+  const response = await fetch(`${baseUrl}/rubricas`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -15,8 +15,8 @@ async function createRubric(rubric: RubricInterface): Promise<RubricInterface> {
 }
 
 
-async function getRubricById(id: string): Promise<RubricInterface | null> {
-  const response = await fetch(`${baseUrl}/rubrics/${id}`);
+export async function getRubricById(id: string): Promise<RubricInterface | null> {
+  const response = await fetch(`${baseUrl}/rubricas/${id}`);
   if (!response.ok) {
     return null;
   }
@@ -24,13 +24,13 @@ async function getRubricById(id: string): Promise<RubricInterface | null> {
 }
 
 
-async function getAllRubrics(): Promise<RubricInterface[]> {
-  const response = await fetch(`${baseUrl}/rubrics`);
+export async function getAllRubrics(): Promise<RubricInterface[]> {
+  const response = await fetch(`${baseUrl}/rubricas`);
   return response.json();
 }
 
-async function updateRubric(id: string, updatedRubric: RubricInterface): Promise<RubricInterface | null> {
-  const response = await fetch(`${baseUrl}/rubrics/${id}`, {
+export async function updateRubric(id: string, updatedRubric: RubricInterface): Promise<RubricInterface | null> {
+  const response = await fetch(`${baseUrl}/rubricas/${id}`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
@@ -44,8 +44,8 @@ async function updateRubric(id: string, updatedRubric: RubricInterface): Promise
 }
 
 
-async function deleteRubric(id: string): Promise<boolean> {
-  const response = await fetch(`${baseUrl}/rubrics/${id}`, {
+export async function deleteRubric(id: string): Promise<boolean> {
+  const response = await fetch(`${baseUrl}/rubricas/${id}`, {
     method: 'DELETE',
   });
   return response.ok;

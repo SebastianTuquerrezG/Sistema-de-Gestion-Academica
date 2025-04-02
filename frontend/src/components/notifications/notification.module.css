@@ -6,19 +6,20 @@
     align-items: center;
     justify-content: space-between;
     border-radius: 8px;
-    padding: 12px;
-    margin: 8px 0;
+    padding: 15px;
+    margin: 0px 20px 0px 0px;
     font-family: var(--text-font), serif;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     position: fixed;
     top: 100px;
-    left: 0;
+    right: 0;
     transform: translateY(-100%);
     animation: slideIn 0.5s forwards;
     width: 340px;
     /* Ancho ajustado */
-    height: 80px;
+    height: 95px;
     /* Altura ajustada */
+
     z-index: 9999; 
 }
 

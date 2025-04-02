@@ -1,5 +1,5 @@
-@import "tailwindcss";
 @import url('../../../assets/css/variables.css');
+@import "tailwindcss";
 
 .rubrica-info {
     width: 90%;
@@ -48,7 +48,8 @@
     align-items: center;
     gap: 10px;
     width: 100%;
-    position: relative; /* Permite que el dropdown se posicione correctamente */
+    position: relative;
+    /* Permite que el dropdown se posicione correctamente */
 }
 
 .dropdown-label {
@@ -78,10 +79,12 @@
     max-height: 200px;
     overflow-y: auto;
     width: 100%;
-    z-index: 1000; /* Asegura que esté por encima de otros elementos */
+    z-index: 1000;
+    /* Asegura que esté por encima de otros elementos */
     list-style: none;
     padding: 0;
-    margin-top: 4px; /* Pequeño margen para evitar solapamiento */
+    margin-top: 4px;
+    /* Pequeño margen para evitar solapamiento */
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
     border-radius: 6px;
 }

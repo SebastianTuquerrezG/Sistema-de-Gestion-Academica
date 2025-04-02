@@ -5,33 +5,34 @@ import { useEffect, useState } from "react";
 import { Search, Plus, Pencil, Trash2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useNavigate } from "react-router-dom";
+import { getAllRubrics } from "@/services/rubricService";
+import { RubricInterface } from "@/interfaces/RubricInterface";
 
-
-// Object Rubric
-interface Rubric {
-    idRubrica: string;
-    nombreRubrica: string;
-    materia: string;
-}
 
 export default function ConsultarRubrica() {
     const [searchTerm, setSearchTerm] = useState("");
-    const [rubrics, setRubrics] = useState<Rubric[]>([]);
+    const [rubrics, setRubrics] = useState<RubricInterface[]>([]);
     const navigate = useNavigate(); // Hook to navigate between pages
     const [selectedRubricId, setSelectedRubricId] = useState<string | null>(null);
 
+        useEffect(() => {
+            const fetchRubrics = async () => {
+                try {
+                    const data = await getAllRubrics();
+                    setRubrics(data);
+                } catch (error) {
+                    console.error(error);
+                    setRubrics([]); // Set rubrics to an empty array in case of error
+                }
+            };
 
-    useEffect(() => {
-        fetch("/rubricas.json")
-            .then((res) => res.json())
-            .then((data) => setRubrics(data))
-            .catch((error) => console.error(error));
-    }, []);
+            fetchRubrics();
+        }, []);
 
     const filteredRubrics = rubrics.filter(
         (rubric) =>
             rubric.nombreRubrica.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            rubric.idRubrica.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            rubric.rubricaId.toLowerCase().includes(searchTerm.toLowerCase()) ||
             rubric.materia.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
@@ -87,22 +88,22 @@ export default function ConsultarRubrica() {
                         </thead>
                         <tbody>
                             {filteredRubrics.map((rubric, index) => (
-                                <tr key={rubric.idRubrica} className={index % 2 === 0 ? "bg-gray-50" : "bg-white"}>
-                                    <td className={`px-6 py-4 cursor-pointer ${selectedRubricId === rubric.idRubrica ? "text-blue-600" : ""}`}
-                                        onClick={() => handleDetail(rubric.idRubrica)}>
-                                        {rubric.idRubrica}
+                                <tr key={rubric.rubricaId} className={index % 2 === 0 ? "bg-gray-50" : "bg-white"}>
+                                    <td className={`px-6 py-4 cursor-pointer ${selectedRubricId === rubric.rubricaId ? "text-blue-600" : ""}`}
+                                        onClick={() => handleDetail(rubric.rubricaId)}>
+                                        {rubric.rubricaId}
                                     </td>
-                                    <td className={`px-6 py-4 cursor-pointer ${selectedRubricId === rubric.idRubrica ? "text-blue-600" : ""}`}
-                                        onClick={() => handleDetail(rubric.idRubrica)}>
+                                    <td className={`px-6 py-4 cursor-pointer ${selectedRubricId === rubric.rubricaId ? "text-blue-600" : ""}`}
+                                        onClick={() => handleDetail(rubric.rubricaId)}>
                                         {rubric.nombreRubrica}
                                     </td>
-                                    <td className={`px-6 py-4 cursor-pointer ${selectedRubricId === rubric.idRubrica ? "text-blue-600" : ""}`}
-                                        onClick={() => handleDetail(rubric.idRubrica)}>
+                                    <td className={`px-6 py-4 cursor-pointer ${selectedRubricId === rubric.rubricaId ? "text-blue-600" : ""}`}
+                                        onClick={() => handleDetail(rubric.rubricaId)}>
                                         {rubric.materia}
                                     </td>
                                     <td className="px-6 py-4">
                                         <div className="flex justify-center gap-2">
-                                            <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => handleEdit(rubric.idRubrica)}>
+                                            <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => handleEdit(rubric.rubricaId)}>
                                                 <Pencil className="h-4 w-4" />
                                             </Button>
                                             <Button variant="ghost" size="icon" className="h-8 w-8 text-orange-500 hover:text-orange-600">
