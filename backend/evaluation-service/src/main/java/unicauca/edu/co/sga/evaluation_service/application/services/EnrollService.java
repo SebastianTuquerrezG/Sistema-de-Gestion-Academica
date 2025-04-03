@@ -26,26 +26,27 @@ public class EnrollService implements EnrollPort {
     private final EnrollRepository enrollRepository;
     private final StudentRepository studentRepository;
     private final CourseRepository courseRepository;
+    private final EnrollMapper enrollMapper;
 
     @Override
     public List<EnrollResponseDTO> getEnrolls() {
         return enrollRepository.findAll().stream()
-                .map(EnrollMapper::toModel)
-                .map(EnrollMapper::toDTO)
+                .map(enrollMapper::toModel)
+                .map(enrollMapper::toDTO)
                 .collect(Collectors.toList());
     }
 
     @Override
     public Optional<EnrollResponseDTO> getEnrollsById(Long id) {
         return enrollRepository.findById(id)
-                .map(EnrollMapper::toModel)
-                .map(EnrollMapper::toDTO);
+                .map(enrollMapper::toModel)
+                .map(enrollMapper::toDTO);
     }
 
     @Override
     public EnrollResponseDTO saveEnroll(EnrollRequestDTO enroll) {
-        EnrollEntity enrollEntity = EnrollMapper.toEntity(EnrollMapper.toModel(enroll));
-        return EnrollMapper.toDTO(EnrollMapper.toModel(enrollRepository.save(enrollEntity)));
+        EnrollEntity enrollEntity = enrollMapper.toEntity(enrollMapper.toModel(enroll));
+        return enrollMapper.toDTO(enrollMapper.toModel(enrollRepository.save(enrollEntity)));
     }
 
     @Override
@@ -76,24 +77,24 @@ public class EnrollService implements EnrollPort {
     @Override
     public List<EnrollResponseDTO> getEnrollsByStudentId(Long studentId) {
         return enrollRepository.findByStudentId(studentId)
-                .stream().map(EnrollMapper::toModel)
-                .map(EnrollMapper::toDTO)
+                .stream().map(enrollMapper::toModel)
+                .map(enrollMapper::toDTO)
                 .collect(Collectors.toList());
     }
 
     @Override
     public List<EnrollResponseDTO> getEnrollsByCourseId(Long courseId) {
         return enrollRepository.findByCourseId(courseId)
-                .stream().map(EnrollMapper::toModel)
-                .map(EnrollMapper::toDTO)
+                .stream().map(enrollMapper::toModel)
+                .map(enrollMapper::toDTO)
                 .collect(Collectors.toList());
     }
 
     @Override
     public List<EnrollResponseDTO> getEnrollsBySemester(String semester) {
         return enrollRepository.findBySemester(semester)
-                .stream().map(EnrollMapper::toModel)
-                .map(EnrollMapper::toDTO)
+                .stream().map(enrollMapper::toModel)
+                .map(enrollMapper::toDTO)
                 .collect(Collectors.toList());
     }
 }

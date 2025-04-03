@@ -3,22 +3,26 @@ package unicauca.edu.co.sga.evaluation_service.infrastructure.config;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
+
+import java.util.Collections;
 
 @Configuration
 public class CorsConfig {
     @Bean
-    public WebMvcConfigurer corsConfigurer() {
-        return new WebMvcConfigurer() {
-            @Override
-            public void addCorsMappings(@NotNull CorsRegistry registry) {
-                registry.addMapping("/**")
-                        .allowedOrigins("*")
-                        .allowedMethods("*")
-                        .allowedHeaders("*")
-                        .allowCredentials(false);
-            }
-        };
+    public CorsFilter corsFilter() {
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        CorsConfiguration config = new CorsConfiguration();
+
+        config.setAllowedOrigins(Collections.singletonList("*"));
+
+        config.setAllowedMethods(Collections.singletonList("*"));
+
+        config.setAllowedHeaders(Collections.singletonList("*"));
+
+        source.registerCorsConfiguration("/**", config);
+        return new CorsFilter(source);
     }
 }
