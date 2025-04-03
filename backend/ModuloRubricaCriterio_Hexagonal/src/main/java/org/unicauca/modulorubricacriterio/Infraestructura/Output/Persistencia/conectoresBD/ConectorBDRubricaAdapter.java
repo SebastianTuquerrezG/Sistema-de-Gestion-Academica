@@ -50,7 +50,7 @@ public class ConectorBDRubricaAdapter implements IConectorBDRubricaPort {
         RubricaEntity objRubricaEntity = this.rubricaRepository.findById(idRubrica).orElse(null);
 
         if (objRubricaEntity == null) {
-            return null;
+            throw new EntidadNoExisteException("Rúbrica con el id {"+idRubrica+"} no existe");
         }
 
         Rubrica objRubrica = this.rubricaMapper.map(objRubricaEntity, Rubrica.class);
