@@ -27,6 +27,8 @@ interface Props {
   estudiante: string;
 }
 
+
+
 const EvaluationTable: React.FC<Props> = ({ criterios, estudiante }) => {
   const data = criterios;
 
@@ -64,6 +66,19 @@ const EvaluationTable: React.FC<Props> = ({ criterios, estudiante }) => {
       (d) => valor >= d.inferior && valor <= d.superior
     );
     return descriptor?.nivel || "";
+  };
+
+  const handleNivelClick = (index: number, nivel: string, descriptores: Descriptor[]) => {
+    const descriptor = descriptores.find((d) => d.nivel === nivel);
+    if (descriptor) {
+      const maxCalificacion = descriptor.superior; 
+      setValores((prev) => {
+        const copy = [...prev];
+        copy[index] = maxCalificacion; 
+        return copy;
+      });
+      setHasChanges(true); // prueba funcion
+    }
   };
 
   const handleGuardarEvaluacion = () => {
@@ -187,7 +202,9 @@ const EvaluationTable: React.FC<Props> = ({ criterios, estudiante }) => {
                       style={{
                         backgroundColor: nivelActual === rango.nivel ? rango.color : "transparent",
                         color: nivelActual === rango.nivel ? "white" : "black",
+                        cursor: "pointer", // prueba
                       }}
+                      onClick={() => handleNivelClick(index, rango.nivel, row.descriptores)} // prueba
                     >
                       {descriptor?.texto || "-"}
                     </td>
