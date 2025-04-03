@@ -248,7 +248,7 @@ export default function CreateRubric() {
         }
 
         const rubricData: RubricInterface = {
-            rubricaId: null ,
+            rubricaId: '' ,
             nombreRubrica: (document.getElementById("nombreRubrica") as HTMLInputElement)?.value,
             materia: (document.getElementById("materia") as HTMLInputElement)?.value,
             notaRubrica: parseFloat((document.getElementById("notaRubrica") as HTMLInputElement)?.value || "0"),

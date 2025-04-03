@@ -12,8 +12,6 @@ type NotificationType = {
 interface Descriptor {
   nivel: string;
   texto: string;
-  inferior: number;
-  superior: number;
 }
 
 interface Criterio {
@@ -24,13 +22,12 @@ interface Criterio {
 
 interface Props {
   criterios: Criterio[];
-  estudiante: string;
 }
 
-const EvaluationTable: React.FC<Props> = ({ criterios, estudiante }) => {
+const EvaluationTable: React.FC<Props> = ({ criterios }) => {
   const data = criterios;
 
-  // Extraer niveles únicos de todos los descriptores
+  // Extraer niveles únicos dinámicamente
   const nivelesUnicos = Array.from(
     new Set(data.flatMap((c) => c.descriptores.map((d) => d.nivel)))
   );
@@ -47,7 +44,7 @@ const EvaluationTable: React.FC<Props> = ({ criterios, estudiante }) => {
   const [comentarios, setComentarios] = useState<string[]>(Array(data.length).fill(""));
 
   const handleChange = (index: number, event: React.ChangeEvent<HTMLInputElement>) => {
-    const value = event.target.value;
+    let value = event.target.value;
     const numericValue = parseFloat(value);
     if ((!isNaN(numericValue) && numericValue > 5) || /[^\d.]/.test(value)) {
       setNotification({ type: "error", title: "Error", message: "Rango de calificación [0, 5]." });
@@ -58,12 +55,10 @@ const EvaluationTable: React.FC<Props> = ({ criterios, estudiante }) => {
     setHasChanges(true);
   };
 
-  // ✅ Detección dinámica del nivel según los rangos del descriptor
-  const getNivel = (valor: number, descriptores: Descriptor[]): string => {
-    const descriptor = descriptores.find(
-      (d) => valor >= d.inferior && valor <= d.superior
-    );
-    return descriptor?.nivel || "";
+  const getNivel = (valor: number) => {
+    if (valor >= 4.0) return "Nivel 3";
+    if (valor >= 3.0) return "Nivel 2";
+    return "Nivel 1";
   };
 
   const handleGuardarEvaluacion = () => {
@@ -93,7 +88,7 @@ const EvaluationTable: React.FC<Props> = ({ criterios, estudiante }) => {
       porcentaje: criterio.porcentaje,
       calificacion: valores[index] || 0,
       comentario: comentarios[index],
-      nivel: getNivel(Number(valores[index]) || 0, criterio.descriptores),
+      nivel: getNivel(Number(valores[index]) || 0),
     }));
 
     console.log("Evaluación enviada al backend:", evaluacion);
@@ -106,13 +101,6 @@ const EvaluationTable: React.FC<Props> = ({ criterios, estudiante }) => {
 
     setHasChanges(false);
   };
-
-  // 🔁 Limpiar datos al cambiar de estudiante
-  useEffect(() => {
-    setValores(Array(criterios.length).fill(""));
-    setComentarios(Array(criterios.length).fill(""));
-    setHasChanges(false);
-  }, [estudiante]);
 
   useEffect(() => {
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
@@ -159,21 +147,15 @@ const EvaluationTable: React.FC<Props> = ({ criterios, estudiante }) => {
             ))}
           </tr>
           <tr>
-            {rangos.map((rango, i) => {
-              const descriptor = data[0]?.descriptores.find(d => d.nivel === rango.nivel);
-              return (
-                <th key={i}>
-                  {descriptor ? `${descriptor.inferior} - ${descriptor.superior}` : "—"}
-                </th>
-              );
-            })}
+            {rangos.map((_, i) => (
+              <th key={i}>—</th>
+            ))}
           </tr>
-
         </thead>
         <tbody>
           {data.map((row, index) => {
             const valorActual = valores[index];
-            const nivelActual = valorActual === "" ? "" : getNivel(Number(valorActual), row.descriptores);
+            const nivelActual = valorActual === "" ? "" : getNivel(Number(valorActual));
             const ponderado = valorActual === "" ? "" : (Number(valorActual) * (row.porcentaje / 100)).toFixed(2);
 
             return (
@@ -221,9 +203,9 @@ const EvaluationTable: React.FC<Props> = ({ criterios, estudiante }) => {
                       maxLength={250}
                     />
                     <div
-                      className={`char-count ${comentarios[index]?.length === 250 ? "char-limit-reached" : ""}`}
+                      className={`char-count ${comentarios[index].length === 250 ? "char-limit-reached" : ""}`}
                     >
-                      {comentarios[index]?.length ?? 0}/250
+                      {comentarios[index].length}/250
                     </div>
                   </div>
                 </td>
