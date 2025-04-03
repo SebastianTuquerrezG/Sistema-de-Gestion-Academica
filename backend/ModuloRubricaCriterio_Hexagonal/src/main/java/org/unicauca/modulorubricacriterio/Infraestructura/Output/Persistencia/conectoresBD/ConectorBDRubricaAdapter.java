@@ -94,7 +94,7 @@ public class ConectorBDRubricaAdapter implements IConectorBDRubricaPort {
         if(rubricaActualizadaReturn.getCriterios() != null)
         {
             rubricaActualizadaReturn.getCriterios().forEach(criterio -> {
-                criterio.setIdRubrica(objRubrica.getIdRubrica());
+                criterio.setIdRubrica(rubricaActualizadaReturn.getIdRubrica());
                 if(criterio.getNiveles() != null) {
                     criterio.getNiveles().forEach(nivel -> nivel.setIdCriterio(criterio.getIdCriterio()));
                 }

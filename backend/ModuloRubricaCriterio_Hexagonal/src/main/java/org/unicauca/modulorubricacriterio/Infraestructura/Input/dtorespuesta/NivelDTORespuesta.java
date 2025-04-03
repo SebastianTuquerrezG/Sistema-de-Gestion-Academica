@@ -9,7 +9,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class NivelDTORespuesta {
     private Long idNivel;
-    private Long criterio_id;
+    private Long idCriterio;
     private String nivelDescripcion;
     private String rangoNota;
 }
