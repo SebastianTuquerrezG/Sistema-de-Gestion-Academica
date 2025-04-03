@@ -11,7 +11,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class CriterioDTORespuesta {
 
-    private Long rubrica_id;
+    private Long idRubrica;
     private Long idCriterio;
     private String crfDescripcion;
     private Float crfPorcentaje;

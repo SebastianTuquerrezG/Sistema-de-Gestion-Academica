@@ -17,5 +17,5 @@ public class CriterioDTOPeticion {
     private Float crfPorcentaje;
     private Float crfNota;
     private String crfComentario;
-    private Long rubrica_id;
+    private Long idRubrica;
 }

@@ -10,7 +10,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class NivelDTOPeticion {
-    private Long id_criterio;
+    private Long idCriterio;
     private String nivelDescripcion;
     private String rangoNota;
 }

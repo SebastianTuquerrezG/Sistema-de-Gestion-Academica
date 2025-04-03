@@ -16,7 +16,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"id_criterio\":1,\r\n    \"nivelDescripcion\":\"MEDIO\",\r\n    \"rangoNota\":\"1-10\"\r\n}",
+					"raw": "{\r\n    \"idCriterio\":1,\r\n    \"nivelDescripcion\":\"MEDIO\",\r\n    \"rangoNota\":\"1-10\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -24,12 +24,12 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:5000/api/niveles",
+					"raw": "http://localhost:5001/api/niveles",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
-					"port": "5000",
+					"port": "5001",
 					"path": [
 						"api",
 						"niveles"
@@ -44,12 +44,12 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:5000/api/niveles",
+					"raw": "http://localhost:5001/api/niveles",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
-					"port": "5000",
+					"port": "5001",
 					"path": [
 						"api",
 						"niveles"
@@ -65,7 +65,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"id_criterio\":1,\r\n    \"nivelDescripcion\":\"MEDIO ACTUALIZADO\",\r\n    \"rangoNota\":\"1-10\"\r\n}",
+					"raw": "{\r\n    \"idCriterio\":1,\r\n    \"nivelDescripcion\":\"MEDIO ACTUALIZADO\",\r\n    \"rangoNota\":\"1-10\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -73,12 +73,12 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:5000/api/niveles?id=1",
+					"raw": "http://localhost:5001/api/niveles?id=1",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
-					"port": "5000",
+					"port": "5001",
 					"path": [
 						"api",
 						"niveles"
@@ -99,12 +99,12 @@
 				"method": "DELETE",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:5000/api/niveles?id=1",
+					"raw": "http://localhost:5001/api/niveles?id=1",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
-					"port": "5000",
+					"port": "5001",
 					"path": [
 						"api",
 						"niveles"
@@ -125,16 +125,16 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:5000/api/niveles/2",
+					"raw": "http://localhost:5001/api/niveles/1",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
-					"port": "5000",
+					"port": "5001",
 					"path": [
 						"api",
 						"niveles",
-						"2"
+						"1"
 					]
 				}
 			},
