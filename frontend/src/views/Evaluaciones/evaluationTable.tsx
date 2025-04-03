@@ -41,29 +41,63 @@ const EvaluationTable: React.FC<Props> = ({ criterios, estudiante }) => {
     color: coloresBase[index % coloresBase.length],
   }));
 
-  const [notification, setNotification] = useState<NotificationType | null>(null);
+  const [notification, setNotification] = useState<NotificationType | null>(
+    null
+  );
   const [hasChanges, setHasChanges] = useState(false);
-  const [valores, setValores] = useState<(number | "")[]>(Array(data.length).fill(""));
-  const [comentarios, setComentarios] = useState<string[]>(Array(data.length).fill(""));
+  const [valores, setValores] = useState<(number | "")[]>(
+    Array(data.length).fill("")
+  );
+  const [comentarios, setComentarios] = useState<string[]>(
+    Array(data.length).fill("")
+  );
 
-  const handleChange = (index: number, event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (
+    index: number,
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     const value = event.target.value;
-    const numericValue = parseFloat(value);
-    if ((!isNaN(numericValue) && numericValue > 5) || /[^\d.]/.test(value)) {
-      setNotification({ type: "error", title: "Error", message: "Rango de calificación [0, 5]." });
-      setValores((prev) => { const copy = [...prev]; copy[index] = ""; return copy; });
+
+    // Si el usuario ingresa solo "-", o un número fuera del rango permitido, se reinicia el campo
+    if (
+      value === "-" ||
+      value.includes("-") ||
+      (/^\d*\.?\d?$/.test(value) &&
+        value !== "" &&
+        (parseFloat(value) < 0 || parseFloat(value) > 5))
+    ) {
+      alert("La calificación debe estar entre 0 y 5.");
+      setValores((prevValores) => {
+        const resetValores = [...prevValores];
+        resetValores[index] = "";
+        return resetValores;
+      });
       return;
     }
-    setValores((prev) => { const copy = [...prev]; copy[index] = value === "" ? "" : numericValue; return copy; });
-    setHasChanges(true);
+
+    // Validar formato: números con un decimal opcional
+    if (/^\d*\.?\d?$/.test(value) || value === "") {
+      const numericValue = value === "" ? "" : parseFloat(value);
+      setValores((prevValores) => {
+        const newValores = [...prevValores];
+        newValores[index] = value === "" ? "" : numericValue;
+        return newValores;
+      });
+    }
   };
 
-  // ✅ Detección dinámica del nivel según los rangos del descriptor
+  // Detección dinámica del nivel según los rangos del descriptor
   const getNivel = (valor: number, descriptores: Descriptor[]): string => {
     const descriptor = descriptores.find(
       (d) => valor >= d.inferior && valor <= d.superior
     );
     return descriptor?.nivel || "";
+  };
+  // Función para evitar que el usuario presione "-"
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === "-") {
+      event.preventDefault(); // Bloquea la tecla "-"
+    }
   };
 
   const handleGuardarEvaluacion = () => {
@@ -107,7 +141,7 @@ const EvaluationTable: React.FC<Props> = ({ criterios, estudiante }) => {
     setHasChanges(false);
   };
 
-  // 🔁 Limpiar datos al cambiar de estudiante
+  // Limpiar datos al cambiar de estudiante
   useEffect(() => {
     setValores(Array(criterios.length).fill(""));
     setComentarios(Array(criterios.length).fill(""));
@@ -155,37 +189,53 @@ const EvaluationTable: React.FC<Props> = ({ criterios, estudiante }) => {
           </tr>
           <tr>
             {rangos.map((r, i) => (
-              <th key={i} style={{ backgroundColor: r.color }}>{r.nivel}</th>
+              <th key={i} style={{ backgroundColor: r.color }}>
+                {r.nivel}
+              </th>
             ))}
           </tr>
           <tr>
             {rangos.map((rango, i) => {
-              const descriptor = data[0]?.descriptores.find(d => d.nivel === rango.nivel);
+              const descriptor = data[0]?.descriptores.find(
+                (d) => d.nivel === rango.nivel
+              );
               return (
                 <th key={i}>
-                  {descriptor ? `${descriptor.inferior} - ${descriptor.superior}` : "—"}
+                  {descriptor
+                    ? `${descriptor.inferior} - ${descriptor.superior}`
+                    : "—"}
                 </th>
               );
             })}
           </tr>
-
         </thead>
         <tbody>
           {data.map((row, index) => {
             const valorActual = valores[index];
-            const nivelActual = valorActual === "" ? "" : getNivel(Number(valorActual), row.descriptores);
-            const ponderado = valorActual === "" ? "" : (Number(valorActual) * (row.porcentaje / 100)).toFixed(2);
+            const nivelActual =
+              valorActual === ""
+                ? ""
+                : getNivel(Number(valorActual), row.descriptores);
+            const ponderado =
+              valorActual === ""
+                ? ""
+                : (Number(valorActual) * (row.porcentaje / 100)).toFixed(2);
 
             return (
               <tr key={index}>
                 <td>{row.criterio}</td>
                 {rangos.map((rango, i) => {
-                  const descriptor = row.descriptores.find(d => d.nivel === rango.nivel);
+                  const descriptor = row.descriptores.find(
+                    (d) => d.nivel === rango.nivel
+                  );
                   return (
                     <td
                       key={i}
                       style={{
-                        backgroundColor: nivelActual === rango.nivel ? rango.color : "transparent",
+                        backgroundColor:
+                          nivelActual === rango.nivel
+                            ? rango.color
+                            : "transparent",
                         color: nivelActual === rango.nivel ? "white" : "black",
                       }}
                     >
@@ -199,6 +249,7 @@ const EvaluationTable: React.FC<Props> = ({ criterios, estudiante }) => {
                     type="number"
                     value={valores[index] || ""}
                     onChange={(e) => handleChange(index, e)}
+                    onKeyDown={handleKeyDown}
                     step="0.1"
                     min="0"
                     max="5"
@@ -221,7 +272,11 @@ const EvaluationTable: React.FC<Props> = ({ criterios, estudiante }) => {
                       maxLength={250}
                     />
                     <div
-                      className={`char-count ${comentarios[index]?.length === 250 ? "char-limit-reached" : ""}`}
+                      className={`char-count ${
+                        comentarios[index]?.length === 250
+                          ? "char-limit-reached"
+                          : ""
+                      }`}
                     >
                       {comentarios[index]?.length ?? 0}/250
                     </div>
@@ -236,19 +291,20 @@ const EvaluationTable: React.FC<Props> = ({ criterios, estudiante }) => {
             <td colSpan={rangos.length + 2}></td>
             <td>TOTAL</td>
             <td>
-              {data.reduce(
-                (acc, row, i) => acc + (valores[i] || 0) * (row.porcentaje / 100),
-                0
-              ).toFixed(2)}
+              {data
+                .reduce(
+                  (acc, row, i) =>
+                    acc + (valores[i] || 0) * (row.porcentaje / 100),
+                  0
+                )
+                .toFixed(2)}
             </td>
           </tr>
         </tfoot>
       </table>
 
       <div className="button-container">
-        <Button onClick={handleGuardarEvaluacion}>
-          Guardar evaluación
-        </Button>
+        <Button onClick={handleGuardarEvaluacion}>Guardar evaluación</Button>
       </div>
     </div>
   );
