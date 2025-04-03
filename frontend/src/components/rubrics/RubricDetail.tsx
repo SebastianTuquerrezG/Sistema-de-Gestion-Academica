@@ -4,11 +4,13 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { getRubricById } from "@/services/rubricService";
 import {RubricInterface} from "@/interfaces/RubricInterface.ts";
+import { useNavigate } from "react-router-dom";
 
 
 export default function RubricDetail() {
     const { id } = useParams<{ id: string }>();
     const [rubric, setRubric] = useState<RubricInterface | null>(null);
+    const navigate = useNavigate();
 
     useEffect(() => {
         if(id){
@@ -72,6 +74,9 @@ export default function RubricDetail() {
                     ))}
                 </tbody>
             </table>
+            <button onClick={() => navigate('/evaluationTable')} className="mt-4 px-4 py-2 bg-blue-600 text-white rounded">
+                Ir a Evaluación
+            </button>
         </div>
     );
 }
