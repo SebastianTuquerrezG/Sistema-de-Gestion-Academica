@@ -23,9 +23,11 @@ export async function getRubricById(id: string): Promise<RubricInterface | null>
   return response.json();
 }
 
-
 export async function getAllRubrics(): Promise<RubricInterface[]> {
-  const response = await fetch(`${baseUrl}/rubricas`);
+  const response = await fetch(`${baseUrl}/rubricas`, {
+    method: 'GET',
+  });
+  console.log(response);
   return response.json();
 }
 
