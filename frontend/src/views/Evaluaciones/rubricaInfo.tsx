@@ -8,6 +8,7 @@ interface RubricaInfoProps {
   periodos: string[];
   materia: string;
   rubricaNombre: string;
+  resultadoAprendizaje: string;
   onSelectEstudiante: (nombre: string) => void;
 }
 
@@ -16,6 +17,7 @@ const RubricaInfo: React.FC<RubricaInfoProps> = ({
   periodos,
   materia,
   rubricaNombre,
+  resultadoAprendizaje,
   onSelectEstudiante,
 }) => {
   return (
@@ -23,8 +25,17 @@ const RubricaInfo: React.FC<RubricaInfoProps> = ({
       <div className="rubrica-info-container">
         {/* Columna izquierda */}
         <div className="info-block">
-          <Dropdown label="Estudiante" options={estudiantes} onSelect={onSelectEstudiante} />
+          <Dropdown
+            label="Estudiante"
+            options={estudiantes}
+            onSelect={onSelectEstudiante}
+          />
           <StaticField label="Rúbrica" value={rubricaNombre} />
+          <StaticField
+            label="Resultado de Aprendizaje"
+            value={resultadoAprendizaje}
+          />{" "}
+          {/* <- Se muestra aquí */}
         </div>
 
         {/* Columna derecha */}

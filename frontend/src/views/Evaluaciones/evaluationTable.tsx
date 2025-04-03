@@ -27,8 +27,6 @@ interface Props {
   estudiante: string;
 }
 
-
-
 const EvaluationTable: React.FC<Props> = ({ criterios, estudiante }) => {
   const data = criterios;
 
@@ -68,7 +66,11 @@ const EvaluationTable: React.FC<Props> = ({ criterios, estudiante }) => {
         value !== "" &&
         (parseFloat(value) < 0 || parseFloat(value) > 5))
     ) {
-      alert("La calificación debe estar entre 0 y 5.");
+      setNotification({
+        type: "error",
+        title: "Rando inválido",
+        message: "Rango de calificación [0-5]",
+      });
       setValores((prevValores) => {
         const resetValores = [...prevValores];
         resetValores[index] = "";
@@ -98,17 +100,21 @@ const EvaluationTable: React.FC<Props> = ({ criterios, estudiante }) => {
   // Función para evitar que el usuario presione "-"
   const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "-") {
-      event.preventDefault(); // Bloquea la tecla "-"
+      event.preventDefault(); // Bloquea la tecla"-"
     }
   };
 
-  const handleNivelClick = (index: number, nivel: string, descriptores: Descriptor[]) => {
+  const handleNivelClick = (
+    index: number,
+    nivel: string,
+    descriptores: Descriptor[]
+  ) => {
     const descriptor = descriptores.find((d) => d.nivel === nivel);
     if (descriptor) {
-      const maxCalificacion = descriptor.superior; 
+      const maxCalificacion = descriptor.superior;
       setValores((prev) => {
         const copy = [...prev];
-        copy[index] = maxCalificacion; 
+        copy[index] = maxCalificacion;
         return copy;
       });
       setHasChanges(true); // prueba funcion
@@ -117,22 +123,12 @@ const EvaluationTable: React.FC<Props> = ({ criterios, estudiante }) => {
 
   const handleGuardarEvaluacion = () => {
     const incompletos = valores.some((v) => v === "");
-    const comentarioExcedido = comentarios.some((c) => c.length > 250);
 
     if (incompletos) {
       setNotification({
         type: "error",
         title: "Campos incompletos",
         message: "Debes ingresar todas las calificaciones antes de guardar.",
-      });
-      return;
-    }
-
-    if (comentarioExcedido) {
-      setNotification({
-        type: "error",
-        title: "Comentario demasiado largo",
-        message: "Cada comentario debe tener máximo 250 caracteres.",
       });
       return;
     }
@@ -254,7 +250,9 @@ const EvaluationTable: React.FC<Props> = ({ criterios, estudiante }) => {
                         color: nivelActual === rango.nivel ? "white" : "black",
                         cursor: "pointer", // prueba
                       }}
-                      onClick={() => handleNivelClick(index, rango.nivel, row.descriptores)} // prueba
+                      onClick={() =>
+                        handleNivelClick(index, rango.nivel, row.descriptores)
+                      } // prueba
                     >
                       {descriptor?.texto || "-"}
                     </td>
