@@ -129,12 +129,12 @@
 			<artifactId>spring-dotenv</artifactId>
 			<version>${dotenv.version}</version>
 		</dependency>
-			<!-- Documentation Dependency -->
+			<!-- Documentation Dependency
 		<dependency>
 			<groupId>org.springdoc</groupId>
-			<artifactId>springdoc-openapi-starter-webflux-ui</artifactId>
-			<version>${springdoc-openapi.version}</version>
-		</dependency>
+			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+			<version>2.0.2</version>
+		</dependency>-->
 	</dependencies>
 	<dependencyManagement>
 		<dependencies>
