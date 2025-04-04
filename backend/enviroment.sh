@@ -8,18 +8,18 @@ export PATH=$JAVA_HOME/bin:$PATH
 echo "JAVA_HOME se ha definido como: $JAVA_HOME"
 echo "PATH se ha actualizado a: $PATH"
 
-
 # Aplicar los cambios al perfil de usuario (sin duplicar si ya existen)
-if ! grep -q "export JAVA_HOME=/usr/lib/jvm/java-21-openjdk" ~/.bash_profile; then
-  echo "export JAVA_HOME=/usr/lib/jvm/java-21-openjdk" >> ~/.bash_profile
+PROFILE_FILE=~/.bash_profile
+
+if ! grep -q '^export JAVA_HOME=/usr/lib/jvm/java-21-openjdk' "$PROFILE_FILE"; then
+  echo 'export JAVA_HOME=/usr/lib/jvm/java-21-openjdk' >> "$PROFILE_FILE"
 fi
 
-if ! grep -q 'export PATH=\$JAVA_HOME/bin:\$PATH' ~/.bash_profile; then
-  echo 'export PATH=$JAVA_HOME/bin:$PATH' >> ~/.bash_profile
+if ! grep -q '^export PATH=\$JAVA_HOME/bin:\$PATH' "$PROFILE_FILE"; then
+  echo 'export PATH=$JAVA_HOME/bin:$PATH' >> "$PROFILE_FILE"
 fi
 
 # Recargar configuración del perfil para esta sesión
-source ~/.bash_profile
+source "$PROFILE_FILE"
 
-
-echo "Las variables de entorno se han configurado correctamente en ~/.bash_profile."
+echo "✅ Las variables de entorno se han configurado correctamente en $PROFILE_FILE."
