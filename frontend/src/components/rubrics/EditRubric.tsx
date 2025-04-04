@@ -12,7 +12,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { RubricInterface } from "@/interfaces/RubricInterface.ts";
 import { LevelInterface } from "@/interfaces/LevelInterface.ts";
 import { CriterionInterface } from "@/interfaces/CriterionInterface.ts";
-import {createRubric, getRubricById, updateRubric} from "@/services/rubricService.ts";
+import {getRubricById, updateRubric} from "@/services/rubricService.ts";
 
 export default function EditRubric() {
     const { id } = useParams<{ id: string }>();
@@ -50,7 +50,7 @@ export default function EditRubric() {
         });
     };
 
-    const handleCriteriaChange = (index: number, field: string, value: string) => {
+    const handleCriteriaChange = (index: number, field: keyof CriterionInterface | `niveles.${number}.nivelDescripcion`, value: string) => {
         if (!rubric) return;
         const updatedCriteria = [...rubric.criterios];
         if (field.startsWith("niveles.")) {
@@ -60,10 +60,11 @@ export default function EditRubric() {
             }
             updatedCriteria[index].niveles[levelIndex].nivelDescripcion = value;
         } else {
-            updatedCriteria[index][field] = field === "crfPorcentaje" ? parseFloat(value) : value;
+            updatedCriteria[index][field as keyof CriterionInterface] = field === "crfPorcentaje" ? parseFloat(value) : value;
         }
         setRubric({ ...rubric, criterios: updatedCriteria });
     };
+
     const addLevel = () => {
         if (!rubric || rubric.criterios.length === 0) return;
         const newLevel: LevelInterface = { idNivel: rubric.criterios[0].niveles.length + 1, nivelDescripcion: "", rangoNota: "" };
@@ -87,7 +88,7 @@ export default function EditRubric() {
     const addRow = () => {
         if (!rubric || rubric.criterios.length === 0) return;
         const newCriterio: CriterionInterface = {
-            idCriterio: (rubric.criterios.length + 1).toString(),
+            idCriterio: null,
             crfDescripcion: "",
             crfPorcentaje: 0,
             crfNota: 0,
@@ -96,6 +97,8 @@ export default function EditRubric() {
         };
         setRubric({ ...rubric, criterios: [...rubric.criterios, newCriterio] });
     };
+
+
     const removeRow = (index: number) => {
         if (!rubric) return;
         const updatedCriteria = rubric.criterios.filter((_, i) => i !== index);
@@ -164,13 +167,13 @@ export default function EditRubric() {
            notaRubrica: parseFloat((document.getElementById("notaRubrica") as HTMLInputElement)?.value || "0"),
            objetivoEstudio: (document.getElementById("objetivoEstudio") as HTMLInputElement)?.value,
            criterios: rubric.criterios.map(row => ({
-               idCriterio: row.idCriterio,
-               crfDescripcion: row.crfDescripcion,
-               crfPorcentaje: parseFloat(row.crfPorcentaje.toString()),
-               crfNota: row.crfNota,
-               crfComentario: row.crfComentario,
-               niveles: row.niveles
-           })),
+            idCriterio: row.idCriterio,
+            crfDescripcion: row.crfDescripcion,
+            crfPorcentaje: parseFloat(row.crfPorcentaje.toString()),
+            crfNota: row.crfNota,
+            crfComentario: row.crfComentario,
+            niveles: row.niveles
+        })),
            estado: "ACTIVO"
        };
        console.log("Guardando rúbrica...");

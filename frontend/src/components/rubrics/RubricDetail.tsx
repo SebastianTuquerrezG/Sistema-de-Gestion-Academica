@@ -32,7 +32,7 @@ export default function RubricDetail() {
             <div className="flex items-start gap-4 relative">
                 <div className="w-full md:w-1/2 lg:w-1/3">
                     <p className="font-semibold">Identificador:</p>
-                    <p className="border p-2 rounded">{rubric.rubricaId}</p>
+                    <p className="border p-2 rounded">{rubric.idRubrica}</p>
                 </div>
                 <div className="w-full md:w-1/2 lg:w-1/3">
                     <p className="font-semibold">Nombre:</p>
