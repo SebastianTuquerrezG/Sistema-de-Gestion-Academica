@@ -31,6 +31,7 @@
 		<lombok.version>1.18.30</lombok.version>
 		<dotenv.version>5.2.2</dotenv.version>
 		<spring-cloud.version>2024.0.0</spring-cloud.version>
+		<spring-actuator.version>3.4.3</spring-actuator.version>
 		<maven.compiler.source>21</maven.compiler.source>
 		<maven.compiler.target>21</maven.compiler.target>
 	</properties>
