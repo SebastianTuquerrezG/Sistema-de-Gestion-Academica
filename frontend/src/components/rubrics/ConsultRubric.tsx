@@ -26,7 +26,7 @@ export default function ConsultarRubrica() {
     const filteredRubrics = rubrics.filter(
         (rubric) =>
             rubric.nombreRubrica.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            rubric.rubricaId.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            rubric.idRubrica.toLowerCase().includes(searchTerm.toLowerCase()) ||
             rubric.materia.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
@@ -49,7 +49,7 @@ export default function ConsultarRubrica() {
     const handleDelete = async (id: string) => {
         const success = await deleteRubric(id);
         if(success) {
-            setRubrics(rubrics.filter(rubric => rubric.rubricaId !== id));
+            setRubrics(rubrics.filter(rubric => rubric.idRubrica !== id));
         }else{
             alert("Error deleting rubric");
         }
@@ -92,25 +92,25 @@ export default function ConsultarRubrica() {
                         </thead>
                         <tbody>
                             {filteredRubrics.map((rubric, index) => (
-                                <tr key={rubric.rubricaId} className={index % 2 === 0 ? "bg-gray-50" : "bg-white"}>
-                                    <td className={`px-6 py-4 cursor-pointer ${selectedRubricId === rubric.rubricaId ? "text-blue-600" : ""}`}
-                                        onClick={() => handleDetail(rubric.rubricaId)}>
-                                        {rubric.rubricaId}
+                                <tr key={rubric.idRubrica} className={index % 2 === 0 ? "bg-gray-50" : "bg-white"}>
+                                    <td className={`px-6 py-4 cursor-pointer ${selectedRubricId === rubric.idRubrica ? "text-blue-600" : ""}`}
+                                        onClick={() => handleDetail(rubric.idRubrica)}>
+                                        {rubric.idRubrica}
                                     </td>
-                                    <td className={`px-6 py-4 cursor-pointer ${selectedRubricId === rubric.rubricaId ? "text-blue-600" : ""}`}
-                                        onClick={() => handleDetail(rubric.rubricaId)}>
+                                    <td className={`px-6 py-4 cursor-pointer ${selectedRubricId === rubric.idRubrica ? "text-blue-600" : ""}`}
+                                        onClick={() => handleDetail(rubric.idRubrica)}>
                                         {rubric.nombreRubrica}
                                     </td>
-                                    <td className={`px-6 py-4 cursor-pointer ${selectedRubricId === rubric.rubricaId ? "text-blue-600" : ""}`}
-                                        onClick={() => handleDetail(rubric.rubricaId)}>
+                                    <td className={`px-6 py-4 cursor-pointer ${selectedRubricId === rubric.idRubrica ? "text-blue-600" : ""}`}
+                                        onClick={() => handleDetail(rubric.idRubrica)}>
                                         {rubric.materia}
                                     </td>
                                     <td className="px-6 py-4">
                                         <div className="flex justify-center gap-2">
-                                            <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => handleEdit(rubric.rubricaId)}>
+                                            <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => handleEdit(rubric.idRubrica)}>
                                                 <Pencil className="h-4 w-4" />
                                             </Button>
-                                            <Button variant="ghost" size="icon" className="h-8 w-8 text-orange-500 hover:text-orange-600" onClick={() => handleDelete(rubric.rubricaId)}>
+                                            <Button variant="ghost" size="icon" className="h-8 w-8 text-orange-500 hover:text-orange-600" onClick={() => handleDelete(rubric.idRubrica)}>
                                                 <Trash2 className="h-4 w-4" />
                                             </Button>
                                         </div>

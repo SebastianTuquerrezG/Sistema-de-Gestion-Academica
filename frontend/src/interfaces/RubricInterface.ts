@@ -1,7 +1,7 @@
 import { CriterionInterface } from './CriterionInterface';
 
 export interface RubricInterface {
-  rubricaId: string;
+  idRubrica: string;
   nombreRubrica: string;
   materia: string;
   notaRubrica: number;
