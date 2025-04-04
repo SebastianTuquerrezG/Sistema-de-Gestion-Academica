@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import "./EvaluacionesCSS/evaluationTable.css";
 import Notification from "../../components/notifications/notification";
 import { Button } from "@/components/ui/button.tsx";
+import { submitEvaluation, submitCalificationRegister } from "../../services/evaluationService";
+
 
 type NotificationType = {
   type: "error" | "info";
@@ -25,9 +27,13 @@ interface Criterio {
 interface Props {
   criterios: Criterio[];
   estudiante: string;
+  rubricaId: number;
+  enrollId: number;
 }
 
-const EvaluationTable: React.FC<Props> = ({ criterios, estudiante }) => {
+
+
+const EvaluationTable: React.FC<Props> = ({ criterios, estudiante, rubricaId, enrollId }) => {
   const data = criterios;
 
   // Extraer niveles únicos de todos los descriptores
@@ -121,9 +127,9 @@ const EvaluationTable: React.FC<Props> = ({ criterios, estudiante }) => {
     }
   };
 
-  const handleGuardarEvaluacion = () => {
+  const handleGuardarEvaluacion = async () => {
     const incompletos = valores.some((v) => v === "");
-
+  
     if (incompletos) {
       setNotification({
         type: "error",
@@ -132,25 +138,50 @@ const EvaluationTable: React.FC<Props> = ({ criterios, estudiante }) => {
       });
       return;
     }
-
-    const evaluacion = data.map((criterio, index) => ({
-      criterio: criterio.criterio,
-      porcentaje: criterio.porcentaje,
-      calificacion: valores[index] || 0,
-      comentario: comentarios[index],
-      nivel: getNivel(Number(valores[index]) || 0, criterio.descriptores),
-    }));
-
-    console.log("Evaluación enviada al backend:", evaluacion);
-
-    setNotification({
-      type: "info",
-      title: "Éxito",
-      message: "La evaluación fue guardada correctamente.",
-    });
-
-    setHasChanges(false);
+  
+    const totalScore = data.reduce(
+      (acc, row, i) => acc + (valores[i] || 0) * (row.porcentaje / 100),
+      0
+    );
+  
+    const evaluationPayload = {
+      enroll: enrollId,
+      rubric: rubricaId,
+      description: `Evaluación de ${estudiante}`,
+      evaluationStatus: "EVALUADO",
+      score: totalScore,
+      evidenceUrl: "https://ejemplo.com/evidencia.pdf",
+    };
+  
+    try {
+      const evaluation = await submitEvaluation(evaluationPayload);
+  
+      await Promise.all(
+        data.map((criterio, index) =>
+          submitCalificationRegister({
+            calification: valores[index],
+            message: comentarios[index],
+            level: getNivel(Number(valores[index]), criterio.descriptores),
+            evaluationId: evaluation.id,
+          })
+        )
+      );
+  
+      setNotification({
+        type: "info",
+        title: "Éxito",
+        message: "Evaluación guardada correctamente.",
+      });
+      setHasChanges(false);
+    } catch (error) {
+      setNotification({
+        type: "error",
+        title: "Error",
+        message: "No se pudo guardar la evaluación.",
+      });
+    }
   };
+  
 
   // Limpiar datos al cambiar de estudiante
   useEffect(() => {

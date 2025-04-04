@@ -2,27 +2,71 @@ import React, { useEffect, useState } from "react";
 import PageTitle from "../../components/pageTitle/pageTitle";
 import RubricaInfo from "./rubricaInfo";
 import EvaluationTable from "./evaluationTable";
-import { getAllSubjects } from '../../services/evaluationService';
 import ActionButtons from "../../components/utils/actionButtons";
+import {
+  getAllRubrics,
+  getAllStudents,
+  getAllSemesters,
+} from "../../services/evaluationService";
+
 import "../../assets/css/evaluaciones.css";
 
-// Interfaces de los datos
-interface Subject {
-  id: number;
-  name: string;
-  code: string;
-  credits: number;
-  status: string;
+// Interfaces
+// Interfaces
+interface Rubrica {
+  idRubrica: number;
+  nombreRubrica: string;
+  materia: string;
+  notaRubrica: number;
+  objetivoEstudio: string;
+  criterios: {
+    crfDescripcion: string;
+    crfPorcentaje: number;
+    niveles: {
+      nivelDescripcion: string;
+      rangoNota: string; // ej: "1-2"
+    }[];
+  }[];
 }
 
-const Evaluaciones: React.FC = () => {
-  const [materias, setMaterias] = useState<string[]>([]);
-  const [selectedMateria, setSelectedMateria] = useState<string>("");
+interface Estudiante {
+  id: number;
+  name: string;
+  lastName: string;
+  identification: string;
+}
 
-  //  Cargar materias desde el backend
+
+const Evaluaciones: React.FC = () => {
+  const [rubricas, setRubricas] = useState<Rubrica[]>([]);
+  const [selectedRubrica, setSelectedRubrica] = useState<Rubrica | null>(null);
+
+  const [periodos, setPeriodos] = useState<string[]>([]);
+  const [selectedPeriodo, setSelectedPeriodo] = useState<string>("");
+
+  const [estudiantes, setEstudiantes] = useState<string[]>([]);
+  const [selectedEstudiante, setSelectedEstudiante] = useState<string>("");
+
+  // Cargar rúbricas
   useEffect(() => {
-    getAllSubjects().then(setMaterias);
+    getAllRubrics().then(setRubricas);
   }, []);
+
+  // Cargar periodos desde enrolls
+  useEffect(() => {
+    getAllSemesters().then(setPeriodos);
+  }, []);
+
+  // Cargar estudiantes cuando se seleccione un período
+  useEffect(() => {
+    if (selectedPeriodo) {
+      getAllStudents().then((data: Estudiante[]) => {
+        const nombres = data.map(e => `${e.name ?? ""} ${e.lastName ?? ""}`.trim());
+        setEstudiantes(nombres);
+      });
+    }
+  }, [selectedPeriodo]);
+  
 
   return (
     <>
@@ -32,22 +76,44 @@ const Evaluaciones: React.FC = () => {
       </div>
 
       <RubricaInfo
-        materias={materias}
-        rubricas={[]} // aún no cargamos estas
-        periodos={[]} // tampoco estas
-        estudiantes={[]} // tampoco aún
-        materiaSeleccionada={selectedMateria}
-        rubricaSeleccionada=""
-        periodoSeleccionado=""
-        estudianteSeleccionado=""
-        onSelectMateria={setSelectedMateria}
-        onSelectRubrica={() => {}}
-        onSelectPeriodo={() => {}}
-        onSelectEstudiante={() => {}}
-        resultadoAprendizaje=""
+        rubricas={rubricas.map((r) => r.nombreRubrica)}
+        periodos={periodos}
+        estudiantes={estudiantes}
+        rubricaSeleccionada={selectedRubrica?.nombreRubrica || ""}
+        periodoSeleccionado={selectedPeriodo}
+        estudianteSeleccionado={selectedEstudiante}
+        onSelectRubrica={(nombre) => {
+          const rubrica = rubricas.find((r) => r.nombreRubrica === nombre) || null;
+          setSelectedRubrica(rubrica);
+          setSelectedPeriodo("");
+          setEstudiantes([]);
+        }}
+        onSelectPeriodo={setSelectedPeriodo}
+        onSelectEstudiante={setSelectedEstudiante}
+        resultadoAprendizaje={selectedRubrica?.objetivoEstudio || ""}
+        materia={selectedRubrica?.materia || ""}
       />
 
-      {/* Aún no mostramos tabla */}
+{selectedEstudiante && selectedRubrica && (
+  <EvaluationTable
+    estudiante={selectedEstudiante}
+    criterios={selectedRubrica.criterios.map((c) => ({
+      criterio: c.crfDescripcion,
+      porcentaje: c.crfPorcentaje * 100,
+      descriptores: c.niveles.map((n) => {
+        const [inferior, superior] = n.rangoNota.split("-").map(Number);
+        return {
+          nivel: n.nivelDescripcion,
+          texto: n.nivelDescripcion,
+          inferior,
+          superior,
+        };
+      }),
+    }))}
+    rubricaId={selectedRubrica.idRubrica}
+    enrollId={1} // simulado
+  />
+)}
     </>
   );
 };
