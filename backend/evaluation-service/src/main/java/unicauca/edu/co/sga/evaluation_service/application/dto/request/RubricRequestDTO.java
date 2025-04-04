@@ -13,4 +13,5 @@ public class RubricRequestDTO {
     private String name;
     private String study_objective;
     private String competence;
+    private Long ra_id;
 }

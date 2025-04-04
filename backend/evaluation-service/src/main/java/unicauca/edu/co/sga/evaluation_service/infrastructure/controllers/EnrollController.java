@@ -17,6 +17,8 @@ import java.util.Optional;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/enroll")
+@CrossOrigin(value = "*",
+        methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE})
 public class EnrollController {
     private final EnrollPort enrollPort;
 
