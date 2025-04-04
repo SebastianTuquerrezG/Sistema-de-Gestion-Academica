@@ -4,7 +4,7 @@ import CreateRubric from "@/components/rubrics/CreateRubric";
 import EditRubric from "@/components/rubrics/EditRubric";
 import ConsultRubric from "@/components/rubrics/ConsultRubric";
 import RubricDetail from "@/components/rubrics/RubricDetail";
-import Evaluaciones from "@/views/Evaluaciones/Evaluaciones";
+import Evaluaciones from "@/views/Evaluaciones/Evaluation";
 
 export default function Dashboard() {
     return (
