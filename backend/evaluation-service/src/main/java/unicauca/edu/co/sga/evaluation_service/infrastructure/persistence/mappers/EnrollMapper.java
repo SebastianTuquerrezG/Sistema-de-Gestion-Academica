@@ -22,16 +22,16 @@ import java.util.stream.Collectors;
 
 @Component
 public class EnrollMapper {
-    private static StudentRepository studentRepository;
-    private static CourseRepository courseRepository;
+    private final StudentRepository studentRepository;
+    private final CourseRepository courseRepository;
 
     @Autowired
     public EnrollMapper(StudentRepository studentRepository, CourseRepository courseRepository) {
-        EnrollMapper.studentRepository = studentRepository;
-        EnrollMapper.courseRepository = courseRepository;
+        this.studentRepository = studentRepository;
+        this.courseRepository = courseRepository;
     }
 
-    public static Enroll toModel(EnrollRequestDTO dto){
+    public Enroll toModel(EnrollRequestDTO dto){
         return Enroll.builder()
                 .course(dto.getCourse())
                 .student(dto.getStudent())
@@ -39,7 +39,7 @@ public class EnrollMapper {
                 .build();
     }
 
-    public static EnrollResponseDTO toDTO(Enroll domain){
+    public EnrollResponseDTO toDTO(Enroll domain){
         return EnrollResponseDTO.builder()
                 .id(domain.getId())
                 .student(domain.getStudent())
@@ -48,7 +48,7 @@ public class EnrollMapper {
                 .build();
     }
 
-    public static Enroll toModel(EnrollEntity entity){
+    public Enroll toModel(EnrollEntity entity){
         return Enroll.builder()
                 .id(entity.getId())
                 .student(entity.getStudent().getId())
@@ -57,7 +57,7 @@ public class EnrollMapper {
                 .build();
     }
 
-    public static EnrollEntity toEntity(Enroll domain){
+    public EnrollEntity toEntity(Enroll domain){
         Optional<StudentEntity> student = studentRepository.findById(domain.getStudent());
         Optional<CourseEntity> course = courseRepository.findById(domain.getCourse());
 
