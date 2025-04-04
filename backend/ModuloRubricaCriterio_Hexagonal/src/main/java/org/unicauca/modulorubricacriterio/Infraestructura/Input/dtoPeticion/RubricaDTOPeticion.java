@@ -1,5 +1,7 @@
 package org.unicauca.modulorubricacriterio.Infraestructura.Input.dtoPeticion;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,5 +18,6 @@ public class RubricaDTOPeticion {
     private String materia;
     private int notaRubrica;
     private String objetivoEstudio;
+    private List<CriterioDTOPeticion> criterios;
     private String estado;
 }
