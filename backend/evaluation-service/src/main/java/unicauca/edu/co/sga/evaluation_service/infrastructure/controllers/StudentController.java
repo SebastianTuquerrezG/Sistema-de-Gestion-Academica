@@ -90,4 +90,13 @@ public class StudentController {
         }
         return ResponseEntity.ok(students);
     }
+    
+    @GetMapping("/courseAndPeriod/{courseId}/{period}")
+    public ResponseEntity<List<StudentResponseDTO>> getStudentsByCourseAndPeriod(@PathVariable Long courseId, @PathVariable String period){
+        List<StudentResponseDTO> students = studentPort.getStudentsByCourseAndPeriod(courseId, period);
+        if (students.isEmpty()) {
+            throw new NotFoundException("No students found for course " + courseId + " and period " + period);
+        }
+        return ResponseEntity.ok(students);
+    }
 }
