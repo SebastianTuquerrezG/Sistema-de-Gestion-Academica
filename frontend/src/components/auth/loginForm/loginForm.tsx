@@ -46,11 +46,11 @@ export default function LoginForm() {
             // Usar el Server Action
             const res = await authAction(data);
 
-            if (res.success) {
+            if (res.status === 200) {
                 handleSuccessfulLogin(data);
                 return;
             }
-            handleAuthError(res);
+            handleAuthError(res.data);
         } catch (error) {
             console.error("Error al ejecutar Server Action:", error);
             setError("email", { type: "server", message: "" });
@@ -74,7 +74,7 @@ export default function LoginForm() {
         /* router.push("/dashboard/home"); */
     };
 
-    const handleAuthError = (result: LoginResponse) => {
+    const handleAuthError = (result: unknown) => {
         setError("email", { type: "server", message: "" });
         setError("password", { type: "server", message: "" });
 
