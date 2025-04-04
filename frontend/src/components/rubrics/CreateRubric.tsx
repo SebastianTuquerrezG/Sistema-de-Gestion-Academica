@@ -265,7 +265,9 @@ export default function CreateRubric() {
         };
 
         try {
+            console.log(rubricData);
             createRubric(rubricData).then(r => console.log(r));
+
             setNotification({
                 type: "success",
                 title: "Éxito",
