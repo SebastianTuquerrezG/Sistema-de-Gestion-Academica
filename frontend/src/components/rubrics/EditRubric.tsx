@@ -50,25 +50,25 @@ export default function EditRubric() {
         });
     };
 
-  const handleCriteriaChange = (index: number, field: keyof CriterionInterface | `niveles.${number}.nivelDescripcion`, value: string) => {
-      if (!rubric) return;
-      const updatedCriteria = [...rubric.criterios];
-      if (field.startsWith("niveles.")) {
-          const levelIndex = parseInt(field.split(".")[1]);
-          if (!updatedCriteria[index].niveles[levelIndex]) {
-              updatedCriteria[index].niveles[levelIndex] = { idNivel: levelIndex + 1, nivelDescripcion: "", rangoNota: "" };
-          }
-          updatedCriteria[index].niveles[levelIndex].nivelDescripcion = value;
-      } else {
-          const key = field as keyof CriterionInterface;
-          if (key === "crfPorcentaje") {
-              updatedCriteria[index][key] = parseFloat(value) as any;
-          } else {
-              updatedCriteria[index][key] = value as any;
-          }
-      }
-      setRubric({ ...rubric, criterios: updatedCriteria });
-  };
+   const handleCriteriaChange = (index: number, field: keyof CriterionInterface | `niveles.${number}.nivelDescripcion`, value: string) => {
+       if (!rubric) return;
+       const updatedCriteria = [...rubric.criterios];
+       if (typeof field === "string" && field.startsWith("niveles.")) {
+           const levelIndex = parseInt(field.split(".")[1]);
+           if (!updatedCriteria[index].niveles[levelIndex]) {
+               updatedCriteria[index].niveles[levelIndex] = { idNivel: levelIndex + 1, nivelDescripcion: "", rangoNota: "" };
+           }
+           updatedCriteria[index].niveles[levelIndex].nivelDescripcion = value;
+       } else {
+           const key = field as keyof CriterionInterface;
+           if (key === "crfPorcentaje") {
+               updatedCriteria[index][key] = parseFloat(value) as unknown as CriterionInterface[keyof CriterionInterface];
+           } else {
+               updatedCriteria[index][key] = value as unknown as CriterionInterface[keyof CriterionInterface];
+           }
+       }
+       setRubric({ ...rubric, criterios: updatedCriteria });
+   };
 
     const addLevel = () => {
         if (!rubric || rubric.criterios.length === 0) return;

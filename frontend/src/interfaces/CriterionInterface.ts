@@ -6,5 +6,5 @@ export interface CriterionInterface {
     crfPorcentaje: number;
     crfNota: number;
     crfComentario: string;
-    niveles: LevelInterface[];
+    niveles: LevelInterface[] ;
 }
