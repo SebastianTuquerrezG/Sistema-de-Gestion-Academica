@@ -25,7 +25,6 @@ import java.util.stream.Collectors;
 public class CourseService implements CoursePort {
 
     private final CourseRepository courseRepository;
-    private final CourseMapper courseMapper;
 
     @Override
     public List<CourseResponseDTO> getCourses() {
