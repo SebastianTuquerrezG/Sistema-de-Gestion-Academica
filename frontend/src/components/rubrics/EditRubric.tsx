@@ -9,44 +9,31 @@ import { Plus, Trash2, PlusCircle } from "lucide-react";
 import { Card, CardHeader, CardContent, CardDescription, CardTitle, CardFooter } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-
-interface Nivel {
-    idNivel: number;
-    nivelDescripcion: string;
-    rangoNota: string;
-}
-
-interface Criterio {
-    idCriterio: string;
-    crfDescripcion: string;
-    niveles: Nivel[];
-    crfPorcentaje: number;
-}
-
-interface Rubric {
-    idRubrica: string;
-    nombreRubrica: string;
-    materia: string;
-    notaRubrica: number;
-    objetivoEstudio: string;
-    criterios: Criterio[];
-    estado: string;
-}
+import { RubricInterface } from "@/interfaces/RubricInterface.ts";
+import { LevelInterface } from "@/interfaces/LevelInterface.ts";
+import { CriterionInterface } from "@/interfaces/CriterionInterface.ts";
+import {getRubricById, updateRubric} from "@/services/rubricService.ts";
 
 export default function EditRubric() {
     const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
-    const [rubric, setRubric] = useState<Rubric | null>(null);
+    const [rubric, setRubric] = useState<RubricInterface | null>(null);
+    const [notification, setNotification] = useState<{ type: string, title: string, message: string } | null>(null);
 
     useEffect(() => {
-        fetch("/rubricas.json")
-            .then(res => res.json())
-            .then(data => {
-                const foundRubric = data.find((r: Rubric) => r.idRubrica === id);
-                setRubric(foundRubric || null);
-            })
-            .catch(error => console.error(error));
+        if (id) {
+            getRubricById(id)
+                .then((data) => setRubric(data))
+                .catch((error) => console.error(error));
+        }
     }, [id]);
+
+    useEffect(() => {
+        if (notification) {
+            const timeout = setTimeout(() => setNotification(null), 4000);
+            return () => clearTimeout(timeout);
+        }
+    }, [notification]);
 
     if (!rubric) {
         return <p className="text-center text-red-500">Rúbrica no encontrada.</p>;
@@ -54,28 +41,45 @@ export default function EditRubric() {
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { id, value } = e.target;
-        setRubric((prevData) => prevData ? { ...prevData, [id]: value } : null);
+        setRubric((prevData) => {
+            if (!prevData) return null;
+            return {
+                ...prevData,
+                [id]: id === "notaRubrica" ? parseFloat(value) : value
+            };
+        });
     };
 
-    const handleCriteriaChange = (index: number, field: string, value: string) => {
-        if (!rubric) return;
-        const updatedCriteria = [...rubric.criterios];
-        updatedCriteria[index] = {
-            ...updatedCriteria[index],
-            [field]: value,
-        };
-        setRubric({ ...rubric, criterios: updatedCriteria });
-    };
+   const handleCriteriaChange = (index: number, field: keyof CriterionInterface | `niveles.${number}.nivelDescripcion`, value: string) => {
+       if (!rubric) return;
+       const updatedCriteria = [...rubric.criterios];
+       if (typeof field === "string" && field.startsWith("niveles.")) {
+           const levelIndex = parseInt(field.split(".")[1]);
+           if (!updatedCriteria[index].niveles[levelIndex]) {
+               updatedCriteria[index].niveles[levelIndex] = { idNivel: levelIndex + 1, nivelDescripcion: "", rangoNota: "" };
+           }
+           updatedCriteria[index].niveles[levelIndex].nivelDescripcion = value;
+       } else {
+           const key = field as keyof CriterionInterface;
+           if (key === "crfPorcentaje") {
+               updatedCriteria[index][key] = parseFloat(value) as unknown as CriterionInterface[keyof CriterionInterface];
+           } else {
+               updatedCriteria[index][key] = value as unknown as CriterionInterface[keyof CriterionInterface];
+           }
+       }
+       setRubric({ ...rubric, criterios: updatedCriteria });
+   };
 
     const addLevel = () => {
-        if (!rubric) return;
-        const newLevel: Nivel = { idNivel: rubric.criterios[0].niveles.length + 1, nivelDescripcion: "", rangoNota: "" };
+        if (!rubric || rubric.criterios.length === 0) return;
+        const newLevel: LevelInterface = { idNivel: rubric.criterios[0].niveles.length + 1, nivelDescripcion: "", rangoNota: "" };
         const updatedCriteria = rubric.criterios.map(criterio => ({
             ...criterio,
             niveles: [...criterio.niveles, newLevel]
         }));
         setRubric({ ...rubric, criterios: updatedCriteria });
     };
+
 
     const removeLevel = () => {
         if (!rubric) return;
@@ -87,21 +91,122 @@ export default function EditRubric() {
     };
 
     const addRow = () => {
-        if (!rubric) return;
-        const newCriterio: Criterio = {
-            idCriterio: (rubric.criterios.length + 1).toString(),
+        if (!rubric || rubric.criterios.length === 0) return;
+        const newCriterio: CriterionInterface = {
+            idCriterio: null,
             crfDescripcion: "",
             crfPorcentaje: 0,
+            crfNota: 0,
+            crfComentario: "",
             niveles: rubric.criterios[0].niveles.map(nivel => ({ ...nivel, nivelDescripcion: "" }))
         };
         setRubric({ ...rubric, criterios: [...rubric.criterios, newCriterio] });
     };
+
 
     const removeRow = (index: number) => {
         if (!rubric) return;
         const updatedCriteria = rubric.criterios.filter((_, i) => i !== index);
         setRubric({ ...rubric, criterios: updatedCriteria });
     };
+
+   const handleSave = async () => {
+
+       // Validar campos obligatorios
+       const requiredFields = [
+           { field: (document.getElementById("idRubrica") as HTMLInputElement)?.value, name: "ID Rúbrica" },
+           { field: (document.getElementById("nombreRubrica") as HTMLInputElement)?.value, name: "Nombre Rúbrica" },
+           { field: (document.getElementById("materia") as HTMLInputElement)?.value, name: "Materia" },
+           { field: (document.getElementById("objetivoEstudio") as HTMLInputElement)?.value, name: "Objetivo de Estudio" }
+       ];
+
+       const missingField = requiredFields.find(f => !f.field);
+       if (missingField) {
+           setNotification({
+               type: "error",
+               title: "Campo requerido",
+               message: `El campo "${missingField.name}" es obligatorio.`
+           });
+          console.log(`Guardando rúbrica... Campos Vacio superado ${missingField.name}`);
+           return;
+       }
+
+       // Validar descripciones de criterios
+       const emptyCriteria = rubric.criterios.find(row => !row.crfDescripcion.trim());
+       if (emptyCriteria) {
+           setNotification({
+               type: "error",
+               title: "Campo requerido",
+               message: "Todos los criterios deben tener una descripción."
+           });
+           return;
+       }
+
+       // Validar descripciones de niveles
+       const emptyLevel = rubric.criterios.some(row =>
+           row.niveles.some(nivel => !nivel.nivelDescripcion.trim())
+       );
+       if (emptyLevel) {
+           setNotification({
+               type: "error",
+               title: "Campo requerido",
+               message: "Todos los niveles deben tener una descripción."
+           });
+           return;
+       }
+
+       const totalPercentage = rubric.criterios.reduce((sum, row) => sum + (parseFloat(row.crfPorcentaje.toString()) || 0), 0);
+       if (Math.abs(totalPercentage - 1) > 0.0001) {
+           setNotification({
+               type: "error",
+               title: "Porcentaje inválido",
+               message: "La suma de los porcentajes debe ser exactamente 100% (1 en decimal)."
+           });
+           return;
+       }
+
+       const rubricData: RubricInterface = {
+           idRubrica: (document.getElementById("idRubrica") as HTMLInputElement)?.value,
+           nombreRubrica: (document.getElementById("nombreRubrica") as HTMLInputElement)?.value,
+           materia: (document.getElementById("materia") as HTMLInputElement)?.value,
+           notaRubrica: parseFloat((document.getElementById("notaRubrica") as HTMLInputElement)?.value || "0"),
+           objetivoEstudio: (document.getElementById("objetivoEstudio") as HTMLInputElement)?.value,
+           criterios: rubric.criterios.map(row => ({
+            idCriterio: row.idCriterio,
+            crfDescripcion: row.crfDescripcion,
+            crfPorcentaje: parseFloat(row.crfPorcentaje.toString()),
+            crfNota: row.crfNota,
+            crfComentario: row.crfComentario,
+            niveles: row.niveles
+        })),
+           estado: "ACTIVO"
+       };
+       console.log("Guardando rúbrica...");
+       try {
+           console.log("Guardando rúbrica... Intentado envio");
+         const response = await updateRubric(rubric.idRubrica, rubricData);
+
+           console.log("Guardando rúbrica..." , response);
+           if (response) {
+               setNotification({
+                   type: "success",
+                   title: "Éxito",
+                   message: "Rúbrica guardada exitosamente."
+               });
+           } else {
+               throw new Error("Error al guardar la rúbrica.");
+           }
+       } catch (e) {
+           setNotification({
+               type: "error",
+               title: "Error",
+               message: "Error al guardar la rúbrica."
+           });
+           console.error(e);
+       }
+   };
+
+    const maxLevels = Math.max(...rubric.criterios.map(criterio => criterio.niveles.length));
 
     return (
         <Card className="w-full max-w-[1200px]">
@@ -124,6 +229,10 @@ export default function EditRubric() {
                             <Label htmlFor="materia">Materia</Label>
                             <Input id="materia" placeholder="Nombre de la materia" value={rubric.materia} onChange={handleInputChange} />
                         </div>
+                        <div className="grid w-full max-w-sm items-center gap-1.5 col-span-2">
+                            <Label htmlFor="objetivoEstudio">Objetivo de Estudio</Label>
+                            <Input id="objetivoEstudio" placeholder="Objetivo de la evaluación" value={rubric.objetivoEstudio} onChange={handleInputChange} />
+                        </div>
                     </div>
                 </div>
                 <CardTitle className="mt-6">Criterios de Evaluación</CardTitle>
@@ -133,11 +242,10 @@ export default function EditRubric() {
                         <TableRow>
                             <TableHead>Criterio Evaluación</TableHead>
                             <TableHead>Porcentaje</TableHead>
-                            {rubric.criterios[0]?.niveles.map((nivel, index) => (
+                            {Array.from({ length: maxLevels }).map((_, index) => (
                                 <TableHead key={index}>
                                     <div className="flex flex-col">
-                                        <span>Nivel {nivel.idNivel}</span>
-                                        <span className="text-xs">{nivel.rangoNota}</span>
+                                        <span>Nivel {index + 1}</span>
                                     </div>
                                 </TableHead>
                             ))}
@@ -172,12 +280,12 @@ export default function EditRubric() {
                                         placeholder="0.00"
                                     />
                                 </TableCell>
-                                {criterio.niveles.map((nivel, nivelIndex) => (
+                                {Array.from({ length: maxLevels }).map((_, nivelIndex) => (
                                     <TableCell key={nivelIndex}>
                                         <Textarea
-                                            value={nivel.nivelDescripcion}
+                                            value={criterio.niveles[nivelIndex]?.nivelDescripcion || ""}
                                             onChange={(e) => handleCriteriaChange(rowIndex, `niveles.${nivelIndex}.nivelDescripcion`, e.target.value)}
-                                            placeholder={`Descripción nivel ${nivel.idNivel}`}
+                                            placeholder={`Descripción nivel ${nivelIndex + 1}`}
                                         />
                                     </TableCell>
                                 ))}
@@ -198,7 +306,7 @@ export default function EditRubric() {
             </CardContent>
             <CardFooter className="flex justify-between">
                 <Button variant="outline" onClick={() => navigate("/rubricas")}>Cancelar</Button>
-                <Button className="bg-[#0a0a6b] hover:bg-[#0a0a9b]">Guardar</Button>
+                <Button onClick={handleSave} className="bg-[#0a0a6b] hover:bg-[#0a0a9b]">Guardar</Button>
             </CardFooter>
         </Card>
     );

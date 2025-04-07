@@ -1,5 +1,7 @@
 package org.unicauca.modulorubricacriterio.Infraestructura.Input.dtoPeticion;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,5 +19,6 @@ public class CriterioDTOPeticion {
     private Float crfPorcentaje;
     private Float crfNota;
     private String crfComentario;
-    private Long rubrica_id;
+    private List<NivelDTOPeticion> niveles;
+    private Long idRubrica;
 }

@@ -50,7 +50,7 @@ public class ConectorBDRubricaAdapter implements IConectorBDRubricaPort {
         RubricaEntity objRubricaEntity = this.rubricaRepository.findById(idRubrica).orElse(null);
 
         if (objRubricaEntity == null) {
-            return null;
+            throw new EntidadNoExisteException("Rúbrica con el id {"+idRubrica+"} no existe");
         }
 
         Rubrica objRubrica = this.rubricaMapper.map(objRubricaEntity, Rubrica.class);
@@ -71,30 +71,70 @@ public class ConectorBDRubricaAdapter implements IConectorBDRubricaPort {
     @Override
     public Rubrica saveRubric(Rubrica objRubrica) {
         RubricaEntity objRubricaEntity = this.rubricaMapper.map(objRubrica, RubricaEntity.class);
+        if(objRubricaEntity.getCriterios() != null)
+        {
+            objRubricaEntity.getCriterios().forEach(criterio -> {
+                criterio.setRubrica(objRubricaEntity);
+                if(criterio.getNiveles() != null) {
+                    criterio.getNiveles().forEach(nivel -> nivel.setCriterio(criterio));
+                }
+            });
+        }
         RubricaEntity objRubricaEntityGuardada = this.rubricaRepository.save(objRubricaEntity);
         Rubrica objRubricaGuardada = this.rubricaMapper.map(objRubricaEntityGuardada, Rubrica.class);
+
+        if(objRubricaGuardada.getCriterios() != null)
+        {
+            objRubricaGuardada.getCriterios().forEach(criterio -> {
+                criterio.setIdRubrica(objRubricaGuardada.getIdRubrica());
+                if(criterio.getNiveles() != null) {
+                    criterio.getNiveles().forEach(nivel -> nivel.setIdCriterio(criterio.getIdCriterio()));
+                }
+            });
+        }
         return objRubricaGuardada;
     }
 
     @Override
     public Rubrica updateRubric(Long id, Rubrica objRubrica) {
         RubricaEntity objRubricaActualizada = null;
+        RubricaEntity objRubricaEntity = this.rubricaMapper.map(objRubrica, RubricaEntity.class);
         RubricaEntity rubricaEncontrada = this.rubricaRepository.findById(id).orElse(null);
         if(rubricaEncontrada==null)
         {
             throw new EntidadNoExisteException("Rúbrica con el id {"+id+"} no existe");
         }
+
+        objRubricaEntity.getCriterios().forEach(criterio -> {
+            criterio.setRubrica(rubricaEncontrada);
+            if(criterio.getNiveles() != null) {
+                criterio.getNiveles().forEach(nivel -> nivel.setCriterio(criterio));
+            }
+        });
+
+        for(int i=0; i < objRubricaEntity.getCriterios().size(); i++)
+        {
+            objRubricaEntity.getCriterios().get(i).setIdCriterio(rubricaEncontrada.getCriterios().get(i).getIdCriterio());
+            for(int j=0; j < objRubricaEntity.getCriterios().get(i).getNiveles().size(); j++)
+            {
+                objRubricaEntity.getCriterios().get(i).getNiveles().get(j).setIdNivel(rubricaEncontrada.getCriterios().get(i).getNiveles().get(j).getIdNivel());
+            }
+        }
+
         rubricaEncontrada.setMateria(objRubrica.getMateria());
         rubricaEncontrada.setNombreRubrica(objRubrica.getNombreRubrica());
         rubricaEncontrada.setNotaRubrica(objRubrica.getNotaRubrica());
         rubricaEncontrada.setObjetivoEstudio(objRubrica.getObjetivoEstudio());
+        rubricaEncontrada.setCriterios(objRubricaEntity.getCriterios());
+
+
         objRubricaActualizada = this.rubricaRepository.save(rubricaEncontrada);
         Rubrica rubricaActualizadaReturn = this.rubricaMapper.map(objRubricaActualizada, Rubrica.class);
         
         if(rubricaActualizadaReturn.getCriterios() != null)
         {
             rubricaActualizadaReturn.getCriterios().forEach(criterio -> {
-                criterio.setIdRubrica(objRubrica.getIdRubrica());
+                criterio.setIdRubrica(rubricaActualizadaReturn.getIdRubrica());
                 if(criterio.getNiveles() != null) {
                     criterio.getNiveles().forEach(nivel -> nivel.setIdCriterio(criterio.getIdCriterio()));
                 }

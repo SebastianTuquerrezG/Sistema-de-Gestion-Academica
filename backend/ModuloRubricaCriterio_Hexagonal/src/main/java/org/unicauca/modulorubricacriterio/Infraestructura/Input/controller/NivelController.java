@@ -14,8 +14,8 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api")
-@CrossOrigin(value = "http://localhost:4200",
-        methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE})
+@CrossOrigin(value = "*",
+        methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE, RequestMethod.PATCH})
 public class NivelController {
 
     private final IGestionNivelPort nivelService;

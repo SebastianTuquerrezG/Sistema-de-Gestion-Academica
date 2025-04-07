@@ -9,11 +9,7 @@ import "../../assets/css/evaluaciones.css";
 interface Descriptor {
   nivel: string;
   texto: string;
-  inferior: number;
-  superior: number;
 }
-
-
 
 interface Criterio {
   criterio: string;
@@ -37,47 +33,23 @@ const estudiantes: Estudiante[] = [
     rubrica: {
       criterios: [
         {
-          criterio: "Dominio conceptual",
-          porcentaje: 25,
+          criterio: "Criterio A",
+          porcentaje: 20,
           descriptores: [
-            { nivel: "Nivel 5", texto: "Manejo sobresaliente de conceptos", inferior: 4.0, superior: 5.0 },
-            { nivel: "Nivel 4", texto: "Manejo sólido de conceptos", inferior: 3.0, superior: 3.9 },
-            { nivel: "Nivel 3", texto: "Manejo aceptable de conceptos", inferior: 2.0, superior: 2.9 },
-            { nivel: "Nivel 2", texto: "Manejo limitado de conceptos", inferior: 1.0, superior: 1.9 },
-            { nivel: "Nivel 1", texto: "Desconocimiento evidente", inferior: 0.0, superior: 0.9 }
+            { nivel: "Nivel 3", texto: "Excelente desempeño" },
+            { nivel: "Nivel 4", texto: "Excelente desempeño" },
+            { nivel: "Nivel 5", texto: "Excelente desempeño" },
+            { nivel: "Nivel 2", texto: "Buen desempeño" },
+            { nivel: "Nivel 1", texto: "Desempeño insuficiente" }
           ]
         },
         {
-          criterio: "Aplicación técnica",
-          porcentaje: 25,
+          criterio: "Criterio B",
+          porcentaje: 30,
           descriptores: [
-            { nivel: "Nivel 5", texto: "Aplica técnicas complejas con precisión", inferior: 4.0, superior: 5.0 },
-            { nivel: "Nivel 4", texto: "Aplica técnicas correctamente", inferior: 3.0, superior: 3.9 },
-            { nivel: "Nivel 3", texto: "Aplica técnicas básicas con errores menores", inferior: 2.0, superior: 2.9 },
-            { nivel: "Nivel 2", texto: "Aplica técnicas de forma incompleta", inferior: 1.0, superior: 1.9 },
-            { nivel: "Nivel 1", texto: "No aplica técnicas correctamente", inferior: 0.0, superior: 0.9 }
-          ]
-        },
-        {
-          criterio: "Presentación del trabajo",
-          porcentaje: 25,
-          descriptores: [
-            { nivel: "Nivel 5", texto: "Presentación clara, profesional e impecable", inferior: 4.0, superior: 5.0 },
-            { nivel: "Nivel 4", texto: "Presentación ordenada y clara", inferior: 3.0, superior: 3.9 },
-            { nivel: "Nivel 3", texto: "Presentación aceptable con fallos menores", inferior: 2.0, superior: 2.9 },
-            { nivel: "Nivel 2", texto: "Presentación desordenada", inferior: 1.0, superior: 1.9 },
-            { nivel: "Nivel 1", texto: "Presentación deficiente o ausente", inferior: 0.0, superior: 0.9 }
-          ]
-        },
-        {
-          criterio: "Trabajo en equipo",
-          porcentaje: 25,
-          descriptores: [
-            { nivel: "Nivel 5", texto: "Colabora activamente y lidera iniciativas", inferior: 4.0, superior: 5.0 },
-            { nivel: "Nivel 4", texto: "Colabora de forma constante", inferior: 3.0, superior: 3.9 },
-            { nivel: "Nivel 3", texto: "Participa con regularidad", inferior: 2.0, superior: 2.9 },
-            { nivel: "Nivel 2", texto: "Participación limitada", inferior: 1.0, superior: 1.9 },
-            { nivel: "Nivel 1", texto: "No colabora con el equipo", inferior: 0.0, superior: 0.9 }
+            { nivel: "Nivel 3", texto: "Uso avanzado de herramientas" },
+            { nivel: "Nivel 2", texto: "Uso correcto de herramientas" },
+            { nivel: "Nivel 1", texto: "Uso incorrecto de herramientas" }
           ]
         }
       ]
@@ -86,23 +58,21 @@ const estudiantes: Estudiante[] = [
   {
     nombre: "Harold Andrés Molano",
     rubrica: {
-      criterios: [] // luego lo llenamos igual que el primero
-    }
-  },
-  {
-    nombre: "Juan Carlos Fernández Cuetia",
-    rubrica: {
-      criterios: [] // luego lo llenamos igual que el primero
+      criterios: [
+        {
+          criterio: "Análisis de requisitos",
+          porcentaje: 25,
+          descriptores: [
+            { nivel: "Nivel 3", texto: "Analiza a profundidad" },
+            { nivel: "Nivel 2", texto: "Analiza parcialmente" },
+            { nivel: "Nivel 1", texto: "Análisis superficial o inexistente" },
+            { nivel: "Nivel 5", texto: "Análisis superficial o inexistente" }
+          ]
+        }
+      ]
     }
   }
 ];
-
-// Copiar la misma rúbrica del primero a los otros dos
-estudiantes[1].rubrica.criterios = [...estudiantes[0].rubrica.criterios];
-estudiantes[2].rubrica.criterios = [...estudiantes[0].rubrica.criterios];
-
-
-
 
 const Evaluaciones: React.FC = () => {
   const [estudianteSeleccionado, setEstudianteSeleccionado] = useState<string>("");
@@ -125,7 +95,7 @@ const Evaluaciones: React.FC = () => {
       />
 
       {rubrica ? (
-        <EvaluationTable criterios={rubrica.criterios} estudiante={estudianteSeleccionado} />
+        <EvaluationTable criterios={rubrica.criterios} />
       ) : (
         <p style={{ textAlign: "center", marginTop: "40px" }}>
           Seleccione un estudiante para cargar la rúbrica
