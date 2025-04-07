@@ -4,52 +4,61 @@ import StaticField from "../../components/utils/staticField";
 import "./EvaluacionesCSS/rubricaInfo.css";
 
 interface RubricaInfoProps {
+  materias: string[];
   rubricas: string[];
   periodos: string[];
   estudiantes: string[];
 
+  onSelectMateria: (materia: string) => void;
   onSelectRubrica: (rubrica: string) => void;
   onSelectPeriodo: (periodo: string) => void;
   onSelectEstudiante: (estudiante: string) => void;
 
+  materiaSeleccionada: string;
   rubricaSeleccionada: string;
-  resultadoAprendizaje: string;
-  materia: string;
   periodoSeleccionado: string;
   estudianteSeleccionado: string;
+  resultadoAprendizaje: string;
 }
 
 const RubricaInfo: React.FC<RubricaInfoProps> = ({
+  materias,
   rubricas,
   periodos,
   estudiantes,
+  onSelectMateria,
   onSelectRubrica,
   onSelectPeriodo,
   onSelectEstudiante,
+  materiaSeleccionada,
   rubricaSeleccionada,
-  resultadoAprendizaje,
-  materia,
   periodoSeleccionado,
-  estudianteSeleccionado
+  estudianteSeleccionado,
+  resultadoAprendizaje
 }) => {
   return (
     <div className="rubrica-info">
       <div className="rubrica-info-container">
         <div className="info-block">
           <Dropdown
-            label="Rúbrica"
-            options={rubricas}
-            onSelect={onSelectRubrica}
+            label="Materia"
+            options={materias}
+            onSelect={onSelectMateria}
           />
 
+          {materiaSeleccionada && (
+            <Dropdown
+              label="Rúbrica"
+              options={rubricas}
+              onSelect={onSelectRubrica}
+            />
+          )}
+
           {rubricaSeleccionada && (
-            <>
-              <StaticField label="Materia" value={materia} />
-              <StaticField
-                label="Resultado de Aprendizaje"
-                value={resultadoAprendizaje}
-              />
-            </>
+            <StaticField
+              label="Resultado de Aprendizaje"
+              value={resultadoAprendizaje}
+            />
           )}
         </div>
 

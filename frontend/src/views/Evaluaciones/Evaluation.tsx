@@ -7,12 +7,11 @@ import {
   getAllRubrics,
   getAllStudents,
   getAllSemesters,
+  getEnrollIdFromStudentAndPeriod,
 } from "../../services/evaluationService";
 
 import "../../assets/css/evaluaciones.css";
 
-// Interfaces
-// Interfaces
 interface Rubrica {
   idRubrica: number;
   nombreRubrica: string;
@@ -24,7 +23,7 @@ interface Rubrica {
     crfPorcentaje: number;
     niveles: {
       nivelDescripcion: string;
-      rangoNota: string; // ej: "1-2"
+      rangoNota: string;
     }[];
   }[];
 }
@@ -36,9 +35,12 @@ interface Estudiante {
   identification: string;
 }
 
-
 const Evaluaciones: React.FC = () => {
   const [rubricas, setRubricas] = useState<Rubrica[]>([]);
+  const [materias, setMaterias] = useState<string[]>([]);
+  const [selectedMateria, setSelectedMateria] = useState<string>("");
+
+  const [filteredRubricas, setFilteredRubricas] = useState<Rubrica[]>([]);
   const [selectedRubrica, setSelectedRubrica] = useState<Rubrica | null>(null);
 
   const [periodos, setPeriodos] = useState<string[]>([]);
@@ -47,26 +49,57 @@ const Evaluaciones: React.FC = () => {
   const [estudiantes, setEstudiantes] = useState<string[]>([]);
   const [selectedEstudiante, setSelectedEstudiante] = useState<string>("");
 
-  // Cargar rúbricas
+  const [enrollId, setEnrollId] = useState<number | null>(null);
+
+  // Cargar rúbricas y materias al iniciar
   useEffect(() => {
-    getAllRubrics().then(setRubricas);
+    getAllRubrics().then((rubricasData) => {
+      setRubricas(rubricasData);
+      const materiasUnicas = Array.from(
+        new Set(rubricasData.map((r: Rubrica) => r.materia))
+      );
+      setMaterias(materiasUnicas);
+    });
   }, []);
 
-  // Cargar periodos desde enrolls
+  // Filtrar rúbricas por materia
+  useEffect(() => {
+    const filtradas = rubricas.filter((r) => r.materia === selectedMateria);
+    setFilteredRubricas(filtradas);
+    setSelectedRubrica(null);
+    setSelectedPeriodo("");
+    setSelectedEstudiante("");
+    setEstudiantes([]);
+    setEnrollId(null);
+  }, [selectedMateria]);
+
+  // Cargar períodos una vez
   useEffect(() => {
     getAllSemesters().then(setPeriodos);
   }, []);
 
-  // Cargar estudiantes cuando se seleccione un período
+  // Cargar estudiantes por período
   useEffect(() => {
     if (selectedPeriodo) {
       getAllStudents().then((data: Estudiante[]) => {
-        const nombres = data.map(e => `${e.name ?? ""} ${e.lastName ?? ""}`.trim());
+        const nombres = data.map(
+          (e) => `${e.name ?? ""} ${e.lastName ?? ""}`.trim()
+        );
         setEstudiantes(nombres);
       });
     }
   }, [selectedPeriodo]);
-  
+
+  // Buscar enrollId si hay estudiante y período
+  useEffect(() => {
+    if (selectedEstudiante && selectedPeriodo) {
+      getEnrollIdFromStudentAndPeriod(selectedEstudiante, selectedPeriodo).then(
+        (id) => {
+          setEnrollId(id);
+        }
+      );
+    }
+  }, [selectedEstudiante, selectedPeriodo]);
 
   return (
     <>
@@ -76,44 +109,55 @@ const Evaluaciones: React.FC = () => {
       </div>
 
       <RubricaInfo
-        rubricas={rubricas.map((r) => r.nombreRubrica)}
+        materias={materias}
+        rubricas={filteredRubricas.map((r) => r.nombreRubrica)}
         periodos={periodos}
         estudiantes={estudiantes}
+        materiaSeleccionada={selectedMateria}
         rubricaSeleccionada={selectedRubrica?.nombreRubrica || ""}
         periodoSeleccionado={selectedPeriodo}
         estudianteSeleccionado={selectedEstudiante}
+        resultadoAprendizaje={selectedRubrica?.objetivoEstudio || ""}
+        onSelectMateria={setSelectedMateria}
         onSelectRubrica={(nombre) => {
-          const rubrica = rubricas.find((r) => r.nombreRubrica === nombre) || null;
+          const rubrica =
+            filteredRubricas.find((r) => r.nombreRubrica === nombre) || null;
           setSelectedRubrica(rubrica);
           setSelectedPeriodo("");
-          setEstudiantes([]);
+          setSelectedEstudiante("");
+          setEnrollId(null);
         }}
-        onSelectPeriodo={setSelectedPeriodo}
+        onSelectPeriodo={(periodo) => {
+          setSelectedPeriodo(periodo);
+          if (!periodo) {
+            setSelectedEstudiante("");
+            setEstudiantes([]);
+          }
+        }}
+        
         onSelectEstudiante={setSelectedEstudiante}
-        resultadoAprendizaje={selectedRubrica?.objetivoEstudio || ""}
-        materia={selectedRubrica?.materia || ""}
       />
 
-{selectedEstudiante && selectedRubrica && (
-  <EvaluationTable
-    estudiante={selectedEstudiante}
-    criterios={selectedRubrica.criterios.map((c) => ({
-      criterio: c.crfDescripcion,
-      porcentaje: c.crfPorcentaje * 100,
-      descriptores: c.niveles.map((n) => {
-        const [inferior, superior] = n.rangoNota.split("-").map(Number);
-        return {
-          nivel: n.nivelDescripcion,
-          texto: n.nivelDescripcion,
-          inferior,
-          superior,
-        };
-      }),
-    }))}
-    rubricaId={selectedRubrica.idRubrica}
-    enrollId={1} // simulado
-  />
-)}
+      {selectedRubrica && (
+        <EvaluationTable
+          estudiante={selectedEstudiante}
+          criterios={selectedRubrica.criterios.map((c) => ({
+            criterio: c.crfDescripcion,
+            porcentaje: c.crfPorcentaje * 100,
+            descriptores: c.niveles.map((n) => {
+              const [inferior, superior] = n.rangoNota.split("-").map(Number);
+              return {
+                nivel: n.nivelDescripcion,
+                texto: n.nivelDescripcion,
+                inferior,
+                superior,
+              };
+            }),
+          }))}
+          rubricaId={selectedRubrica.idRubrica}
+          enrollId={enrollId || 1}
+        />
+      )}
     </>
   );
 };

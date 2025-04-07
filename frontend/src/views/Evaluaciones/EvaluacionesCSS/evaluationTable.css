@@ -181,4 +181,14 @@
     color: #d32f2f;
     font-weight: bold;
   }
+
+  .disabled-eval-btn {
+    background-color: #ccc !important;
+    color: #666 !important;
+    cursor: not-allowed !important;
+    pointer-events: none !important;
+    border: none !important;
+    box-shadow: none !important;
+  }
+  
   

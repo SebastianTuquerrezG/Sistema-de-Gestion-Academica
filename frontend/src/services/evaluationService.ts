@@ -33,13 +33,19 @@ export async function getAllSemesters(): Promise<string[]> {
     const response = await fetch(`${evaluationBaseUrl}/enroll`);
     if (!response.ok) throw new Error(`HTTP error: ${response.status}`);
     const data: { semester: string }[] = await response.json();
-    const uniqueSemesters = Array.from(new Set(data.map(enroll => enroll.semester)));
+    
+    const uniqueSemesters = Array.from(
+      new Set(data.map((enroll) => enroll.semester))
+      
+    );
+    console.log("🎓 Semestres únicos:", uniqueSemesters);
     return uniqueSemesters;
   } catch (error) {
     console.error("Error al obtener períodos:", error);
     return [];
   }
 }
+
 
 // ✅ Obtener todos los enrolls
 export async function getAllEnrolls(): Promise<any[]> {

@@ -129,7 +129,7 @@ const EvaluationTable: React.FC<Props> = ({ criterios, estudiante, rubricaId, en
 
   const handleGuardarEvaluacion = async () => {
     const incompletos = valores.some((v) => v === "");
-  
+
     if (incompletos) {
       setNotification({
         type: "error",
@@ -138,12 +138,12 @@ const EvaluationTable: React.FC<Props> = ({ criterios, estudiante, rubricaId, en
       });
       return;
     }
-  
+
     const totalScore = data.reduce(
       (acc, row, i) => acc + (valores[i] || 0) * (row.porcentaje / 100),
       0
     );
-  
+
     const evaluationPayload = {
       enroll: enrollId,
       rubric: rubricaId,
@@ -152,10 +152,10 @@ const EvaluationTable: React.FC<Props> = ({ criterios, estudiante, rubricaId, en
       score: totalScore,
       evidenceUrl: "https://ejemplo.com/evidencia.pdf",
     };
-  
+
     try {
       const evaluation = await submitEvaluation(evaluationPayload);
-  
+
       await Promise.all(
         data.map((criterio, index) =>
           submitCalificationRegister({
@@ -166,7 +166,7 @@ const EvaluationTable: React.FC<Props> = ({ criterios, estudiante, rubricaId, en
           })
         )
       );
-  
+
       setNotification({
         type: "info",
         title: "Éxito",
@@ -181,7 +181,7 @@ const EvaluationTable: React.FC<Props> = ({ criterios, estudiante, rubricaId, en
       });
     }
   };
-  
+
 
   // Limpiar datos al cambiar de estudiante
   useEffect(() => {
@@ -318,11 +318,10 @@ const EvaluationTable: React.FC<Props> = ({ criterios, estudiante, rubricaId, en
                       maxLength={250}
                     />
                     <div
-                      className={`char-count ${
-                        comentarios[index]?.length === 250
-                          ? "char-limit-reached"
-                          : ""
-                      }`}
+                      className={`char-count ${comentarios[index]?.length === 250
+                        ? "char-limit-reached"
+                        : ""
+                        }`}
                     >
                       {comentarios[index]?.length ?? 0}/250
                     </div>
@@ -350,8 +349,17 @@ const EvaluationTable: React.FC<Props> = ({ criterios, estudiante, rubricaId, en
       </table>
 
       <div className="button-container">
-        <Button onClick={handleGuardarEvaluacion}>Guardar evaluación</Button>
+        <Button
+          onClick={handleGuardarEvaluacion}
+          disabled={!estudiante || estudiante.trim() === ""}
+          className={!estudiante || estudiante.trim() === "" ? "disabled-eval-btn" : ""}
+        >
+          Guardar evaluación
+        </Button>
+
+
       </div>
+
     </div>
   );
 };
