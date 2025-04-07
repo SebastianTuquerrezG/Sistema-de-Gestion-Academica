@@ -1,6 +1,8 @@
 package unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.repositories;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import unicauca.edu.co.sga.evaluation_service.domain.enums.GeneralEnums;
 import unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.entities.RubricEntity;
@@ -17,19 +19,19 @@ public interface RubricRepository extends JpaRepository<RubricEntity, Long> {
     List<RubricEntity> findByEstado(GeneralEnums.status status);
 
 
-//    @Query("SELECT r.study_objective FROM RubricEntity r " +
-//            "JOIN r.subject sub " +
-//            "JOIN sub.course c " +
-//            "JOIN c.enroll e " +
-//            "JOIN e.student s " +
-//            "WHERE r.idRubrica = :rubricId " +
-//            "AND sub.id = :subjectId " +
-//            "AND s.id = :studentId " +
-//            "AND e.semester = :semester")
-//    Optional<String> findRubricDescriptionByStudent(
-//            @Param("rubricId") Long rubricId,
-//            @Param("subjectId") Long subjectId,
-//            @Param("studentId") Long studentId,
-//            @Param("semester") String semester);
+    @Query("SELECT r.objetivoEstudio FROM RubricEntity r " +
+            "JOIN r.subject sub " +
+            "JOIN sub.course c " +
+            "JOIN c.enroll e " +
+            "JOIN e.student s " +
+            "WHERE r.idRubrica = :rubricId " +
+            "AND sub.id = :subjectId " +
+            "AND s.id = :studentId " +
+            "AND e.semester = :semester")
+    Optional<String> findRubricDescriptionByStudent(
+            @Param("rubricId") Long rubricId,
+            @Param("subjectId") Long subjectId,
+            @Param("studentId") Long studentId,
+            @Param("semester") String semester);
 
 }
