@@ -2,8 +2,12 @@ import React, { useState, useEffect } from "react";
 import "./EvaluacionesCSS/evaluationTable.css";
 import Notification from "../../components/notifications/notification";
 import { Button } from "@/components/ui/button.tsx";
-import { submitEvaluation, submitCalificationRegister } from "../../services/evaluationService";
-
+import {
+  submitEvaluation,
+  submitCalificationRegister,
+  getEvaluationByEnrollAndRubric,
+  getCalificationsByEvaluationId,
+} from "../../services/evaluationService";
 
 type NotificationType = {
   type: "error" | "info";
@@ -31,83 +35,62 @@ interface Props {
   enrollId: number;
 }
 
-
-
 const EvaluationTable: React.FC<Props> = ({ criterios, estudiante, rubricaId, enrollId }) => {
-  const data = criterios;
-
-  // Extraer niveles únicos de todos los descriptores
-  const nivelesUnicos = Array.from(
-    new Set(data.flatMap((c) => c.descriptores.map((d) => d.nivel)))
-  );
-
-  const coloresBase = ["#2e2ebe", "#22229e", "#13137c", "#0d0d66", "#050545"];
-  const rangos = nivelesUnicos.map((nivel, index) => ({
-    nivel,
-    color: coloresBase[index % coloresBase.length],
-  }));
-
-  const [notification, setNotification] = useState<NotificationType | null>(
-    null
-  );
+  const [notification, setNotification] = useState<NotificationType | null>(null);
   const [hasChanges, setHasChanges] = useState(false);
-  const [valores, setValores] = useState<(number | "")[]>(
-    Array(data.length).fill("")
-  );
-  const [comentarios, setComentarios] = useState<string[]>(
-    Array(data.length).fill("")
-  );
+  const [valores, setValores] = useState<(number | "")[]>(Array(criterios.length).fill(""));
+  const [comentarios, setComentarios] = useState<string[]>(Array(criterios.length).fill(""));
+  const [evaluationId, setEvaluationId] = useState<number | null>(null);
+  const [disabledInputs, setDisabledInputs] = useState<boolean>(false);
 
-  const handleChange = (
-    index: number,
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
+  const nivelesUnicos = Array.from(new Set(criterios.flatMap((c) => c.descriptores.map((d) => d.nivel))));
+  const coloresBase = ["#2e2ebe", "#22229e", "#13137c", "#0d0d66", "#050545"];
+  const rangos = nivelesUnicos.map((nivel, index) => ({ nivel, color: coloresBase[index % coloresBase.length] }));
+
+  useEffect(() => {
+    const checkExistingEvaluation = async () => {
+      try {
+        const evaluation = await getEvaluationByEnrollAndRubric(enrollId, rubricaId);
+        if (evaluation) {
+          setEvaluationId(evaluation.id);
+          setDisabledInputs(true);
+
+          const calificaciones = await getCalificationsByEvaluationId(evaluation.id);
+          setValores(calificaciones.map((c: any) => c.calification));
+          setComentarios(calificaciones.map((c: any) => c.message));
+        } else {
+          setValores(Array(criterios.length).fill(""));
+          setComentarios(Array(criterios.length).fill(""));
+        }
+      } catch (e) {
+        console.error("Error buscando evaluación previa:", e);
+      }
+    };
+
+    checkExistingEvaluation();
+  }, [enrollId, rubricaId]);
+
+  const handleChange = (index: number, event: React.ChangeEvent<HTMLInputElement>) => {
+    if (disabledInputs) return;
     const value = event.target.value;
-
-    // Si el usuario ingresa solo "-", o un número fuera del rango permitido, se reinicia el campo
     if (
-      value === "-" ||
-      value.includes("-") ||
-      (/^\d*\.?\d?$/.test(value) &&
-        value !== "" &&
-        (parseFloat(value) < 0 || parseFloat(value) > 5))
+      value === "-" || value.includes("-") ||
+      (/^\d*\.?\d?$/.test(value) && value !== "" && (parseFloat(value) < 0 || parseFloat(value) > 5))
     ) {
-      setNotification({
-        type: "error",
-        title: "Rando inválido",
-        message: "Rango de calificación [0-5]",
-      });
-      setValores((prevValores) => {
-        const resetValores = [...prevValores];
-        resetValores[index] = "";
-        return resetValores;
-      });
+      setNotification({ type: "error", title: "Rango inválido", message: "Rango de calificación [0-5]" });
+      setValores((prev) => { const copy = [...prev]; copy[index] = ""; return copy; });
       return;
     }
 
-    // Validar formato: números con un decimal opcional
     if (/^\d*\.?\d?$/.test(value) || value === "") {
       const numericValue = value === "" ? "" : parseFloat(value);
-      setValores((prevValores) => {
-        const newValores = [...prevValores];
-        newValores[index] = value === "" ? "" : numericValue;
-        return newValores;
-      });
+      setValores((prev) => { const copy = [...prev]; copy[index] = numericValue; return copy; });
     }
   };
 
-  // Detección dinámica del nivel según los rangos del descriptor
-  const getNivel = (valor: number, descriptores: Descriptor[]): string => {
-    const descriptor = descriptores.find(
-      (d) => valor >= d.inferior && valor <= d.superior
-    );
+  const getNivel = (valor: number, descriptores: Descriptor[]) => {
+    const descriptor = descriptores.find((d) => valor >= d.inferior && valor <= d.superior);
     return descriptor?.nivel || "";
-  };
-  // Función para evitar que el usuario presione "-"
-  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === "-") {
-      event.preventDefault(); // Bloquea la tecla"-"
-    }
   };
 
   const handleNivelClick = (
@@ -123,13 +106,18 @@ const EvaluationTable: React.FC<Props> = ({ criterios, estudiante, rubricaId, en
         copy[index] = maxCalificacion;
         return copy;
       });
-      setHasChanges(true); // prueba funcion
+      setHasChanges(true);
+    }
+  };
+
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === "-") {
+      event.preventDefault();
     }
   };
 
   const handleGuardarEvaluacion = async () => {
     const incompletos = valores.some((v) => v === "");
-
     if (incompletos) {
       setNotification({
         type: "error",
@@ -139,11 +127,7 @@ const EvaluationTable: React.FC<Props> = ({ criterios, estudiante, rubricaId, en
       return;
     }
 
-    const totalScore = data.reduce(
-      (acc, row, i) => acc + (valores[i] || 0) * (row.porcentaje / 100),
-      0
-    );
-
+    const totalScore = criterios.reduce((acc, row, i) => acc + (valores[i] || 0) * (row.porcentaje / 100), 0);
     const evaluationPayload = {
       enroll: enrollId,
       rubric: rubricaId,
@@ -155,9 +139,8 @@ const EvaluationTable: React.FC<Props> = ({ criterios, estudiante, rubricaId, en
 
     try {
       const evaluation = await submitEvaluation(evaluationPayload);
-
       await Promise.all(
-        data.map((criterio, index) =>
+        criterios.map((criterio, index) =>
           submitCalificationRegister({
             calification: valores[index],
             message: comentarios[index],
@@ -166,47 +149,12 @@ const EvaluationTable: React.FC<Props> = ({ criterios, estudiante, rubricaId, en
           })
         )
       );
-
-      setNotification({
-        type: "info",
-        title: "Éxito",
-        message: "Evaluación guardada correctamente.",
-      });
-      setHasChanges(false);
+      setNotification({ type: "info", title: "Éxito", message: "Evaluación guardada correctamente." });
+      setDisabledInputs(true);
     } catch (error) {
-      setNotification({
-        type: "error",
-        title: "Error",
-        message: "No se pudo guardar la evaluación.",
-      });
+      setNotification({ type: "error", title: "Error", message: "No se pudo guardar la evaluación." });
     }
   };
-
-
-  // Limpiar datos al cambiar de estudiante
-  useEffect(() => {
-    setValores(Array(criterios.length).fill(""));
-    setComentarios(Array(criterios.length).fill(""));
-    setHasChanges(false);
-  }, [estudiante]);
-
-  useEffect(() => {
-    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
-      if (hasChanges) {
-        e.preventDefault();
-        e.returnValue = "";
-      }
-    };
-    window.addEventListener("beforeunload", handleBeforeUnload);
-    return () => window.removeEventListener("beforeunload", handleBeforeUnload);
-  }, [hasChanges]);
-
-  useEffect(() => {
-    if (notification) {
-      const timeout = setTimeout(() => setNotification(null), 4000);
-      return () => clearTimeout(timeout);
-    }
-  }, [notification]);
 
   return (
     <div className="evaluation-table-container">
@@ -231,28 +179,22 @@ const EvaluationTable: React.FC<Props> = ({ criterios, estudiante, rubricaId, en
           </tr>
           <tr>
             {rangos.map((r, i) => (
-              <th key={i} style={{ backgroundColor: r.color }}>
-                {r.nivel}
-              </th>
+              <th key={i} style={{ backgroundColor: r.color }}>{r.nivel}</th>
             ))}
           </tr>
           <tr>
             {rangos.map((rango, i) => {
-              const descriptor = data[0]?.descriptores.find(
-                (d) => d.nivel === rango.nivel
-              );
+              const descriptor = criterios[0]?.descriptores.find((d) => d.nivel === rango.nivel);
               return (
                 <th key={i}>
-                  {descriptor
-                    ? `${descriptor.inferior} - ${descriptor.superior}`
-                    : "—"}
+                  {descriptor ? `${descriptor.inferior} - ${descriptor.superior}` : "—"}
                 </th>
               );
             })}
           </tr>
         </thead>
         <tbody>
-          {data.map((row, index) => {
+          {criterios.map((row, index) => {
             const valorActual = valores[index];
             const nivelActual =
               valorActual === ""
@@ -275,15 +217,13 @@ const EvaluationTable: React.FC<Props> = ({ criterios, estudiante, rubricaId, en
                       key={i}
                       style={{
                         backgroundColor:
-                          nivelActual === rango.nivel
-                            ? rango.color
-                            : "transparent",
+                          nivelActual === rango.nivel ? rango.color : "transparent",
                         color: nivelActual === rango.nivel ? "white" : "black",
-                        cursor: "pointer", // prueba
+                        cursor: disabledInputs ? "default" : "pointer",
                       }}
                       onClick={() =>
-                        handleNivelClick(index, rango.nivel, row.descriptores)
-                      } // prueba
+                        !disabledInputs && handleNivelClick(index, rango.nivel, row.descriptores)
+                      }
                     >
                       {descriptor?.texto || "-"}
                     </td>
@@ -295,7 +235,10 @@ const EvaluationTable: React.FC<Props> = ({ criterios, estudiante, rubricaId, en
                     type="number"
                     value={valores[index] || ""}
                     onChange={(e) => handleChange(index, e)}
-                    onKeyDown={handleKeyDown}
+                    onKeyDown={(e) => {
+                      if (!disabledInputs) handleKeyDown(e);
+                    }}
+                    disabled={disabledInputs}
                     step="0.1"
                     min="0"
                     max="5"
@@ -309,19 +252,21 @@ const EvaluationTable: React.FC<Props> = ({ criterios, estudiante, rubricaId, en
                     <textarea
                       value={comentarios[index]}
                       onChange={(e) => {
-                        const copy = [...comentarios];
-                        copy[index] = e.target.value;
-                        setComentarios(copy);
+                        if (!disabledInputs) {
+                          const copy = [...comentarios];
+                          copy[index] = e.target.value;
+                          setComentarios(copy);
+                        }
                       }}
+                      disabled={disabledInputs}
                       className="comment-box"
                       placeholder="Escribe un comentario..."
                       maxLength={250}
                     />
                     <div
-                      className={`char-count ${comentarios[index]?.length === 250
-                        ? "char-limit-reached"
-                        : ""
-                        }`}
+                      className={`char-count ${
+                        comentarios[index]?.length === 250 ? "char-limit-reached" : ""
+                      }`}
                     >
                       {comentarios[index]?.length ?? 0}/250
                     </div>
@@ -336,7 +281,7 @@ const EvaluationTable: React.FC<Props> = ({ criterios, estudiante, rubricaId, en
             <td colSpan={rangos.length + 2}></td>
             <td>TOTAL</td>
             <td>
-              {data
+              {criterios
                 .reduce(
                   (acc, row, i) =>
                     acc + (valores[i] || 0) * (row.porcentaje / 100),
@@ -349,17 +294,17 @@ const EvaluationTable: React.FC<Props> = ({ criterios, estudiante, rubricaId, en
       </table>
 
       <div className="button-container">
+        {disabledInputs && (
+          <span className="lock-icon material-symbols-outlined">lock</span>
+        )}
         <Button
           onClick={handleGuardarEvaluacion}
-          disabled={!estudiante || estudiante.trim() === ""}
-          className={!estudiante || estudiante.trim() === "" ? "disabled-eval-btn" : ""}
+          disabled={!estudiante || estudiante.trim() === "" || disabledInputs}
+          className={!estudiante || estudiante.trim() === "" || disabledInputs ? "disabled-eval-btn" : ""}
         >
           Guardar evaluación
         </Button>
-
-
       </div>
-
     </div>
   );
 };

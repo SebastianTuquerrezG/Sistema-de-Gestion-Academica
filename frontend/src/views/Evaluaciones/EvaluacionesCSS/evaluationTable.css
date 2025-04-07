@@ -191,4 +191,11 @@
     box-shadow: none !important;
   }
   
+  .lock-icon {
+    margin-right: 10px;
+    font-size: 24px;
+    color: #555;
+    vertical-align: middle;
+  }
+  
   
