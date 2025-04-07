@@ -14,13 +14,13 @@ import java.util.Set;
 @NoArgsConstructor
 @Builder
 public class Rubric {
-    private Long id;
-    private String name;
-    private String study_objective;
-    private String competence;
+    private Long idRubrica;
+    private String nombreRubrica;
+    private String objetivoEstudio;
+    private int notaRubrica;
     private Set<Long> subject;
     private Long ra;
-    private Set<Long> criteria;
+    private Set<Long> criterios;
     private GeneralEnums.status status;
     private Set<Long> evaluation;
 }

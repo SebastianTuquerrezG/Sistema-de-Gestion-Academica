@@ -10,46 +10,50 @@ import unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.entitie
 public class RubricMapper {
     public static Rubric toModel(RubricRequestDTO dto){
         return Rubric.builder()
-                .name(dto.getName())
-                .study_objective(dto.getStudy_objective())
+                .nombreRubrica(dto.getNombreRubrica())
+                .objetivoEstudio(dto.getObjetivoEstudio())
+                .notaRubrica(dto.getNotaRubrica())
                 .ra(dto.getRa_id())
-                .competence(dto.getCompetence())
+//                .competence(dto.getCompetence())
                 .subject(null)
-                .criteria(null)
+                .criterios(null)
                 .build();
     }
 
     public static RubricResponseDTO toDTO(Rubric model){
         return RubricResponseDTO.builder()
-                .id(model.getId())
+                .id(model.getIdRubrica())
                 .ra_id(model.getRa())
                 .build();
     }
 
     public static Rubric toModel(RubricEntity entity){
         return Rubric.builder()
-                .id(entity.getId())
-                .name(entity.getName())
-                .study_objective(entity.getStudy_objective())
+                .idRubrica(entity.getIdRubrica())
+                .nombreRubrica(entity.getNombreRubrica())
+                .objetivoEstudio(entity.getObjetivoEstudio())
+                .notaRubrica(entity.getNotaRubrica())
                 .ra(entity.getRa().getId())
-                .competence(entity.getCompetence())
+//                .competence(entity.getCompetence())
                 .subject(null)
                 .evaluation(null)
-                .criteria(null)
+                .criterios(null)
                 .build();
     }
 
     public static RubricEntity toEntity(Rubric model){
         return RubricEntity.builder()
-                .id(model.getId())
-                .name(model.getName())
-                .status(model.getStatus())
-                .competence(model.getCompetence())
+                .idRubrica(model.getIdRubrica())
+                .nombreRubrica(model.getNombreRubrica())
+                .estado(model.getStatus())
+                .notaRubrica(model.getNotaRubrica())
+                .objetivoEstudio(model.getObjetivoEstudio())
+//                .competence(model.getCompetence())
                 .subject(null)
-                .criterias(null)
+                .criterios(null)
                 .evaluation(null)
-                .updated_at(null)
-                .created_at(null)
+//                .updated_at(null)
+//                .created_at(null)
                 .build();
     }
 }

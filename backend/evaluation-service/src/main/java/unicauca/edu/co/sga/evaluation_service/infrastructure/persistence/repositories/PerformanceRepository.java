@@ -9,5 +9,5 @@ import java.util.Optional;
 
 @Repository
 public interface PerformanceRepository extends JpaRepository<PerformanceEntity, Long> {
-    Optional<PerformanceEntity> findByNameContainingIgnoreCase(String name);
+//    Optional<PerformanceEntity> findByNameContainingIgnoreCase(String name);
 }
