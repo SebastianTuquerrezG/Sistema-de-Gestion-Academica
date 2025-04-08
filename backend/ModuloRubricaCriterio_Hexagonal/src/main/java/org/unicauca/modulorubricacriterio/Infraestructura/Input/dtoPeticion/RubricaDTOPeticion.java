@@ -15,9 +15,10 @@ import lombok.Setter;
 public class RubricaDTOPeticion {
     private Long idRubrica;
     private String nombreRubrica;
-    private String materia;
+    private Long materia;
     private int notaRubrica;
     private String objetivoEstudio;
     private List<CriterioDTOPeticion> criterios;
     private String estado;
+    private Long raId;
 }

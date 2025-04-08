@@ -97,4 +97,9 @@ public class EnrollService implements EnrollPort {
                 .map(enrollMapper::toDTO)
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public boolean existsByStudentIdAndCourseIdAndSemester(Long studentId, Long courseId, String semester) {
+        return enrollRepository.existsByStudentIdAndCourseIdAndSemester(studentId, courseId, semester);
+    }
 }

@@ -12,11 +12,12 @@ import lombok.Data;
 public class Rubrica {
     private Long idRubrica;
     private String nombreRubrica;
-    private String materia;
+    private Long materia;
     private int notaRubrica;
     private String objetivoEstudio;
     List<Criterio> criterios;
     private EstadosEnum estado;
+    private Long raId;
 
     /*Constructor no parametrizado
     usar para deserialización de datos*/

@@ -34,7 +34,7 @@ public class RubricEntity {
 //    private String competence; // This is a entity that we don't know, Take care of this shit bro
 
     @ManyToOne
-    @JoinColumn(name = "subject_id", nullable = false, foreignKey = @ForeignKey(name = "fk_subject}"))
+    @JoinColumn(name = "subject_id", nullable = false)
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     @JsonBackReference
@@ -73,7 +73,7 @@ public class RubricEntity {
 //    @Temporal(TemporalType.DATE)
 //    private Date updated_at;
 
-    @Column(nullable = false)
+    @Column(name = "estado", nullable = false)
     @Enumerated(EnumType.STRING)
     private GeneralEnums.status estado;
 }

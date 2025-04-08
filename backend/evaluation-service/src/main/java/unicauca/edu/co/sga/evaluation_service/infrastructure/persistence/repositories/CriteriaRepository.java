@@ -16,22 +16,23 @@ public interface CriteriaRepository extends JpaRepository<CriteriaEntity, Long> 
 //    @Query("SELECT c FROM CriteriaEntity c " +
 //            "WHERE c.rubric.idRubrica = :rubricId")
 //    List<CriteriaResponseViewDTO> findByIdRubrica(@Param("rubricId") Long rubricId);
-//    @Query("SELECT DISTINCT c FROM CriteriaEntity c " +
-//            "LEFT JOIN FETCH c.niveles " +
-//            "JOIN c.rubric r " +
-//            "JOIN r.subject sub " +
-//            "JOIN sub.course co " +
-//            "JOIN co.enroll en " +
-//            "JOIN en.student s " +
-//            "WHERE r.idRubrica = :rubricId " +
-//            "AND s.StudentId = :studentId " +
-//            "AND sub.SubjectId = :subjectId " +
-//            "AND en.semester = :semester")
-//    List<CriteriaEntity> findByRubricAndStudentAndSubject(
-//            @Param("rubricId") Long rubricId,
-//            @Param("studentId") Long studentId,
-//            @Param("subjectId") Long subjectId,
-//            @Param("semester") String semester);
+
+    @Query("SELECT DISTINCT c FROM CriteriaEntity c " +
+            "LEFT JOIN FETCH c.niveles " +
+            "JOIN c.rubric r " +
+            "JOIN r.subject sub " +
+            "JOIN sub.course co " +
+            "JOIN co.enroll en " +
+            "JOIN en.student s " +
+            "WHERE r.idRubrica = :rubricId " +
+            "AND s.id = :studentId " +
+            "AND sub.id = :subjectId " +
+            "AND en.semester = :semester")
+    List<CriteriaEntity> findByRubricAndStudentAndSubject(
+            @Param("rubricId") Long rubricId,
+            @Param("studentId") Long studentId,
+            @Param("subjectId") Long subjectId,
+            @Param("semester") String semester);
  /* @Query("SELECT DISTINCT c FROM CriteriaEntity c " +
           "LEFT JOIN FETCH c.levels " +
           "JOIN c.rubric r " +

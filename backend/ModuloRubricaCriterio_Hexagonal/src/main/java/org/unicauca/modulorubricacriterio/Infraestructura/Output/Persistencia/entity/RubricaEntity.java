@@ -1,10 +1,8 @@
 package org.unicauca.modulorubricacriterio.Infraestructura.Output.Persistencia.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.List;
 
@@ -21,7 +19,12 @@ public class RubricaEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idRubrica;
     private String nombreRubrica;
-    private String materia;
+    @ManyToOne
+    @JoinColumn(name = "subject_id", nullable = false, foreignKey = @ForeignKey(name = "fk_subject"))
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    @JsonBackReference
+    private MateriaEntity subject;
     private int notaRubrica;
     private String objetivoEstudio;
     @OneToMany(mappedBy = "rubrica", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
@@ -31,13 +34,21 @@ public class RubricaEntity {
     @Enumerated(EnumType.STRING)
     private EstadosEnum estadoRubrica;
 
-    public RubricaEntity(String nameRubrica, String materia, int nota, String objetivoDeEstudio, List<CriterioEntity> object, EstadosEnum activo) {
+    @ManyToOne
+    @JoinColumn(name = "ra_id", nullable = false, foreignKey = @ForeignKey(name = "fk_learning_results"))
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    @JsonBackReference
+    private RAEntity ra;
+
+    public RubricaEntity(String nameRubrica, MateriaEntity materia, int nota, String objetivoDeEstudio, List<CriterioEntity> object, EstadosEnum activo, RAEntity ra) {
         this.nombreRubrica = nameRubrica;
-        this.materia = materia;
+        this.subject = materia;
         this.notaRubrica = nota;
         this.objetivoEstudio = objetivoDeEstudio;
         this.criterios = object;
         this.estadoRubrica = activo;
+        this.ra = ra;
     }
 
 }

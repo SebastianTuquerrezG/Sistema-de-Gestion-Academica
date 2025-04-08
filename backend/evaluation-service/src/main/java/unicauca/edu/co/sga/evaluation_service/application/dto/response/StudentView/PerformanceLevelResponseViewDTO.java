@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class PerformanceLevelResponseViewDTO {
 
-    String name;
+    //String name;
     private String description;
     //Lo trabajan con puntos, no con nota
     private String range;
