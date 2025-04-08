@@ -10,9 +10,8 @@ import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "@
 import Notification from "@/components/notifications/notification";
 import {getRubricById, updateRubric} from "@/services/rubricService";
 import {RubricInterface} from "@/interfaces/RubricInterface.ts";
-import { useNavigate, useParams } from "react-router-dom";
-
-
+/*import { useNavigate, useParams } from "react-router-dom";*/
+import { useParams } from "react-router-dom";
 
 
 type NotificationType = {
@@ -30,7 +29,7 @@ export default function EditRubric() {
     ]);
     const { id } = useParams<{ id: string }>();
     const [rubric, setRubric] = useState<RubricInterface | null>(null);
-    const navigate = useNavigate();
+    //const navigate = useNavigate();
     const [rows, setRows] = useState([
         {
             idCriterio: 1,

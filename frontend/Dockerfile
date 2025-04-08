@@ -11,14 +11,20 @@ COPY . .
 
 RUN pnpm run build
 
+RUN pnpm run build
+
 # Etapa 2: Servir en Apache
-FROM httpd:2.4
+FROM httpd:2.4-bullseye
 
-# Copiamos el build al directorio raíz de Apache
+# Habilitar mod_rewrite "a mano"
+RUN sed -i '/LoadModule rewrite_module/s/^#//g' /usr/local/apache2/conf/httpd.conf
+
+# Permitir .htaccess
+RUN sed -i '/<Directory "\/usr\/local\/apache2\/htdocs">/,/<\/Directory>/ s/AllowOverride None/AllowOverride All/' /usr/local/apache2/conf/httpd.conf
+
+# Copiar el build y .htaccess
 COPY --from=builder /app/dist/ /usr/local/apache2/htdocs/
-
-# (Opcional) Copiar un archivo httpd.conf personalizado si quieres
-# COPY httpd.conf /usr/local/apache2/conf/httpd.conf
+COPY .htaccess /usr/local/apache2/htdocs/
 
 EXPOSE 80
 
