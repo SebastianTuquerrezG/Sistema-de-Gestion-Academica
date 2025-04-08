@@ -12,7 +12,11 @@ import org.unicauca.modulorubricacriterio.Infraestructura.Fachada.exception.exce
 import org.unicauca.modulorubricacriterio.Infraestructura.Fachada.exception.exceptionOwn.EntidadNoExisteException;
 import org.unicauca.modulorubricacriterio.Infraestructura.Input.validacionEstados.EstadosController;
 import org.unicauca.modulorubricacriterio.Infraestructura.Input.validacionEstados.EstadosEnum;
+import org.unicauca.modulorubricacriterio.Infraestructura.Output.Persistencia.entity.MateriaEntity;
+import org.unicauca.modulorubricacriterio.Infraestructura.Output.Persistencia.entity.RAEntity;
 import org.unicauca.modulorubricacriterio.Infraestructura.Output.Persistencia.entity.RubricaEntity;
+import org.unicauca.modulorubricacriterio.Infraestructura.Output.Persistencia.repository.MateriaRepository;
+import org.unicauca.modulorubricacriterio.Infraestructura.Output.Persistencia.repository.RARepository;
 import org.unicauca.modulorubricacriterio.Infraestructura.Output.Persistencia.repository.RubricaRepository;
 
 @Service
@@ -20,10 +24,14 @@ public class ConectorBDRubricaAdapter implements IConectorBDRubricaPort {
 
     private final RubricaRepository rubricaRepository;
     private final ModelMapper rubricaMapper;
+    private final MateriaRepository materiaRepository;
+    private final RARepository raRepository;
 
-    public ConectorBDRubricaAdapter(RubricaRepository rubricaRepository, ModelMapper rubricaMapper) {
+    public ConectorBDRubricaAdapter(RubricaRepository rubricaRepository, ModelMapper rubricaMapper, MateriaRepository materiaRepository, RARepository raRepository) {
         this.rubricaRepository = rubricaRepository;
         this.rubricaMapper = rubricaMapper;
+        this.materiaRepository = materiaRepository;
+        this.raRepository = raRepository;
     }
 
     @Override
@@ -71,6 +79,12 @@ public class ConectorBDRubricaAdapter implements IConectorBDRubricaPort {
     @Override
     public Rubrica saveRubric(Rubrica objRubrica) {
         RubricaEntity objRubricaEntity = this.rubricaMapper.map(objRubrica, RubricaEntity.class);
+        MateriaEntity objMateriaEntity = this.materiaRepository.findById(objRubrica.getMateria()).orElseThrow(() -> new EntidadNoExisteException("Materia con el id {"+objRubrica.getMateria()+"} no existe"));
+        RAEntity objRAEntity = this.raRepository.findById(objRubrica.getRaId()).orElseThrow(() -> new EntidadNoExisteException("RA con el id {"+objRubrica.getRaId()+"} no existe"));
+
+        objRubricaEntity.setSubject(objMateriaEntity);
+        objRubricaEntity.setRa(objRAEntity);
+
         if(objRubricaEntity.getCriterios() != null)
         {
             objRubricaEntity.getCriterios().forEach(criterio -> {
@@ -100,6 +114,21 @@ public class ConectorBDRubricaAdapter implements IConectorBDRubricaPort {
         RubricaEntity objRubricaActualizada = null;
         RubricaEntity objRubricaEntity = this.rubricaMapper.map(objRubrica, RubricaEntity.class);
         RubricaEntity rubricaEncontrada = this.rubricaRepository.findById(id).orElse(null);
+
+        if (objRubricaEntity.getSubject() != null) {
+            MateriaEntity objMateriaEntity = this.materiaRepository.findById(objRubrica.getMateria()).orElseThrow(() -> new EntidadNoExisteException("Materia con el id {"+objRubrica.getMateria()+"} no existe"));
+            objRubricaEntity.setSubject(objMateriaEntity);
+        } else {
+            assert rubricaEncontrada != null;
+            objRubricaEntity.setSubject(rubricaEncontrada.getSubject());
+        }
+        if (objRubricaEntity.getRa() != null) {
+            RAEntity objRAEntity = this.raRepository.findById(objRubrica.getRaId()).orElseThrow(() -> new EntidadNoExisteException("RA con el id {"+objRubrica.getRaId()+"} no existe"));
+            objRubricaEntity.setRa(objRAEntity);
+        } else {
+            assert rubricaEncontrada != null;
+            objRubricaEntity.setRa(rubricaEncontrada.getRa());
+        }
         if(rubricaEncontrada==null)
         {
             throw new EntidadNoExisteException("Rúbrica con el id {"+id+"} no existe");
@@ -121,11 +150,14 @@ public class ConectorBDRubricaAdapter implements IConectorBDRubricaPort {
             }
         }
 
-        rubricaEncontrada.setMateria(objRubrica.getMateria());
+
+
+        rubricaEncontrada.setSubject(objRubricaEntity.getSubject());
         rubricaEncontrada.setNombreRubrica(objRubrica.getNombreRubrica());
         rubricaEncontrada.setNotaRubrica(objRubrica.getNotaRubrica());
         rubricaEncontrada.setObjetivoEstudio(objRubrica.getObjetivoEstudio());
         rubricaEncontrada.setCriterios(objRubricaEntity.getCriterios());
+        rubricaEncontrada.setRa(objRubricaEntity.getRa());
 
 
         objRubricaActualizada = this.rubricaRepository.save(rubricaEncontrada);

@@ -13,9 +13,10 @@ import java.util.List;
 public class RubricaDTORespuesta {
     private String idRubrica;
     private String nombreRubrica;
-    private String materia;
+    private Long materia;
     private int notaRubrica;
     private String objetivoEstudio;
     private List<CriterioDTORespuesta> criterios;
     private String estado;
+    private Long raId;
 }

@@ -15,6 +15,7 @@ public interface EnrollRepository extends JpaRepository<EnrollEntity, Long> {
     List<EnrollEntity> findByStudentId(Long studentId);
     List<EnrollEntity> findByCourseId(Long courseId);
     List<EnrollEntity> findBySemester(String semester);
+    boolean existsByStudentIdAndCourseIdAndSemester(Long studentId, Long courseId, String semester);
 
 //    @Query("SELECT NEW unicauca.edu.co.sga.evaluation_service.application.dto.response.StudentView.SubjectResponseViewDTO(" +
 //            "s.name, t.name) " +

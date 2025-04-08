@@ -9,7 +9,8 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface RubricRepository extends JpaRepository<RubricEntity, Long> {
+public interface RubricRepository  extends JpaRepository<RubricEntity, Long> {
+    Optional<RubricEntity> findByIdRubrica(Long id);
     Optional<RubricEntity> findByNombreRubricaContainingIgnoreCase(String name);
     List<RubricEntity> findBySubjectId(Long id);
     List<RubricEntity> findByRaId(Long id);

@@ -48,7 +48,7 @@ public class EvaluationService implements EvaluationPort {
                 .orElseThrow(() -> new NotFoundException(
                         "Enroll no encontrado con id: " + evaluationRequestDTO.getEnroll()));
 
-        RubricEntity rubric = rubricRepository.findById(evaluationRequestDTO.getRubric())
+        RubricEntity rubric = rubricRepository.findByIdRubrica(evaluationRequestDTO.getRubric())
                 .orElseThrow(() -> new NotFoundException(
                         "Rubric no encontrado con id: " + evaluationRequestDTO.getRubric()));
 

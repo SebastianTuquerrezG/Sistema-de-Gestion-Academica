@@ -15,4 +15,5 @@ public interface EnrollPort {
     List<EnrollResponseDTO> getEnrollsByStudentId(Long studentId);
     List<EnrollResponseDTO> getEnrollsByCourseId(Long courseId);
     List<EnrollResponseDTO> getEnrollsBySemester(String semester);
+    boolean existsByStudentIdAndCourseIdAndSemester(Long studentId, Long courseId, String semester);
 }
