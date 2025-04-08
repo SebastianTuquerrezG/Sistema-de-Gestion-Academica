@@ -19,15 +19,18 @@ export default function ConsultarRubrica() {
 
     useEffect(() => {
         getAllRubrics()
-            .then((data) => setRubrics(data))
+            .then((data) => {
+                const activeRubrics = data.filter((rubric: RubricInterface) => rubric.estado !== "INACTIVO");
+                setRubrics(activeRubrics);
+            })
             .catch((error) => console.error(error));
     }, []);
 
     const filteredRubrics = rubrics.filter(
         (rubric) =>
             rubric.nombreRubrica.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            rubric.idRubrica.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            rubric.materia.toLowerCase().includes(searchTerm.toLowerCase())
+            rubric.idRubrica.toLowerCase().includes(searchTerm.toLowerCase())
+     /*       rubric.materia.toLowerCase().includes(searchTerm.toLowerCase())*/
     );
 
     // Funcion para navegar a la pagina de editar

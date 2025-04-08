@@ -249,7 +249,7 @@ export default function CreateRubric() {
         const rubricData: RubricInterface = {
             idRubrica: '' ,
             nombreRubrica: (document.getElementById("nombreRubrica") as HTMLInputElement)?.value,
-            materia: (document.getElementById("materia") as HTMLInputElement)?.value,
+            materia: parseFloat((document.getElementById("materia") as HTMLInputElement)?.value),
             notaRubrica: parseFloat((document.getElementById("notaRubrica") as HTMLInputElement)?.value || "0"),
             objetivoEstudio: (document.getElementById("objetivoEstudio") as HTMLInputElement)?.value,
             criterios: rows.map(row => ({
@@ -260,6 +260,7 @@ export default function CreateRubric() {
                 crfComentario: row.crfComentario,
                 niveles: row.niveles
             })),
+            raId:101,
             estado: "ACTIVO"
         };
 
