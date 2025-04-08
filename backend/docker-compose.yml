@@ -1,0 +1,45 @@
+services:
+  eureka-server:
+    build: ./eureka-server
+    ports:
+      - "8761:8761"
+    networks:
+      - backend-network
+
+  gateway:
+    build: ./gateway
+    ports:
+      - "8080:8080"
+    depends_on:
+      - eureka-server
+    networks:
+      - backend-network
+
+  modulorubricacriterio:
+    build: ./ModuloRubricaCriterio_Hexagonal
+    ports:
+      - "5001:5001"
+    depends_on:
+      - eureka-server
+      - mariadb   # 👈 importante para que espere a la base de datos
+    environment:
+      - SPRING_DATASOURCE_URL=${SPRING_DATASOURCE_URL}
+      - SPRING_DATASOURCE_USERNAME=${SPRING_DATASOURCE_USERNAME}
+      - SPRING_DATASOURCE_PASSWORD=${SPRING_DATASOURCE_PASSWORD}
+    networks:
+      - backend-network
+
+  mariadb:
+    image: mariadb:10.5
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: unicauca
+    ports:
+      - "3306:3306"
+    networks:
+      - backend-network
+
+networks:
+  backend-network:
+    driver: bridge
