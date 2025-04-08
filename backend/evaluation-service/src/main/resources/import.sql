@@ -16,7 +16,6 @@ INSERT INTO Criterio (id_criterio, id_rubrica, crf_descripcion, crf_porcentaje, 
 
 INSERT INTO Nivel (id_nivel, nivel_descripcion, rango_nota, id_criterio) VALUES (1, 'Desempeño básico', '2.5', 1), (2, 'Desempeño intermedio', '4.0', 1), (3, 'Desempeño avanzado', '5.0', 1), (19, 'No hay planificación clara ni control del cronograma.', '2.5', 9), (20, 'Planificación parcial con algunos retrasos.', '4.0', 9), (21, 'Planificación detallada y cumplimiento de plazos.', '5.0', 9), (22, 'Código desorganizado con errores frecuentes.', '2.5', 10), (23, 'Código funcional pero con algunas malas prácticas.', '4.0', 10), (24, 'Código limpio, modular y bien documentado.', '5.0', 10), (25, 'Poca comunicación y colaboración entre los miembros.', '2.5', 11), (26, 'Buena comunicación, pero con dificultades ocasionales.', '4.0', 11), (27, 'Trabajo en equipo eficiente con comunicación fluida.', '5.0', 11);
 
-
 INSERT INTO course_teacher (course_id, teacher_id) VALUES (10, 1), (20, 2), (30, 3), (40, 1);
 
 INSERT INTO evaluation (evaluation_id, enroll_id, id_rubrica, evaluation_status, description, created_at, updated_at) VALUES (500, 1000, 100, 'EVALUADO', 'Evaluación parcial Redes', '2025-03-01', '2025-03-01'), (501, 1001, 200, 'EVALUADO', 'Evaluación final BD2', '2025-03-15', '2025-03-20'), (502, 1003, 400, 'EVALUADO', 'Avance proyecto Calidad', '2025-04-01', '2025-04-01');
