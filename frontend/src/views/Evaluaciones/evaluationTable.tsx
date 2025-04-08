@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button.tsx";
 import {
   submitEvaluation,
   submitCalificationRegister,
-  getEvaluationByEnrollAndRubric,
+  getEvaluationByEnroll,
   getCalificationsByEvaluationId,
 } from "../../services/evaluationService";
 
@@ -37,7 +37,6 @@ interface Props {
 
 const EvaluationTable: React.FC<Props> = ({ criterios, estudiante, rubricaId, enrollId }) => {
   const [notification, setNotification] = useState<NotificationType | null>(null);
-  const [hasChanges, setHasChanges] = useState(false);
   const [valores, setValores] = useState<(number | "")[]>(Array(criterios.length).fill(""));
   const [comentarios, setComentarios] = useState<string[]>(Array(criterios.length).fill(""));
   const [evaluationId, setEvaluationId] = useState<number | null>(null);
@@ -50,7 +49,7 @@ const EvaluationTable: React.FC<Props> = ({ criterios, estudiante, rubricaId, en
   useEffect(() => {
     const checkExistingEvaluation = async () => {
       try {
-        const evaluation = await getEvaluationByEnrollAndRubric(enrollId, rubricaId);
+        const evaluation = await getEvaluationByEnroll(enrollId);
         if (evaluation) {
           setEvaluationId(evaluation.id);
           setDisabledInputs(true);
@@ -61,6 +60,7 @@ const EvaluationTable: React.FC<Props> = ({ criterios, estudiante, rubricaId, en
         } else {
           setValores(Array(criterios.length).fill(""));
           setComentarios(Array(criterios.length).fill(""));
+          setDisabledInputs(false);
         }
       } catch (e) {
         console.error("Error buscando evaluación previa:", e);
@@ -68,7 +68,7 @@ const EvaluationTable: React.FC<Props> = ({ criterios, estudiante, rubricaId, en
     };
 
     checkExistingEvaluation();
-  }, [enrollId, rubricaId]);
+  }, [enrollId]);
 
   const handleChange = (index: number, event: React.ChangeEvent<HTMLInputElement>) => {
     if (disabledInputs) return;
@@ -106,7 +106,6 @@ const EvaluationTable: React.FC<Props> = ({ criterios, estudiante, rubricaId, en
         copy[index] = maxCalificacion;
         return copy;
       });
-      setHasChanges(true);
     }
   };
 
@@ -209,9 +208,7 @@ const EvaluationTable: React.FC<Props> = ({ criterios, estudiante, rubricaId, en
               <tr key={index}>
                 <td>{row.criterio}</td>
                 {rangos.map((rango, i) => {
-                  const descriptor = row.descriptores.find(
-                    (d) => d.nivel === rango.nivel
-                  );
+                  const descriptor = row.descriptores.find((d) => d.nivel === rango.nivel);
                   return (
                     <td
                       key={i}
@@ -264,9 +261,7 @@ const EvaluationTable: React.FC<Props> = ({ criterios, estudiante, rubricaId, en
                       maxLength={250}
                     />
                     <div
-                      className={`char-count ${
-                        comentarios[index]?.length === 250 ? "char-limit-reached" : ""
-                      }`}
+                      className={`char-count ${comentarios[index]?.length === 250 ? "char-limit-reached" : ""}`}
                     >
                       {comentarios[index]?.length ?? 0}/250
                     </div>
@@ -282,11 +277,7 @@ const EvaluationTable: React.FC<Props> = ({ criterios, estudiante, rubricaId, en
             <td>TOTAL</td>
             <td>
               {criterios
-                .reduce(
-                  (acc, row, i) =>
-                    acc + (valores[i] || 0) * (row.porcentaje / 100),
-                  0
-                )
+                .reduce((acc, row, i) => acc + (valores[i] || 0) * (row.porcentaje / 100), 0)
                 .toFixed(2)}
             </td>
           </tr>

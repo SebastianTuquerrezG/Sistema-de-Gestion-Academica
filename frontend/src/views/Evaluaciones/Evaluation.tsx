@@ -7,6 +7,7 @@ import {
   getAllSubjects,
   getRubricsBySubjectId,
   getStudentsByCourseAndPeriod,
+  getAllCourses,
   getAllSemesters,
   getEnrollIdFromStudentAndPeriod,
 } from "../../services/evaluationService";
@@ -79,13 +80,27 @@ const Evaluaciones: React.FC = () => {
 
   // ✅ Obtener estudiantes por curso y período
   useEffect(() => {
-    if (selectedPeriodo && selectedRubrica?.courseId) {
-      getStudentsByCourseAndPeriod(selectedRubrica.courseId, selectedPeriodo).then((data: Estudiante[]) => {
-        const nombres = data.map((e) => `${e.name ?? ""} ${e.lastName ?? ""}`.trim());
-        setEstudiantes(nombres);
+    if (selectedPeriodo && selectedMateria) {
+      // Paso 1: hallar subjectId
+      const materia = materias.find((m) => m.name === selectedMateria);
+      if (!materia) return;
+  
+      // Paso 2: hallar el curso que tenga ese subjectId
+      getAllCourses().then((cursos) => {
+        const curso = cursos.find((c: any) => c.subject === materia.id);
+        if (!curso) return;
+  
+        // Paso 3: obtener estudiantes por ese curso y el periodo
+        getStudentsByCourseAndPeriod(curso.id, selectedPeriodo).then((data) => {
+          const nombres = data.map(
+            (e: any) => `${e.name ?? ""} ${e.lastName ?? ""}`.trim()
+          );
+          setEstudiantes(nombres);
+        });
       });
     }
-  }, [selectedPeriodo, selectedRubrica]);
+  }, [selectedPeriodo, selectedMateria]);
+  
 
   // ✅ Obtener enrollId
   useEffect(() => {

@@ -1,11 +1,12 @@
 // services/evaluationService.ts
 
-const evaluationBaseUrl = 'http://localhost:8080';
+const baseUrl = 'http://localhost:8080/api';
+//const rubricBaseUrl = 'http://localhost:5001/api';
 
 // ✅ Obtener todas las materias (subjects)
 export async function getAllSubjects(): Promise<any[]> {
   try {
-    const response = await fetch(`${evaluationBaseUrl}/subject`);
+    const response = await fetch(`${baseUrl}/subject`);
     if (!response.ok) throw new Error(`HTTP error: ${response.status}`);
     return await response.json();
   } catch (error) {
@@ -15,9 +16,9 @@ export async function getAllSubjects(): Promise<any[]> {
 }
 
 // ✅ Obtener rúbricas por materia (subject)
-export async function getRubricsBySubjectId(subjectId: number): Promise<any[]> {
+export async function getRubricsBySubjectId(idMateria: number): Promise<any[]> {
   try {
-    const response = await fetch(`${evaluationBaseUrl}/rubrics/subject/${subjectId}`);
+    const response = await fetch(`${baseUrl}/rubricas/subject/${idMateria}`);
     if (!response.ok) throw new Error(`HTTP error: ${response.status}`);
     return await response.json();
   } catch (error) {
@@ -29,7 +30,7 @@ export async function getRubricsBySubjectId(subjectId: number): Promise<any[]> {
 // ✅ Obtener todos los estudiantes
 export async function getAllStudents(): Promise<any[]> {
   try {
-    const response = await fetch(`${evaluationBaseUrl}/students`);
+    const response = await fetch(`${baseUrl}/students`);
     if (!response.ok) throw new Error(`HTTP error: ${response.status}`);
     return await response.json();
   } catch (error) {
@@ -41,7 +42,7 @@ export async function getAllStudents(): Promise<any[]> {
 // ✅ Obtener estudiantes por curso y período
 export async function getStudentsByCourseAndPeriod(courseId: number, period: string): Promise<any[]> {
   try {
-    const response = await fetch(`${evaluationBaseUrl}/students/courseAndPeriod/${courseId}/${period}`);
+    const response = await fetch(`${baseUrl}/students/courseAndPeriod/${courseId}/${period}`);
     if (!response.ok) throw new Error(`HTTP error: ${response.status}`);
     return await response.json();
   } catch (error) {
@@ -54,7 +55,7 @@ export async function getStudentsByCourseAndPeriod(courseId: number, period: str
 // ✅ Obtener todos los períodos únicos desde los enrolls
 export async function getAllSemesters(): Promise<string[]> {
   try {
-    const response = await fetch(`${evaluationBaseUrl}/enroll`);
+    const response = await fetch(`${baseUrl}/enroll`);
     if (!response.ok) throw new Error(`HTTP error: ${response.status}`);
     const data: { semester: string }[] = await response.json();
 
@@ -72,7 +73,7 @@ export async function getAllSemesters(): Promise<string[]> {
 // ✅ Obtener todos los enrolls
 export async function getAllEnrolls(): Promise<any[]> {
   try {
-    const response = await fetch(`${evaluationBaseUrl}/enroll`);
+    const response = await fetch(`${baseUrl}/enroll`);
     if (!response.ok) throw new Error(`HTTP error: ${response.status}`);
     return await response.json();
   } catch (error) {
@@ -83,7 +84,7 @@ export async function getAllEnrolls(): Promise<any[]> {
 
 // ✅ Enviar evaluación principal
 export async function submitEvaluation(evaluation: any): Promise<any> {
-  const response = await fetch(`${evaluationBaseUrl}/evaluations`, {
+  const response = await fetch(`${baseUrl}/evaluations`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(evaluation),
@@ -94,7 +95,7 @@ export async function submitEvaluation(evaluation: any): Promise<any> {
 
 // ✅ Enviar cada registro de calificación
 export async function submitCalificationRegister(register: any): Promise<any> {
-  const response = await fetch(`${evaluationBaseUrl}/calification-register`, {
+  const response = await fetch(`${baseUrl}/calification-register`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(register),
@@ -137,21 +138,23 @@ export async function getEnrollIdFromStudentAndPeriod(
   }
 }
 
-export async function getEvaluationByEnrollAndRubric(enrollId: number, rubricId: number): Promise<any> {
+export async function getEvaluationByEnroll(enrollId: number): Promise<any | null> {
   try {
-    const response = await fetch(`http://localhost:8080/evaluations/enroll/${enrollId}`);
+    const response = await fetch(`${baseUrl}/evaluations/enroll/${enrollId}`);
     if (!response.ok) throw new Error("No hay evaluación previa");
     const data = await response.json();
-    return data.find((e: any) => e.rubric === rubricId) || null;
+    return data.length > 0 ? data[0] : null;
   } catch (error) {
     console.error("Error al buscar evaluación:", error);
     return null;
   }
 }
 
+
+
 export async function getCalificationsByEvaluationId(evaluationId: number): Promise<any[]> {
   try {
-    const response = await fetch(`http://localhost:8080/calification-register/evaluation/${evaluationId}`);
+    const response = await fetch(`${baseUrl}/calification-register/evaluation/${evaluationId}`);
     if (!response.ok) throw new Error("No hay calificaciones");
     return await response.json();
   } catch (error) {
@@ -159,5 +162,12 @@ export async function getCalificationsByEvaluationId(evaluationId: number): Prom
     return [];
   }
 }
+
+export async function getAllCourses(): Promise<any[]> {
+  const response = await fetch(`${baseUrl}/course`);
+  if (!response.ok) throw new Error(`HTTP error: ${response.status}`);
+  return await response.json();
+}
+
 
 
