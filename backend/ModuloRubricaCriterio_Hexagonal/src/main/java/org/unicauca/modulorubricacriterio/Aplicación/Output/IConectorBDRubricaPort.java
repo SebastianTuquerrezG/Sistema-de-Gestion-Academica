@@ -16,4 +16,6 @@ public interface IConectorBDRubricaPort {
     public Rubrica deleteRubric(Long Id);
 
     public Rubrica changeEstate(Long idRubrica, String estadoRubrica);
+
+    public List<Rubrica> findBySubjectId(Long idMateria);/*<!Consulta una lista de rúbricas por materia*/
 }

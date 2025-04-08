@@ -52,4 +52,10 @@ public class GestionRubricasAdapter implements IGestionRubricaPort{
         return rubricaEliminada;
     }
 
+    @Override
+    public List<Rubrica> consultarRubricasPorMateria(Long idMateria) {
+        List<Rubrica> listaRubricas = this.conectorBDRubricaPort.findBySubjectId(idMateria);
+        return listaRubricas;
+    }
+
 }

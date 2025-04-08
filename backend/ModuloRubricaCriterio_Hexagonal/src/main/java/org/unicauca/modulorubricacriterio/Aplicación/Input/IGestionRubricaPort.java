@@ -17,4 +17,6 @@ public interface IGestionRubricaPort {
     public Rubrica editarEstadoRubrica(Long id, String objPRubrica);/*<!Trata de cambiar el estado de una rúbrica de ACTIVO a INACTIVO y viceversa*/
     
     public Rubrica eliminarRubrica(Long Id);/*<!Elimina una rúbrica*/
+
+    public List<Rubrica> consultarRubricasPorMateria(Long idMateria);/*<!Consulta una lista de rúbricas por materia*/
 }

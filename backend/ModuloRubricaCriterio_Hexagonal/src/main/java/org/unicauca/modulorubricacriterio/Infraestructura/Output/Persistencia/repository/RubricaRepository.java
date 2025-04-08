@@ -4,7 +4,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import org.unicauca.modulorubricacriterio.Infraestructura.Output.Persistencia.entity.RubricaEntity;
 
+import java.util.List;
+
 @Repository
 public interface RubricaRepository extends JpaRepository<RubricaEntity,Long> {
-
+    List<RubricaEntity> findBySubjectId(Long idMateria);
 }

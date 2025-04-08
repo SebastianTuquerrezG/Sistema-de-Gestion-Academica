@@ -81,4 +81,12 @@ public class RubricaController {
         return response;
     }
 
+    @GetMapping("/rubricas/subject/{idMateria}")
+    public ResponseEntity<List<RubricaDTORespuesta>> getRubricasBySubject(@PathVariable("idMateria") Long idMateria) {
+        List<Rubrica> lista = rubricaService.consultarRubricasPorMateria(idMateria);//Consultar la lista de rúbricas en el dominio
+        List<RubricaDTORespuesta> listaDTO = objRubricaMapper.mapRubricaListToDtoList(lista);
+        ResponseEntity<List<RubricaDTORespuesta>>response=new ResponseEntity<>(listaDTO, HttpStatus.OK);
+        return response;
+    }
+
 }
