@@ -157,7 +157,7 @@ const Evaluaciones: React.FC = () => {
               const [inferior, superior] = n.rangoNota.split("-").map(Number);
               return {
                 nivel: n.nivelDescripcion,
-                texto: n.nivelDescripcion,
+                //texto: n.nivelTexto, //CORREGIIIIIIIIIIIIR
                 inferior,
                 superior,
               };

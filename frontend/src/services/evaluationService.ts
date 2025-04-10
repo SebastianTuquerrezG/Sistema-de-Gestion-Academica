@@ -1,7 +1,7 @@
 // services/evaluationService.ts
 
-const baseUrl = 'http://localhost:8080/api';
-//const rubricBaseUrl = 'http://localhost:5001/api';
+const baseUrl = 'http://localhost:8080';
+const rubricBaseUrl = 'http://localhost:5001/api';
 
 // ✅ Obtener todas las materias (subjects)
 export async function getAllSubjects(): Promise<any[]> {
@@ -18,7 +18,7 @@ export async function getAllSubjects(): Promise<any[]> {
 // ✅ Obtener rúbricas por materia (subject)
 export async function getRubricsBySubjectId(idMateria: number): Promise<any[]> {
   try {
-    const response = await fetch(`${baseUrl}/rubricas/subject/${idMateria}`);
+    const response = await fetch(`${rubricBaseUrl}/rubricas/subject/${idMateria}`);
     if (!response.ok) throw new Error(`HTTP error: ${response.status}`);
     return await response.json();
   } catch (error) {
