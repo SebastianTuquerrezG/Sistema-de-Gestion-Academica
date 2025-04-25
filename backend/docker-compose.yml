@@ -29,6 +29,34 @@ services:
     networks:
       - backend-network
 
+  evaluation-service:
+    build: ./evaluation-service
+    ports:
+      - "5002:5002"
+    depends_on:
+      - eureka-server
+      - mariadb
+    environment:
+      - SPRING_DATASOURCE_URL=${SPRING_DATASOURCE_URL}
+      - SPRING_DATASOURCE_USERNAME=${SPRING_DATASOURCE_USERNAME}
+      - SPRING_DATASOURCE_PASSWORD=${SPRING_DATASOURCE_PASSWORD}
+    networks:
+      - backend-network
+
+  helper-service:
+    build: ./helper-service
+    ports:
+      - "5004:5004"
+    depends_on:
+      - eureka-server
+      - mariadb
+    environment:
+      - SPRING_DATASOURCE_URL=${SPRING_DATASOURCE_URL}
+      - SPRING_DATASOURCE_USERNAME=${SPRING_DATASOURCE_USERNAME}
+      - SPRING_DATASOURCE_PASSWORD=${SPRING_DATASOURCE_PASSWORD}
+    networks:
+      - backend-network
+
   mariadb:
     image: mariadb:10.5
     restart: always
@@ -37,6 +65,17 @@ services:
       MYSQL_DATABASE: unicauca
     ports:
       - "3306:3306"
+    networks:
+      - backend-network
+
+  rabbit:
+    image: rabbitmq:4.1.0-management
+    ports:
+      - "5689:5689"
+      - "15678:15678"
+    environment:
+      - RABBITMQ_DEFAULT_USER=unicauca
+      - RABBITMQ_DEFAULT_PASS=unicaucaRabbit
     networks:
       - backend-network
 
