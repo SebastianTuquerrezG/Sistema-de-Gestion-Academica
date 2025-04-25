@@ -1,103 +1,107 @@
 .evaluaciones-container {
-    display: flex;
-    padding: 20px;
-    font-family: Arial, sans-serif;
-    display: grid;
+  display: flex;
+  padding: 20px;
+  font-family: Arial, sans-serif;
 }
 
 .title {
-    font-size: 24px;
-    font-weight: bold;
-    color: #07184A;
-    /* linea azul */
-    border-bottom: 3px solid #001F5B; 
-    display: inline-block;
-    margin-bottom: 20px;
+  font-size: 24px;
+  font-weight: bold;
+  color: #07184a;
+  /* linea azul */
+  border-bottom: 3px solid #001f5b;
+  display: inline-block;
+  margin-bottom: 20px;
 }
 
 .evaluaciones-content {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
 }
 
-.evaluaciones-left, .evaluaciones-right {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-    width: auto;
-    height: auto;
-    
+.evaluaciones-left,
+.evaluaciones-right {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  width: auto;
+  height: auto;
 }
 
 /* Estilos para los dropdowns(listas desplegables) */
 .dropdown-container {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    color: #07184A;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #07184a;
 }
 
 .dropdown-label {
-    font-weight: bold;
+  font-weight: bold;
 }
 
 .dropdown {
-    padding: 5px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
 }
 
 /* Estilos para los inputs */
 .input-label-container {
-    display: flex;
-    align-items: center;
-    gap: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
 .input-label {
-    font-weight: bold;
+  font-weight: bold;
 }
 
 .input-value {
-    padding: 5px;
-    background-color: #eee;
-    border-radius: 5px;
+  padding: 5px;
+  background-color: #eee;
+  border-radius: 5px;
 }
 
 /* Estilos para los botones de acción */
 .action-buttons {
-    display: flex;
-    gap: 10px;
-    justify-content: flex-end;
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
 }
 
 .action-button {
-    background: none;
-    border: none;
-    font-size: 14px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 5px;
+  background: none;
+  border: none;
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 5px;
 }
 
 .action-button:hover {
-    text-decoration: underline;
+  text-decoration: underline;
 }
 
 label {
-    display: inline-block;
-    width: 120px; 
-    text-align: left;
-    color: #07184A;
+  display: inline-block;
+  width: 120px;
+  text-align: left;
+  color: #07184a;
 }
-input, select {
-    width: 200px; /* Ajusta según necesidad */
+input,
+select {
+  width: 200px; /* Ajusta según necesidad */
 }
 .header-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-  }
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  position: relative;
+  max-width: 100%;
+  overflow-x: auto;
+  box-sizing: border-box;
+}

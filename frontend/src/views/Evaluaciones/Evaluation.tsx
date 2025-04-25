@@ -20,11 +20,13 @@ interface Rubrica {
   materia: string;
   notaRubrica: number;
   objetivoEstudio: string;
-  courseId: number; // ✅ necesario para consultar estudiantes
+  courseId: number;
   criterios: {
+    idCriterio: number;
     crfDescripcion: string;
     crfPorcentaje: number;
     niveles: {
+      nivel: string;
       nivelDescripcion: string;
       rangoNota: string;
     }[];
@@ -53,12 +55,12 @@ const Evaluaciones: React.FC = () => {
 
   const [enrollId, setEnrollId] = useState<number | null>(null);
 
-  // ✅ Cargar materias
+  // Cargar materias
   useEffect(() => {
     getAllSubjects().then(setMaterias);
   }, []);
 
-  // ✅ Obtener rúbricas por materia
+  // Obtener rúbricas por materia
   useEffect(() => {
     const materia = materias.find((m) => m.name === selectedMateria);
     if (materia) {
@@ -73,36 +75,35 @@ const Evaluaciones: React.FC = () => {
     setEnrollId(null);
   }, [selectedMateria]);
 
-  // ✅ Obtener períodos
+  // Obtener períodos
   useEffect(() => {
     getAllSemesters().then(setPeriodos);
   }, []);
 
-  // ✅ Obtener estudiantes por curso y período
+  // Obtener estudiantes por curso y período
   useEffect(() => {
     if (selectedPeriodo && selectedMateria) {
       // Paso 1: hallar subjectId
       const materia = materias.find((m) => m.name === selectedMateria);
       if (!materia) return;
-  
+
       // Paso 2: hallar el curso que tenga ese subjectId
       getAllCourses().then((cursos) => {
         const curso = cursos.find((c: any) => c.subject === materia.id);
         if (!curso) return;
-  
+
         // Paso 3: obtener estudiantes por ese curso y el periodo
         getStudentsByCourseAndPeriod(curso.id, selectedPeriodo).then((data) => {
-          const nombres = data.map(
-            (e: any) => `${e.name ?? ""} ${e.lastName ?? ""}`.trim()
+          const nombres = data.map((e: any) =>
+            `${e.name ?? ""} ${e.lastName ?? ""}`.trim()
           );
           setEstudiantes(nombres);
         });
       });
     }
   }, [selectedPeriodo, selectedMateria]);
-  
 
-  // ✅ Obtener enrollId
+  // Obtener enrollId
   useEffect(() => {
     if (selectedEstudiante && selectedPeriodo) {
       getEnrollIdFromStudentAndPeriod(selectedEstudiante, selectedPeriodo).then(
@@ -130,7 +131,8 @@ const Evaluaciones: React.FC = () => {
         resultadoAprendizaje={selectedRubrica?.objetivoEstudio || ""}
         onSelectMateria={setSelectedMateria}
         onSelectRubrica={(nombre) => {
-          const rubrica = rubricas.find((r) => r.nombreRubrica === nombre) || null;
+          const rubrica =
+            rubricas.find((r) => r.nombreRubrica === nombre) || null;
           setSelectedRubrica(rubrica);
           setSelectedPeriodo("");
           setSelectedEstudiante("");
@@ -150,24 +152,27 @@ const Evaluaciones: React.FC = () => {
       {selectedRubrica && enrollId && (
         <EvaluationTable
           estudiante={selectedEstudiante}
-          criterios={selectedRubrica.criterios.map((c) => ({
-            criterio: c.crfDescripcion,
-            porcentaje: c.crfPorcentaje * 100,
-            descriptores: c.niveles.map((n) => {
-              const [inferior, superior] = n.rangoNota.split("-").map(Number);
-              return {
-                nivel: n.nivelDescripcion,
-                //texto: n.nivelTexto, //CORREGIIIIIIIIIIIIR
-                inferior,
-                superior,
-              };
-            }),
-          }))}
+          criterios={selectedRubrica.criterios
+            .slice()
+            .sort((a, b) => a.idCriterio - b.idCriterio)
+            .map((c) => ({
+              idCriterio: c.idCriterio,
+              criterio: c.crfDescripcion,
+              porcentaje: c.crfPorcentaje * 100,
+              descriptores: c.niveles.map((n, i) => {
+                const [inferior, superior] = n.rangoNota.split("-").map(Number);
+                return {
+                  nivel: `Nivel ${i + 1}`,
+                  nivelDescripcion: n.nivelDescripcion,
+                  inferior,
+                  superior,
+                };
+              }),
+            }))}
           rubricaId={selectedRubrica.idRubrica}
           enrollId={enrollId}
         />
       )}
-
     </>
   );
 };
