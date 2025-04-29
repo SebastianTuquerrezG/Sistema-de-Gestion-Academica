@@ -9,11 +9,20 @@ import java.util.Optional;
 
 public interface StudentPort {
     List<StudentResponseDTO> getStudents();
+
     Optional<StudentResponseDTO> getStudentById(Long studentId);
+
     StudentResponseDTO saveStudent(StudentRequestDTO student);
+
     boolean deleteStudent(Long studentId);
+
     boolean updateStudent(Long studentId, StudentRequestDTO student);
+
     List<StudentResponseDTO> getStudentsByName(String name);
+
     Optional<StudentResponseDTO> getStudentsByIdentification(Long identification);
+
     List<StudentResponseDTO> getStudentsByIdentificationType(GeneralEnums.identificationType identificationType);
+
+    List<StudentResponseDTO> getStudentsByCourseAndPeriod(Long courseId, String period);
 }

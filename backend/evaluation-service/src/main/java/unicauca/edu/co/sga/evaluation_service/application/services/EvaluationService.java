@@ -37,7 +37,7 @@ public class EvaluationService implements EvaluationPort {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                     "La evaluacion requiere una calificacion y evidencia");
         }
-        if (evaluationRepository.existsByEnrollIdAndRubricId(
+        if (evaluationRepository.existsByEnrollIdAndRubric_IdRubrica(
                 evaluationRequestDTO.getEnroll(),
                 evaluationRequestDTO.getRubric())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
@@ -48,7 +48,7 @@ public class EvaluationService implements EvaluationPort {
                 .orElseThrow(() -> new NotFoundException(
                         "Enroll no encontrado con id: " + evaluationRequestDTO.getEnroll()));
 
-        RubricEntity rubric = rubricRepository.findById(evaluationRequestDTO.getRubric())
+        RubricEntity rubric = rubricRepository.findByIdRubrica(evaluationRequestDTO.getRubric())
                 .orElseThrow(() -> new NotFoundException(
                         "Rubric no encontrado con id: " + evaluationRequestDTO.getRubric()));
 
@@ -109,8 +109,8 @@ public class EvaluationService implements EvaluationPort {
                         "La evaluacion requiere una calificacion y evidencia");
             }
             if (!existingEvaluation.getEnroll().getId().equals(evaluationRequestDTO.getEnroll()) ||
-                    !existingEvaluation.getRubric().getId().equals(evaluationRequestDTO.getRubric())) {
-                if (evaluationRepository.existsByEnrollIdAndRubricId(
+                    !existingEvaluation.getRubric().getIdRubrica().equals(evaluationRequestDTO.getRubric())) {
+                if (evaluationRepository.existsByEnrollIdAndRubric_IdRubrica(
                         evaluationRequestDTO.getEnroll(),
                         evaluationRequestDTO.getRubric())) {
                     throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
@@ -153,7 +153,7 @@ public class EvaluationService implements EvaluationPort {
 
     @Override
     public List<EvaluationResponseDTO> getEvaluationsByRubricId(Long rubricId) {
-        return evaluationRepository.findByRubricId(rubricId).stream()
+        return evaluationRepository.findByRubric_IdRubrica(rubricId).stream()
                 .map(EvaluationMapper::toModel)
                 .map(EvaluationMapper::toDTO)
                 .collect(Collectors.toList());

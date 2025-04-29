@@ -1,7 +1,6 @@
 package unicauca.edu.co.sga.evaluation_service;
 
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
-import org.springframework.ai.autoconfigure.vectorstore.mariadb.MariaDbStoreAutoConfiguration;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
@@ -10,10 +9,10 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 		exclude = {
 				// Maybe this could create a conflict with the data of the database
 				// because it's store of mariaDB, I think that.s
-				MariaDbStoreAutoConfiguration.class, org.springframework.ai.autoconfigure.vectorstore.mariadb.MariaDbStoreAutoConfiguration.class
+				MariaDbStoreAutoConfiguration.class
 		}
 )
-@OpenAPIDefinition()
+@OpenAPIDefinition
 @EnableDiscoveryClient
 public class EvaluationServiceApplication {
 	public static void main(String[] args) {

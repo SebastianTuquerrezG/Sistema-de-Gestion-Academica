@@ -31,16 +31,19 @@ public class RubricEvaluationService implements RubricEvaluationPort {
     public List<SubjectResponseViewDTO> getSubjectsFromStudentPeriod(Long idStudent, String semester) {
         System.out.println("entraconsultarmaterias");
         return enrollRepository.findSubjectsAndTeachersByStudentAndSemester(idStudent, semester);
+
     }
 
     @Override
     public List<String> getPeriods(Long idStudent) {
         return enrollRepository.findDistinctSemestersByStudentId(idStudent);
+
     }
 
     @Override
     public List<RubricResponseViewDTO> getRubricsFromStudentSubjectPeriod(Long idStudent, Long idSubject, String semester) {
-        return enrollRepository.findRubricNamesAndDates(idStudent, idSubject, semester);
+       return enrollRepository.findRubricNamesAndDates(idStudent, idSubject, semester);
+
     }
 
     @Override
@@ -66,20 +69,21 @@ public class RubricEvaluationService implements RubricEvaluationPort {
         EvaluationResponseViewDTO response = new EvaluationResponseViewDTO();
         response.setDescription(rubricDescription);
 
-        // Mapear criterios con sus niveles
+
+        //Mapear criterios con sus niveles
         List<CriteriaResponseViewDTO> criteriaDTOs = criterias.stream()
                 .map(criteria -> {
                     CriteriaResponseViewDTO dto = new CriteriaResponseViewDTO();
-                    dto.setDescriptionCriteria(criteria.getDescription());
-                    dto.setPercentage(criteria.getPercentage());
+                    dto.setDescriptionCriteria(criteria.getCrfDescripcion());
+                    dto.setPercentage(criteria.getCrfPorcentaje());
 
                     // Mapear niveles con sus rangos
-                    List<PerformanceLevelResponseViewDTO> levels = criteria.getLevels().stream()
+                    List<PerformanceLevelResponseViewDTO> levels = criteria.getNiveles().stream()
                             .map(level -> {
                                 PerformanceLevelResponseViewDTO levelDto = new PerformanceLevelResponseViewDTO();
-                                levelDto.setName(level.getName());
-                                levelDto.setDescription(level.getDescription());
-                                levelDto.setRange(level.getRango()); // Asegurando que se mapee el rango
+//                                levelDto.setName(level.getName());
+                                levelDto.setDescription(level.getNivelDescripcion());
+                                levelDto.setRange(level.getRangoNota()); // Asegurando que se mapee el rango
                                 return levelDto;
                             })
                             .collect(Collectors.toList());
@@ -90,7 +94,7 @@ public class RubricEvaluationService implements RubricEvaluationPort {
                 .collect(Collectors.toList());
         response.setCriterias(criteriaDTOs);
 
-        // Mapear calificaciones
+     //    Mapear calificaciones
         List<CalificationResponseViewDTO> calificationDTOs = califications.stream()
                 .map(cal -> {
                     CalificationResponseViewDTO calDto = new CalificationResponseViewDTO();

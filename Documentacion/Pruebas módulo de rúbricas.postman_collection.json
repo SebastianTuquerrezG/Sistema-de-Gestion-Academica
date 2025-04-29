@@ -1,0 +1,150 @@
+{
+	"info": {
+		"_postman_id": "da4e5b8a-aee0-40c8-891e-69a7b3f89506",
+		"name": "Pruebas módulo de rúbricas",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "34041440"
+	},
+	"item": [
+		{
+			"name": "Save rubrica",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n \"nombreRubrica\":\"Rubrica 1\",\r\n \"materia\":\"Ingeniería de Software III\",\r\n \"notaRubrica\": 4,\r\n \"objetivoEstudio\":\"Verificar su comportamiento...\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5001/api/rubricas",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5001",
+					"path": [
+						"api",
+						"rubricas"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Find all rubricas",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5001/api/rubricas",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5001",
+					"path": [
+						"api",
+						"rubricas"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Edit rubrica",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"nombreRubrica\":\"Nuevaaa\",\r\n    \"estado\":\"INACTIVO\",\r\n    \"materia\":\"Juan\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5001/api/rubricas?id=1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5001",
+					"path": [
+						"api",
+						"rubricas"
+					],
+					"query": [
+						{
+							"key": "id",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Cambiar Estado Rúbrica",
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"estado\": \"DESACTIVAR\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5000/api/rubricas?id=1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"rubricas"
+					],
+					"query": [
+						{
+							"key": "id",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "findById Rubrica",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5001/api/rubricas/1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5001",
+					"path": [
+						"api",
+						"rubricas",
+						"1"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

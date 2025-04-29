@@ -1,129 +1,359 @@
-"use client"
-
 import { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Plus, PlusCircle, Trash2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Plus, Trash2, PlusCircle } from "lucide-react";
-import { Card, CardHeader, CardContent, CardDescription, CardTitle, CardFooter } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Textarea } from "@/components/ui/textarea";
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "@/components/ui/table";
+import Notification from "@/components/notifications/notification";
+import {getRubricById, updateRubric} from "@/services/rubricService";
+import {RubricInterface} from "@/interfaces/RubricInterface.ts";
+/*import { useNavigate, useParams } from "react-router-dom";*/
+import { useParams } from "react-router-dom";
 
-interface Nivel {
-    idNivel: number;
-    nivelDescripcion: string;
-    rangoNota: string;
-}
 
-interface Criterio {
-    idCriterio: string;
-    crfDescripcion: string;
-    niveles: Nivel[];
-    crfPorcentaje: number;
-}
-
-interface Rubric {
-    idRubrica: string;
-    nombreRubrica: string;
-    materia: string;
-    notaRubrica: number;
-    objetivoEstudio: string;
-    criterios: Criterio[];
-    estado: string;
-}
+type NotificationType = {
+    type: "error" | "info" | "success";
+    title: string;
+    message: string;
+};
 
 export default function EditRubric() {
+
+    const [levels, setLevels] = useState([
+        { idNivel: 1, nivelDescripcion: "", rangoNota: "0-1" },
+        { idNivel: 2, nivelDescripcion: "", rangoNota: "1-2" },
+        { idNivel: 3, nivelDescripcion: "", rangoNota: "2-3" }
+    ]);
     const { id } = useParams<{ id: string }>();
-    const navigate = useNavigate();
-    const [rubric, setRubric] = useState<Rubric | null>(null);
+    const [rubric, setRubric] = useState<RubricInterface | null>(null);
+    //const navigate = useNavigate();
+    const [rows, setRows] = useState([
+        {
+            idCriterio: 1,
+            crfDescripcion: "",
+            niveles: levels.map(level => ({ ...level, nivelDescripcion: "" })),
+            crfPorcentaje: "",
+            crfNota: 0,
+            crfComentario: ""
+        },
+        {
+            idCriterio: 2,
+            crfDescripcion: "",
+            niveles: levels.map(level => ({ ...level, nivelDescripcion: "" })),
+            crfPorcentaje: "",
+            crfNota: 0,
+            crfComentario: ""
+        }
+    ]);
 
-    useEffect(() => {
-        fetch("/rubricas.json")
-            .then(res => res.json())
-            .then(data => {
-                const foundRubric = data.find((r: Rubric) => r.idRubrica === id);
-                setRubric(foundRubric || null);
-            })
-            .catch(error => console.error(error));
-    }, [id]);
+    const [notification, setNotification] = useState<NotificationType | null>(null);
 
-    if (!rubric) {
-        return <p className="text-center text-red-500">Rúbrica no encontrada.</p>;
+useEffect(() => {
+    if (notification) {
+        const timeout = setTimeout(() => setNotification(null), 4000);
+        return () => clearTimeout(timeout);
     }
-
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-        const { id, value } = e.target;
-        setRubric((prevData) => prevData ? { ...prevData, [id]: value } : null);
-    };
-
-    const handleCriteriaChange = (index: number, field: string, value: string) => {
-        if (!rubric) return;
-        const updatedCriteria = [...rubric.criterios];
-        updatedCriteria[index] = {
-            ...updatedCriteria[index],
-            [field]: value,
-        };
-        setRubric({ ...rubric, criterios: updatedCriteria });
-    };
+    if (id) {
+        getRubricById(id)
+            .then((data) => {
+                if (data) {
+                    setRubric(data);
+                    const niveles = data.criterios[0]?.niveles || [];
+                    setLevels(niveles);
+                    setRows(data.criterios.map(criterio => ({
+                        ...criterio,
+                        idCriterio: criterio.idCriterio ?? 0, // Ensure idCriterio is not null
+                        niveles: niveles.map((nivel, index) => criterio.niveles[index] || { ...nivel, nivelDescripcion: "" }),
+                        crfPorcentaje: criterio.crfPorcentaje.toString()
+                    })));
+                }
+            })
+            .catch((error) => console.error(error));
+    }
+}, [notification, id]);
 
     const addLevel = () => {
-        if (!rubric) return;
-        const newLevel: Nivel = { idNivel: rubric.criterios[0].niveles.length + 1, nivelDescripcion: "", rangoNota: "" };
-        const updatedCriteria = rubric.criterios.map(criterio => ({
-            ...criterio,
-            niveles: [...criterio.niveles, newLevel]
-        }));
-        setRubric({ ...rubric, criterios: updatedCriteria });
+        if (levels.length >= 5) {
+            setNotification({
+                type: "error",
+                title: "Límite alcanzado",
+                message: "No puedes tener más de 5 niveles en una rúbrica."
+            });
+            return;
+        }
+
+        const newId = levels.length > 0 ? Math.max(...levels.map(l => l.idNivel)) + 1 : 1;
+        const newLevel = {
+            idNivel: newId,
+            nivelDescripcion: "",
+            rangoNota: `${newId - 1}-${newId}`
+        };
+        setLevels([...levels, newLevel]);
+        setRows(rows.map(row => ({
+            ...row,
+            niveles: [...row.niveles, { ...newLevel, nivelDescripcion: "" }]
+        })));
     };
 
+
     const removeLevel = () => {
-        if (!rubric) return;
-        const updatedCriteria = rubric.criterios.map(criterio => ({
-            ...criterio,
-            niveles: criterio.niveles.slice(0, -1)
-        }));
-        setRubric({ ...rubric, criterios: updatedCriteria });
+        if (levels.length <= 1) {
+            setNotification({
+                type: "error",
+                title: "Acción no permitida",
+                message: "Debe haber al menos un nivel en la rúbrica."
+            });
+            return;
+        }
+
+        setLevels(levels.slice(0, -1));
+        setRows(rows.map(row => ({
+            ...row,
+            niveles: row.niveles.slice(0, -1)
+        })));
+    };
+
+    const handleCriterioChange = (rowIndex: number, value: string) => {
+        const newRows = [...rows];
+        newRows[rowIndex].crfDescripcion = value;
+        setRows(newRows);
+    };
+
+    const handleNivelChange = (rowIndex: number, nivelIndex: number, value: string) => {
+        const newRows = [...rows];
+        newRows[rowIndex].niveles[nivelIndex].nivelDescripcion = value;
+        setRows(newRows);
+    };
+
+    const handlePorcentajeChange = (rowIndex: number, value: string) => {
+        const numericValue = parseFloat(value);
+        if (!isNaN(numericValue) && (numericValue < 0 || numericValue > 1)) {
+            setNotification({
+                type: "error",
+                title: "Error",
+                message: "El porcentaje debe estar entre 0 y 1."
+            });
+            return;
+        }
+
+        const newRows = [...rows];
+        newRows[rowIndex].crfPorcentaje = value;
+        setRows(newRows);
+    };
+
+    const handleComentarioChange = (rowIndex: number, value: string) => {
+        const newRows = [...rows];
+        newRows[rowIndex].crfComentario = value;
+        setRows(newRows);
     };
 
     const addRow = () => {
-        if (!rubric) return;
-        const newCriterio: Criterio = {
-            idCriterio: (rubric.criterios.length + 1).toString(),
+        if (rows.length >= 10) {
+            setNotification({
+                type: "error",
+                title: "Límite alcanzado",
+                message: "No puedes tener más de 10 criterios en una rúbrica."
+            });
+            return;
+        }
+
+        const newId = rows.length > 0 ? Math.max(...rows.map(r => r.idCriterio)) + 1 : 1;
+        setRows([...rows, {
+            idCriterio: newId,
             crfDescripcion: "",
-            crfPorcentaje: 0,
-            niveles: rubric.criterios[0].niveles.map(nivel => ({ ...nivel, nivelDescripcion: "" }))
-        };
-        setRubric({ ...rubric, criterios: [...rubric.criterios, newCriterio] });
+            niveles: levels.map(level => ({ ...level, nivelDescripcion: "" })),
+            crfPorcentaje: "",
+            crfNota: 0,
+            crfComentario: ""
+        }]);
     };
 
     const removeRow = (index: number) => {
-        if (!rubric) return;
-        const updatedCriteria = rubric.criterios.filter((_, i) => i !== index);
-        setRubric({ ...rubric, criterios: updatedCriteria });
+        if (rows.length <= 1) {
+            setNotification({
+                type: "error",
+                title: "Acción no permitida",
+                message: "Debe haber al menos un criterio en la rúbrica."
+            });
+            return;
+        }
+
+        setRows(rows.filter((_, i) => i !== index));
     };
 
+    const handleCancel = () => {
+        setLevels([
+            { idNivel: 1, nivelDescripcion: "", rangoNota: "0-1" },
+            { idNivel: 2, nivelDescripcion: "", rangoNota: "1-2" },
+            { idNivel: 3, nivelDescripcion: "", rangoNota: "2-3" }
+        ]);
+        setRows([
+            {
+                idCriterio: 1,
+                crfDescripcion: "",
+                niveles: [
+                    { idNivel: 1, nivelDescripcion: "", rangoNota: "0-1" },
+                    { idNivel: 2, nivelDescripcion: "", rangoNota: "1-2" },
+                    { idNivel: 3, nivelDescripcion: "", rangoNota: "2-3" }
+                ],
+                crfPorcentaje: "",
+                crfNota: 0,
+                crfComentario: ""
+            },
+            {
+                idCriterio: 2,
+                crfDescripcion: "",
+                niveles: [
+                    { idNivel: 1, nivelDescripcion: "", rangoNota: "0-1" },
+                    { idNivel: 2, nivelDescripcion: "", rangoNota: "1-2" },
+                    { idNivel: 3, nivelDescripcion: "", rangoNota: "2-3" }
+                ],
+                crfPorcentaje: "",
+                crfNota: 0,
+                crfComentario: ""
+            }
+        ]);
+    };
+
+    const handleCreate = () => {
+        // Validar campos obligatorios
+        const requiredFields = [
+            { field: (document.getElementById("idRubrica") as HTMLInputElement)?.value, name: "ID Rúbrica" },
+            { field: (document.getElementById("nombreRubrica") as HTMLInputElement)?.value, name: "Nombre Rúbrica" },
+            { field: (document.getElementById("materia") as HTMLInputElement)?.value, name: "Materia" },
+            { field: (document.getElementById("objetivoEstudio") as HTMLInputElement)?.value, name: "Objetivo de Estudio" }
+        ];
+
+        const missingField = requiredFields.find(f => !f.field);
+        if (missingField) {
+            setNotification({
+                type: "error",
+                title: "Campo requerido",
+                message: `El campo "${missingField.name}" es obligatorio.`
+            });
+            return;
+        }
+
+        // Validar descripciones de criterios
+        const emptyCriteria = rows.find(row => !row.crfDescripcion.trim());
+        if (emptyCriteria) {
+            setNotification({
+                type: "error",
+                title: "Campo requerido",
+                message: "Todos los criterios deben tener una descripción."
+            });
+            return;
+        }
+
+        // Validar descripciones de niveles
+        const emptyLevel = rows.some(row =>
+            row.niveles.some(nivel => !nivel.nivelDescripcion.trim())
+        );
+        if (emptyLevel) {
+            setNotification({
+                type: "error",
+                title: "Campo requerido",
+                message: "Todos los niveles deben tener una descripción."
+            });
+            return;
+        }
+
+        const totalPercentage = rows.reduce((sum, row) => sum + (parseFloat(row.crfPorcentaje) || 0), 0);
+        if (Math.abs(totalPercentage - 1) > 0.0001) {
+            setNotification({
+                type: "error",
+                title: "Porcentaje inválido",
+                message: "La suma de los porcentajes debe ser exactamente 100% (1 en decimal)."
+            });
+            return;
+        }
+
+
+
+        const rubricData: RubricInterface = {
+            idRubrica:'',
+            nombreRubrica: (document.getElementById("nombreRubrica") as HTMLInputElement)?.value,
+            materia: parseFloat((document.getElementById("materia") as HTMLInputElement)?.value),
+            notaRubrica: parseFloat((document.getElementById("notaRubrica") as HTMLInputElement)?.value || "0"),
+            objetivoEstudio: (document.getElementById("objetivoEstudio") as HTMLInputElement)?.value,
+            criterios: rows.map(row => ({
+                idCriterio: row.idCriterio,
+                crfDescripcion: row.crfDescripcion,
+                crfPorcentaje: parseFloat(row.crfPorcentaje),
+                crfNota: row.crfNota,
+                crfComentario: row.crfComentario,
+                niveles: row.niveles
+            })),
+            raId:101,
+            estado: "ACTIVO"
+        };
+        const idRubrica =   (document.getElementById("idRubrica") as HTMLInputElement)?.value;
+        try {
+            console.log("Rubrica a crear:", rubricData);
+           updateRubric(idRubrica,rubricData).then(r => console.log(r));
+            setNotification({
+                type: "success",
+                title: "Éxito",
+                message: "La rúbrica ha sido editado correctamente."
+            });
+            handleCancel();
+            /*navigate("/rubricas");*/
+        } catch (error) {
+            console.error("Error al editar la rúbrica:", error);
+            setNotification({
+                type: "error",
+                title: "Error",
+                message: "Ocurrió un error al crear la rúbrica."
+            });
+        }
+    };
+
+    const handleInputChange = (field: keyof RubricInterface, value: string | number) => {
+        if (rubric) {
+            setRubric({ ...rubric, [field]: value });
+        }
+    };
     return (
-        <Card className="w-full max-w-[1200px]">
+        <Card className="w-full max-w-[1200px] relative">
+            {notification && (
+                <Notification
+                    type={notification.type}
+                    title={notification.title}
+                    message={notification.message}
+                    onClose={() => setNotification(null)}
+                />
+            )}
+
             <CardHeader>
-                <CardTitle>Editar Rúbrica de Evaluación</CardTitle>
+                <CardTitle>Crear Rúbrica de Evaluación</CardTitle>
                 <CardDescription>Ingresa los datos de la nueva rúbrica en el formulario.</CardDescription>
             </CardHeader>
             <CardContent>
                 <div className="space-y-4">
                     <div className="grid grid-cols-2 gap-4">
-                        <div className="grid w-full max-w-sm items-center gap-1.5">
-                            <Label htmlFor="idRubrica">ID Rúbrica</Label>
-                            <Input id="idRubrica" placeholder="Ej: IS102" value={rubric.idRubrica} onChange={handleInputChange} />
-                        </div>
-                        <div className="grid w-full max-w-sm items-center gap-1.5">
-                            <Label htmlFor="nombreRubrica">Nombre Rúbrica</Label>
-                            <Input id="nombreRubrica" placeholder="Nombre de la rúbrica" value={rubric.nombreRubrica} onChange={handleInputChange} />
-                        </div>
-                        <div className="grid w-full max-w-sm items-center gap-1.5">
-                            <Label htmlFor="materia">Materia</Label>
-                            <Input id="materia" placeholder="Nombre de la materia" value={rubric.materia} onChange={handleInputChange} />
-                        </div>
+                      <div className="grid w-full max-w-sm items-center gap-1.5">
+                          <Label htmlFor="idRubrica">ID Rúbrica</Label>
+                          <Input id="idRubrica" placeholder="Ej: IS102" value={rubric?.idRubrica || ''} onChange={(e) => handleInputChange('idRubrica', e.target.value)} />
+                      </div>
+                      <div className="grid w-full max-w-sm items-center gap-1.5">
+                          <Label htmlFor="nombreRubrica">Nombre Rúbrica</Label>
+                          <Input id="nombreRubrica" placeholder="Nombre de la rúbrica" value={rubric?.nombreRubrica || ''} onChange={(e) => handleInputChange('nombreRubrica', e.target.value)} />
+                      </div>
+                      <div className="grid w-full max-w-sm items-center gap-1.5">
+                          <Label htmlFor="materia">Materia</Label>
+                          <Input id="materia" placeholder="Nombre de la materia" value={rubric?.materia || ''} onChange={(e) => handleInputChange('materia', e.target.value)} />
+                      </div>
+                      <div className="grid w-full max-w-sm items-center gap-1.5">
+                          <Label htmlFor="notaRubrica">Nota Máxima Rúbrica</Label>
+                          <Input id="notaRubrica" type="number" placeholder="Ej: 3" value={rubric?.notaRubrica || ''} onChange={(e) => handleInputChange('notaRubrica', parseFloat(e.target.value))} />
+                      </div>
+                      <div className="grid w-full max-w-sm items-center gap-1.5 col-span-2">
+                          <Label htmlFor="objetivoEstudio">Objetivo de Estudio</Label>
+                          <Input id="objetivoEstudio" placeholder="Objetivo de la evaluación" value={rubric?.objetivoEstudio || ''} onChange={(e) => handleInputChange('objetivoEstudio', e.target.value)} />
+                      </div>
                     </div>
                 </div>
                 <CardTitle className="mt-6">Criterios de Evaluación</CardTitle>
@@ -133,11 +363,12 @@ export default function EditRubric() {
                         <TableRow>
                             <TableHead>Criterio Evaluación</TableHead>
                             <TableHead>Porcentaje</TableHead>
-                            {rubric.criterios[0]?.niveles.map((nivel, index) => (
+                            <TableHead>Comentario</TableHead>
+                            {levels.map((level, index) => (
                                 <TableHead key={index}>
                                     <div className="flex flex-col">
-                                        <span>Nivel {nivel.idNivel}</span>
-                                        <span className="text-xs">{nivel.rangoNota}</span>
+                                        <span>Nivel {level.idNivel}</span>
+                                        <span className="text-xs">{level.rangoNota}</span>
                                     </div>
                                 </TableHead>
                             ))}
@@ -152,31 +383,40 @@ export default function EditRubric() {
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {rubric.criterios.map((criterio, rowIndex) => (
+                        {rows.map((row, rowIndex) => (
                             <TableRow key={rowIndex}>
                                 <TableCell>
                                     <Textarea
-                                        value={criterio.crfDescripcion}
-                                        onChange={(e) => handleCriteriaChange(rowIndex, "crfDescripcion", e.target.value)}
+                                        value={row.crfDescripcion}
+                                        onChange={(e) => handleCriterioChange(rowIndex, e.target.value)}
                                         placeholder="Descripción del criterio"
                                     />
                                 </TableCell>
                                 <TableCell>
-                                    <Input
-                                        type="number"
-                                        min="0"
-                                        max="1"
-                                        step="0.01"
-                                        onChange={(e) => handleCriteriaChange(rowIndex, "crfPorcentaje", e.target.value)}
-                                        value={criterio.crfPorcentaje.toString()}
-                                        placeholder="0.00"
+                                    <div className="flex items-center">
+                                        <Input
+                                            type="number"
+                                            min="0"
+                                            max="1"
+                                            step="0.01"
+                                            onChange={(e) => handlePorcentajeChange(rowIndex, e.target.value)}
+                                            value={row.crfPorcentaje}
+                                            placeholder="0.00"
+                                        />
+                                    </div>
+                                </TableCell>
+                                <TableCell>
+                                    <Textarea
+                                        value={row.crfComentario}
+                                        onChange={(e) => handleComentarioChange(rowIndex, e.target.value)}
+                                        placeholder="Comentario para el criterio"
                                     />
                                 </TableCell>
-                                {criterio.niveles.map((nivel, nivelIndex) => (
+                                {row.niveles.map((nivel, nivelIndex) => (
                                     <TableCell key={nivelIndex}>
                                         <Textarea
                                             value={nivel.nivelDescripcion}
-                                            onChange={(e) => handleCriteriaChange(rowIndex, `niveles.${nivelIndex}.nivelDescripcion`, e.target.value)}
+                                            onChange={(e) => handleNivelChange(rowIndex, nivelIndex, e.target.value)}
                                             placeholder={`Descripción nivel ${nivel.idNivel}`}
                                         />
                                     </TableCell>
@@ -197,8 +437,8 @@ export default function EditRubric() {
                 </div>
             </CardContent>
             <CardFooter className="flex justify-between">
-                <Button variant="outline" onClick={() => navigate("/rubricas")}>Cancelar</Button>
-                <Button className="bg-[#0a0a6b] hover:bg-[#0a0a9b]">Guardar</Button>
+                <Button onClick={handleCancel} variant="outline">Cancelar</Button>
+                <Button onClick={handleCreate}>Crear</Button>
             </CardFooter>
         </Card>
     );

@@ -38,7 +38,7 @@ public class EvaluationMapper {
         return Evaluation.builder()
                 .id(entity.getId())
                 .enroll(entity.getEnroll().getId())
-                .rubric(entity.getRubric().getId())
+                .rubric(entity.getRubric().getIdRubrica())
                 .description(entity.getDescription())
                 .created_at(entity.getCreated_at())
                 .updated_at(entity.getUpdated_at())
@@ -51,7 +51,7 @@ public class EvaluationMapper {
     public static EvaluationEntity toEntity(Evaluation domain) {
         return EvaluationEntity.builder()
                 .id(domain.getId())
-                .rubric(new RubricEntity(domain.getRubric(), null, null, null, null, null, null, null, null, null, null))
+                .rubric(new RubricEntity(domain.getRubric(), null, null, 0, null, null, null, null, null))
                 .description(domain.getDescription())
                 .created_at(domain.getCreated_at())
                 .updated_at(domain.getUpdated_at())

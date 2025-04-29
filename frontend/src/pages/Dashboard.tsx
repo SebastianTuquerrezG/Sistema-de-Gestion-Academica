@@ -10,11 +10,12 @@ export default function Dashboard() {
     return (
         <DashboardLayout>
             <Routes>
-                <Route index path="/rubricas" element={<ConsultRubric />} />
+                <Route path="/" element={<ConsultRubric />} />
+                <Route path="/rubricas" element={<ConsultRubric />} />
                 <Route path="/rubricas/crear" element={<CreateRubric />} />
                 <Route path="/rubricas/editar/:id" element={<EditRubric />} />
                 <Route path="/rubricas/detalle/:id" element={<RubricDetail />} />
-                <Route path="/evaluaciones" element={<Evaluaciones/>} />
+                <Route path="/evaluaciones" element={<Evaluaciones />} />
 
             </Routes>
         </DashboardLayout>
