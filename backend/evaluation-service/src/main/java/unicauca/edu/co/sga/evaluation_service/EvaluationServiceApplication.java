@@ -7,8 +7,9 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 
 @SpringBootApplication(
 		exclude = {
-				org.springframework.ai.autoconfigure.vectorstore.mariadb.MariaDbStoreAutoConfiguration.class,
-				org.springframework.ai.autoconfigure.vectorstore.mariadb.MariaDbStoreAutoConfiguration.class
+				// Maybe this could create a conflict with the data of the database
+				// because it's store of mariaDB, I think that.s
+				MariaDbStoreAutoConfiguration.class
 		}
 )
 @OpenAPIDefinition

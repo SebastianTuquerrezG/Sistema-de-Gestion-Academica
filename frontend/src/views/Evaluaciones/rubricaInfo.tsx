@@ -4,33 +4,80 @@ import StaticField from "../../components/utils/staticField";
 import "./EvaluacionesCSS/rubricaInfo.css";
 
 interface RubricaInfoProps {
-  estudiantes: string[];
+  materias: string[];
+  rubricas: string[];
   periodos: string[];
-  materia: string;
-  rubricaNombre: string;
-  onSelectEstudiante: (nombre: string) => void;
+  estudiantes: string[];
+
+  onSelectMateria: (materia: string) => void;
+  onSelectRubrica: (rubrica: string) => void;
+  onSelectPeriodo: (periodo: string) => void;
+  onSelectEstudiante: (estudiante: string) => void;
+
+  materiaSeleccionada: string;
+  rubricaSeleccionada: string;
+  periodoSeleccionado: string;
+  estudianteSeleccionado: string;
+  resultadoAprendizaje: string;
 }
 
 const RubricaInfo: React.FC<RubricaInfoProps> = ({
-  estudiantes,
+  materias,
+  rubricas,
   periodos,
-  materia,
-  rubricaNombre,
+  estudiantes,
+  onSelectMateria,
+  onSelectRubrica,
+  onSelectPeriodo,
   onSelectEstudiante,
+  materiaSeleccionada,
+  rubricaSeleccionada,
+  periodoSeleccionado,
+  estudianteSeleccionado,
+  resultadoAprendizaje
 }) => {
   return (
     <div className="rubrica-info">
       <div className="rubrica-info-container">
-        {/* Columna izquierda */}
         <div className="info-block">
-          <Dropdown label="Estudiante" options={estudiantes} onSelect={onSelectEstudiante} />
-          <StaticField label="Rúbrica" value={rubricaNombre} />
+          <Dropdown
+            label="Materia"
+            options={materias}
+            onSelect={onSelectMateria}
+          />
+
+          {materiaSeleccionada && (
+            <Dropdown
+              label="Rúbrica"
+              options={rubricas}
+              onSelect={onSelectRubrica}
+            />
+          )}
+
+          {rubricaSeleccionada && (
+            <StaticField
+              label="Resultado de Aprendizaje"
+              value={resultadoAprendizaje}
+            />
+          )}
         </div>
 
-        {/* Columna derecha */}
         <div className="info-block">
-          <StaticField label="Materia" value={materia} />
-          <Dropdown label="Período" options={periodos} />
+          {rubricaSeleccionada && (
+            <Dropdown
+              label="Período"
+              options={periodos}
+              onSelect={onSelectPeriodo}
+            />
+          )}
+
+          {periodoSeleccionado && (
+            <Dropdown
+              label="Estudiante"
+              options={estudiantes}
+              onSelect={onSelectEstudiante}
+            />
+          )}
         </div>
       </div>
     </div>
