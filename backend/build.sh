@@ -10,9 +10,12 @@ tmux send-keys -t gateway:0 './environment.sh' C-m 'cd gateway' C-m 'mvn spring-
 
 # Iniciar auth-service con perfil prod
 tmux new-session -d -s evaluation-service
-tmux send-keys -t evaluation-service:0 './environment.sh' C-m 'cd evaluation-service' C-m 'mvn spring-boot:run' C-m
+tmux send-keys -t evaluation-service:0 './environment.sh' C-m 'cd evaluation-service' C-m 'mvn spring-boot:run -DskipTests' C-m
 
 # Iniciar audit-service con perfil prod
 tmux new-session -d -s ModuloRubricaCriterio_Hexagonal-service
 tmux send-keys -t ModuloRubricaCriterio_Hexagonal-serv:0 './environment.sh' C-m 'cd ModuloRubricaCriterio_Hexagonal' C-m 'mvn spring-boot:run' C-m
 
+# Iniciar helper-service con perfil prod
+tmux new-session -d -s helper-service
+tmux send-keys -t helper-serv:0 './environment.sh' C-m 'cd helper-service' C-m 'mvn spring-boot:run -DskipTests' C-m

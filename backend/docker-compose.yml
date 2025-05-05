@@ -29,6 +29,38 @@ services:
     networks:
       - backend-network
 
+<<<<<<< Updated upstream
+=======
+  evaluation-service:
+    build: ./evaluation-service
+    ports:
+      - "5002:5002"
+    depends_on:
+      - eureka-server
+      - mariadb
+    environment:
+      - SPRING_DATASOURCE_URL=${SPRING_DATASOURCE_URL}
+      - SPRING_DATASOURCE_USERNAME=${SPRING_DATASOURCE_USERNAME}
+      - SPRING_DATASOURCE_PASSWORD=${SPRING_DATASOURCE_PASSWORD}
+    networks:
+      - backend-network
+
+  helper-service:
+    build: ./helper-service
+    ports:
+      - "5004:5004"
+    depends_on:
+      - eureka-server
+      - mariadb
+      - evaluation-service
+    environment:
+      - SPRING_DATASOURCE_URL=${SPRING_DATASOURCE_URL}
+      - SPRING_DATASOURCE_USERNAME=${SPRING_DATASOURCE_USERNAME}
+      - SPRING_DATASOURCE_PASSWORD=${SPRING_DATASOURCE_PASSWORD}
+    networks:
+      - backend-network
+
+>>>>>>> Stashed changes
   mariadb:
     image: mariadb:10.5
     restart: always
@@ -36,10 +68,24 @@ services:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: unicauca
     ports:
-      - "3306:3306"
+      - "3308:3308"
     networks:
       - backend-network
 
+<<<<<<< Updated upstream
+=======
+  rabbit:
+    image: rabbitmq:3.12-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      - RABBITMQ_DEFAULT_USER=unicauca
+      - RABBITMQ_DEFAULT_PASS=unicaucaRabbit
+    networks:
+      - backend-network
+
+>>>>>>> Stashed changes
 networks:
   backend-network:
     driver: bridge
