@@ -63,7 +63,7 @@ services:
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: root     # This could be changed for another name.
+      MYSQL_DATABASE: unicauca     # This could be changed for another name.
     ports:
       - "3306:3306"  # Maybe this port isn't the original port. Change it.
     networks:
