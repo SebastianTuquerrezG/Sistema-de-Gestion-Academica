@@ -29,8 +29,6 @@ services:
     networks:
       - backend-network
 
-<<<<<<< Updated upstream
-=======
   evaluation-service:
     build: ./evaluation-service
     ports:
@@ -60,7 +58,6 @@ services:
     networks:
       - backend-network
 
->>>>>>> Stashed changes
   mariadb:
     image: mariadb:10.5
     restart: always
@@ -72,8 +69,6 @@ services:
     networks:
       - backend-network
 
-<<<<<<< Updated upstream
-=======
   rabbit:
     image: rabbitmq:3.12-management
     ports:
@@ -85,7 +80,6 @@ services:
     networks:
       - backend-network
 
->>>>>>> Stashed changes
 networks:
   backend-network:
     driver: bridge

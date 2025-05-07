@@ -5,5 +5,7 @@
     <file url="file://$PROJECT_DIR$/backend/ModuloRubricaCriterio_Hexagonal/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/backend/evaluation-service/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/backend/evaluation-service/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/backend/helper-service/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/backend/helper-service/src/main/resources" charset="UTF-8" />
   </component>
 </project>
