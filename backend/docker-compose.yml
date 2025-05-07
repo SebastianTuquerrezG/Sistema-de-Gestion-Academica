@@ -29,8 +29,6 @@ services:
     networks:
       - backend-network
 
-<<<<<<< Updated upstream
-=======
   evaluation-service:
     build: ./evaluation-service
     ports:
@@ -60,20 +58,17 @@ services:
     networks:
       - backend-network
 
->>>>>>> Stashed changes
   mariadb:
     image: mariadb:10.5
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: unicauca
+      MYSQL_DATABASE: root     # This could be changed for another name.
     ports:
-      - "3308:3308"
+      - "3306:3306"  # Maybe this port isn't the original port. Change it.
     networks:
       - backend-network
 
-<<<<<<< Updated upstream
-=======
   rabbit:
     image: rabbitmq:3.12-management
     ports:
@@ -85,7 +80,6 @@ services:
     networks:
       - backend-network
 
->>>>>>> Stashed changes
 networks:
   backend-network:
     driver: bridge
