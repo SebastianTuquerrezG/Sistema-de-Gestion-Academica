@@ -1,0 +1,32 @@
+package unicauca.edu.co.sga.helper_service.application.services;
+
+import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import unicauca.edu.co.sga.helper_service.adapters.messaging.RabbitMQProducer;
+import unicauca.edu.co.sga.helper_service.application.ports.RabbitPort;
+import unicauca.edu.co.sga.helper_service.infrastructure.config.RabbitMQConfig;
+import unicauca.edu.co.sga.helper_service.infrastructure.persistence.entities.EnrollEntity;
+import unicauca.edu.co.sga.helper_service.infrastructure.persistence.entities.EvaluationEntity;
+import unicauca.edu.co.sga.helper_service.infrastructure.persistence.entities.StudentEntity;
+import unicauca.edu.co.sga.helper_service.infrastructure.persistence.entities.TeacherEntity;
+
+@Service
+@Transactional
+@RequiredArgsConstructor
+public class RabbitService implements RabbitPort {
+    private final RabbitMQProducer rabbit;
+
+    // TODO: With those methods we need to use it into each service when they do a CRUD.
+    // EXAMPLE: Teacher create a new tuple, then send with rabbit from TeacherService, the entity.
+
+    @Override
+    public void sendStudent(StudentEntity student) {
+        rabbit.sendMessage(RabbitMQConfig.EXCHANGE, RabbitMQConfig.ROUTING_KEY_ENROLL, student);
+    }
+
+    @Override
+    public void sendTeacher(TeacherEntity teacher) {
+        rabbit.sendMessage(RabbitMQConfig.EXCHANGE, RabbitMQConfig.ROUTING_KEY_ENROLL, teacher);
+    }
+}

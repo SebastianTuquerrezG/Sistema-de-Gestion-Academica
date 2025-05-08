@@ -10,9 +10,8 @@ import unicauca.edu.co.sga.helper_service.infrastructure.config.RabbitMQConfig;
 @RequiredArgsConstructor
 @Slf4j
 public class RabbitMQConsumer {
-
-    @RabbitListener(queues = RabbitMQConfig.QUEUE_STUDENT)
-    public void readStudentData(String message){
-        log.info("Message received: {}", message);
+    @RabbitListener(queues = RabbitMQConfig.QUEUE_ENROLL)
+    public void readEnrollData(String message){
+        log.info("Message from EVALUATION microservice: {}", message);
     }
 }

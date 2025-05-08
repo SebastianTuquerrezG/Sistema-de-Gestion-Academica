@@ -1,10 +1,10 @@
 package unicauca.edu.co.sga.helper_service.infrastructure.persistence.entities;
 
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import jakarta.persistence.*;
 import unicauca.edu.co.sga.helper_service.domain.enums.GeneralEnums;
 
 @Entity

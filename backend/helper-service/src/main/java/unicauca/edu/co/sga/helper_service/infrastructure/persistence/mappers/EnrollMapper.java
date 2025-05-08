@@ -2,8 +2,8 @@ package unicauca.edu.co.sga.helper_service.infrastructure.persistence.mappers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import unicauca.edu.co.sga.helper_service.application.dto.response.EnrollResponseDTO;
 import unicauca.edu.co.sga.helper_service.application.dto.request.EnrollRequestDTO;
+import unicauca.edu.co.sga.helper_service.application.dto.response.EnrollResponseDTO;
 import unicauca.edu.co.sga.helper_service.domain.models.Enroll;
 import unicauca.edu.co.sga.helper_service.infrastructure.persistence.entities.CourseEntity;
 import unicauca.edu.co.sga.helper_service.infrastructure.persistence.entities.EnrollEntity;

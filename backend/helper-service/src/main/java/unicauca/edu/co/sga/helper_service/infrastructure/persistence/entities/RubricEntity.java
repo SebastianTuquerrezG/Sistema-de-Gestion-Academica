@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 import unicauca.edu.co.sga.helper_service.domain.enums.GeneralEnums;
-import unicauca.edu.co.sga.helper_service.infrastructure.persistence.entities.CriteriaEntity;
 
 import java.util.List;
 import java.util.Set;

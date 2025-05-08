@@ -3,6 +3,7 @@ package unicauca.edu.co.sga.helper_service.infrastructure.persistence.entities;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
+import unicauca.edu.co.sga.helper_service.infrastructure.persistence.entities.StudentEntity;
 
 @Entity
 @Data

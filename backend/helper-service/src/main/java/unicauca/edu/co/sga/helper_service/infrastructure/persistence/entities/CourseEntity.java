@@ -2,9 +2,10 @@ package unicauca.edu.co.sga.helper_service.infrastructure.persistence.entities;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import lombok.*;
 import jakarta.persistence.*;
-import unicauca.edu.co.sga.helper_service.infrastructure.persistence.entities.SubjectEntity;
+import lombok.*;
+import unicauca.edu.co.sga.helper_service.infrastructure.persistence.entities.EnrollEntity;
+import unicauca.edu.co.sga.helper_service.infrastructure.persistence.entities.TeacherEntity;
 
 import java.util.Set;
 

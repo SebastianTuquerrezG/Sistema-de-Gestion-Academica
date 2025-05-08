@@ -1,11 +1,13 @@
 package unicauca.edu.co.sga.helper_service.infrastructure.persistence.entities;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-import jakarta.persistence.*;
 import unicauca.edu.co.sga.helper_service.domain.enums.GeneralEnums;
+import unicauca.edu.co.sga.helper_service.infrastructure.persistence.entities.CourseEntity;
+import unicauca.edu.co.sga.helper_service.infrastructure.persistence.entities.RubricEntity;
 
 import java.util.Date;
 import java.util.Set;

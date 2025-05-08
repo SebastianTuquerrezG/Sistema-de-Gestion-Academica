@@ -5,12 +5,12 @@ import org.springframework.stereotype.Component;
 import unicauca.edu.co.sga.helper_service.application.dto.request.CourseRequestDTO;
 import unicauca.edu.co.sga.helper_service.application.dto.response.CourseResponseDTO;
 import unicauca.edu.co.sga.helper_service.domain.models.Course;
-import unicauca.edu.co.sga.helper_service.infrastructure.persistence.repositories.EnrollRepository;
 import unicauca.edu.co.sga.helper_service.infrastructure.persistence.entities.CourseEntity;
-import unicauca.edu.co.sga.helper_service.infrastructure.persistence.entities.RAEntity;
-import unicauca.edu.co.sga.helper_service.infrastructure.persistence.entities.SubjectEntity;
-import unicauca.edu.co.sga.helper_service.infrastructure.persistence.entities.EnrollEntity;
 import unicauca.edu.co.sga.helper_service.infrastructure.persistence.entities.TeacherEntity;
+import unicauca.edu.co.sga.helper_service.infrastructure.persistence.entities.EnrollEntity;
+import unicauca.edu.co.sga.helper_service.infrastructure.persistence.entities.SubjectEntity;
+import unicauca.edu.co.sga.helper_service.infrastructure.persistence.entities.RAEntity;
+import unicauca.edu.co.sga.helper_service.infrastructure.persistence.repositories.EnrollRepository;
 import unicauca.edu.co.sga.helper_service.infrastructure.persistence.repositories.RARepository;
 import unicauca.edu.co.sga.helper_service.infrastructure.persistence.repositories.SubjectRepository;
 import unicauca.edu.co.sga.helper_service.infrastructure.persistence.repositories.TeacherRepository;
@@ -31,8 +31,7 @@ public class CourseMapper {
     public CourseMapper(SubjectRepository subjectRepository,
                         TeacherRepository teacherRepository,
                         RARepository raRepository,
-                        EnrollRepository enrollRepository
-                        ) {
+                        EnrollRepository enrollRepository) {
         CourseMapper.subjectRepository = subjectRepository;
         CourseMapper.teacherRepository = teacherRepository;
         CourseMapper.raRepository = raRepository;

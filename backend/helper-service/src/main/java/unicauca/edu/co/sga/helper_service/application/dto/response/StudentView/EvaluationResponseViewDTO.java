@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import unicauca.edu.co.sga.helper_service.application.dto.response.StudentView.CalificationResponseViewDTO;
+import unicauca.edu.co.sga.helper_service.application.dto.response.StudentView.CriteriaResponseViewDTO;
 
 import java.util.List;
 

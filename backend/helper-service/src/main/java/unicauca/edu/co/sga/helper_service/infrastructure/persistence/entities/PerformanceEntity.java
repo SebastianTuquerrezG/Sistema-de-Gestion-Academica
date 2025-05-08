@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import unicauca.edu.co.sga.helper_service.infrastructure.persistence.entities.CriteriaEntity;
 
 @Entity
 @Data

@@ -6,7 +6,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import unicauca.edu.co.sga.helper_service.domain.enums.GeneralEnums;
 import unicauca.edu.co.sga.helper_service.domain.enums.TeacherEnums;
-import unicauca.edu.co.sga.helper_service.domain.models.Course;
 
 import java.util.Set;
 

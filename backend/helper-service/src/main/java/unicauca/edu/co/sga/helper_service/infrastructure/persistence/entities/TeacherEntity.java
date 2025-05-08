@@ -1,11 +1,10 @@
 package unicauca.edu.co.sga.helper_service.infrastructure.persistence.entities;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import lombok.*;
 import jakarta.persistence.*;
+import lombok.*;
 import unicauca.edu.co.sga.helper_service.domain.enums.GeneralEnums;
 import unicauca.edu.co.sga.helper_service.domain.enums.TeacherEnums;
-import unicauca.edu.co.sga.helper_service.infrastructure.persistence.entities.CourseEntity;
 
 import java.util.Set;
 

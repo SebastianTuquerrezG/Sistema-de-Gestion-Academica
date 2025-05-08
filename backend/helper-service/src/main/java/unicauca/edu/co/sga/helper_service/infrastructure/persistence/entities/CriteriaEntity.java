@@ -8,7 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import unicauca.edu.co.sga.helper_service.infrastructure.persistence.entities.PerformanceEntity;
+import unicauca.edu.co.sga.helper_service.infrastructure.persistence.entities.RubricEntity;
 
 import java.util.List;
 

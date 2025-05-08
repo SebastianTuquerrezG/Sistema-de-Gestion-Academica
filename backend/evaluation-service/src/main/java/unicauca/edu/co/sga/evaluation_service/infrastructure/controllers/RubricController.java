@@ -8,6 +8,8 @@ import unicauca.edu.co.sga.evaluation_service.application.ports.RubricPort;
 
 import java.util.List;
 
+// TODO: THIS CONTROLLER WOULD BE CHANGED FOR SHOW RUBRICS INSTEAD OF MANAGE IT.
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/rubrics")

@@ -1,4 +1,4 @@
-package unicauca.edu.co.sga.helper_service.domain.models;
+package unicauca.edu.co.sga.evaluation_service.domain.models;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,6 +9,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class StudentRabbit {
+public class EnrollRabbit {
     private String message;
 }

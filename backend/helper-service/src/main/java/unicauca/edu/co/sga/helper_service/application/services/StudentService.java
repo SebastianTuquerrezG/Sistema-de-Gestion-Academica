@@ -3,15 +3,15 @@ package unicauca.edu.co.sga.helper_service.application.services;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import unicauca.edu.co.sga.helper_service.application.dto.request.StudentRequestDTO;
-//import unicauca.edu.co.sga.helper_service.application.dto.response.EnrollResponseDTO;
+import unicauca.edu.co.sga.helper_service.application.dto.response.EnrollResponseDTO;
 import unicauca.edu.co.sga.helper_service.application.dto.response.StudentResponseDTO;
 import unicauca.edu.co.sga.helper_service.application.ports.StudentPort;
 import unicauca.edu.co.sga.helper_service.domain.enums.GeneralEnums;
 import unicauca.edu.co.sga.helper_service.domain.models.Student;
 import unicauca.edu.co.sga.helper_service.infrastructure.persistence.entities.StudentEntity;
-//import unicauca.edu.co.sga.helper_service.infrastructure.persistence.mappers.EnrollMapper;
+import unicauca.edu.co.sga.helper_service.infrastructure.persistence.mappers.EnrollMapper;
 import unicauca.edu.co.sga.helper_service.infrastructure.persistence.mappers.StudentMapper;
-//import unicauca.edu.co.sga.helper_service.infrastructure.persistence.repositories.EnrollRepository;
+import unicauca.edu.co.sga.helper_service.infrastructure.persistence.repositories.EnrollRepository;
 import unicauca.edu.co.sga.helper_service.infrastructure.persistence.repositories.StudentRepository;
 
 import java.util.List;
@@ -22,8 +22,8 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class StudentService implements StudentPort {
     private final StudentRepository studentRepository;
-    //private final EnrollRepository enrollRepository;
-    //private final EnrollMapper enrollMapper;
+    private final EnrollRepository enrollRepository;
+    private final EnrollMapper enrollMapper;
     private final StudentMapper studentMapper;
 
     @Override
@@ -99,18 +99,17 @@ public class StudentService implements StudentPort {
 
     @Override
     public List<StudentResponseDTO> getStudentsByCourseAndPeriod(Long courseId, String period) {
-//        List<EnrollResponseDTO> enrollsByCourseAndPeriod = enrollRepository.findByCourseId(courseId).stream()
-//                .filter(enroll -> enroll.getSemester().equals(period))
-//                .map(enrollMapper::toModel)
-//                .map(enrollMapper::toDTO)
-//                .toList();
-//        List<Long> studentIds = enrollsByCourseAndPeriod.stream()
-//                .map(EnrollResponseDTO::getStudent)
-//                .toList();
-//        return studentRepository.findAllById(studentIds).stream()
-//                .map(StudentMapper::toModel)
-//                .map(StudentMapper::toDTO)
-//                .collect(Collectors.toList());
-        return null;
+        List<EnrollResponseDTO> enrollsByCourseAndPeriod = enrollRepository.findByCourseId(courseId).stream()
+                .filter(enroll -> enroll.getSemester().equals(period))
+                .map(enrollMapper::toModel)
+                .map(enrollMapper::toDTO)
+                .toList();
+        List<Long> studentIds = enrollsByCourseAndPeriod.stream()
+                .map(EnrollResponseDTO::getStudent)
+                .toList();
+        return studentRepository.findAllById(studentIds).stream()
+                .map(StudentMapper::toModel)
+                .map(StudentMapper::toDTO)
+                .collect(Collectors.toList());
     }
 }

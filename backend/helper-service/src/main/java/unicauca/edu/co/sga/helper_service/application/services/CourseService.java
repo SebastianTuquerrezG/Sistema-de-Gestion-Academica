@@ -69,7 +69,7 @@ public class CourseService implements CoursePort {
             courseEntity.setTeacher(entityExist.get().getTeacher());
             courseEntity.setSubject(entityExist.get().getSubject());
             courseEntity.setRa(entityExist.get().getRa());
-            //courseEntity.setEnroll(entityExist.get().getEnroll());
+            courseEntity.setEnroll(entityExist.get().getEnroll());
             courseRepository.save(courseEntity);
             return true;
         }

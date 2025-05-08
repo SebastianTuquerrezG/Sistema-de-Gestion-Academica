@@ -18,10 +18,10 @@ public class RabbitMQConfig {
     public static final String EXCHANGE = "messaging_exchange";
 
     // Variables for rabbit publisher
-    public static final String ROUTING_KEY_STUDENT = "student_routing_key";
+    public static final String ROUTING_KEY_ENROLL = "enroll_routing_key";
 
     // Variables for rabbit consumer
-    public static final String QUEUE_STUDENT = "student_queue";
+    public static final String QUEUE_ENROLL = "enroll_queue";
 
     // Serialization for JSON
     @Bean
@@ -37,10 +37,10 @@ public class RabbitMQConfig {
         return template;
     }
 
-    // Method for consumer
+    // For Consumer
     @Bean
-    public Queue queueStudent() {
-        return new Queue(QUEUE_STUDENT, false);
+    public Queue queueEnroll(){
+        return new Queue(QUEUE_ENROLL, false);
     }
 
     // This method is in both Publisher and Consumer
@@ -49,24 +49,10 @@ public class RabbitMQConfig {
         return new TopicExchange(EXCHANGE);
     }
 
-    // Method for consumer
-    @Bean
-    public Binding bindingStudent(Queue queueStudent, TopicExchange exchange) {
-        return BindingBuilder.bind(queueStudent).to(exchange).with(ROUTING_KEY_STUDENT);
-    }
 
-//    @Bean
-//    public SimpleMessageListenerContainer container(ConnectionFactory connectionFactory,
-//                                                    MessageListenerAdapter listenerAdapter) {
-//        SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
-//        container.setConnectionFactory(connectionFactory);
-//        container.setQueueNames(QUEUE_STUDENT);
-//        container.setMessageListener(listenerAdapter);
-//        return container;
-//    }
-//
-//    @Bean
-//    public MessageListenerAdapter listenerAdapter(Receiver receiver) {
-//        return new MessageListenerAdapter(receiver, "receiveMessage");
-//    }
+    // For Consumer
+    @Bean
+    public Binding bindingEnroll(Queue queueEnroll, TopicExchange exchange){
+        return BindingBuilder.bind(queueEnroll).to(exchange).with(ROUTING_KEY_ENROLL);
+    }
 }

@@ -14,9 +14,9 @@ public class RabbitMQProducer {
     private final RabbitTemplate rabbitTemplate;
     private final RabbitMQReceive rabbitMQReceive;
 
-    public void sendMessage(String message){
+    public void sendMessage(String exchange, String routing_key, Object message){
         System.out.println("Sending message...");
-        rabbitTemplate.convertAndSend(RabbitMQConfig.EXCHANGE, RabbitMQConfig.ROUTING_KEY_STUDENT, message);
+        rabbitTemplate.convertAndSend(exchange, routing_key, message);
         try {
             rabbitMQReceive.getLatch().await(10000, TimeUnit.MILLISECONDS);
         } catch (InterruptedException e) {
