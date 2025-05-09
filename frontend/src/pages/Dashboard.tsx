@@ -5,6 +5,7 @@ import EditRubric from "@/components/rubrics/EditRubric";
 import ConsultRubric from "@/components/rubrics/ConsultRubric";
 import RubricDetail from "@/components/rubrics/RubricDetail";
 import Evaluaciones from "@/views/Evaluaciones/Evaluation";
+import Estadisticas from "@/views/Estadisticas/Estadisticas";
 
 export default function Dashboard() {
     return (
@@ -16,6 +17,7 @@ export default function Dashboard() {
                 <Route path="/rubricas/editar/:id" element={<EditRubric />} />
                 <Route path="/rubricas/detalle/:id" element={<RubricDetail />} />
                 <Route path="/evaluaciones" element={<Evaluaciones />} />
+                <Route path="/estadisticas" element={<Estadisticas />} />
 
             </Routes>
         </DashboardLayout>
