@@ -3,8 +3,6 @@ package unicauca.edu.co.sga.helper_service.infrastructure.config;
 import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
-import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
-import org.springframework.amqp.rabbit.listener.adapter.MessageListenerAdapter;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.context.annotation.Bean;
@@ -19,9 +17,11 @@ public class RabbitMQConfig {
 
     // Variables for rabbit publisher
     public static final String ROUTING_KEY_ENROLL = "enroll_routing_key";
+    public static final String ROUTING_KEY_EVALUATION = "evaluation_routing_key";
 
     // Variables for rabbit consumer
     public static final String QUEUE_ENROLL = "enroll_queue";
+    public static final String QUEUE_EVALUATION = "evaluation_queue";
 
     // Serialization for JSON
     @Bean
@@ -43,6 +43,11 @@ public class RabbitMQConfig {
         return new Queue(QUEUE_ENROLL, false);
     }
 
+    @Bean
+    public Queue queueEvaluation(){
+        return new Queue(QUEUE_EVALUATION, false);
+    }
+
     // This method is in both Publisher and Consumer
     @Bean
     public TopicExchange topicExchange() {
@@ -54,5 +59,10 @@ public class RabbitMQConfig {
     @Bean
     public Binding bindingEnroll(Queue queueEnroll, TopicExchange exchange){
         return BindingBuilder.bind(queueEnroll).to(exchange).with(ROUTING_KEY_ENROLL);
+    }
+
+    @Bean
+    public Binding bindingEvaluation(Queue queueEvaluation, TopicExchange exchange){
+        return BindingBuilder.bind(queueEvaluation).to(exchange).with(ROUTING_KEY_EVALUATION);
     }
 }

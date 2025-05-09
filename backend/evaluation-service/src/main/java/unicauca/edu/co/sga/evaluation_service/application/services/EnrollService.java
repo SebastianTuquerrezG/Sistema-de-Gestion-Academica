@@ -28,6 +28,9 @@ public class EnrollService implements EnrollPort {
     private final CourseRepository courseRepository;
     private final EnrollMapper enrollMapper;
 
+    //Rabbit communication
+    private final RabbitService rabbitService;
+
     @Override
     public List<EnrollResponseDTO> getEnrolls() {
         return enrollRepository.findAll().stream()
@@ -46,6 +49,11 @@ public class EnrollService implements EnrollPort {
     @Override
     public EnrollResponseDTO saveEnroll(EnrollRequestDTO enroll) {
         EnrollEntity enrollEntity = enrollMapper.toEntity(enrollMapper.toModel(enroll));
+
+        // RABBIT INTEGRATION
+        rabbitService.sendEnroll(enrollEntity);
+
+
         return enrollMapper.toDTO(enrollMapper.toModel(enrollRepository.save(enrollEntity)));
     }
 

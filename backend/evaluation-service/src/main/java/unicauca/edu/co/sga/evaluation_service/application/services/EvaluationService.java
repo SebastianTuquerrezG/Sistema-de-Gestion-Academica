@@ -31,6 +31,9 @@ public class EvaluationService implements EvaluationPort {
     private final EnrollRepository enrollRepository;
     private final RubricRepository rubricRepository;
 
+    //Rabbit communication
+    private final RabbitService rabbitService;
+
     @Transactional
     public EvaluationResponseDTO saveEvaluation(EvaluationRequestDTO evaluationRequestDTO) {
         if (evaluationRequestDTO.getScore() == null || evaluationRequestDTO.getEvidenceUrl() == null) {
@@ -65,6 +68,9 @@ public class EvaluationService implements EvaluationPort {
         );
         evaluationEntity.setScore(evaluationRequestDTO.getScore());
         evaluationEntity.setEvidenceUrl(evaluationRequestDTO.getEvidenceUrl());
+
+        // RABBIT INTEGRATION
+        rabbitService.sendEvaluation(evaluationEntity);
 
         return EvaluationMapper.toDTO(
                 EvaluationMapper.toModel(

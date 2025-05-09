@@ -25,6 +25,6 @@ public class RabbitService implements RabbitPort {
 
     @Override
     public void sendEvaluation(EvaluationEntity evaluation) {
-        rabbit.sendMessage(RabbitMQConfig.EXCHANGE, RabbitMQConfig.ROUTING_KEY_ENROLL, evaluation);
+        rabbit.sendMessage(RabbitMQConfig.EXCHANGE, RabbitMQConfig.ROUTING_KEY_EVALUATION, evaluation);
     }
 }

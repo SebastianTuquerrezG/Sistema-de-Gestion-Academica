@@ -15,6 +15,7 @@ public class RabbitMQConfig {
 
     // Variables for rabbit publisher
     public static final String ROUTING_KEY_ENROLL = "enroll_routing_key";
+    public static final String ROUTING_KEY_EVALUATION = "evaluation_routing_key";
 
 
     // Serialization for JSON
