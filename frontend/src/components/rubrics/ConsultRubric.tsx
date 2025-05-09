@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
-import { Search, Plus, Pencil, Trash2 } from "lucide-react";
+import {Search, Plus, Pencil, Trash2, Share2} from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useNavigate } from "react-router-dom";
 import { getAllRubrics } from "@/services/rubricService";
@@ -56,6 +56,11 @@ export default function ConsultarRubrica() {
         }else{
             alert("Error deleting rubric");
         }
+    }
+
+    const handleShare = async (id: string) => {
+        alert("Share realizado: " + id);
+
     }
 
 
@@ -115,6 +120,9 @@ export default function ConsultarRubrica() {
                                             </Button>
                                             <Button variant="ghost" size="icon" className="h-8 w-8 text-orange-500 hover:text-orange-600" onClick={() => handleDelete(rubric.idRubrica)}>
                                                 <Trash2 className="h-4 w-4" />
+                                            </Button>
+                                            <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => handleShare(rubric.idRubrica)}>
+                                                <Share2 className="h-4 w-4" />
                                             </Button>
                                         </div>
                                     </td>

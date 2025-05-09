@@ -18,7 +18,6 @@ export default function Dashboard() {
                 <Route path="/rubricas/detalle/:id" element={<RubricDetail />} />
                 <Route path="/evaluaciones" element={<Evaluaciones />} />
                 <Route path="/estadisticas" element={<Estadisticas />} />
-
             </Routes>
         </DashboardLayout>
     );
