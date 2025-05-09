@@ -6,19 +6,39 @@ import {
   submitEvaluation,
   submitCalificationRegister,
   getEvaluationByEnroll,
+  getCalificationsByEvaluationId,
   updateCriterios,
 } from "../../services/evaluationService";
-import { Criterio, NotificationType, COLORS_BASE } from "./types";
-import { getNivel, calculateTotalScore } from "./utils/evaluationUtils";
+
+type NotificationType = {
+  type: "error" | "info";
+  title: string;
+  message: string;
+};
+
+interface Descriptor {
+  nivel: string;
+  texto: string;
+}
+
+interface Criterio {
+  idCriterio: number;
+  criterio: string;
+  porcentaje: number;
+  descriptores: Descriptor[];
+}
 
 interface Props {
   criterios: Criterio[];
-  enrollId: number;
-  rubricaId: number;
-  estudiante: string;
 }
 
-const EvaluationTable: React.FC<Props> = ({ criterios, enrollId, rubricaId, estudiante }) => {
+const EvaluationTable: React.FC<Props> = ({ criterios }) => {
+  const data = criterios;
+
+  // Extraer niveles únicos dinámicamente
+  const nivelesUnicos = Array.from(
+    new Set(data.flatMap((c) => c.descriptores.map((d) => d.nivel)))
+  );
   const [valores, setValores] = useState<(number | "")[]>(
     Array(criterios.length).fill("")
   );
@@ -27,15 +47,14 @@ const EvaluationTable: React.FC<Props> = ({ criterios, enrollId, rubricaId, estu
   );
   const [evaluationId, setEvaluationId] = useState<number | null>(null);
   const [disabledInputs, setDisabledInputs] = useState<boolean>(false);
-  const [notification, setNotification] = useState<NotificationType | null>(null);
-  const [hasChanges, setHasChanges] = useState<boolean>(false);
 
   const nivelesUnicos = Array.from(
     new Set(criterios.flatMap((c) => c.descriptores.map((d) => d.nivel)))
   );
+  const coloresBase = ["#2e2ebe", "#22229e", "#13137c", "#0d0d66", "#050545"];
   const rangos = nivelesUnicos.map((nivel, index) => ({
     nivel,
-    color: COLORS_BASE[index % COLORS_BASE.length],
+    color: coloresBase[index % coloresBase.length],
   }));
 
   useEffect(() => {
@@ -45,13 +64,6 @@ const EvaluationTable: React.FC<Props> = ({ criterios, enrollId, rubricaId, estu
         if (evaluation) {
           setEvaluationId(evaluation.id);
           setDisabledInputs(true);
-        }
-      } catch (error) {
-        // Manejar error si es necesario
-      }
-    };
-    checkExistingEvaluation();
-  }, [enrollId]);
 
   const handleChange = (index: number, event: React.ChangeEvent<HTMLInputElement>) => {
     let value = event.target.value;
@@ -69,23 +81,28 @@ const EvaluationTable: React.FC<Props> = ({ criterios, enrollId, rubricaId, estu
         copy[index] = numericValue;
         return copy;
       });
-      setHasChanges(true);
     }
+  };
+
+  const getNivel = (valor: number) => {
+    if (valor >= 4.0) return "Nivel 3";
+    if (valor >= 3.0) return "Nivel 2";
+    return "Nivel 1";
   };
 
   const handleNivelClick = (
     index: number,
     nivel: string,
-    descriptores: Criterio["descriptores"]
+    descriptores: Descriptor[]
   ) => {
     const descriptor = descriptores.find((d) => d.nivel === nivel);
     if (descriptor) {
+      const maxCalificacion = descriptor.superior;
       setValores((prev) => {
         const copy = [...prev];
-        copy[index] = descriptor.superior;
+        copy[index] = maxCalificacion;
         return copy;
       });
-      setHasChanges(true);
     }
   };
 
@@ -106,7 +123,10 @@ const EvaluationTable: React.FC<Props> = ({ criterios, enrollId, rubricaId, estu
       return;
     }
 
-    const totalScore = calculateTotalScore(valores, criterios);
+    const totalScore = criterios.reduce(
+      (acc, row, i) => acc + (valores[i] || 0) * (row.porcentaje / 100),
+      0
+    );
     const evaluationPayload = {
       enroll: enrollId,
       rubric: rubricaId,
@@ -120,8 +140,27 @@ const EvaluationTable: React.FC<Props> = ({ criterios, enrollId, rubricaId, estu
       const evaluation = await submitEvaluation(evaluationPayload);
 
       await Promise.all(
-        criterios.map((criterio, index) =>
-          updateCriterios(
+        criterios.map((criterio, index) => {
+          console.log(
+            "Datos que se van a enviar para el criterio:",
+            {
+              crfDescripcion: criterio.criterio,
+              crfPorcentaje: criterio.porcentaje,
+              crfNota: valores[index], // Nota del criterio
+              crfComentario: comentarios[index] || "", // Comentario, vacío si no hay
+              niveles: criterio.descriptores.map((descriptor) => ({
+                idCriterio: criterio.idCriterio, // Aquí pasas el idCriterio de este criterio
+                nivelDescripcion: descriptor.nivelDescripcion, // Descripción del nivel
+                rangoNota: `${descriptor.inferior} - ${descriptor.superior}`, // Rango de nota
+              })),
+              idRubrica: rubricaId, // ID de la rúbrica
+            },
+            "criterioId:",
+            criterio.idCriterio
+          );
+
+          // Llamada a la función updateCriterios para cada criterio
+          return updateCriterios(
             {
               crfDescripcion: criterio.criterio,
               crfPorcentaje: criterio.porcentaje / 100,
@@ -132,11 +171,11 @@ const EvaluationTable: React.FC<Props> = ({ criterios, enrollId, rubricaId, estu
                 nivelDescripcion: descriptor.nivelDescripcion,
                 rangoNota: `${descriptor.inferior} - ${descriptor.superior}`,
               })),
-              idRubrica: Number(rubricaId),
+              idRubrica: Number(rubricaId), // ID de la rúbrica
             },
-            criterio.idCriterio
-          )
-        )
+            criterio.idCriterio // ID del criterio a actualizar
+          );
+        })
       );
 
       await Promise.all(
@@ -144,7 +183,7 @@ const EvaluationTable: React.FC<Props> = ({ criterios, enrollId, rubricaId, estu
           submitCalificationRegister({
             calification: valores[index],
             message: comentarios[index] || "",
-            level: getNivel(Number(valores[index])),
+            level: getNivel(Number(valores[index]), criterio.descriptores),
             evaluationId: evaluation.id,
           })
         )
@@ -156,7 +195,6 @@ const EvaluationTable: React.FC<Props> = ({ criterios, enrollId, rubricaId, estu
         message: "Evaluación guardada correctamente.",
       });
       setDisabledInputs(true);
-      setHasChanges(false);
     } catch (error) {
       setNotification({
         type: "error",
@@ -164,6 +202,24 @@ const EvaluationTable: React.FC<Props> = ({ criterios, enrollId, rubricaId, estu
         message: "No se pudo guardar la evaluación.",
       });
     }
+
+    const evaluacion = data.map((criterio, index) => ({
+      criterio: criterio.criterio,
+      porcentaje: criterio.porcentaje,
+      calificacion: valores[index] || 0,
+      comentario: comentarios[index],
+      nivel: getNivel(Number(valores[index]) || 0),
+    }));
+
+    console.log("Evaluación enviada al backend:", evaluacion);
+
+    setNotification({
+      type: "info",
+      title: "Éxito",
+      message: "La evaluación fue guardada correctamente.",
+    });
+
+    setHasChanges(false);
   };
 
   useEffect(() => {
@@ -278,7 +334,6 @@ const EvaluationTable: React.FC<Props> = ({ criterios, enrollId, rubricaId, estu
                           const copy = [...comentarios];
                           copy[index] = e.target.value;
                           setComentarios(copy);
-                          setHasChanges(true);
                         }
                       }}
                       disabled={disabledInputs}
@@ -303,7 +358,15 @@ const EvaluationTable: React.FC<Props> = ({ criterios, enrollId, rubricaId, estu
             <td>TOTAL</td>
             <td>
               {valores.every((v) => v !== "")
-                ? calculateTotalScore(valores, criterios).toFixed(2)
+                ? criterios
+                    .reduce(
+                      (acc, row, i) =>
+                        typeof valores[i] === "number"
+                          ? acc + valores[i]! * (row.porcentaje / 100)
+                          : acc,
+                      0
+                    )
+                    .toFixed(2)
                 : "—"}
             </td>
           </tr>
