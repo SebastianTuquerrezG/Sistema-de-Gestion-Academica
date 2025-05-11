@@ -2,13 +2,44 @@
 
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
-import {Search, Plus, Pencil, Trash2, Share2} from "lucide-react";
+import { Search, Plus, Pencil, Trash2, Share2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useNavigate } from "react-router-dom";
 import { getAllRubrics } from "@/services/rubricService";
+import Notification from "@/components/notifications/notification";
 import { RubricInterface } from "@/interfaces/RubricInterface";
 import { deleteRubric } from "@/services/rubricService";
 
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from "@/components/ui/dialog"
+
+import { z } from "zod"
+import { useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
+import {
+    Form,
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
+} from "@/components/ui/form"
+
+const ShareSchema = z.object({
+    email: z.string().email("Correo no válido"),
+})
+
+type NotificationType = {
+    type: "error" | "info" | "success";
+    title: string;
+    message: string;
+};
 
 export default function ConsultarRubrica() {
     const [searchTerm, setSearchTerm] = useState("");
@@ -18,7 +49,13 @@ export default function ConsultarRubrica() {
 
 
     useEffect(() => {
-        getAllRubrics()
+        fetch('/rubricas.json')
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error('Error al cargar el archivo JSON');
+                }
+                return response.json();
+            })
             .then((data) => {
                 const activeRubrics = data.filter((rubric: RubricInterface) => rubric.estado !== "INACTIVO");
                 setRubrics(activeRubrics);
@@ -26,11 +63,20 @@ export default function ConsultarRubrica() {
             .catch((error) => console.error(error));
     }, []);
 
+    /* useEffect(() => {
+        getAllRubrics()
+            .then((data) => {
+                const activeRubrics = data.filter((rubric: RubricInterface) => rubric.estado !== "INACTIVO");
+                setRubrics(activeRubrics);
+            })
+            .catch((error) => console.error(error));
+    }, []); */
+
     const filteredRubrics = rubrics.filter(
         (rubric) =>
             rubric.nombreRubrica.toLowerCase().includes(searchTerm.toLowerCase()) ||
             rubric.idRubrica.toLowerCase().includes(searchTerm.toLowerCase())
-     /*       rubric.materia.toLowerCase().includes(searchTerm.toLowerCase())*/
+        /*       rubric.materia.toLowerCase().includes(searchTerm.toLowerCase())*/
     );
 
     // Funcion para navegar a la pagina de editar
@@ -51,18 +97,21 @@ export default function ConsultarRubrica() {
     // Function to delete a rubric
     const handleDelete = async (id: string) => {
         const success = await deleteRubric(id);
-        if(success) {
+        if (success) {
             setRubrics(rubrics.filter(rubric => rubric.idRubrica !== id));
-        }else{
+        } else {
             alert("Error deleting rubric");
         }
     }
 
-    const handleShare = async (id: string) => {
-        alert("Share realizado: " + id);
+    const form = useForm<z.infer<typeof ShareSchema>>({
+        resolver: zodResolver(ShareSchema),
+        defaultValues: {
+            email: "",
+        },
+    });
 
-    }
-
+    const [notification, setNotification] = useState<NotificationType | null>(null);
 
     return (
         <div>
@@ -121,9 +170,102 @@ export default function ConsultarRubrica() {
                                             <Button variant="ghost" size="icon" className="h-8 w-8 text-orange-500 hover:text-orange-600" onClick={() => handleDelete(rubric.idRubrica)}>
                                                 <Trash2 className="h-4 w-4" />
                                             </Button>
-                                            <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => handleShare(rubric.idRubrica)}>
-                                                <Share2 className="h-4 w-4" />
-                                            </Button>
+                                            <Dialog>
+                                                <DialogTrigger>
+                                                    <Button variant="ghost" size="icon" className="h-8 w-8">
+                                                        <Share2 className="h-4 w-4" />
+                                                    </Button>
+                                                </DialogTrigger>
+                                                <DialogContent>
+                                                    <DialogHeader>
+                                                        <DialogTitle>Compartir Rubrica</DialogTitle>
+                                                        <DialogDescription>
+                                                            Selecciona una opción para compartir esta rúbrica.
+                                                        </DialogDescription>
+                                                    </DialogHeader>
+                                                    <div className="space-y-6">
+                                                        {/* Compartir con una persona específica */}
+                                                        <div>
+                                                            <h3 className="text-sm font-medium text-gray-700">Compartir con una persona</h3>
+
+                                                            <Form {...form}>
+                                                                <form
+                                                                    onSubmit={form.handleSubmit((data) => {
+                                                                        setNotification({
+                                                                            type: "success",
+                                                                            title: "Compartido",
+                                                                            message: `Rúbrica compartida con ${data.email}`,
+                                                                        });
+                                                                        form.reset();
+                                                                    })}
+                                                                    className="space-y-4 mt-2"
+                                                                >
+                                                                    <FormField
+                                                                        control={form.control}
+                                                                        name="email"
+                                                                        render={({ field }) => (
+                                                                            <FormItem>
+                                                                                <FormLabel>Correo</FormLabel>
+                                                                                <FormControl>
+                                                                                    <Input placeholder="usuario@unicauca.com" {...field} />
+                                                                                </FormControl>
+                                                                                <FormMessage />
+                                                                            </FormItem>
+                                                                        )}
+                                                                    />
+                                                                    <div className="flex gap-2">
+                                                                        <Button type="button" variant="outline" onClick={() => form.reset()}>
+                                                                            Cancelar
+                                                                        </Button>
+                                                                        <Button type="submit">Compartir</Button>
+                                                                    </div>
+                                                                </form>
+                                                            </Form>
+                                                        </div>
+
+                                                        {/* Compartir públicamente */}
+                                                        <div>
+                                                            <h3 className="text-sm font-medium text-gray-700">Hacer público</h3>
+                                                            <p className="text-sm text-gray-500">
+                                                                Esta opción hará que la rúbrica sea accesible para todos.
+                                                            </p>
+                                                            <div className="mt-4 flex gap-2">
+                                                                <Button
+                                                                    variant="outline"
+                                                                    onClick={() =>
+                                                                        setNotification({
+                                                                            type: "info",
+                                                                            title: "Cancelado",
+                                                                            message: "Acción cancelada",
+                                                                        })
+                                                                    }
+                                                                >
+                                                                    Cancelar
+                                                                </Button>
+                                                                <Button
+                                                                    onClick={() =>
+                                                                        setNotification({
+                                                                            type: "success",
+                                                                            title: "Hecho Público",
+                                                                            message: "Rúbrica hecha pública exitosamente",
+                                                                        })
+                                                                    }
+                                                                >
+                                                                    Hacer Público
+                                                                </Button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </DialogContent>
+                                            </Dialog>
+                                            {notification && (
+                                                <Notification
+                                                    type={notification.type}
+                                                    title={notification.title}
+                                                    message={notification.message}
+                                                    onClose={() => setNotification(null)}
+                                                />
+                                            )}
                                         </div>
                                     </td>
                                 </tr>
