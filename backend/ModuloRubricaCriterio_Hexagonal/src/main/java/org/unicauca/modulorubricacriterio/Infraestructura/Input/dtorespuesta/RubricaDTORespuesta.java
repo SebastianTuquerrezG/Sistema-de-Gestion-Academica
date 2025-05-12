@@ -13,7 +13,11 @@ import java.util.List;
 public class RubricaDTORespuesta {
     private String idRubrica;
     private String nombreRubrica;
+<<<<<<< Updated upstream
     private String materia;
+=======
+    private String nombreMateria;
+>>>>>>> Stashed changes
     private int notaRubrica;
     private String objetivoEstudio;
     private List<CriterioDTORespuesta> criterios;

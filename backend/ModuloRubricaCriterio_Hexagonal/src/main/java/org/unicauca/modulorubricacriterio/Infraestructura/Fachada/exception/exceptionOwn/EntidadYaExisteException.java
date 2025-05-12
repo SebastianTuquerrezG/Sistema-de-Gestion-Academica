@@ -2,6 +2,11 @@ package org.unicauca.modulorubricacriterio.Infraestructura.Fachada.exception.exc
 
 import org.unicauca.modulorubricacriterio.Infraestructura.Fachada.exception.excepcionStructure.CodigoError;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 public class EntidadYaExisteException extends RuntimeException {
 
     private final String llaveMensaje;

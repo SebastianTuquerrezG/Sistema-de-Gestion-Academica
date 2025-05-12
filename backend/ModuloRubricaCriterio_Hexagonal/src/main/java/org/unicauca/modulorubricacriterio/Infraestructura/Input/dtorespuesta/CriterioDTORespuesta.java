@@ -2,6 +2,7 @@ package org.unicauca.modulorubricacriterio.Infraestructura.Input.dtorespuesta;
 
 import java.util.List;
 
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -17,6 +18,7 @@ public class CriterioDTORespuesta {
     private Float crfPorcentaje;
     private Float crfNota;
     private String crfComentario;
+    @Size(min = 1, message = "{Rubricas.nivelesList.size}")
     private List<NivelDTORespuesta> niveles;
 
 
