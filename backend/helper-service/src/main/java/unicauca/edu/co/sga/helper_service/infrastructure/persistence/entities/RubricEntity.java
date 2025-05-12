@@ -37,14 +37,14 @@ public class RubricEntity {
     @JoinColumn(name = "subject_id", nullable = false)
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    @JsonBackReference
+    @JsonBackReference("subject-rubric")
     private SubjectEntity subject;
 
     @ManyToOne
     @JoinColumn(name = "ra_id", nullable = false, foreignKey = @ForeignKey(name = "fk_learning_results"))
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    @JsonBackReference
+    @JsonBackReference("ra-rubric")
     private RAEntity ra;
 
     /*@ManyToOne
@@ -55,11 +55,11 @@ public class RubricEntity {
     private CriteriaEntity criteria;*/
 
     @OneToMany(mappedBy = "rubric", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JsonManagedReference
+    @JsonManagedReference("rubric-criteria")
     private List<CriteriaEntity> criterios;
 
     @OneToMany(mappedBy = "rubric", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonManagedReference
+    @JsonManagedReference("rubric-evaluation")
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private Set<EvaluationEntity> evaluation;

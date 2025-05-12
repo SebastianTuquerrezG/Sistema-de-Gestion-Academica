@@ -3,6 +3,8 @@ package unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.entiti
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
+import unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.entities.CourseEntity;
+import unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.entities.RubricEntity;
 
 import java.util.Set;
 
@@ -19,13 +21,13 @@ public class RAEntity {
     private Long id;
 
     @OneToMany(mappedBy = "ra", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonManagedReference
+    @JsonManagedReference("ra-rubric")
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private Set<RubricEntity> rubric;
 
     @OneToMany(mappedBy = "ra", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonManagedReference
+    @JsonManagedReference("ra-course")
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private Set<CourseEntity> course;

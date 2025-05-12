@@ -1,6 +1,7 @@
 package unicauca.edu.co.sga.helper_service.infrastructure.persistence.entities;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -37,6 +38,6 @@ public class PerformanceEntity {
 
     @ManyToOne
     @JoinColumn(name = "id_criterio")
-    @JsonBackReference
+    @JsonIgnore
     private CriteriaEntity criterio;
 }

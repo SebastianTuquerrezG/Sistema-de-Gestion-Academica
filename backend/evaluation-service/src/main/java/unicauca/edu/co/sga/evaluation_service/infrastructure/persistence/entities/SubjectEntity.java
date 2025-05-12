@@ -1,13 +1,13 @@
 package unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.entities;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import unicauca.edu.co.sga.evaluation_service.domain.enums.GeneralEnums;
-import unicauca.edu.co.sga.evaluation_service.domain.models.Course;
+import unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.entities.CourseEntity;
+import unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.entities.RubricEntity;
 
 import java.util.Date;
 import java.util.Set;
@@ -48,13 +48,13 @@ public class SubjectEntity {
     private Date updated_at;
 
     @OneToMany(mappedBy = "subject", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonManagedReference
+    @JsonManagedReference("subject-course")
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private Set<CourseEntity> course;
 
     @OneToMany(mappedBy = "subject", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonManagedReference
+    @JsonManagedReference("subject-rubric")
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private Set<RubricEntity> rubric;

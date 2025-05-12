@@ -4,6 +4,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import unicauca.edu.co.sga.evaluation_service.adapters.messaging.RabbitMQProducer;
+import unicauca.edu.co.sga.evaluation_service.application.dto.request.EnrollRequestDTO;
 import unicauca.edu.co.sga.evaluation_service.application.ports.RabbitPort;
 import unicauca.edu.co.sga.evaluation_service.infrastructure.config.RabbitMQConfig;
 import unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.entities.EnrollEntity;
@@ -19,7 +20,7 @@ public class RabbitService implements RabbitPort {
     // EXAMPLE: Enroll create a new tuple, then send with rabbit from EnrollService, the entity.
 
     @Override
-    public void sendEnroll(EnrollEntity enroll) {
+    public void sendEnroll(EnrollRequestDTO enroll) {
         rabbit.sendMessage(RabbitMQConfig.EXCHANGE, RabbitMQConfig.ROUTING_KEY_ENROLL, enroll);
     }
 

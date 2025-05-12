@@ -1,11 +1,8 @@
 package unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.entities;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
-
-import java.util.Set;
 
 @Entity
 @Data
@@ -21,23 +18,23 @@ public class EnrollEntity {
 
     @ManyToOne
     @JoinColumn(name = "course_id", nullable = false, foreignKey = @ForeignKey(name = "fk_course"))
-    @JsonBackReference
+    @JsonBackReference("course-enroll")
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private CourseEntity course;
 
     @ManyToOne
     @JoinColumn(name = "student_id", nullable = false, foreignKey = @ForeignKey(name = "fk_student"))
-    @JsonBackReference
+    @JsonBackReference("subject-enroll")
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private StudentEntity student;
 
-    //@OneToMany(mappedBy = "enroll", cascade = CascadeType.ALL, orphanRemoval = true)
-    //@JsonManagedReference
-    //@ToString.Exclude
-    //@EqualsAndHashCode.Exclude
-    //private Set<EvaluationEntity> evaluation;
+//    @OneToMany(mappedBy = "enroll", cascade = CascadeType.ALL, orphanRemoval = true)
+//    @JsonManagedReference("enroll-evaluation")
+//    @ToString.Exclude
+//    @EqualsAndHashCode.Exclude
+//    private Set<EvaluationEntity> evaluation;
 
     @Column(nullable = false, length = 100)
     private String semester;

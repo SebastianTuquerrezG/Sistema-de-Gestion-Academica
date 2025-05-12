@@ -1,11 +1,12 @@
 package unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.entities;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.*;
-
-import java.util.Set;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.entities.CriteriaEntity;
 
 @Entity
 @Data
@@ -36,6 +37,6 @@ public class PerformanceEntity {
 
     @ManyToOne
     @JoinColumn(name = "id_criterio")
-    @JsonBackReference
+    @JsonIgnore
     private CriteriaEntity criterio;
 }

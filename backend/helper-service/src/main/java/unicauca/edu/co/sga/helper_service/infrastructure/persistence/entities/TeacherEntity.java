@@ -1,5 +1,6 @@
 package unicauca.edu.co.sga.helper_service.infrastructure.persistence.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
@@ -42,7 +43,7 @@ public class TeacherEntity {
     private TeacherEnums teacherType;
 
     @ManyToMany(mappedBy = "teacher")
-    @JsonManagedReference
+    @JsonIgnore
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private Set<CourseEntity> course;

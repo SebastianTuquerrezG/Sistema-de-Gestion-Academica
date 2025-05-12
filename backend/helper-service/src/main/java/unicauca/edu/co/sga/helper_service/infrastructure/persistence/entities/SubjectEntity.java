@@ -48,13 +48,13 @@ public class SubjectEntity {
     private Date updated_at;
 
     @OneToMany(mappedBy = "subject", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonManagedReference
+    @JsonManagedReference("subject-course")
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private Set<CourseEntity> course;
 
     @OneToMany(mappedBy = "subject", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonManagedReference
+    @JsonManagedReference("subject-rubric")
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private Set<RubricEntity> rubric;

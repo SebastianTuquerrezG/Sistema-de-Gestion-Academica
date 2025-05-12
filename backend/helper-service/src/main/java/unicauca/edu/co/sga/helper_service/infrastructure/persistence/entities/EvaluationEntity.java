@@ -1,5 +1,6 @@
 package unicauca.edu.co.sga.helper_service.infrastructure.persistence.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
@@ -36,13 +37,13 @@ public class EvaluationEntity {
 
     @ManyToOne
     @JoinColumn(name = "id_rubrica", nullable = false, foreignKey = @ForeignKey(name = "fk_rubrica"))
-    @JsonIgnore
+    @JsonBackReference("rubric-evaluation")
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private RubricEntity rubric;
 
     @OneToMany(mappedBy = "evaluation", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-    @JsonManagedReference
+    @JsonManagedReference("evaluation-calification")
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private List<CalificationRegisterEntity> califications;

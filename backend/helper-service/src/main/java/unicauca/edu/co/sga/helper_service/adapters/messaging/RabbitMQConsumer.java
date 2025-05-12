@@ -1,9 +1,13 @@
 package unicauca.edu.co.sga.helper_service.adapters.messaging;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Service;
+import unicauca.edu.co.sga.helper_service.application.dto.request.EnrollRequestDTO;
 import unicauca.edu.co.sga.helper_service.infrastructure.config.RabbitMQConfig;
 import unicauca.edu.co.sga.helper_service.infrastructure.persistence.entities.EnrollEntity;
 import unicauca.edu.co.sga.helper_service.infrastructure.persistence.entities.EvaluationEntity;
@@ -13,12 +17,13 @@ import unicauca.edu.co.sga.helper_service.infrastructure.persistence.entities.Ev
 @Slf4j
 public class RabbitMQConsumer {
     @RabbitListener(queues = RabbitMQConfig.QUEUE_ENROLL)
-    public void readEnrollData(EnrollEntity enroll){
-        log.info("Message from EVALUATION microservice (ENROLL ENTITY): {}", enroll);
+    public void readEnrollData(@Payload EnrollRequestDTO message) {
+//        EnrollEntity entity = new ObjectMapper().readValue(message, EnrollEntity.class);
+        log.info("Message from EVALUATION microservice (ENROLL ENTITY): {}", message);
     }
 
     @RabbitListener(queues = RabbitMQConfig.QUEUE_EVALUATION)
-    public void readEvaluationData(EvaluationEntity evaluation){
-        log.info("Message from EVALUATION microservice (EVALUATION ENTITY): {}", evaluation);
+    public void readEvaluationData(String message){
+        log.info("Message from EVALUATION microservice (EVALUATION ENTITY): {}", message);
     }
 }

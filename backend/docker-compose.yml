@@ -49,10 +49,10 @@ services:
       - "5004:5004"
     depends_on:
       - eureka-server
-      - mariadb
+      - helper_mariadb
       - evaluation-service
     environment:
-      - SPRING_DATASOURCE_URL=${SPRING_DATASOURCE_URL}
+      - SPRING_DATASOURCE_URL=${SPRING_DATASOURCE_URL_HELPER}
       - SPRING_DATASOURCE_USERNAME=${SPRING_DATASOURCE_USERNAME}
       - SPRING_DATASOURCE_PASSWORD=${SPRING_DATASOURCE_PASSWORD}
     networks:
@@ -66,6 +66,17 @@ services:
       MYSQL_DATABASE: unicauca     # This could be changed for another name.
     ports:
       - "3306:3306"  # Maybe this port isn't the original port. Change it.
+    networks:
+      - backend-network
+
+  helper_mariadb:
+    image: mariadb:10.5
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: unicauca
+    ports:
+      - "3308:3306"
     networks:
       - backend-network
 

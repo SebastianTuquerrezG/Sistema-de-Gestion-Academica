@@ -30,6 +30,6 @@ public class CalificationRegisterEntity {
 
     @ManyToOne
     @JoinColumn(name = "evaluation_id", nullable = false, foreignKey = @ForeignKey(name = "fk_evaluation"))
-    @JsonBackReference
+    @JsonBackReference("evaluation-calification")
     private EvaluationEntity evaluation;
 }

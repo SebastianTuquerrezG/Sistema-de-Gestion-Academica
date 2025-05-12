@@ -1,6 +1,7 @@
 package unicauca.edu.co.sga.helper_service.infrastructure.persistence.entities;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
@@ -44,7 +45,7 @@ public class CriteriaEntity {
 
     @ManyToOne
     @JoinColumn(name = "id_rubrica")
-    @JsonBackReference
+    @JsonBackReference("rubric-criteria")
     @JsonProperty("rubric")
     private RubricEntity rubric;
 
@@ -56,7 +57,7 @@ public class CriteriaEntity {
     private PerformanceEntity performanceLevel;*/
 
     @OneToMany(mappedBy = "criterio", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JsonManagedReference
+    @JsonIgnore
     private List<PerformanceEntity> niveles;
 
 

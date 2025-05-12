@@ -1,11 +1,10 @@
 package unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.entities;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 import unicauca.edu.co.sga.evaluation_service.domain.enums.GeneralEnums;
-import unicauca.edu.co.sga.evaluation_service.domain.models.Enroll;
+import unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.entities.EnrollEntity;
 
 import java.util.Set;
 
@@ -30,4 +29,10 @@ public class StudentEntity {
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private GeneralEnums.identificationType identificationType;
+
+    @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference("subject-enroll")
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private Set<EnrollEntity> enroll;
 }

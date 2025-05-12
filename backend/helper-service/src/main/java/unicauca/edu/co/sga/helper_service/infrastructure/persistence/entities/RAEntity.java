@@ -21,13 +21,13 @@ public class RAEntity {
     private Long id;
 
     @OneToMany(mappedBy = "ra", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonManagedReference
+    @JsonManagedReference("ra-rubric")
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private Set<RubricEntity> rubric;
 
     @OneToMany(mappedBy = "ra", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonManagedReference
+    @JsonManagedReference("ra-course")
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private Set<CourseEntity> course;

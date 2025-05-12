@@ -2,6 +2,7 @@ package unicauca.edu.co.sga.evaluation_service.application.services;
 
 import jakarta.ws.rs.NotFoundException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import unicauca.edu.co.sga.evaluation_service.application.dto.request.EnrollRequestDTO;
 import unicauca.edu.co.sga.evaluation_service.application.dto.response.EnrollResponseDTO;
@@ -19,6 +20,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class EnrollService implements EnrollPort {
@@ -51,8 +53,7 @@ public class EnrollService implements EnrollPort {
         EnrollEntity enrollEntity = enrollMapper.toEntity(enrollMapper.toModel(enroll));
 
         // RABBIT INTEGRATION
-        rabbitService.sendEnroll(enrollEntity);
-
+        rabbitService.sendEnroll(enroll);
 
         return enrollMapper.toDTO(enrollMapper.toModel(enrollRepository.save(enrollEntity)));
     }

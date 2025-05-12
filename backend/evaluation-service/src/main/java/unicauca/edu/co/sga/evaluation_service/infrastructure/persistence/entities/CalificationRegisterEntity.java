@@ -6,7 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import unicauca.edu.co.sga.evaluation_service.domain.enums.CalificationEnums;
+import unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.entities.EvaluationEntity;
 
 @Entity
 @Data
@@ -31,6 +31,6 @@ public class CalificationRegisterEntity {
 
     @ManyToOne
     @JoinColumn(name = "evaluation_id", nullable = false, foreignKey = @ForeignKey(name = "fk_evaluation"))
-    @JsonBackReference
+    @JsonBackReference("evaluation-calification")
     private EvaluationEntity evaluation;
 }
