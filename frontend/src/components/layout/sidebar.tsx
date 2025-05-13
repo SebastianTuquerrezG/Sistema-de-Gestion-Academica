@@ -1,5 +1,6 @@
 import React from "react";
 import "../../assets/css/componets/layout/sidebar.css"; // Importa tu CSS si es necesario
+import { Link } from "react-router-dom";
 
 const Sidebar: React.FC = () => {
     return (
@@ -21,6 +22,12 @@ const Sidebar: React.FC = () => {
                 <li className="menu-item">
                     <span className="material-symbols-outlined">person</span>
                     <span className="title5">Perfil</span>
+                </li>
+                <li className="menu-item">
+                    <Link to={"/evaluaciones"}>
+                    <span className="material-symbols-outlined">book</span>
+                    <span className="title5">Evaluaciones</span>
+                    </Link>
                 </li>
             </ul>
         </aside>

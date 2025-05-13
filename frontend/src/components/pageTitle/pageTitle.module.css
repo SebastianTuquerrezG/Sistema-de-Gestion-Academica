@@ -1,0 +1,25 @@
+.title {
+    font-family: var(--title-font), serif;
+    color: var(--primary-regular-color);
+    position: relative;
+    display: inline-block;
+    font-size: 2.5rem; /* 🔥 Más grande */
+    font-weight: 800;   /* 🔥 Más grueso */
+    margin-bottom: 20px; /* Espacio debajo */
+    line-height: 1.2;
+}
+
+
+.firstWord {
+    position: relative;
+}
+
+.firstWord::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -2px;
+    width: 100%;
+    height: 4px;
+    background-color: var(--secondary-regular-color);
+}

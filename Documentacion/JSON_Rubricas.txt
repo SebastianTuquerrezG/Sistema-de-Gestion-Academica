@@ -1,0 +1,52 @@
+
+
+
+{//Respuesta
+        "rubricaId": "IS102",
+        "nombreRubrica": "Evaluación de Proyecto de Software",
+        "materia": "Ingeniería de Software III",
+        "notaRubrica": 3,
+        "objetivoEstudio": "Objetivo 1",
+        "criterios": [
+            {
+                "idCriterio": 1,
+                "crfDescripcion": "Cumple con los requisitos del proyecto",
+                "crfPorcentaje": 0.3,
+                "crfNota": 0.0,
+                "crfComentario": "Comentario 1",
+                "niveles": [
+                    {
+                        "idNivel": 1,
+                        "nivelDescripcion": "Nivel 1",
+                        "rangoNota": "0-1"
+                    },
+                    {
+                        "idNivel": 2,
+                        "nivelDescripcion": "Nivel 2",
+                        "rangoNota": "1-2"
+                    },
+                    {
+                        "idNivel": 3,
+                        "nivelDescripcion": "Nivel 3",
+                        "rangoNota": "2-3"
+                    },
+                    {
+                        "idNivel": 16,
+                        "nivelDescripcion": "MEDIO",
+                        "rangoNota": "1-10"
+                    }
+                ]
+            },
+            {
+                "idCriterio": 5,
+                "crfDescripcion": "Cumple con los estándares de calidad",
+                "crfPorcentaje": 0.3,
+                "crfNota": 0.0,
+                "crfComentario": "Comentario 5",
+                "niveles": []
+            }
+        ],
+        "estado": "ACTIVO"
+},
+
+JSON de ejemplo de la estructura de una rúbrica con criterios y niveles

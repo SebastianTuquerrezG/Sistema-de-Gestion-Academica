@@ -19,8 +19,8 @@
 		<dotenv.version>5.2.2</dotenv.version>
 		<spring-cloud.version>2024.0.0</spring-cloud.version>
 		<spring-actuator.version>3.4.3</spring-actuator.version>
-		<maven.compiler.source>17</maven.compiler.source>
-		<maven.compiler.target>17</maven.compiler.target>
+		<maven.compiler.source>21</maven.compiler.source>
+		<maven.compiler.target>21</maven.compiler.target>
 	</properties>
 	<dependencies>
 		<!-- Spring Boot Starter WebFlux -->
@@ -41,7 +41,7 @@
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
-			<version>4.2.0</version>
+			<version>4.2.1</version>
 		</dependency>
 
 		<!-- Spring Boot Starter Actuator (opcional, para monitoreo) -->
@@ -50,6 +50,8 @@
 			<artifactId>spring-boot-starter-actuator</artifactId>
 			<version>${spring-actuator.version}</version>
 		</dependency>
+
+
 	</dependencies>
 	<dependencyManagement>
 		<dependencies>
@@ -67,6 +69,14 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+				<version>${spring-boot.version}</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>repackage</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>

@@ -2,6 +2,7 @@
 
 @import url('./variables.css');
 @import url('./typography.css');
+@import "tailwindcss";
 
 body {
     background-color: var(--while-color);
