@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { Search, Plus, Pencil, Trash2, Share2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useNavigate } from "react-router-dom";
-import { getAllRubrics } from "@/services/rubricService";
+//import { getAllRubrics } from "@/services/rubricService";
 import Notification from "@/components/notifications/notification";
 import { RubricInterface } from "@/interfaces/RubricInterface";
 import { deleteRubric } from "@/services/rubricService";

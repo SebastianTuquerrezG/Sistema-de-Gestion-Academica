@@ -328,7 +328,7 @@ useEffect(() => {
             )}
 
             <CardHeader>
-                <CardTitle>Crear Rúbrica de Evaluación</CardTitle>
+                <CardTitle>Editar Rúbrica de Evaluación</CardTitle>
                 <CardDescription>Ingresa los datos de la nueva rúbrica en el formulario.</CardDescription>
             </CardHeader>
             <CardContent>
@@ -438,7 +438,7 @@ useEffect(() => {
             </CardContent>
             <CardFooter className="flex justify-between">
                 <Button onClick={handleCancel} variant="outline">Cancelar</Button>
-                <Button onClick={handleCreate}>Crear</Button>
+                <Button onClick={handleCreate}>Guradar</Button>
             </CardFooter>
         </Card>
     );
