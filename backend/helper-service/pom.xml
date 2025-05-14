@@ -7,42 +7,57 @@
 		<artifactId>backend</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
-	<groupId>unicauca.edu.co.sga</groupId>
+
 	<artifactId>helper-service</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
 	<name>helper-service</name>
 	<description>Helper service to contain different entities.</description>
+
 	<url/>
 	<licenses>
 		<license/>
 	</licenses>
+
 	<developers>
 		<developer/>
 	</developers>
+
 	<scm>
 		<connection/>
 		<developerConnection/>
 		<tag/>
 		<url/>
 	</scm>
+
 	<properties>
 		<java.version>21</java.version>
-		<spring-boot.version>3.4.3</spring-boot.version>
+		<spring-boot.version>3.4.4</spring-boot.version>
 		<spring-ai.version>1.0.0-M6</spring-ai.version>
-		<spring-cloud.version>2024.0.0</spring-cloud.version>
 		<lombok.version>1.18.32</lombok.version>
-		<dotenv.version>3.0.0</dotenv.version>
+		<dotenv-java.version>3.0.0</dotenv-java.version>
 		<mariadb.version>3.5.3</mariadb.version>
+		<mariadb.version>3.5.3</mariadb.version>
+		<mapstruct.version>1.6.3</mapstruct.version>
 		<spring-restdocs.version>3.0.1</spring-restdocs.version>
+		<lombok-mapstruct-binding.version>0.2.0</lombok-mapstruct-binding.version>
 		<springdoc-openapi.version>2.5.0</springdoc-openapi.version>
 		<maven-resources-plugin.version>3.3.1</maven-resources-plugin.version>
 		<spring-validation>3.4.3</spring-validation>
-
 		<maven-compiler-plugin.version>3.12.1</maven-compiler-plugin.version>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<maven.compiler.source>21</maven.compiler.source>
-		<maven.compiler.target>21</maven.compiler.target>
+		<spring-security-test.version>6.1.7</spring-security-test.version>
+		<asciidoctor-maven-plugin.version>2.2.1</asciidoctor-maven-plugin.version>
 	</properties>
+
 	<dependencies>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-actuator</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>io.github.cdimascio</groupId>
+			<artifactId>dotenv-java</artifactId>
+			<version>3.0.0</version>
+		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
@@ -55,13 +70,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-starter-gateway</artifactId>
-			<version>4.2.0</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
-			<version>4.2.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -82,16 +91,8 @@
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-docker-compose</artifactId>
-			<version>3.4.4</version>
-			<scope>runtime</scope>
-			<optional>true</optional>
-		</dependency>
-
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-amqp</artifactId>
-			<version>3.4.3</version>
+			<version>${spring-boot.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.mariadb.jdbc</groupId>
@@ -120,13 +121,8 @@
 		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-test</artifactId>
-			<version>6.1.7</version>
+			<version>${spring-security-test.version}</version>
 			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>me.paulschwarz</groupId>
-			<artifactId>spring-dotenv</artifactId>
-			<version>${dotenv.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>io.projectreactor</groupId>
@@ -134,27 +130,19 @@
 			<version>3.7.4</version>
 			<scope>test</scope>
 		</dependency>
-<!--		<dependency>-->
-<!--			<groupId>unicauca.edu.co.sga</groupId>-->
-<!--			<artifactId>evaluation-service</artifactId>-->
-<!--			<version>0.0.1-SNAPSHOT</version>-->
-<!--			<scope>compile</scope>-->
-<!--		</dependency>-->
-		<!--		<dependency>-->
-<!--			<groupId>org.springframework.amqp</groupId>-->
-<!--			<artifactId>spring-rabbit-test</artifactId>-->
-<!--			<scope>test</scope>-->
-<!--		</dependency>-->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.mapstruct</groupId>
+			<artifactId>mapstruct</artifactId>
+			<version>${mapstruct.version}</version>
+		</dependency>
 	</dependencies>
+
 	<dependencyManagement>
 		<dependencies>
-			<dependency>
-				<groupId>org.springframework.cloud</groupId>
-				<artifactId>spring-cloud-dependencies</artifactId>
-				<version>${spring-cloud.version}</version>
-				<type>pom</type>
-				<scope>import</scope>
-			</dependency>
 			<dependency>
 				<groupId>org.springframework.ai</groupId>
 				<artifactId>spring-ai-bom</artifactId>
@@ -179,6 +167,16 @@
 							<groupId>org.projectlombok</groupId>
 							<artifactId>lombok</artifactId>
 							<version>${lombok.version}</version>
+						</path>
+						<path>
+							<groupId>org.mapstruct</groupId>
+							<artifactId>mapstruct-processor</artifactId>
+							<version>${mapstruct.version}</version>
+						</path>
+						<path>
+							<groupId>org.projectlombok</groupId>
+							<artifactId>lombok-mapstruct-binding</artifactId>
+							<version>${lombok-mapstruct-binding.version}</version>
 						</path>
 					</annotationProcessorPaths>
 				</configuration>
@@ -207,6 +205,24 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-resources-plugin</artifactId>
 				<version>${maven-resources-plugin.version}</version>
+			</plugin>
+			<plugin>
+				<groupId>org.asciidoctor</groupId>
+				<artifactId>asciidoctor-maven-plugin</artifactId>
+				<version>${asciidoctor-maven-plugin.version}</version>
+				<executions>
+					<execution>
+						<id>generate-docs</id>
+						<phase>prepare-package</phase>
+						<goals>
+							<goal>process-asciidoc</goal>
+						</goals>
+						<configuration>
+							<backend>html</backend>
+							<doctype>book</doctype>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>
