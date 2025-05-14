@@ -1,5 +1,7 @@
 package unicauca.edu.co.sga.helper_service.application.services;
 
+import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import unicauca.edu.co.sga.helper_service.application.dto.request.SubjectRequestDTO;
@@ -16,14 +18,12 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
+@Transactional
 public class SubjectService implements SubjectPort {
 
-    @Autowired
     private final SubjectRepository subjectRepository;
-
-    public SubjectService(SubjectRepository subjectRepository) {
-        this.subjectRepository = subjectRepository;
-    }
+    private final RabbitService rabbitService;
 
     @Override
     public List<SubjectResponseDTO> getSubjects(){
@@ -51,6 +51,10 @@ public class SubjectService implements SubjectPort {
     public SubjectResponseDTO saveSubject(SubjectRequestDTO subjectDTO) {
         Subject subject = SubjectMapper.toModel(subjectDTO);
         SubjectEntity subjectEntity = SubjectMapper.toEntity(subject);
+
+        //Sending message for Evaluation_service
+        rabbitService.sendSubject(subjectDTO);
+
         return SubjectMapper.toDTO(
                 SubjectMapper.toModel(
                         subjectRepository.save(subjectEntity)));

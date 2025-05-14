@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import unicauca.edu.co.sga.evaluation_service.adapters.messaging.RabbitMQProducer;
 import unicauca.edu.co.sga.evaluation_service.application.dto.request.EnrollRequestDTO;
+import unicauca.edu.co.sga.evaluation_service.application.dto.request.EvaluationRequestDTO;
 import unicauca.edu.co.sga.evaluation_service.application.ports.RabbitPort;
 import unicauca.edu.co.sga.evaluation_service.infrastructure.config.RabbitMQConfig;
 import unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.entities.EnrollEntity;
@@ -25,7 +26,7 @@ public class RabbitService implements RabbitPort {
     }
 
     @Override
-    public void sendEvaluation(EvaluationEntity evaluation) {
+    public void sendEvaluation(EvaluationRequestDTO evaluation) {
         rabbit.sendMessage(RabbitMQConfig.EXCHANGE, RabbitMQConfig.ROUTING_KEY_EVALUATION, evaluation);
     }
 }

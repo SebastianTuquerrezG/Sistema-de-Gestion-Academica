@@ -26,6 +26,8 @@ public class CourseService implements CoursePort {
     private final CourseRepository courseRepository;
     private final TeacherRepository teacherRepository;
 
+    private final RabbitService rabbitService;
+
     @Override
     public List<CourseResponseDTO> getCourses() {
         return courseRepository.findAll()
@@ -47,6 +49,10 @@ public class CourseService implements CoursePort {
         if (teacher.isEmpty()) {
             throw new NotFoundException("Teacher " + course.getTeacher() +" not found");
         }
+
+        //Sending message for Evaluation_service
+        rabbitService.sendCourse(course);
+
         Course courseModel = CourseMapper.toModel(course);
         CourseEntity courseEntity = CourseMapper.toEntity(courseModel);
         return CourseMapper.toDTO(CourseMapper.toModel(courseRepository.save(courseEntity)));

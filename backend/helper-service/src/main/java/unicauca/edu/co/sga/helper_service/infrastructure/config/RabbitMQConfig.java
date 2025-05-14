@@ -29,6 +29,15 @@ public class RabbitMQConfig {
     public static final String QUEUE_ENROLL = "enroll_queue";
     public static final String QUEUE_EVALUATION = "evaluation_queue";
 
+
+    // Variables for rabbit publisher  of Helper_service
+    public static final String ROUTING_KEY_TEACHER = "teacher_routing_key";
+    public static final String ROUTING_KEY_SUBJECT = "subject_routing_key";
+    public static final String ROUTING_KEY_COURSE = "course_routing_key";
+    public static final String ROUTING_KEY_STUDENT = "student_routing_key";
+    public static final String ROUTING_KEY_RA = "RA_routing_key";
+
+
     // Serialization for JSON
     @Bean
     public Jackson2JsonMessageConverter messageConverter(){
@@ -36,8 +45,10 @@ public class RabbitMQConfig {
         DefaultClassMapper classMapper = new DefaultClassMapper();
 
         Map<String, Class<?>> idClassMapping = new HashMap<>();
-        idClassMapping.put("unicauca.edu.co.sga.evaluation_service.application.dto.request.EnrollRequestDTO", EnrollRequestDTO.class);
-        idClassMapping.put("unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.entities.EvaluationEntity", EvaluationEntity.class);
+//        idClassMapping.put("unicauca.edu.co.sga.evaluation_service.application.dto.request.EnrollRequestDTO", EnrollRequestDTO.class);
+//        idClassMapping.put("unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.entities.EvaluationEntity", EvaluationEntity.class);
+
+        idClassMapping.put("EnrollRequestDTO", EnrollRequestDTO.class);
 
         classMapper.setIdClassMapping(idClassMapping);
         converter.setClassMapper(classMapper);

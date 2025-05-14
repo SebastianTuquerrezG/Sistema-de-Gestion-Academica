@@ -19,6 +19,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class TeacherService implements TeacherPort {
     private final TeacherRepository teacherRepository;
+    private final RabbitService rabbitService;
 
     @Override
     public List<TeacherResponseDTO> getTeachers(){
@@ -38,6 +39,10 @@ public class TeacherService implements TeacherPort {
     @Override
     public TeacherResponseDTO saveTeacher(TeacherRequestDTO teacher) {
         TeacherEntity teacherEntity = TeacherMapper.toEntity(TeacherMapper.toModel(teacher));
+
+        // Sending message for Evaluation_service
+        rabbitService.sendTeacher(teacher);
+
         return TeacherMapper.toDTO(TeacherMapper.toModel(teacherRepository.save(teacherEntity)));
     }
 

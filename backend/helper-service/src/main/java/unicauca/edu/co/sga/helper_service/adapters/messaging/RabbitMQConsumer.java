@@ -8,12 +8,15 @@ import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Service;
 import unicauca.edu.co.sga.helper_service.application.dto.request.EnrollRequestDTO;
+import unicauca.edu.co.sga.helper_service.application.dto.request.EvaluationRequestDTO;
 import unicauca.edu.co.sga.helper_service.application.dto.response.EnrollResponseDTO;
 import unicauca.edu.co.sga.helper_service.infrastructure.config.RabbitMQConfig;
 import unicauca.edu.co.sga.helper_service.infrastructure.persistence.entities.EnrollEntity;
 import unicauca.edu.co.sga.helper_service.infrastructure.persistence.entities.EvaluationEntity;
 import unicauca.edu.co.sga.helper_service.infrastructure.persistence.mappers.EnrollMapper;
+import unicauca.edu.co.sga.helper_service.infrastructure.persistence.mappers.EvaluationMapper;
 import unicauca.edu.co.sga.helper_service.infrastructure.persistence.repositories.EnrollRepository;
+import unicauca.edu.co.sga.helper_service.infrastructure.persistence.repositories.EvaluationRepository;
 
 @Service
 @RequiredArgsConstructor
@@ -21,6 +24,8 @@ import unicauca.edu.co.sga.helper_service.infrastructure.persistence.repositorie
 public class RabbitMQConsumer {
     private final EnrollMapper enrollMapper;
     private final EnrollRepository enrollRepository;
+    private final EvaluationMapper evaluationMapper;
+    private final EvaluationRepository evaluationRepository;
 
     @RabbitListener(queues = RabbitMQConfig.QUEUE_ENROLL)
     public void readEnrollData(@Payload EnrollRequestDTO message) {
@@ -34,8 +39,11 @@ public class RabbitMQConsumer {
         }
     }
 
+    //TODO: Create the logic to save an evaluation in this microservice database.
     @RabbitListener(queues = RabbitMQConfig.QUEUE_EVALUATION)
-    public void readEvaluationData(String message){
+    public void readEvaluationData(@Payload EvaluationRequestDTO message){
+
+//        EvaluationEntity evaluation = evaluationMapper
         log.info("Message from EVALUATION microservice (EVALUATION ENTITY): {}", message);
     }
 }

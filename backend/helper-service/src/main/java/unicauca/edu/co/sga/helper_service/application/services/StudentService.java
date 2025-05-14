@@ -26,6 +26,8 @@ public class StudentService implements StudentPort {
     private final EnrollMapper enrollMapper;
     private final StudentMapper studentMapper;
 
+    private final RabbitService rabbitService;
+
     @Override
     public List<StudentResponseDTO> getStudents() {
         return studentRepository.findAll().stream()
@@ -45,6 +47,10 @@ public class StudentService implements StudentPort {
     public StudentResponseDTO saveStudent(StudentRequestDTO studentDTO) {
         Student student = StudentMapper.toModel(studentDTO);
         StudentEntity studentEntity = StudentMapper.toEntity(student);
+
+        // Sending message for Evaluation_service
+        rabbitService.sendStudent(studentDTO);
+
         return StudentMapper.toDTO(
                 StudentMapper.toModel(
                         studentRepository.save(studentEntity)));

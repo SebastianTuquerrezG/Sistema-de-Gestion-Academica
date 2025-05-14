@@ -56,6 +56,10 @@ public class EvaluationService implements EvaluationPort {
                         "Rubric no encontrado con id: " + evaluationRequestDTO.getRubric()));
 
         Evaluation evaluation = EvaluationMapper.toModel(evaluationRequestDTO);
+
+        // Sending message for Helper_service
+        rabbitService.sendEvaluation(evaluationRequestDTO);
+
         EvaluationEntity evaluationEntity = EvaluationMapper.toEntity(evaluation);
 
         evaluationEntity.setEnroll(enroll);
@@ -68,9 +72,6 @@ public class EvaluationService implements EvaluationPort {
         );
         evaluationEntity.setScore(evaluationRequestDTO.getScore());
         evaluationEntity.setEvidenceUrl(evaluationRequestDTO.getEvidenceUrl());
-
-        // RABBIT INTEGRATION
-        rabbitService.sendEvaluation(evaluationEntity);
 
         return EvaluationMapper.toDTO(
                 EvaluationMapper.toModel(

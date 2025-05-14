@@ -10,4 +10,5 @@ import unicauca.edu.co.sga.evaluation_service.infrastructure.config.RabbitMQConf
 @RequiredArgsConstructor
 @Slf4j
 public class RabbitMQConsumer {
+    // TODO: Create all the methods to read the message from Rubric and Helper services
 }
