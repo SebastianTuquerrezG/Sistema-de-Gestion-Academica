@@ -65,16 +65,16 @@ services:
     networks:
       - backend-network
 
-  helper-service:
-    build: ./helper-service
+  common_utilities-service:
+    build: ./common_utilities-service
     ports:
       - "5004:5004"
     depends_on:
       - eureka-server
-      - helper_mariadb
+      - common_utilities_mariadb
       - evaluation-service
     environment:
-      - SPRING_DATASOURCE_URL=${SPRING_DATASOURCE_URL_HELPER}
+      - SPRING_DATASOURCE_URL=${SPRING_DATASOURCE_URL_COMMON_UTILITIES}
       - SPRING_DATASOURCE_USERNAME=${SPRING_DATASOURCE_USERNAME}
       - SPRING_DATASOURCE_PASSWORD=${SPRING_DATASOURCE_PASSWORD}
     networks:
@@ -82,7 +82,7 @@ services:
 
   mariadb:
     image: mariadb:10.5
-    restart: always
+    restart: unless-stopped
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: unicauca     # This could be changed for another name.
@@ -91,9 +91,9 @@ services:
     networks:
       - backend-network
 
-  helper_mariadb:
+  common_utilities_mariadb:
     image: mariadb:10.5
-    restart: always
+    restart: unless-stopped
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: unicauca
