@@ -11,17 +11,14 @@ import lombok.Data;
 @AllArgsConstructor
 public class Rubrica {
     private Long idRubrica;
-    private String nombreRubrica;
-<<<<<<< Updated upstream
-    private String materia;
-=======
     private Long idMateria;
+    private String nombreRubrica;
     private String nombreMateria;
->>>>>>> Stashed changes
     private int notaRubrica;
     private String objetivoEstudio;
     List<Criterio> criterios;
     private EstadosEnum estado;
+    private Long raId;
 
     /*Constructor no parametrizado
     usar para deserialización de datos*/

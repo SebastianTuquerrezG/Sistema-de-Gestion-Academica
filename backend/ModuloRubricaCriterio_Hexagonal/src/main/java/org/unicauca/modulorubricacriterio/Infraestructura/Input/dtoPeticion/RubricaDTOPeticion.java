@@ -16,14 +16,9 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class RubricaDTOPeticion {
-    private Long idRubrica;
-    private String nombreRubrica;
-<<<<<<< Updated upstream
-    private String materia;
-=======
 
+    private String materia;
     private Long idMateria;
->>>>>>> Stashed changes
     private int notaRubrica;
     private String objetivoEstudio;
 
@@ -33,10 +28,9 @@ public class RubricaDTOPeticion {
     private List<@NotNull(message = "{Criterios.nivelesList.size}") CriterioDTOPeticion> criterios;
     
     private String estado;
-<<<<<<< Updated upstream
-=======
+
 
     @NotNull(message = "{Rubrica.raId}")
     private Long raId;
->>>>>>> Stashed changes
+
 }

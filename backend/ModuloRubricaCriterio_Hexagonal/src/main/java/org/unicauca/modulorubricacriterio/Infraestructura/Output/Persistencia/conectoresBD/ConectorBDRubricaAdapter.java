@@ -13,13 +13,14 @@ import org.unicauca.modulorubricacriterio.Infraestructura.Fachada.exception.exce
 import org.unicauca.modulorubricacriterio.Infraestructura.Fachada.exception.exceptionOwn.EntidadNoExisteException;
 import org.unicauca.modulorubricacriterio.Infraestructura.Input.validacionEstados.EstadosController;
 import org.unicauca.modulorubricacriterio.Infraestructura.Input.validacionEstados.EstadosEnum;
-<<<<<<< Updated upstream
-=======
+
 import org.unicauca.modulorubricacriterio.Infraestructura.Output.Persistencia.entity.CriterioEntity;
 import org.unicauca.modulorubricacriterio.Infraestructura.Output.Persistencia.entity.MateriaEntity;
-import org.unicauca.modulorubricacriterio.Infraestructura.Output.Persistencia.entity.RAEntity;
->>>>>>> Stashed changes
+import org.unicauca.modulorubricacriterio.Infraestructura.Output.Persistencia.entity.RAEntity; 
+
 import org.unicauca.modulorubricacriterio.Infraestructura.Output.Persistencia.entity.RubricaEntity;
+import org.unicauca.modulorubricacriterio.Infraestructura.Output.Persistencia.repository.MateriaRepository;
+import org.unicauca.modulorubricacriterio.Infraestructura.Output.Persistencia.repository.RARepository;
 import org.unicauca.modulorubricacriterio.Infraestructura.Output.Persistencia.repository.RubricaRepository;
 
 @Service
@@ -27,10 +28,14 @@ public class ConectorBDRubricaAdapter implements IConectorBDRubricaPort {
 
     private final RubricaRepository rubricaRepository;
     private final ModelMapper rubricaMapper;
+private final MateriaRepository materiaRepository;
+    private final RARepository raRepository;
 
-    public ConectorBDRubricaAdapter(RubricaRepository rubricaRepository, ModelMapper rubricaMapper) {
+    public ConectorBDRubricaAdapter(RubricaRepository rubricaRepository, ModelMapper rubricaMapper, MateriaRepository materiaRepository, RARepository raRepository) {
         this.rubricaRepository = rubricaRepository;
         this.rubricaMapper = rubricaMapper;
+        this.materiaRepository = materiaRepository;
+        this.raRepository = raRepository;
     }
 
     @Override
@@ -80,15 +85,12 @@ public class ConectorBDRubricaAdapter implements IConectorBDRubricaPort {
     @Override
     public Rubrica saveRubric(Rubrica objRubrica) {
         RubricaEntity objRubricaEntity = this.rubricaMapper.map(objRubrica, RubricaEntity.class);
-<<<<<<< Updated upstream
-=======
         MateriaEntity objMateriaEntity = this.materiaRepository.findById(objRubrica.getIdMateria()).orElseThrow(() -> new EntidadNoExisteException("Materia con el id {"+objRubrica.getIdMateria()+"} no existe"));
         RAEntity objRAEntity = this.raRepository.findById(objRubrica.getRaId()).orElseThrow(() -> new EntidadNoExisteException("RA con el id {"+objRubrica.getRaId()+"} no existe"));
 
         objRubricaEntity.setSubject(objMateriaEntity);
         objRubricaEntity.setRa(objRAEntity);
 
->>>>>>> Stashed changes
         if(objRubricaEntity.getCriterios() != null)
         {
             objRubricaEntity.getCriterios().forEach(criterio -> {
@@ -115,15 +117,16 @@ public class ConectorBDRubricaAdapter implements IConectorBDRubricaPort {
     }
 
     @Override
-    public Rubrica updateRubric(Long id, Rubrica objRubrica) {
+    public Rubrica updateRubric(Long id, Rubrica objRubrica) 
+    {
         RubricaEntity objRubricaActualizada = null;
         RubricaEntity objRubricaEntity = this.rubricaMapper.map(objRubrica, RubricaEntity.class);
         RubricaEntity rubricaEncontrada = this.rubricaRepository.findById(id).orElse(null);
-<<<<<<< Updated upstream
+
         if(rubricaEncontrada==null)
         {
             throw new EntidadNoExisteException("Rúbrica con el id {"+id+"} no existe");
-=======
+        }
 
         if (objRubricaEntity.getSubject() != null) {
             MateriaEntity objMateriaEntity = this.materiaRepository.findById(objRubrica.getIdMateria())
@@ -145,7 +148,7 @@ public class ConectorBDRubricaAdapter implements IConectorBDRubricaPort {
 
         if (rubricaEncontrada == null) {
             throw new EntidadNoExisteException("Rúbrica con el id {" + id + "} no existe");
->>>>>>> Stashed changes
+
         }
 
         rubricaEncontrada.setCriterios(rubricaEncontrada.getCriterios() == null ? new ArrayList<>() : rubricaEncontrada.getCriterios());
@@ -185,13 +188,12 @@ public class ConectorBDRubricaAdapter implements IConectorBDRubricaPort {
             }
         }
 
-<<<<<<< Updated upstream
-        rubricaEncontrada.setMateria(objRubrica.getMateria());
+
         rubricaEncontrada.setNombreRubrica(objRubrica.getNombreRubrica());
         rubricaEncontrada.setNotaRubrica(objRubrica.getNotaRubrica());
         rubricaEncontrada.setObjetivoEstudio(objRubrica.getObjetivoEstudio());
         rubricaEncontrada.setCriterios(objRubricaEntity.getCriterios());
-=======
+
         // Eliminar criterios sobrantes
         rubricaEncontrada.getCriterios().subList(objRubricaEntity.getCriterios().size(), rubricaEncontrada.getCriterios().size()).clear();
 
@@ -201,7 +203,16 @@ public class ConectorBDRubricaAdapter implements IConectorBDRubricaPort {
         rubricaEncontrada.setNotaRubrica(objRubrica.getNotaRubrica());
         rubricaEncontrada.setObjetivoEstudio(objRubrica.getObjetivoEstudio());
         rubricaEncontrada.setRa(objRubricaEntity.getRa());
->>>>>>> Stashed changes
+
+        // Eliminar criterios sobrantes
+        rubricaEncontrada.getCriterios().subList(objRubricaEntity.getCriterios().size(), rubricaEncontrada.getCriterios().size()).clear();
+
+        // Actualizar campos principales de la rubrica
+        rubricaEncontrada.setSubject(objRubricaEntity.getSubject());
+        rubricaEncontrada.setNombreRubrica(objRubrica.getNombreRubrica());
+        rubricaEncontrada.setNotaRubrica(objRubrica.getNotaRubrica());
+        rubricaEncontrada.setObjetivoEstudio(objRubrica.getObjetivoEstudio());
+        rubricaEncontrada.setRa(objRubricaEntity.getRa());
 
         objRubricaActualizada = this.rubricaRepository.save(rubricaEncontrada);
 
