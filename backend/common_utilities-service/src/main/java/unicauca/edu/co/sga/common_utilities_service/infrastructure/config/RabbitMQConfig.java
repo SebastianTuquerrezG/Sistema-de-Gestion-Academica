@@ -48,6 +48,11 @@ public class RabbitMQConfig {
         idClassMapping.put("EnrollRequestDTO", EnrollRequestDTO.class);
         idClassMapping.put("EvaluationRequestDTO", EvaluationRequestDTO.class);
 
+        classMapper.setTrustedPackages(
+                "unicauca.edu.co.sga.common_utilities_service.application.dto",
+                "java.util", "java.lang"
+        );
+
         classMapper.setIdClassMapping(idClassMapping);
         converter.setClassMapper(classMapper);
 

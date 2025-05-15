@@ -67,6 +67,11 @@ public class RabbitMQConfig {
         idClassMapping.put("StudentRequestDTO", StudentRequestDTO.class);
 //        idClassMapping.put("RARequestDTO", RARequestDTO.class);
 
+        classMapper.setTrustedPackages(
+                "unicauca.edu.co.sga.evaluation_service.application.dto",
+                "java.util", "java.lang"
+        );
+
         classMapper.setIdClassMapping(idClassMapping);
         converter.setClassMapper(classMapper);
 
