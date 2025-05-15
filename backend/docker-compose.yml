@@ -22,51 +22,84 @@ services:
       - keycloak_data_sga:/opt/keycloak/data
 
   eureka-server:
-    build: ./eureka-server
+    build:
+        context: .
+        dockerfile: eureka-server/Dockerfile
+    container_name: eureka-server
     ports:
       - "8761:8761"
     networks:
       - backend-network
+    environment:
+      EUREKA_USERNAME: ${EUREKA_USERNAME}
+      EUREKA_PASSWORD: ${EUREKA_PASSWORD}
 
   gateway:
-    build: ./gateway
+    build:
+        context: .
+        dockerfile: gateway/Dockerfile
+    container_name: gateway-sga
     ports:
       - "8080:8080"
     depends_on:
       - eureka-server
+      - keycloak
     networks:
       - backend-network
+    extra_hosts:
+      - "keycloak:host-gateway"
+    environment:
+        EUREKA_USERNAME: ${EUREKA_USERNAME}
+        EUREKA_PASSWORD: ${EUREKA_PASSWORD}
+        KC_CLIENT_SECRET: ${KC_CLIENT_SECRET}
+        SPRING_PROFILES_ACTIVE: docker
 
   modulorubricacriterio:
-    build: ./ModuloRubricaCriterio_Hexagonal
+    build:
+        context: .
+        dockerfile: ModuloRubricaCriterio_Hexagonal/Dockerfile
+    container_name: modulorubricacriterio
     ports:
-      - "5001:5001"
+      - "0:5001"
     depends_on:
       - eureka-server
-      - mariadb   # 👈 importante para que espere a la base de datos
+      - gateway
+      - mariadb
     environment:
-      - SPRING_DATASOURCE_URL=${SPRING_DATASOURCE_URL}
-      - SPRING_DATASOURCE_USERNAME=${SPRING_DATASOURCE_USERNAME}
-      - SPRING_DATASOURCE_PASSWORD=${SPRING_DATASOURCE_PASSWORD}
+      RUBRIC_DATASOURCE_URL: ${RUBRIC_DATASOURCE_URL}
+      RUBRIC_DATASOURCE_USERNAME: ${RUBRIC_DATASOURCE_USERNAME}
+      RUBRIC_DATASOURCE_PASSWORD: ${RUBRIC_DATASOURCE_PASSWORD}
+      EUREKA_USERNAME: ${EUREKA_USERNAME}
+      EUREKA_PASSWORD: ${EUREKA_PASSWORD}
+      SPRING_PROFILES_ACTIVE: docker
     networks:
       - backend-network
 
   evaluation-service:
-    build: ./evaluation-service
+    build:
+      context: .
+      dockerfile: evaluation-service/Dockerfile
+    container_name: evaluation-service
     ports:
       - "5002:5002"
     depends_on:
       - eureka-server
       - mariadb
     environment:
-      - SPRING_DATASOURCE_URL=${SPRING_DATASOURCE_URL}
-      - SPRING_DATASOURCE_USERNAME=${SPRING_DATASOURCE_USERNAME}
-      - SPRING_DATASOURCE_PASSWORD=${SPRING_DATASOURCE_PASSWORD}
+      EVALUATION_DATASOURCE_URL: ${EVALUATION_DATASOURCE_URL}
+      EVALUATION_DATASOURCE_USERNAME: ${EVALUATION_DATASOURCE_USERNAME}
+      EVALUATION_DATASOURCE_PASSWORD: ${EVALUATION_DATASOURCE_PASSWORD}
+      EUREKA_USERNAME: ${EUREKA_USERNAME}
+      EUREKA_PASSWORD: ${EUREKA_PASSWORD}
+      SPRING_PROFILES_ACTIVE: docker
     networks:
       - backend-network
 
   helper-service:
-    build: ./helper-service
+    build:
+      context: .
+      dockerfile: helper-service/Dockerfile
+    container_name: helper-service
     ports:
       - "5004:5004"
     depends_on:
@@ -74,9 +107,12 @@ services:
       - helper_mariadb
       - evaluation-service
     environment:
-      - SPRING_DATASOURCE_URL=${SPRING_DATASOURCE_URL_HELPER}
-      - SPRING_DATASOURCE_USERNAME=${SPRING_DATASOURCE_USERNAME}
-      - SPRING_DATASOURCE_PASSWORD=${SPRING_DATASOURCE_PASSWORD}
+      HELPER_DATASOURCE_URL: ${HELPER_DATASOURCE_URL}
+      HELPER_DATASOURCE_USERNAME: ${HELPER_DATASOURCE_USERNAME}
+      HELPER_DATASOURCE_PASSWORD: ${HELPER_DATASOURCE_PASSWORD}
+      EUREKA_USERNAME: ${EUREKA_USERNAME}
+      EUREKA_PASSWORD: ${EUREKA_PASSWORD}
+      SPRING_PROFILES_ACTIVE: docker
     networks:
       - backend-network
 
@@ -84,10 +120,10 @@ services:
     image: mariadb:10.5
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: unicauca     # This could be changed for another name.
+      MYSQL_ROOT_PASSWORD: ${EVALUATION_DATASOURCE_PASSWORD}
+      MYSQL_DATABASE: ${EVALUATION_DATABASE_NAME}
     ports:
-      - "3306:3306"  # Maybe this port isn't the original port. Change it.
+      - "3306:3306"
     networks:
       - backend-network
 
@@ -95,8 +131,8 @@ services:
     image: mariadb:10.5
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: unicauca
+      MYSQL_ROOT_PASSWORD: ${HELPER_DATASOURCE_PASSWORD}
+      MYSQL_DATABASE: ${HELPER_DATABASE_NAME}
     ports:
       - "3308:3306"
     networks:
@@ -108,8 +144,8 @@ services:
       - "5672:5672"
       - "15672:15672"
     environment:
-      - RABBITMQ_DEFAULT_USER=unicauca
-      - RABBITMQ_DEFAULT_PASS=unicaucaRabbit
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS}
     networks:
       - backend-network
 

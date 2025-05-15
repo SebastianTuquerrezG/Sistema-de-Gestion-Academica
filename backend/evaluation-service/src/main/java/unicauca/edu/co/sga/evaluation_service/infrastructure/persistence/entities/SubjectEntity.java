@@ -6,8 +6,6 @@ import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import unicauca.edu.co.sga.evaluation_service.domain.enums.GeneralEnums;
-import unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.entities.CourseEntity;
-import unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.entities.RubricEntity;
 
 import java.util.Date;
 import java.util.Set;

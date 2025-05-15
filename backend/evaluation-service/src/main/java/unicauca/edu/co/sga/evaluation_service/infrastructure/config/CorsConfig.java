@@ -1,6 +1,5 @@
 package unicauca.edu.co.sga.evaluation_service.infrastructure.config;
 
-import org.jetbrains.annotations.NotNull;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.cors.CorsConfiguration;
