@@ -8,12 +8,8 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.unicauca.modulorubricacriterio.Infraestructura.Input.validacionEstados.EstadosEnum;
-import org.unicauca.modulorubricacriterio.Infraestructura.Output.Persistencia.entity.CriterioEntity;
-import org.unicauca.modulorubricacriterio.Infraestructura.Output.Persistencia.entity.NivelEntity;
-import org.unicauca.modulorubricacriterio.Infraestructura.Output.Persistencia.entity.RubricaEntity;
-import org.unicauca.modulorubricacriterio.Infraestructura.Output.Persistencia.repository.CriterioRepository;
-import org.unicauca.modulorubricacriterio.Infraestructura.Output.Persistencia.repository.NivelRepository;
-import org.unicauca.modulorubricacriterio.Infraestructura.Output.Persistencia.repository.RubricaRepository;
+import org.unicauca.modulorubricacriterio.Infraestructura.Output.Persistencia.entity.*;
+import org.unicauca.modulorubricacriterio.Infraestructura.Output.Persistencia.repository.*;
 
 @SpringBootApplication
 public class ModuloRubricaCriterioApplication implements CommandLineRunner {
@@ -27,6 +23,12 @@ public class ModuloRubricaCriterioApplication implements CommandLineRunner {
 
     @Autowired
     private NivelRepository nivelRepository;
+
+    @Autowired
+    private RARepository raRepository;
+
+    @Autowired
+    private MateriaRepository materiaRepository;
 
     public static void main(String[] args)   {
         SpringApplication.run(ModuloRubricaCriterioApplication.class, args);
@@ -45,12 +47,40 @@ public class ModuloRubricaCriterioApplication implements CommandLineRunner {
      * Este método se encarga de cargar datos de prueba en la base de datos.
     */
     private void cargarDatos(){
+        List<RAEntity> listaRA = new ArrayList<>();
+        RAEntity ra1 = new RAEntity();
+        RAEntity ra2 = new RAEntity();
+        RAEntity ra3 = new RAEntity();
+        RAEntity ra4 = new RAEntity();
+
+        listaRA.add(ra1);
+        listaRA.add(ra2);
+        listaRA.add(ra3);
+        listaRA.add(ra4);
+
+        this.raRepository.saveAll(listaRA);
+
+        List<MateriaEntity> listaMaterias = new ArrayList<>();
+        MateriaEntity materia1 = new MateriaEntity("Desarrollo de Software", 3, "Sofrtware", EstadosEnum.ACTIVO);
+        MateriaEntity materia2 = new MateriaEntity("Programación Avanzada", 3, "Sofrtware", EstadosEnum.INACTIVO);
+        MateriaEntity materia3 = new MateriaEntity("Arquitectura de Software", 3, "Sofrtware", EstadosEnum.ACTIVO);
+        MateriaEntity materia4 = new MateriaEntity("Ingeniería de Software", 3, "Sofrtware", EstadosEnum.INACTIVO);
+        MateriaEntity materia5 = new MateriaEntity("Pruebas de Software", 3, "Sofrtware", EstadosEnum.ACTIVO);
+
+        listaMaterias.add(materia1);
+        listaMaterias.add(materia2);
+        listaMaterias.add(materia3);
+        listaMaterias.add(materia4);
+        listaMaterias.add(materia5);
+
+        this.materiaRepository.saveAll(listaMaterias);
+
         List<RubricaEntity> listaRubricas = new ArrayList<>();
-        RubricaEntity rubrica1 = new RubricaEntity("Evaluación de Proyecto de Software", "Ingeniería de Software III", 3, "Objetivo 1", null, EstadosEnum.ACTIVO);
-        RubricaEntity rubrica2 = new RubricaEntity("Evaluación de Prácticas de Programación", "Estructura de Datos", 3, "Objetivo 2", null, EstadosEnum.INACTIVO);
-        RubricaEntity rubrica3 = new RubricaEntity("Evaluación de Presentación de Arquitectura de Software", "Ingeniería de Software I", 3, "Objetivo 3", null, EstadosEnum.ACTIVO);
-        RubricaEntity rubrica4 = new RubricaEntity("Evaluación de Documentación Técnica", "Programación Orientada a Objetos", 3, "Objetivo 4", null, EstadosEnum.INACTIVO);
-        RubricaEntity rubrica5 = new RubricaEntity("Evaluación de Testeo de Software", "Calidad de Software", 3, "Objetivo 5", null, EstadosEnum.ACTIVO);
+        RubricaEntity rubrica1 = new RubricaEntity("Evaluación de Proyecto de Software", materia1, 3, "Objetivo 1", null, EstadosEnum.ACTIVO, ra1);
+        RubricaEntity rubrica2 = new RubricaEntity("Evaluación de Prácticas de Programación", materia2, 3, "Objetivo 2", null, EstadosEnum.INACTIVO, ra1);
+        RubricaEntity rubrica3 = new RubricaEntity("Evaluación de Presentación de Arquitectura de Software", materia3, 3, "Objetivo 3", null, EstadosEnum.ACTIVO, ra2);
+        RubricaEntity rubrica4 = new RubricaEntity("Evaluación de Documentación Técnica", materia4, 3, "Objetivo 4", null, EstadosEnum.INACTIVO, ra3);
+        RubricaEntity rubrica5 = new RubricaEntity("Evaluación de Testeo de Software", materia5, 3, "Objetivo 5", null, EstadosEnum.ACTIVO, ra4);
 
         listaRubricas.add(rubrica1);
         listaRubricas.add(rubrica2);
