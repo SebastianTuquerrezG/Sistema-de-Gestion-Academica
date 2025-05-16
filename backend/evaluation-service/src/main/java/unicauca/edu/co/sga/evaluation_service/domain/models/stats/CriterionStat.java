@@ -4,5 +4,5 @@ import java.util.Map;
 
 public class CriterionStat {
     private String criterionName;
-    private Map<String, Double> levelAverages; // Niveles: "Excelente" -> 4.5
+    private Map<String, Double> levelAverages; //3 NIVELES
 }
