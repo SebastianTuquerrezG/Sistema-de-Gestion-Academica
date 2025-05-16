@@ -1,5 +1,7 @@
 package unicauca.edu.co.sga.evaluation_service.infrastructure.config;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -54,28 +56,38 @@ public class RabbitMQConfig {
     // Serialization for JSON
     @Bean
     public Jackson2JsonMessageConverter messageConverter(){
-        Jackson2JsonMessageConverter converter = new Jackson2JsonMessageConverter();
-        DefaultClassMapper classMapper = new DefaultClassMapper();
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+
+        Jackson2JsonMessageConverter converter = new Jackson2JsonMessageConverter(objectMapper);
+
+        DefaultClassMapper classMapper = new DefaultClassMapper(){
+            @Override
+            public void fromClass(Class<?> clazz, MessageProperties properties){
+                properties.setHeader(getClassIdFieldName(), clazz.getSimpleName());
+            }
+        };
 
         Map<String, Class<?>> idClassMapping = new HashMap<>();
-//        idClassMapping.put("unicauca.edu.co.sga.evaluation_service.application.dto.request.EnrollRequestDTO", EnrollRequestDTO.class);
-//        idClassMapping.put("unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.entities.EvaluationEntity", EvaluationEntity.class);
+        addDTOMapping(idClassMapping);
 
+        classMapper.setIdClassMapping(idClassMapping);
+        classMapper.setTrustedPackages("*");
+
+        converter.setClassMapper(classMapper);
+
+        return converter;
+    }
+
+    /**
+     * Método para agregar mapeos de DTOs
+     */
+    private void addDTOMapping(Map<String, Class<?>> idClassMapping){
         idClassMapping.put("TeacherRequestDTO", TeacherRequestDTO.class);
         idClassMapping.put("SubjectRequestDTO", SubjectRequestDTO.class);
         idClassMapping.put("CourseRequestDTO", CourseRequestDTO.class);
         idClassMapping.put("StudentRequestDTO", StudentRequestDTO.class);
 //        idClassMapping.put("RARequestDTO", RARequestDTO.class);
-
-        classMapper.setTrustedPackages(
-                "unicauca.edu.co.sga.evaluation_service.application.dto",
-                "java.util", "java.lang"
-        );
-
-        classMapper.setIdClassMapping(idClassMapping);
-        converter.setClassMapper(classMapper);
-
-        return converter;
     }
 
     // This method is in both Publisher and Consumer
