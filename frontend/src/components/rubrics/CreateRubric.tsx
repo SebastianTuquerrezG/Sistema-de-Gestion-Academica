@@ -22,6 +22,9 @@ export default function CreateRubric()
     // Estado local para almacenar el valor de la nota (puede ser número o vacío)
     const [nota, setNota] = useState<number | "">("");
 
+    // Estado para guardar la nota máxima ingresada por el usuario.
+    const [notaMaxima] = useState<number | null>(null);
+
     const [levels, setLevels] = useState([
         { idNivel: 1, nivelDescripcion: "", rangoNota: "0-1" },
         { idNivel: 2, nivelDescripcion: "", rangoNota: "1-3" },
@@ -57,6 +60,77 @@ export default function CreateRubric()
         }
     }, [notification]);
 
+
+    // Añade un nuevo nivel a la rúbrica, hasta un máximo de 5
+    const addLevel = () => {
+        if (levels.length >= 5) {
+            setNotification({
+                type: "error",
+                title: "Límite alcanzado",
+                message: "No puedes tener más de 5 niveles en una rúbrica."
+            });
+            return;
+        }
+
+        // Calculamos el nuevo ID y añadimos un nivel vacío
+        const newId = levels.length > 0 ? Math.max(...levels.map(l => l.idNivel)) + 1 : 1;
+        const nuevosLevels = [...levels, { idNivel: newId, nivelDescripcion: "", rangoNota: "" }];
+
+        // Recalculamos los rangos con base en la nueva cantidad de niveles
+        const actualizados = handleRangosChanges(notaMaxima, nuevosLevels);
+        setLevels(actualizados);
+
+        // Actualizamos también los criterios existentes
+        setRows(rows.map(row => ({
+            ...row,
+            niveles: actualizados.map(level => ({ ...level, nivelDescripcion: "" }))
+        })));
+    };
+
+    // Elimina el último nivel de la lista, asegurando al menos 1 nivel
+    const removeLevel = () => {
+        if (levels.length <= 1) {
+            setNotification({
+                type: "error",
+                title: "Acción no permitida",
+                message: "Debe haber al menos un nivel en la rúbrica."
+            });
+            return;
+        }
+
+        // Quitamos el último nivel
+        const nuevosLevels = levels.slice(0, -1);
+
+        // Recalculamos los rangos con la nueva cantidad de niveles
+        const actualizados = handleRangosChanges(notaMaxima, nuevosLevels);
+        setLevels(actualizados);
+
+        // También actualizamos las filas de criterios para mantener la consistencia
+        setRows(rows.map(row => ({
+            ...row,
+            niveles: actualizados.map(level => ({ ...level, nivelDescripcion: "" }))
+        })));
+    };
+
+
+    //Manejador que calcula los rangos de nota para cada nivel segun la nota maxima
+    const handleRangosChanges = (nuevaNotaMaxima: number | null, nivelesActuales: typeof levels) => {
+        if (!nuevaNotaMaxima || nivelesActuales.length === 0) {
+            // Si no hay nota máxima, dejamos los rangos vacíos
+            return nivelesActuales.map(level => ({ ...level, rangoNota: "" }));
+        }
+
+        // Calculamos el tamaño de cada paso
+        const paso = nuevaNotaMaxima / nivelesActuales.length;
+
+        // Creamos un rango para cada nivel basado en el paso
+        return nivelesActuales.map((level, index) => ({
+            ...level,
+            rangoNota: `${(paso * index).toFixed(2)}-${(paso * (index + 1)).toFixed(2)}`
+        }));
+    };
+
+
     // Manejador que se ejecuta cuando cambia el valor del input en Nota Maxima de la Rubrica
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         // Obtenemos el valor numérico del input
@@ -82,47 +156,14 @@ export default function CreateRubric()
         else {
             setNota(value);
         }
-    };
+        // ✅ Recalculamos los rangos con la nueva nota
+        const nuevosLevels = handleRangosChanges(value, levels);
+        setLevels(nuevosLevels);
 
-    //Agregar Un nuevo nivel
-    const addLevel = () => {
-        if (levels.length >= 5)
-        {
-            setNotification({
-                type: "error",
-                title: "Límite alcanzado",
-                message: "No puedes tener más de 5 niveles en una rúbrica."
-            });
-            return;
-        }
-
-        const newId = levels.length > 0 ? Math.max(...levels.map(l => l.idNivel)) + 1 : 1;
-        const newLevel = {
-            idNivel: newId,
-            nivelDescripcion: "",
-            rangoNota: `${newId - 1}-${newId}`
-        };
-        setLevels([...levels, newLevel]);
+        // ✅ También actualizamos los niveles dentro de cada fila de criterio
         setRows(rows.map(row => ({
             ...row,
-            niveles: [...row.niveles, { ...newLevel, nivelDescripcion: "" }]
-        })));
-    };
-    //Eliminar nivel
-    const removeLevel = () => {
-        if (levels.length <= 1) {
-            setNotification({
-                type: "error",
-                title: "Acción no permitida",
-                message: "Debe haber al menos un nivel en la rúbrica."
-            });
-            return;
-        }
-
-        setLevels(levels.slice(0, -1));
-        setRows(rows.map(row => ({
-            ...row,
-            niveles: row.niveles.slice(0, -1)
+            niveles: nuevosLevels.map(level => ({ ...level, nivelDescripcion: "" }))
         })));
     };
 
@@ -375,7 +416,16 @@ export default function CreateRubric()
                         </div>
                         <div className="grid w-full max-w-sm items-center gap-1.5">
                             <Label htmlFor="notaRubrica" className="whitespace-nowrap">Nota Máxima Rúbrica</Label>
-                            <Input id="notaRubrica" type="number" min={0} max={5} step={0.1} value={nota} onChange={handleChange} placeholder="0 - 5" />
+                            <Input
+                                id="notaRubrica"
+                                type="number"
+                                min={0}
+                                max={5}
+                                step={0.1}
+                                value={nota}
+                                onChange={handleChange}
+                                placeholder="0 - 5"
+                            />
                         </div>
                         <div className="grid w-full max-w-sm items-center gap-1.5">
                             <Label htmlFor="objetivoEstudio">Objetivo de Estudio</Label>
