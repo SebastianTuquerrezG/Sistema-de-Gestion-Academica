@@ -28,9 +28,17 @@
 	<properties>
 		<java.version>21</java.version>
 		<spring-boot.version>3.4.3</spring-boot.version>
-		<spring-ai.version>1.0.0-M6</spring-ai.version>
 		<spring-cloud.version>2024.0.0</spring-cloud.version>
+		<spring-ai.version>1.0.0-M6</spring-ai.version>
+		<mariadb.version>3.1.4</mariadb.version>
+		<lombok.version>1.18.30</lombok.version>
+		<mapstruct.version>1.6.3</mapstruct.version>
+		<spring-restdocs.version>2.0.7</spring-restdocs.version>
+		<spring-validation>3.1.5</spring-validation> <!-- Puedes ajustar esta si usas otra -->
+		<dotenv.version>5.2.2</dotenv.version>
+		<maven-resources-plugin.version>3.3.1</maven-resources-plugin.version>
 	</properties>
+
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

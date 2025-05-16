@@ -7,6 +7,7 @@ import PromedioGeneralChart from "./components/PromedioGeneralChart";
 import PromedioPorCriterioChart from "./components/PromedioPorCriterioChart";
 import HistogramaCriterioChart from "./components/HistogramaCriterioChart";
 import ExportarExcelButton from "./components/ExportarExcelButton";
+import EstadisticasStateHandler from "./components/EstadisticasStateHandler";
 import { useEstadisticasData } from "./hooks/useEstadisticasData";
 import { getEstadisticasGenerales } from "./utils/mockEstadisticasService";
 import "../../assets/css/estadisticas.css";
@@ -26,14 +27,30 @@ const Estadisticas: React.FC = () => {
 
   const [estadisticas, setEstadisticas] = useState<any>(null);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const cargarEstadisticas = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const data = await getEstadisticasGenerales({});
+      setEstadisticas(data);
+    } catch (err) {
+      setError('Error al cargar los datos. Por favor, inténtalo de nuevo más tarde.');
+      console.error('Error al cargar estadísticas:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    setLoading(true);
-    getEstadisticasGenerales({}).then((data) => {
-      setEstadisticas(data);
-      setLoading(false);
-    });
+    cargarEstadisticas();
   }, []);
+
+  const hasData = estadisticas && 
+    (estadisticas.promedioGeneral?.length > 0 || 
+     estadisticas.criterios?.length > 0 || 
+     estadisticas.histogramas?.length > 0);
 
   return (
     <div className="estadisticas-main-container">
@@ -56,7 +73,13 @@ const Estadisticas: React.FC = () => {
           onSelectPeriodo={setSelectedPeriodo}
         />
 
-        {estadisticas && !loading && (
+        <EstadisticasStateHandler
+          loading={loading}
+          error={error}
+          hasData={hasData}
+        />
+
+        {!loading && !error && hasData && (
           <>
             <EstadisticasCards
               media={estadisticas.media}
@@ -80,7 +103,6 @@ const Estadisticas: React.FC = () => {
             </div>
           </>
         )}
-        {loading && <div style={{ textAlign: 'center', marginTop: 40 }}>Cargando estadísticas...</div>}
       </div>
     </div>
   );
