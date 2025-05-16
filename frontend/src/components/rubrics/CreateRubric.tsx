@@ -10,17 +10,21 @@ import Notification from "@/components/notifications/notification";
 import { createRubric } from "@/services/rubricService";
 import {RubricInterface} from "@/interfaces/RubricInterface.ts";
 
-
+//Definicion del tipo de notificacion
 type NotificationType = {
     type: "error" | "info" | "success";
     title: string;
     message: string;
 };
 
-export default function CreateRubric() {
+export default function CreateRubric()
+{
+    // Estado local para almacenar el valor de la nota (puede ser número o vacío)
+    const [nota, setNota] = useState<number | "">("");
+
     const [levels, setLevels] = useState([
         { idNivel: 1, nivelDescripcion: "", rangoNota: "0-1" },
-        { idNivel: 2, nivelDescripcion: "", rangoNota: "1-2" },
+        { idNivel: 2, nivelDescripcion: "", rangoNota: "1-3" },
         { idNivel: 3, nivelDescripcion: "", rangoNota: "2-3" }
     ]);
 
@@ -52,8 +56,37 @@ export default function CreateRubric() {
         }
     }, [notification]);
 
+    // Manejador que se ejecuta cuando cambia el valor del input
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) =>
+    {
+        // Obtenemos el valor numérico del input
+        const value = e.target.valueAsNumber;
+
+        // Si no es un número ponemos el estado vacío
+        if (isNaN(value))
+        {
+            setNota("");
+            return;
+        }
+
+        // Validamos si el valor esta en el reango de nota
+        if (value > 5 || value < 0) {
+            setNotification({
+                type: "error",
+                title: "Límite excedido",
+                message: "La nota debe estar entre 0 y 5",
+            });
+            setNota(""); // Ajustamos el valor al máximo
+        }
+        // Si el valor está dentro del rango permitido, lo guardamos
+        else {
+            setNota(value);
+        }
+    };
+
     const addLevel = () => {
-        if (levels.length >= 5) {
+        if (levels.length >= 5)
+        {
             setNotification({
                 type: "error",
                 title: "Límite alcanzado",
@@ -311,8 +344,8 @@ export default function CreateRubric() {
                             <Input id="materia" placeholder="Nombre de la materia" />
                         </div>
                         <div className="grid w-full max-w-sm items-center gap-1.5">
-                            <Label htmlFor="notaRubrica">Nota Máxima Rúbrica</Label>
-                            <Input id="notaRubrica" type="number" placeholder="Ej: 3" />
+                            <Label htmlFor="notaRubrica" className="whitespace-nowrap">Nota Máxima Rúbrica</Label>
+                            <Input id="notaRubrica" type="number" min={0} max={5} step={0.1} value={nota} onChange={handleChange} placeholder="0 - 5" />
                         </div>
                         <div className="grid w-full max-w-sm items-center gap-1.5 col-span-2">
                             <Label htmlFor="objetivoEstudio">Objetivo de Estudio</Label>
