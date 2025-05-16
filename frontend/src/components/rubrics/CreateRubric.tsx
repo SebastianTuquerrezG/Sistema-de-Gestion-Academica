@@ -49,6 +49,7 @@ export default function CreateRubric()
 
     const [notification, setNotification] = useState<NotificationType | null>(null);
 
+    //Efecto de la notificacion
     useEffect(() => {
         if (notification) {
             const timeout = setTimeout(() => setNotification(null), 4000);
@@ -56,9 +57,8 @@ export default function CreateRubric()
         }
     }, [notification]);
 
-    // Manejador que se ejecuta cuando cambia el valor del input
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) =>
-    {
+    // Manejador que se ejecuta cuando cambia el valor del input en Nota Maxima de la Rubrica
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         // Obtenemos el valor numérico del input
         const value = e.target.valueAsNumber;
 
@@ -73,7 +73,7 @@ export default function CreateRubric()
         if (value > 5 || value < 0) {
             setNotification({
                 type: "error",
-                title: "Límite excedido",
+                title: "Nota Fuera de Rango",
                 message: "La nota debe estar entre 0 y 5",
             });
             setNota(""); // Ajustamos el valor al máximo
@@ -84,6 +84,7 @@ export default function CreateRubric()
         }
     };
 
+    //Agregar Un nuevo nivel
     const addLevel = () => {
         if (levels.length >= 5)
         {
@@ -107,7 +108,7 @@ export default function CreateRubric()
             niveles: [...row.niveles, { ...newLevel, nivelDescripcion: "" }]
         })));
     };
-
+    //Eliminar nivel
     const removeLevel = () => {
         if (levels.length <= 1) {
             setNotification({
@@ -137,20 +138,49 @@ export default function CreateRubric()
         setRows(newRows);
     };
 
+    // Manejador que se ejecuta cuando cambia el valor del input en Porcentaje de un criterio
     const handlePorcentajeChange = (rowIndex: number, value: string) => {
         const numericValue = parseFloat(value);
-        if (!isNaN(numericValue) && (numericValue < 0 || numericValue > 1)) {
+        //validacion individual de rango
+        if (!isNaN(numericValue) && (numericValue < 0 || numericValue > 100)) {
             setNotification({
                 type: "error",
-                title: "Error",
-                message: "El porcentaje debe estar entre 0 y 1."
+                title: "Porcentaje Fuera de Rango",
+                message: "El valor ingresado debe estar entre 0% y 100%"
             });
             return;
         }
-
+        //clonar filas yactualizar el valor en la fila correspondiente
         const newRows = [...rows];
         newRows[rowIndex].crfPorcentaje = value;
         setRows(newRows);
+
+        // Convertir todos los valores a número y calcular la suma total
+        const totalPorcentaje = newRows.reduce((total, row) => {
+            const val = parseFloat(row.crfPorcentaje);
+            return total + (isNaN(val) ? 0 : val);
+        }, 0);
+
+        // Mostrar notificaciones según el total
+        if (totalPorcentaje > 100) {
+            setNotification({
+                type: "error",
+                title: "Porcentaje Excedido",
+                message: `La suma total de los porcentajes es ${totalPorcentaje}%. No puede exceder 100%.`,
+            });
+        } else if (totalPorcentaje < 100) {
+            setNotification({
+                type: "info",
+                title: "Suma Incompleta",
+                message: `La suma total es ${totalPorcentaje}%. Asegúrate de que la suma sea exactamente 100%.`,
+            });
+        } else {
+            setNotification({
+                type: "success",
+                title: "Porcentaje Correcto",
+                message: "La suma total de los porcentajes es 100%.",
+            });
+        }
     };
 
     const handleComentarioChange = (rowIndex: number, value: string) => {
@@ -347,7 +377,7 @@ export default function CreateRubric()
                             <Label htmlFor="notaRubrica" className="whitespace-nowrap">Nota Máxima Rúbrica</Label>
                             <Input id="notaRubrica" type="number" min={0} max={5} step={0.1} value={nota} onChange={handleChange} placeholder="0 - 5" />
                         </div>
-                        <div className="grid w-full max-w-sm items-center gap-1.5 col-span-2">
+                        <div className="grid w-full max-w-sm items-center gap-1.5">
                             <Label htmlFor="objetivoEstudio">Objetivo de Estudio</Label>
                             <Input id="objetivoEstudio" placeholder="Objetivo de la evaluación" />
                         </div>
@@ -391,14 +421,15 @@ export default function CreateRubric()
                                 </TableCell>
                                 <TableCell>
                                     <div className="flex items-center">
+                                        {/* Input controlado */}
                                         <Input
                                             type="number"
                                             min="0"
-                                            max="1"
-                                            step="0.01"
+                                            max="100"
+                                            step="0.1"
                                             onChange={(e) => handlePorcentajeChange(rowIndex, e.target.value)}
                                             value={row.crfPorcentaje}
-                                            placeholder="0.00"
+                                            placeholder="0.0%"
                                         />
                                     </div>
                                 </TableCell>
