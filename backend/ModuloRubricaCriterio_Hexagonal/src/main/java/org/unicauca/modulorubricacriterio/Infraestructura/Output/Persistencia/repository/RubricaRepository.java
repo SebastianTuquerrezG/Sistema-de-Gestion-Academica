@@ -8,8 +8,19 @@ import org.unicauca.modulorubricacriterio.Infraestructura.Output.Persistencia.en
 
 @Repository
 public interface RubricaRepository extends JpaRepository<RubricaEntity,Long> {
-    
+    /**
+     * Consulta el nombre de una materia asociada a una rúbrica
+     * @param idRubrica
+     * @return Nombre de una materia asociada a una rúbrica
+     */
     @Query(value = "SELECT s.name FROM subject s INNER JOIN rubrica r ON r.subject_id = s.subject_id WHERE r.id_rubrica = :idRubrica", nativeQuery = true)
     String findSubjectNameByRubricaId(@Param("idRubrica") Long idRubrica);
 
+    /**
+     * Verifica si existe una rúbrica con el nombre dado
+     * @param nombreRubrica
+     * @return Número de rúbricas con el nombre dado
+     */
+    @Query(value = "SELECT COUNT(*) FROM Rubrica r WHERE r.nombre_Rubrica = :nombreRubrica",nativeQuery = true)
+    Integer existeRubricaConNombre(@Param("nombreRubrica") String nombreRubrica);
 }

@@ -1,7 +1,6 @@
 package org.unicauca.modulorubricacriterio.Infraestructura.Fachada.exception.exceptionOwn;
 
 import org.unicauca.modulorubricacriterio.Infraestructura.Fachada.exception.excepcionStructure.CodigoError;
-
 import lombok.Getter;
 import lombok.Setter;
 

@@ -1,7 +1,7 @@
 package org.unicauca.modulorubricacriterio.Infraestructura.Output.Persistencia.conectoresBD;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.ArrayList;
 
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
@@ -13,11 +13,8 @@ import org.unicauca.modulorubricacriterio.Infraestructura.Fachada.exception.exce
 import org.unicauca.modulorubricacriterio.Infraestructura.Fachada.exception.exceptionOwn.EntidadNoExisteException;
 import org.unicauca.modulorubricacriterio.Infraestructura.Input.validacionEstados.EstadosController;
 import org.unicauca.modulorubricacriterio.Infraestructura.Input.validacionEstados.EstadosEnum;
-
-import org.unicauca.modulorubricacriterio.Infraestructura.Output.Persistencia.entity.CriterioEntity;
 import org.unicauca.modulorubricacriterio.Infraestructura.Output.Persistencia.entity.MateriaEntity;
-import org.unicauca.modulorubricacriterio.Infraestructura.Output.Persistencia.entity.RAEntity; 
-
+import org.unicauca.modulorubricacriterio.Infraestructura.Output.Persistencia.entity.RAEntity;
 import org.unicauca.modulorubricacriterio.Infraestructura.Output.Persistencia.entity.RubricaEntity;
 import org.unicauca.modulorubricacriterio.Infraestructura.Output.Persistencia.repository.MateriaRepository;
 import org.unicauca.modulorubricacriterio.Infraestructura.Output.Persistencia.repository.RARepository;
@@ -28,7 +25,7 @@ public class ConectorBDRubricaAdapter implements IConectorBDRubricaPort {
 
     private final RubricaRepository rubricaRepository;
     private final ModelMapper rubricaMapper;
-private final MateriaRepository materiaRepository;
+    private final MateriaRepository materiaRepository;
     private final RARepository raRepository;
 
     public ConectorBDRubricaAdapter(RubricaRepository rubricaRepository, ModelMapper rubricaMapper, MateriaRepository materiaRepository, RARepository raRepository) {
@@ -87,6 +84,9 @@ private final MateriaRepository materiaRepository;
         RubricaEntity objRubricaEntity = this.rubricaMapper.map(objRubrica, RubricaEntity.class);
         MateriaEntity objMateriaEntity = this.materiaRepository.findById(objRubrica.getIdMateria()).orElseThrow(() -> new EntidadNoExisteException("Materia con el id {"+objRubrica.getIdMateria()+"} no existe"));
         RAEntity objRAEntity = this.raRepository.findById(objRubrica.getRaId()).orElseThrow(() -> new EntidadNoExisteException("RA con el id {"+objRubrica.getRaId()+"} no existe"));
+        Integer numRubricasConNombre = this.existeRubricaConNombre(objRubrica.getNombreRubrica());
+        //Para Guardar rúbricas duplicadas
+        if(numRubricasConNombre >= 1) objRubricaEntity.setNombreRubrica(objRubrica.getNombreRubrica()+" ("+numRubricasConNombre+")");
 
         objRubricaEntity.setSubject(objMateriaEntity);
         objRubricaEntity.setRa(objRAEntity);
@@ -117,97 +117,85 @@ private final MateriaRepository materiaRepository;
     }
 
     @Override
-    public Rubrica updateRubric(Long id, Rubrica objRubrica) 
-    {
+    public Rubrica updateRubric(Long id, Rubrica objRubrica) {
         RubricaEntity objRubricaActualizada = null;
         RubricaEntity objRubricaEntity = this.rubricaMapper.map(objRubrica, RubricaEntity.class);
         RubricaEntity rubricaEncontrada = this.rubricaRepository.findById(id).orElse(null);
 
-        if(rubricaEncontrada==null)
-        {
-            throw new EntidadNoExisteException("Rúbrica con el id {"+id+"} no existe");
-        }
-
         if (objRubricaEntity.getSubject() != null) {
-            MateriaEntity objMateriaEntity = this.materiaRepository.findById(objRubrica.getIdMateria())
-                    .orElseThrow(() -> new EntidadNoExisteException("Materia con el id {" + objRubrica.getIdMateria() + "} no existe"));
+            MateriaEntity objMateriaEntity = this.materiaRepository.findById(objRubrica.getIdMateria()).orElseThrow(() -> new EntidadNoExisteException("Materia con el id {"+objRubrica.getIdMateria()+"} no existe"));
             objRubricaEntity.setSubject(objMateriaEntity);
         } else {
             assert rubricaEncontrada != null;
             objRubricaEntity.setSubject(rubricaEncontrada.getSubject());
         }
-
         if (objRubricaEntity.getRa() != null) {
-            RAEntity objRAEntity = this.raRepository.findById(objRubrica.getRaId())
-                    .orElseThrow(() -> new EntidadNoExisteException("RA con el id {" + objRubrica.getRaId() + "} no existe"));
+            RAEntity objRAEntity = this.raRepository.findById(objRubrica.getRaId()).orElseThrow(() -> new EntidadNoExisteException("RA con el id {"+objRubrica.getRaId()+"} no existe"));
             objRubricaEntity.setRa(objRAEntity);
         } else {
             assert rubricaEncontrada != null;
             objRubricaEntity.setRa(rubricaEncontrada.getRa());
         }
-
-        if (rubricaEncontrada == null) {
-            throw new EntidadNoExisteException("Rúbrica con el id {" + id + "} no existe");
-
+        if(rubricaEncontrada==null)
+        {
+            throw new EntidadNoExisteException("Rúbrica con el id {"+id+"} no existe");
         }
 
         rubricaEncontrada.setCriterios(rubricaEncontrada.getCriterios() == null ? new ArrayList<>() : rubricaEncontrada.getCriterios());
 
         // Actualizar o agregar criterios
         for (int i = 0; i < objRubricaEntity.getCriterios().size(); i++) {
+            var criterioNuevo = objRubricaEntity.getCriterios().get(i);
+            
             if (i < rubricaEncontrada.getCriterios().size()) {
                 var criterioExistente = rubricaEncontrada.getCriterios().get(i);
-                var criterioNuevo = objRubricaEntity.getCriterios().get(i);
                 criterioExistente.setCrfDescripcion(criterioNuevo.getCrfDescripcion());
                 criterioExistente.setCrfNota(criterioNuevo.getCrfNota());
                 criterioExistente.setCrfPorcentaje(criterioNuevo.getCrfPorcentaje());
-                criterioExistente.setNiveles(criterioExistente.getNiveles() == null ? new ArrayList<>() : criterioExistente.getNiveles());
+                
+                criterioExistente.setNiveles(
+                    criterioExistente.getNiveles() == null ? new ArrayList<>() : criterioExistente.getNiveles()
+                );
 
-                // Actualizar niveles y asociarlos correctamente con el criterio
+                // Actualizar o agregar niveles
                 for (int j = 0; j < criterioNuevo.getNiveles().size(); j++) {
-                    var nivelExistente = j < criterioExistente.getNiveles().size() ? criterioExistente.getNiveles().get(j) : null;
                     var nivelNuevo = criterioNuevo.getNiveles().get(j);
+                    nivelNuevo.setCriterio(criterioExistente); // asociación
 
-                    if (nivelExistente != null) {
-                        // Actualizar nivel existente
+                    if (j < criterioExistente.getNiveles().size()) {
+                        var nivelExistente = criterioExistente.getNiveles().get(j);
                         nivelExistente.setNivelDescripcion(nivelNuevo.getNivelDescripcion());
                         nivelExistente.setRangoNota(nivelNuevo.getRangoNota());
                     } else {
-                        // Agregar nuevo nivel
                         criterioExistente.getNiveles().add(nivelNuevo);
                     }
-                    // Asegurarse de que cada nivel tenga el Criterio correspondiente
-                    nivelNuevo.setCriterio(criterioExistente);
                 }
 
                 // Eliminar niveles sobrantes
-                criterioExistente.getNiveles().subList(criterioNuevo.getNiveles().size(), criterioExistente.getNiveles().size()).clear();
+                if (criterioExistente.getNiveles().size() > criterioNuevo.getNiveles().size()) {
+                    criterioExistente.getNiveles().subList(criterioNuevo.getNiveles().size(),criterioExistente.getNiveles().size()).clear();
+                }
+
             } else {
                 // Agregar nuevo criterio
-                rubricaEncontrada.getCriterios().add(objRubricaEntity.getCriterios().get(i));
+                criterioNuevo.setRubrica(rubricaEncontrada);
+
+                // Asociar niveles con el nuevo criterio
+                if (criterioNuevo.getNiveles() != null) {
+                    for (var nivel : criterioNuevo.getNiveles()) {
+                        nivel.setCriterio(criterioNuevo);
+                    }
+                }
+
+                rubricaEncontrada.getCriterios().add(criterioNuevo);
             }
         }
 
+    // Eliminar criterios sobrantes
+    if (rubricaEncontrada.getCriterios().size() > objRubricaEntity.getCriterios().size()) {
+        rubricaEncontrada.getCriterios().subList(objRubricaEntity.getCriterios().size(),rubricaEncontrada.getCriterios().size()).clear();
+    }
 
-        rubricaEncontrada.setNombreRubrica(objRubrica.getNombreRubrica());
-        rubricaEncontrada.setNotaRubrica(objRubrica.getNotaRubrica());
-        rubricaEncontrada.setObjetivoEstudio(objRubrica.getObjetivoEstudio());
-        rubricaEncontrada.setCriterios(objRubricaEntity.getCriterios());
-
-        // Eliminar criterios sobrantes
-        rubricaEncontrada.getCriterios().subList(objRubricaEntity.getCriterios().size(), rubricaEncontrada.getCriterios().size()).clear();
-
-        // Actualizar campos principales de la rubrica
-        rubricaEncontrada.setSubject(objRubricaEntity.getSubject());
-        rubricaEncontrada.setNombreRubrica(objRubrica.getNombreRubrica());
-        rubricaEncontrada.setNotaRubrica(objRubrica.getNotaRubrica());
-        rubricaEncontrada.setObjetivoEstudio(objRubrica.getObjetivoEstudio());
-        rubricaEncontrada.setRa(objRubricaEntity.getRa());
-
-        // Eliminar criterios sobrantes
-        rubricaEncontrada.getCriterios().subList(objRubricaEntity.getCriterios().size(), rubricaEncontrada.getCriterios().size()).clear();
-
-        // Actualizar campos principales de la rubrica
         rubricaEncontrada.setSubject(objRubricaEntity.getSubject());
         rubricaEncontrada.setNombreRubrica(objRubrica.getNombreRubrica());
         rubricaEncontrada.setNotaRubrica(objRubrica.getNotaRubrica());
@@ -215,22 +203,22 @@ private final MateriaRepository materiaRepository;
         rubricaEncontrada.setRa(objRubricaEntity.getRa());
 
         objRubricaActualizada = this.rubricaRepository.save(rubricaEncontrada);
-
         Rubrica rubricaActualizadaReturn = this.rubricaMapper.map(objRubricaActualizada, Rubrica.class);
-        rubricaActualizadaReturn.setNombreMateria(this.rubricaRepository.findSubjectNameByRubricaId(id));
 
-        if (rubricaActualizadaReturn.getCriterios() != null) {
+        rubricaActualizadaReturn.setNombreMateria(this.rubricaRepository.findSubjectNameByRubricaId(id));
+        
+        if(rubricaActualizadaReturn.getCriterios() != null)
+        {
             rubricaActualizadaReturn.getCriterios().forEach(criterio -> {
                 criterio.setIdRubrica(rubricaActualizadaReturn.getIdRubrica());
-                if (criterio.getNiveles() != null) {
+                if(criterio.getNiveles() != null) {
                     criterio.getNiveles().forEach(nivel -> nivel.setIdCriterio(criterio.getIdCriterio()));
                 }
             });
         }
 
-        return rubricaActualizadaReturn;
+        return rubricaActualizadaReturn;   
     }
-
 
     @Override
     public Rubrica deleteRubric(Long IdRubrica) {
@@ -282,6 +270,16 @@ private final MateriaRepository materiaRepository;
         return rubricaRetornar;
     }
 
+    /**
+     * @brief método que verifica que existe una rúbrica con el nombre dado
+     * @param nombreRubrica nombre de la rúbrica a verificar
+     * @return número de coincidencias de rúbricas con el nombre dado
+     */
+    private Integer existeRubricaConNombre(String nombreRubrica) {
+        Integer coincidencias = this.rubricaRepository.existeRubricaConNombre(nombreRubrica);
+        return coincidencias;
+    }
+
     private EstadosEnum validarEstado(String Estado)
     {
         EstadosEnum estadoSiguiente = null;
@@ -295,7 +293,6 @@ private final MateriaRepository materiaRepository;
         }
         return estadoSiguiente;
     }
-
-
+    
 
 }

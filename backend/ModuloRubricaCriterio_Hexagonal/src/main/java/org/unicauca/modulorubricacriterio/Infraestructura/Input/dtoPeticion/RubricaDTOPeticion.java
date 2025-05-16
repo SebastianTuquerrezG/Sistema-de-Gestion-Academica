@@ -16,21 +16,17 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class RubricaDTOPeticion {
-
+    private Long idRubrica;
+    private String nombreRubrica;
     private String materia;
     private Long idMateria;
     private int notaRubrica;
     private String objetivoEstudio;
-
     @NotNull(message = "{Rubricas.criteriosList}")
     @Size(min = 1, message = "{Rubricas.criteriosList.size}")
     @Valid 
     private List<@NotNull(message = "{Criterios.nivelesList.size}") CriterioDTOPeticion> criterios;
-    
     private String estado;
-
-
     @NotNull(message = "{Rubrica.raId}")
     private Long raId;
-
 }
