@@ -82,7 +82,7 @@ services:
 
   mariadb:
     image: mariadb:10.5
-    restart: unless-stopped
+    restart: always
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: unicauca     # This could be changed for another name.
@@ -93,7 +93,7 @@ services:
 
   common_utilities_mariadb:
     image: mariadb:10.5
-    restart: unless-stopped
+    restart: always
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: unicauca
@@ -112,6 +112,22 @@ services:
       - RABBITMQ_DEFAULT_PASS=unicaucaRabbit
     networks:
       - backend-network
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    container_name: phpmyadmin_sga
+    restart: always
+    ports:
+      - "8888:80" # Accede a phpMyAdmin en localhost:8888
+    environment:
+      - PMA_ARBITRARY=1  # Permite conexión a cualquier servidor
+      - PMA_HOST=mariadb  # Servidor por defecto (primera BD)
+      - MYSQL_ROOT_PASSWORD=root
+    networks:
+      - backend-network
+    depends_on:
+      - mariadb
+      - common_utilities_mariadb
 
 networks:
   backend-network:
