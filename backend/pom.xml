@@ -20,7 +20,7 @@
         <module>eureka-server</module>
         <module>ModuloRubricaCriterio_Hexagonal</module>
         <module>evaluation-service</module>
-        <module>helper-service</module>
+        <module>common_utilities-service</module>
     </modules>
 
     <url/>
