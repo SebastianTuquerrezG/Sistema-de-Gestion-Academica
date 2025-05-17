@@ -21,6 +21,7 @@
         <module>ModuloRubricaCriterio_Hexagonal</module>
         <module>evaluation-service</module>
         <module>common_utilities-service</module>
+        <module>auth-service</module>
     </modules>
 
     <url/>
