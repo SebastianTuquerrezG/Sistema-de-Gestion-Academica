@@ -48,6 +48,7 @@
 		<spring-security-test.version>6.1.7</spring-security-test.version>
 		<asciidoctor-maven-plugin.version>2.2.1</asciidoctor-maven-plugin.version>
 	</properties>
+
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

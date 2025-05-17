@@ -21,6 +21,7 @@
 		<lombok.version>1.18.30</lombok.version>
 		<dotenv-java.version>3.0.0</dotenv-java.version>
 		<spring-actuator.version>3.4.3</spring-actuator.version>
+		<asciidoctor-maven-plugin.version>2.2.1</asciidoctor-maven-plugin.version>
 	</properties>
 
 	<dependencies>
@@ -105,6 +106,11 @@
 			<artifactId>classgraph</artifactId>
 			<version>4.8.139</version>
 		</dependency>
+
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-webflux</artifactId>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -142,6 +148,24 @@
 						<goals>
 							<goal>repackage</goal>
 						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.asciidoctor</groupId>
+				<artifactId>asciidoctor-maven-plugin</artifactId>
+				<version>${asciidoctor-maven-plugin.version}</version>
+				<executions>
+					<execution>
+						<id>generate-docs</id>
+						<phase>prepare-package</phase>
+						<goals>
+							<goal>process-asciidoc</goal>
+						</goals>
+						<configuration>
+							<backend>html</backend>
+							<doctype>book</doctype>
+						</configuration>
 					</execution>
 				</executions>
 			</plugin>

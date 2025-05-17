@@ -120,9 +120,12 @@ services:
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: ${EVALUATION_DATASOURCE_PASSWORD}
-      MYSQL_DATABASE: ${EVALUATION_DATASOURCE_USERNAME}
+      MYSQL_DATABASE: ${EVALUATION_DATASOURCE_NAME}
     ports:
       - "3306:3306"
+    volumes:
+      - mariadb_data:/var/lib/mysql      -
+      - ./init/mariadb.sql:/docker-entrypoint-initdb.d/mariadb.sql
     networks:
       - backend-network
 
@@ -131,9 +134,12 @@ services:
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: ${COMMON_DATASOURCE_PASSWORD}
-      MYSQL_DATABASE: ${COMMON_DATASOURCE_USERNAME}
+      MYSQL_DATABASE: ${COMMON_DATASOURCE_NAME}
     ports:
       - "3308:3306"
+    volumes:
+      - common_utilities_data:/var/lib/mysql
+      - ./init/common.sql:/docker-entrypoint-initdb.d/common.sql
     networks:
       - backend-network
 
@@ -142,9 +148,12 @@ services:
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: ${RUBRIC_DATASOURCE_PASSWORD}
-      MYSQL_DATABASE: ${RUBRIC_DATASOURCE_USERNAME}
+      MYSQL_DATABASE: ${RUBRIC_DATASOURCE_NAME}
     ports:
       - "3310:3306"
+    volumes:
+      - rubric_data:/var/lib/mysql
+      - ./init/rubric.sql:/docker-entrypoint-initdb.d/rubric.sql
     networks:
       - backend-network
 
@@ -181,3 +190,6 @@ networks:
 
 volumes:
   keycloak_data_sga:
+  mariadb_data:
+  common_utilities_data:
+  rubric_data:

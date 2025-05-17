@@ -8,12 +8,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.unicauca.modulorubricacriterio.Infraestructura.Input.validacionEstados.EstadosEnum;
 import org.unicauca.modulorubricacriterio.Infraestructura.Output.Persistencia.entity.*;
 import org.unicauca.modulorubricacriterio.Infraestructura.Output.Persistencia.repository.*;
 
 @SpringBootApplication
 @RequiredArgsConstructor
+@EnableDiscoveryClient
 public class ModuloRubricaCriterioApplication implements CommandLineRunner {
 
     private final RubricaRepository objRubricaRepository;
