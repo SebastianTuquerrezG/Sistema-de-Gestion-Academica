@@ -57,7 +57,7 @@ public class EvaluationService implements EvaluationPort {
 
         Evaluation evaluation = EvaluationMapper.toModel(evaluationRequestDTO);
 
-        // Sending message for Helper_service
+        // Sending message for Common_utilities_service
         rabbitService.sendEvaluation(evaluationRequestDTO);
 
         EvaluationEntity evaluationEntity = EvaluationMapper.toEntity(evaluation);

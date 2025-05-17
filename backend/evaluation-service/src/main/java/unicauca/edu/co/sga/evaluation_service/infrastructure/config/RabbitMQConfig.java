@@ -1,16 +1,15 @@
 package unicauca.edu.co.sga.evaluation_service.infrastructure.config;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.support.converter.DefaultClassMapper;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
-import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import unicauca.edu.co.sga.evaluation_service.application.dto.request.EnrollRequestDTO;
-import unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.entities.EnrollEntity;
-import unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.entities.EvaluationEntity;
+import unicauca.edu.co.sga.evaluation_service.application.dto.request.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -25,19 +24,19 @@ public class RabbitMQConfig {
     public static final String ROUTING_KEY_EVALUATION = "evaluation_routing_key";
 
 
-    // Variables for rabbit consumer of Helper_service
+    // Variables for rabbit consumer of Common_utilities_service
     public static final String ROUTING_KEY_TEACHER = "teacher_routing_key";
     public static final String ROUTING_KEY_SUBJECT = "subject_routing_key";
     public static final String ROUTING_KEY_COURSE = "course_routing_key";
     public static final String ROUTING_KEY_STUDENT = "student_routing_key";
-    public static final String ROUTING_KEY_RA = "RA_routing_key";
+//    public static final String ROUTING_KEY_RA = "RA_routing_key";
 
-    // Queue of Helper_service
+    // Queue of Common_utilities_service
     public static final String QUEUE_TEACHER = "queue_teacher";
     public static final String QUEUE_SUBJECT = "queue_subject";
     public static final String QUEUE_COURSE = "queue_course";
     public static final String QUEUE_STUDENT = "queue_student";
-    public static final String QUEUE_RA = "queue_ra";
+//    public static final String QUEUE_RA = "queue_ra";
 
 
     // Variables for rabbit of rubric module
@@ -57,20 +56,38 @@ public class RabbitMQConfig {
     // Serialization for JSON
     @Bean
     public Jackson2JsonMessageConverter messageConverter(){
-        Jackson2JsonMessageConverter converter = new Jackson2JsonMessageConverter();
-        DefaultClassMapper classMapper = new DefaultClassMapper();
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+
+        Jackson2JsonMessageConverter converter = new Jackson2JsonMessageConverter(objectMapper);
+
+        DefaultClassMapper classMapper = new DefaultClassMapper(){
+            @Override
+            public void fromClass(Class<?> clazz, MessageProperties properties){
+                properties.setHeader(getClassIdFieldName(), clazz.getSimpleName());
+            }
+        };
 
         Map<String, Class<?>> idClassMapping = new HashMap<>();
-//        idClassMapping.put("unicauca.edu.co.sga.evaluation_service.application.dto.request.EnrollRequestDTO", EnrollRequestDTO.class);
-//        idClassMapping.put("unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.entities.EvaluationEntity", EvaluationEntity.class);
-
-        idClassMapping.put("EnrollRequestDTO", EnrollRequestDTO.class);
-//        idClassMapping.put("EnrollRequestDTO", EnrollRequestDTO.class);
+        addDTOMapping(idClassMapping);
 
         classMapper.setIdClassMapping(idClassMapping);
+        classMapper.setTrustedPackages("*");
+
         converter.setClassMapper(classMapper);
 
         return converter;
+    }
+
+    /**
+     * Método para agregar mapeos de DTOs
+     */
+    private void addDTOMapping(Map<String, Class<?>> idClassMapping){
+        idClassMapping.put("TeacherRequestDTO", TeacherRequestDTO.class);
+        idClassMapping.put("SubjectRequestDTO", SubjectRequestDTO.class);
+        idClassMapping.put("CourseRequestDTO", CourseRequestDTO.class);
+        idClassMapping.put("StudentRequestDTO", StudentRequestDTO.class);
+//        idClassMapping.put("RARequestDTO", RARequestDTO.class);
     }
 
     // This method is in both Publisher and Consumer
@@ -87,7 +104,7 @@ public class RabbitMQConfig {
         return new TopicExchange(EXCHANGE);
     }
 
-    // QUEUES METHODS for Helper_service
+    // QUEUES METHODS for Common_utilities_service
     @Bean
     public Queue queueTeacher(){
         return new Queue(QUEUE_TEACHER, false);
@@ -108,12 +125,12 @@ public class RabbitMQConfig {
         return new Queue(QUEUE_STUDENT, false);
     }
 
-    @Bean
-    public Queue queueRa(){
-        return new Queue(QUEUE_RA, false);
-    }
+//    @Bean
+//    public Queue queueRa(){
+//        return new Queue(QUEUE_RA, false);
+//    }
 
-    // Binding with Helper_service
+    // Binding with Common_utilities_service
     @Bean
     public Binding bindingTeacher(Queue queueTeacher, TopicExchange exchange){
         return BindingBuilder.bind(queueTeacher).to(exchange).with(ROUTING_KEY_TEACHER);
@@ -134,10 +151,10 @@ public class RabbitMQConfig {
         return BindingBuilder.bind(queueCourse).to(exchange).with(ROUTING_KEY_COURSE);
     }
 
-    @Bean
-    public Binding bindingRa(Queue queueRa, TopicExchange exchange){
-        return BindingBuilder.bind(queueRa).to(exchange).with(ROUTING_KEY_RA);
-    }
+//    @Bean
+//    public Binding bindingRa(Queue queueRa, TopicExchange exchange){
+//        return BindingBuilder.bind(queueRa).to(exchange).with(ROUTING_KEY_RA);
+//    }
 
 
     // QUEUES METHODS for rubric module
@@ -155,6 +172,8 @@ public class RabbitMQConfig {
     public Queue queueCriteria(){
         return new Queue(QUEUE_CRITERIA, false);
     }
+
+
 
     // These queues are for to be used with the other microservice
     // TODO: Use this queues to get the data of the other microservice and then

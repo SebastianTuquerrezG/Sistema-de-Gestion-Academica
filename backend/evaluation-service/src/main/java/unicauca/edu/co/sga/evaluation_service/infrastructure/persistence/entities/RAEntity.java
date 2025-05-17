@@ -3,6 +3,8 @@ package unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.entiti
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
+import unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.entities.CourseEntity;
+import unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.entities.RubricEntity;
 
 import java.util.Set;
 
