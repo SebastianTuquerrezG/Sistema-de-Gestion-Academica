@@ -2,8 +2,8 @@ package org.unicauca.modulorubricacriterio.Dominio.Services;
 
 import java.util.List;
 
-import org.unicauca.modulorubricacriterio.Aplicación.Input.IGestionRubricaPort;
-import org.unicauca.modulorubricacriterio.Aplicación.Output.IConectorBDRubricaPort;
+import org.unicauca.modulorubricacriterio.Aplicacion.Input.IGestionRubricaPort;
+import org.unicauca.modulorubricacriterio.Aplicacion.Output.IConectorBDRubricaPort;
 import org.unicauca.modulorubricacriterio.Dominio.Modelos.Rubrica;
 import org.unicauca.modulorubricacriterio.Infraestructura.Input.validacionEstados.EstadosEnum;
 

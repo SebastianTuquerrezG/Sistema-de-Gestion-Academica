@@ -5,7 +5,7 @@ import java.util.List;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.stereotype.Service;
-import org.unicauca.modulorubricacriterio.Aplicación.Output.IConectorBDNivelPort;
+import org.unicauca.modulorubricacriterio.Aplicacion.Output.IConectorBDNivelPort;
 import org.unicauca.modulorubricacriterio.Dominio.Modelos.Nivel;
 import org.unicauca.modulorubricacriterio.Infraestructura.Fachada.exception.exceptionOwn.EntidadNoExisteException;
 import org.unicauca.modulorubricacriterio.Infraestructura.Fachada.exception.exceptionOwn.ReglaNegocioException;

@@ -2,9 +2,9 @@ package org.unicauca.modulorubricacriterio.Infraestructura.Configuration;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.unicauca.modulorubricacriterio.Aplicación.Output.IConectorBDCriterioPort;
-import org.unicauca.modulorubricacriterio.Aplicación.Output.IConectorBDNivelPort;
-import org.unicauca.modulorubricacriterio.Aplicación.Output.IConectorBDRubricaPort;
+import org.unicauca.modulorubricacriterio.Aplicacion.Output.IConectorBDCriterioPort;
+import org.unicauca.modulorubricacriterio.Aplicacion.Output.IConectorBDNivelPort;
+import org.unicauca.modulorubricacriterio.Aplicacion.Output.IConectorBDRubricaPort;
 import org.unicauca.modulorubricacriterio.Dominio.Services.GestionCriterioAdapter;
 import org.unicauca.modulorubricacriterio.Dominio.Services.GestionNivelAdapter;
 import org.unicauca.modulorubricacriterio.Dominio.Services.GestionRubricasAdapter;
@@ -16,20 +16,16 @@ public class BeanConfiguration {
 
     @Bean
     public GestionRubricasAdapter crearObjGestorRubricas(IConectorBDRubricaPort conectorBDRubricaPort) {
-        GestionRubricasAdapter objGestorRubricas = new GestionRubricasAdapter(conectorBDRubricaPort);
-        return objGestorRubricas;
+        return new GestionRubricasAdapter(conectorBDRubricaPort);
     }
 
     @Bean
     public GestionCriterioAdapter crearObjGestorCriterios(IConectorBDCriterioPort conectorBDCriterioPort) {
-        GestionCriterioAdapter objGestorCriterios = new GestionCriterioAdapter(conectorBDCriterioPort);
-        return objGestorCriterios;
+        return new GestionCriterioAdapter(conectorBDCriterioPort);
     }
 
     @Bean
     public GestionNivelAdapter crearObjGestorNiveles(IConectorBDNivelPort conectorBDNivelPort) {
-        GestionNivelAdapter objGestorNiveles = new GestionNivelAdapter(conectorBDNivelPort);
-        return objGestorNiveles;
+        return new GestionNivelAdapter(conectorBDNivelPort);
     }
-
 }

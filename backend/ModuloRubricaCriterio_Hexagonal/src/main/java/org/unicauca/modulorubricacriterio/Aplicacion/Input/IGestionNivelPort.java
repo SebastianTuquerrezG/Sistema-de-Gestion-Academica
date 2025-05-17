@@ -1,4 +1,4 @@
-package org.unicauca.modulorubricacriterio.Aplicación.Input;
+package org.unicauca.modulorubricacriterio.Aplicacion.Input;
 
 import java.util.List;
 

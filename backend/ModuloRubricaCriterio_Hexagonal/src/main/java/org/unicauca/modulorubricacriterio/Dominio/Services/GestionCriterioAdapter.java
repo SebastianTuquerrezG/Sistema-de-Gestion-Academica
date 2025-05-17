@@ -2,8 +2,8 @@ package org.unicauca.modulorubricacriterio.Dominio.Services;
 
 import java.util.List;
 
-import org.unicauca.modulorubricacriterio.Aplicación.Input.IGestionCriterioPort;
-import org.unicauca.modulorubricacriterio.Aplicación.Output.IConectorBDCriterioPort;
+import org.unicauca.modulorubricacriterio.Aplicacion.Input.IGestionCriterioPort;
+import org.unicauca.modulorubricacriterio.Aplicacion.Output.IConectorBDCriterioPort;
 import org.unicauca.modulorubricacriterio.Dominio.Modelos.Criterio;
 
 public class GestionCriterioAdapter implements IGestionCriterioPort{

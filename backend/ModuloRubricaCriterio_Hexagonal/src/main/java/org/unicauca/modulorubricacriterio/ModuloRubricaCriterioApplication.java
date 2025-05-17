@@ -3,6 +3,7 @@ package org.unicauca.modulorubricacriterio;
 import java.util.ArrayList;
 import java.util.List;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -12,23 +13,14 @@ import org.unicauca.modulorubricacriterio.Infraestructura.Output.Persistencia.en
 import org.unicauca.modulorubricacriterio.Infraestructura.Output.Persistencia.repository.*;
 
 @SpringBootApplication
+@RequiredArgsConstructor
 public class ModuloRubricaCriterioApplication implements CommandLineRunner {
 
-    
-    @Autowired
-    private RubricaRepository objRubricaRepository;
-
-    @Autowired
-    private CriterioRepository criterioRepository;
-
-    @Autowired
-    private NivelRepository nivelRepository;
-
-    @Autowired
-    private RARepository raRepository;
-
-    @Autowired
-    private MateriaRepository materiaRepository;
+    private final RubricaRepository objRubricaRepository;
+    private final CriterioRepository criterioRepository;
+    private final NivelRepository nivelRepository;
+    private final RARepository raRepository;
+    private final MateriaRepository materiaRepository;
 
     public static void main(String[] args)   {
         SpringApplication.run(ModuloRubricaCriterioApplication.class, args);
@@ -128,7 +120,5 @@ public class ModuloRubricaCriterioApplication implements CommandLineRunner {
         listaNiveles.add(nivel4);
         listaNiveles.add(nivel5);
         this.nivelRepository.saveAll(listaNiveles);
-        
-        
     }
 }

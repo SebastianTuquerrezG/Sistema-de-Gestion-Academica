@@ -11,8 +11,9 @@ import lombok.Data;
 @AllArgsConstructor
 public class Rubrica {
     private Long idRubrica;
+    private Long idMateria;
     private String nombreRubrica;
-    private Long materia;
+    private String nombreMateria;
     private int notaRubrica;
     private String objetivoEstudio;
     List<Criterio> criterios;

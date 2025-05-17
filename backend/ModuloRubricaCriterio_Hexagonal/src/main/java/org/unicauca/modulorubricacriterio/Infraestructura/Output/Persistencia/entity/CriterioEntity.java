@@ -31,12 +31,12 @@ public class CriterioEntity {
     @Column(length = 500)
     private String crfComentario;
 
-    @OneToMany(mappedBy = "criterio", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "criterio", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<NivelEntity> niveles;
 
-    public CriterioEntity(RubricaEntity rubrica, String desccripcion, float porcentaje, float nota, String comentario, List<NivelEntity> niveles) {
+    public CriterioEntity(RubricaEntity rubrica, String descripcion, float porcentaje, float nota, String comentario, List<NivelEntity> niveles) {
         this.rubrica = rubrica;
-        this.crfDescripcion = desccripcion;
+        this.crfDescripcion = descripcion;
         this.crfPorcentaje = porcentaje;
         this.crfNota = nota;
         this.crfComentario = comentario;

@@ -1,13 +1,16 @@
 package org.unicauca.modulorubricacriterio.Infraestructura.Input.controller;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.unicauca.modulorubricacriterio.Aplicación.Input.IGestionRubricaPort;
+import org.unicauca.modulorubricacriterio.Aplicacion.Input.IGestionRubricaPort;
 import org.unicauca.modulorubricacriterio.Dominio.Modelos.Rubrica;
 import org.unicauca.modulorubricacriterio.Infraestructura.Input.dtoPeticion.RubricaDTOPeticion;
 import org.unicauca.modulorubricacriterio.Infraestructura.Input.dtorespuesta.RubricaDTORespuesta;
 import org.unicauca.modulorubricacriterio.Infraestructura.Input.mappers.RubricaMapperInfraDominio;
+
+import jakarta.validation.Valid;
 
 import java.util.List;
 /**
@@ -19,15 +22,11 @@ import java.util.List;
 @RequestMapping("/api")
 @CrossOrigin(value = "*",
         methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE, RequestMethod.PATCH})
+@RequiredArgsConstructor
 public class RubricaController {
     
     private final IGestionRubricaPort rubricaService;
     private final RubricaMapperInfraDominio objRubricaMapper;
-
-    RubricaController(IGestionRubricaPort rubricaService, RubricaMapperInfraDominio MapRubrica) {
-        this.rubricaService = rubricaService;
-        this.objRubricaMapper = MapRubrica;
-    }
 
     @GetMapping("/rubricas")
     public ResponseEntity<List<RubricaDTORespuesta>> getAllRubricas() {
@@ -36,8 +35,7 @@ public class RubricaController {
         // for (RubricaDTORespuesta rubric : listaDTO) {
         //     rubric.setIdRubrica("IS10"+rubric.getIdRubrica());
         // }
-        ResponseEntity<List<RubricaDTORespuesta>>response=new ResponseEntity<>(listaDTO, HttpStatus.OK);
-        return response;
+        return new ResponseEntity<>(listaDTO, HttpStatus.OK);
     }
 
     @GetMapping("/rubricas/{id}")
@@ -45,31 +43,28 @@ public class RubricaController {
         Rubrica objRubrica = this.rubricaService.consultarRubrica(id);//Consultar rúbrica en el dominio
         RubricaDTORespuesta objRubricaDTO = this.objRubricaMapper.mapRubricaToDto(objRubrica);
         // objRubricaDTO.setIdRubrica("IS10"+objRubrica.getIdRubrica());
-        ResponseEntity<RubricaDTORespuesta>response=new ResponseEntity<>(objRubricaDTO, HttpStatus.OK);
-        return response;
+        return new ResponseEntity<>(objRubricaDTO, HttpStatus.OK);
     }
 
     @PostMapping("/rubricas")
-    public ResponseEntity<RubricaDTORespuesta>save(@RequestBody RubricaDTOPeticion rubricaDTO) {
+    public ResponseEntity<RubricaDTORespuesta>save(@Valid @RequestBody RubricaDTOPeticion rubricaDTO) {
         System.out.println(rubricaDTO);
         Rubrica objRubricaCrear = this.objRubricaMapper.mapDtoaRubrica(rubricaDTO);//MapearDto a rúbrica
         Rubrica objRubricaCreado = this.rubricaService.crearRubrica(objRubricaCrear);//Crear la rúbrica en el dominio
         RubricaDTORespuesta objRubrica = this.objRubricaMapper.mapRubricaToDto(objRubricaCreado);//Mapear la rúbrica creada a DTO
         // objRubrica.setIdRubrica("IS10"+objRubricaCreado.getIdRubrica());
-        ResponseEntity<RubricaDTORespuesta>response=new ResponseEntity<>(objRubrica, HttpStatus.CREATED);
-        return response;
+        return new ResponseEntity<>(objRubrica, HttpStatus.CREATED);
     }
 
 
     @PutMapping("/rubricas")
-    public ResponseEntity<RubricaDTORespuesta>update(@RequestBody RubricaDTOPeticion rubricaDTO,@RequestParam("id") Long id) {
+    public ResponseEntity<RubricaDTORespuesta>update(@Valid @RequestBody RubricaDTOPeticion rubricaDTO,@RequestParam("id") Long id) {
         System.out.println("Id recibido"+id);
         Rubrica objRubricaActualizar = this.objRubricaMapper.mapDtoaRubrica(rubricaDTO);
         Rubrica objRubricaActualizado = this.rubricaService.modificarRubrica(id, objRubricaActualizar);
         RubricaDTORespuesta objRubrica = this.objRubricaMapper.mapRubricaToDto(objRubricaActualizado);
         // objRubrica.setIdRubrica("IS10"+objRubricaActualizado.getIdRubrica());
-        ResponseEntity<RubricaDTORespuesta>response=new ResponseEntity<>(objRubrica, HttpStatus.ACCEPTED);
-        return response;
+        return new ResponseEntity<>(objRubrica, HttpStatus.ACCEPTED);
     }
 
     @PatchMapping("/rubricas")
@@ -77,8 +72,6 @@ public class RubricaController {
         Rubrica objRubricaActualizado = this.rubricaService.editarEstadoRubrica(id, estado.getEstado());
         RubricaDTORespuesta objRubrica = this.objRubricaMapper.mapRubricaToDto(objRubricaActualizado);
         // objRubrica.setIdRubrica("IS10"+objRubricaActualizado.getIdRubrica());
-        ResponseEntity<RubricaDTORespuesta>response=new ResponseEntity<>(objRubrica, HttpStatus.OK);
-        return response;
+        return new ResponseEntity<>(objRubrica, HttpStatus.OK);
     }
-
 }

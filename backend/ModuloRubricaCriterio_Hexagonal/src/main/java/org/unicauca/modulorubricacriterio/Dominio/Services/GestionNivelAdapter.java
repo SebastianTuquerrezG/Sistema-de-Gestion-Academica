@@ -2,8 +2,8 @@ package org.unicauca.modulorubricacriterio.Dominio.Services;
 
 import java.util.List;
 
-import org.unicauca.modulorubricacriterio.Aplicación.Input.IGestionNivelPort;
-import org.unicauca.modulorubricacriterio.Aplicación.Output.IConectorBDNivelPort;
+import org.unicauca.modulorubricacriterio.Aplicacion.Input.IGestionNivelPort;
+import org.unicauca.modulorubricacriterio.Aplicacion.Output.IConectorBDNivelPort;
 import org.unicauca.modulorubricacriterio.Dominio.Modelos.Nivel;
 
 public class GestionNivelAdapter implements IGestionNivelPort {

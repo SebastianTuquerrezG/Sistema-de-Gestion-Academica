@@ -1,4 +1,4 @@
-package org.unicauca.modulorubricacriterio.Aplicación.Output;
+package org.unicauca.modulorubricacriterio.Aplicacion.Output;
 
 import java.util.List;
 
