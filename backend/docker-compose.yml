@@ -1,5 +1,4 @@
 services:
-  ### Keycloak conectado a PostgreSQL en AWS RDS
   keycloak:
     container_name: keycloak_sga
     image: quay.io/keycloak/keycloak:26.2.0
@@ -23,8 +22,8 @@ services:
 
   eureka-server:
     build:
-        context: .
-        dockerfile: eureka-server/Dockerfile
+      context: .
+      dockerfile: eureka-server/Dockerfile
     container_name: eureka-server
     ports:
       - "8761:8761"
@@ -34,10 +33,11 @@ services:
       EUREKA_USERNAME: ${EUREKA_USERNAME}
       EUREKA_PASSWORD: ${EUREKA_PASSWORD}
 
+
   gateway:
     build:
-        context: .
-        dockerfile: gateway/Dockerfile
+      context: .
+      dockerfile: gateway/Dockerfile
     container_name: gateway-sga
     ports:
       - "8080:8080"
@@ -49,15 +49,15 @@ services:
     extra_hosts:
       - "keycloak:host-gateway"
     environment:
-        EUREKA_USERNAME: ${EUREKA_USERNAME}
-        EUREKA_PASSWORD: ${EUREKA_PASSWORD}
-        KC_CLIENT_SECRET: ${KC_CLIENT_SECRET}
-        SPRING_PROFILES_ACTIVE: docker
+      EUREKA_USERNAME: ${EUREKA_USERNAME}
+      EUREKA_PASSWORD: ${EUREKA_PASSWORD}
+      KC_CLIENT_SECRET: ${KC_CLIENT_SECRET}
+      SPRING_PROFILES_ACTIVE: docker
 
   modulorubricacriterio:
     build:
-        context: .
-        dockerfile: ModuloRubricaCriterio_Hexagonal/Dockerfile
+      context: .
+      dockerfile: ModuloRubricaCriterio_Hexagonal/Dockerfile
     container_name: modulorubricacriterio
     ports:
       - "0:5001"
@@ -81,9 +81,10 @@ services:
       dockerfile: evaluation-service/Dockerfile
     container_name: evaluation-service
     ports:
-      - "5002:5002"
+      - "0:5002"
     depends_on:
       - eureka-server
+      - gateway
       - mariadb
     environment:
       EVALUATION_DATASOURCE_URL: ${EVALUATION_DATASOURCE_URL}
@@ -95,24 +96,22 @@ services:
     networks:
       - backend-network
 
-  helper-service:
+  common_utilities-service:
     build:
-      context: .
-      dockerfile: helper-service/Dockerfile
-    container_name: helper-service
+        context: .
+        dockerfile: common_utilities-service/Dockerfile
+    container_name: common_utilities-service
     ports:
-      - "5004:5004"
+      - "0:5004"
     depends_on:
       - eureka-server
-      - helper_mariadb
+      - gateway
+      - common_utilities_mariadb
       - evaluation-service
     environment:
-      HELPER_DATASOURCE_URL: ${HELPER_DATASOURCE_URL}
-      HELPER_DATASOURCE_USERNAME: ${HELPER_DATASOURCE_USERNAME}
-      HELPER_DATASOURCE_PASSWORD: ${HELPER_DATASOURCE_PASSWORD}
-      EUREKA_USERNAME: ${EUREKA_USERNAME}
-      EUREKA_PASSWORD: ${EUREKA_PASSWORD}
-      SPRING_PROFILES_ACTIVE: docker
+      - COMMON_DATASOURCE_URL=${COMMON_DATASOURCE_URL}
+      - COMMON_DATASOURCE_USERNAME=${COMMON_DATASOURCE_USERNAME}
+      - COMMON_DATASOURCE_PASSWORD=${COMMON_DATASOURCE_PASSWORD}
     networks:
       - backend-network
 
@@ -121,20 +120,31 @@ services:
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: ${EVALUATION_DATASOURCE_PASSWORD}
-      MYSQL_DATABASE: ${EVALUATION_DATABASE_NAME}
+      MYSQL_DATABASE: ${EVALUATION_DATASOURCE_USERNAME}
     ports:
       - "3306:3306"
     networks:
       - backend-network
 
-  helper_mariadb:
+  common_utilities_mariadb:
     image: mariadb:10.5
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: ${HELPER_DATASOURCE_PASSWORD}
-      MYSQL_DATABASE: ${HELPER_DATABASE_NAME}
+      MYSQL_ROOT_PASSWORD: ${COMMON_DATASOURCE_PASSWORD}
+      MYSQL_DATABASE: ${COMMON_DATASOURCE_USERNAME}
     ports:
       - "3308:3306"
+    networks:
+      - backend-network
+
+  rubric_mariadb:
+    image: mariadb:10.5
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${RUBRIC_DATASOURCE_PASSWORD}
+      MYSQL_DATABASE: ${RUBRIC_DATASOURCE_USERNAME}
+    ports:
+      - "3310:3306"
     networks:
       - backend-network
 
@@ -148,6 +158,22 @@ services:
       RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS}
     networks:
       - backend-network
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    container_name: phpmyadmin_sga
+    restart: always
+    ports:
+      - "8888:80" # Accede a phpMyAdmin en localhost:8888
+    environment:
+      PMA_ARBITRARY: 1  # Permite conexión a cualquier servidor
+      PMA_HOST: mariadb  # Servidor por defecto (primera BD)
+      MYSQL_ROOT_PASSWORD: ${PHPMYADMIN_ROOT_PASSWORD}
+    networks:
+      - backend-network
+    depends_on:
+      - mariadb
+      - common_utilities_mariadb
 
 networks:
   backend-network:
