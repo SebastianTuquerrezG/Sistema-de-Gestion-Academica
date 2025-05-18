@@ -1,4 +1,4 @@
-# Dockerfile para eureka-server
+# Dockerfile para evaluation-service
 FROM openjdk:21-jdk-slim
 WORKDIR /app
 COPY target/evaluation-service-0.0.1-SNAPSHOT.jar app.jar

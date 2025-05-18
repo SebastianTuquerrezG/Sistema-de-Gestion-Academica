@@ -20,10 +20,26 @@ services:
     volumes:
       - keycloak_data_sga:/opt/keycloak/data
 
+  auth-service:
+    container_name: auth-service-sga
+    build:
+      context: ./auth-service
+      dockerfile: Dockerfile
+    ports:
+      - "9090:9090"
+    depends_on:
+      - keycloak
+    environment:
+      KC_CLIENT_SECRET: ${KC_CLIENT_SECRET}
+    networks:
+      - backend-network
+    extra_hosts:
+      - "keycloak:host-gateway"
+
   eureka-server:
     build:
-      context: .
-      dockerfile: eureka-server/Dockerfile
+      context: ./eureka-server
+      dockerfile: Dockerfile
     container_name: eureka-server
     ports:
       - "8761:8761"
@@ -36,8 +52,8 @@ services:
 
   gateway:
     build:
-      context: .
-      dockerfile: gateway/Dockerfile
+      context: ./gateway
+      dockerfile: Dockerfile
     container_name: gateway-sga
     ports:
       - "8080:8080"
@@ -56,8 +72,8 @@ services:
 
   modulorubricacriterio:
     build:
-      context: .
-      dockerfile: ModuloRubricaCriterio_Hexagonal/Dockerfile
+      context: ./ModuloRubricaCriterio_Hexagonal
+      dockerfile: Dockerfile
     container_name: modulorubricacriterio
     ports:
       - "0:5001"
@@ -77,8 +93,8 @@ services:
 
   evaluation-service:
     build:
-      context: .
-      dockerfile: evaluation-service/Dockerfile
+      context: ./evaluation-service
+      dockerfile: Dockerfile
     container_name: evaluation-service
     ports:
       - "0:5002"
@@ -98,8 +114,8 @@ services:
 
   common_utilities-service:
     build:
-        context: .
-        dockerfile: common_utilities-service/Dockerfile
+        context: ./common_utilities-service
+        dockerfile: Dockerfile
     container_name: common_utilities-service
     ports:
       - "0:5004"
