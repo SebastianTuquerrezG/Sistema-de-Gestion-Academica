@@ -2,21 +2,21 @@
 
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
-import { Search, Copy, Share2 } from "lucide-react";
+import { Search, Copy } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useNavigate } from "react-router-dom";
 import { RubricInterface } from "@/interfaces/RubricInterface";
 import Notification from "@/components/notifications/notification";
-
 import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
-} from "@/components/ui/dialog"
-
+    AlertDialog,
+    AlertDialogTrigger,
+    AlertDialogContent,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogCancel,
+    AlertDialogAction} from "@/components/ui/alert-dialog.tsx";
 //import { z } from "zod"
 //import { useForm } from "react-hook-form";
 //import { zodResolver } from "@hookform/resolvers/zod"
@@ -37,7 +37,8 @@ export default function RepositorioRubricas(){
     const [rubrics, setRubrics] = useState<RubricInterface[]>([]);
     const navigate = useNavigate();
     const [selectedRubricId, setSelectedRubricId] = useState<string | null>(null);
-
+    const [copyRubricId, setCopyRubricId] = useState<string | null>(null);
+    const [editRubricName, setEditRubricName] = useState<string>("");
     useEffect(() => {
         fetch('/rubricas.json')
             .then((response) => {
@@ -61,8 +62,6 @@ export default function RepositorioRubricas(){
         setSelectedRubricId(id);
         navigate(`rubricas/detalle/${id}`);
     };
-
-
 
     /*const form = useForm<z.infer<typeof ShareSchema>>({
         resolver: zodResolver(ShareSchema),
@@ -121,30 +120,66 @@ export default function RepositorioRubricas(){
 
                                 <td className="px-6 py-4">
                                     <div className="flex justify-center gap-2">
-                                        <Button
-                                            variant="ghost"
-                                            size="icon"
-                                            className="h-8 w-8"
-
-                                            >
-                                            <Copy className="h-4 w-4" />
-                                        </Button>
-
-                                        <Dialog>
-                                            <DialogTrigger>
-                                                <Button variant="ghost" size="icon" className="h-8 w-8">
-                                                    <Share2 className="h-4 w-4" />
+                                        <AlertDialog
+                                            open={copyRubricId === rubric.idRubrica}
+                                            onOpenChange={(open) => {
+                                                setCopyRubricId(open ? rubric.idRubrica : null);
+                                                setEditRubricName(open ? rubric.nombreRubrica : "");
+                                            }}
+                                        >
+                                            <AlertDialogTrigger asChild>
+                                                <Button
+                                                    variant="ghost"
+                                                    size="icon"
+                                                    className="h-8 w-8"
+                                                    onClick={() => {
+                                                        setCopyRubricId(rubric.idRubrica);
+                                                        setEditRubricName(rubric.nombreRubrica);
+                                                    }}
+                                                >
+                                                    <Copy className="h-4 w-4" />
                                                 </Button>
-                                            </DialogTrigger>
-                                            <DialogContent>
-                                                <DialogHeader>
-                                                    <DialogTitle>Compartir Rubrica</DialogTitle>
-                                                    <DialogDescription>
-                                                        Esta rúbrica es parte del repositorio institucional.
-                                                    </DialogDescription>
-                                                </DialogHeader>
-                                            </DialogContent>
-                                        </Dialog>
+                                            </AlertDialogTrigger>
+                                            <AlertDialogContent>
+                                                <AlertDialogHeader>
+                                                    <AlertDialogTitle>¿Estás seguro de que deseas copiar esta rúbrica?</AlertDialogTitle>
+                                                    <AlertDialogDescription>
+                                                        Esta rúbrica se copiará a tu sección de rúbricas y podrás editarla.
+                                                    </AlertDialogDescription>
+                                                </AlertDialogHeader>
+                                                <Input
+                                                    className="my-2 w-full"
+                                                    value={editRubricName}
+                                                    onChange={e => setEditRubricName(e.target.value)}
+                                                />
+                                                <AlertDialogFooter>
+                                                    <AlertDialogCancel
+                                                        onClick={() => {
+                                                            setNotification({
+                                                                type: "info",
+                                                                title: "Acción cancelada",
+                                                                message: "La acción de copiar la rúbrica ha sido cancelada.",
+                                                            });
+                                                            setCopyRubricId(null);
+                                                        }}
+                                                    >
+                                                        Cancelar
+                                                    </AlertDialogCancel>
+                                                    <AlertDialogAction
+                                                        onClick={() => {
+                                                            setNotification({
+                                                                type: "success",
+                                                                title: "Rúbrica copiada",
+                                                                message: `La rúbrica "${editRubricName}" ha sido copiada a tu sección de rúbricas.`,
+                                                            });
+                                                            setCopyRubricId(null);
+                                                        }}
+                                                    >
+                                                        Copiar
+                                                    </AlertDialogAction>
+                                                </AlertDialogFooter>
+                                            </AlertDialogContent>
+                                        </AlertDialog>
                                     </div>
                                 </td>
                             </tr>

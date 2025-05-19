@@ -187,7 +187,6 @@ export default function ConsultarRubrica() {
                                                         {/* Compartir con una persona específica */}
                                                         <div>
                                                             <h3 className="text-sm font-medium text-gray-700">Compartir con una persona</h3>
-
                                                             <Form {...form}>
                                                                 <form
                                                                     onSubmit={form.handleSubmit((data) => {
