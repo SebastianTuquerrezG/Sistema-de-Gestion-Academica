@@ -8,6 +8,7 @@ import unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.entitie
 import unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.entities.CriteriaEntity;
 import unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.repositories.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -19,12 +20,13 @@ public class RubricEvaluationService implements RubricEvaluationPort {
     private final CriteriaRepository criteriaRepository;
     private final CalificationRegisterRepository calificationRegisterRepository;
     private final RubricRepository rubricRepository;
-
-    public RubricEvaluationService(EnrollRepository enrollRepository, CriteriaRepository criteriaRepository, CalificationRegisterRepository calificationRegisterRepository, RubricRepository rubricRepository) {
+    private final EvaluationRepository evaluationRepository;
+    public RubricEvaluationService(EnrollRepository enrollRepository, CriteriaRepository criteriaRepository, CalificationRegisterRepository calificationRegisterRepository, RubricRepository rubricRepository, EvaluationRepository evaluationRepository) {
         this.enrollRepository = enrollRepository;
         this.criteriaRepository = criteriaRepository;
         this.calificationRegisterRepository = calificationRegisterRepository;
         this.rubricRepository = rubricRepository;
+        this.evaluationRepository = evaluationRepository;
     }
 
     @Override
@@ -67,8 +69,13 @@ public class RubricEvaluationService implements RubricEvaluationPort {
 
 
         EvaluationResponseViewDTO response = new EvaluationResponseViewDTO();
+
         response.setDescription(rubricDescription);
 
+       BigDecimal totalScore = evaluationRepository
+                .findEvaluationsByStudentAndSubject(idStudent, idSubject, semester, idRubric)
+                .orElseThrow(() -> new EmptyReturnException("No existe la evaluacion"));
+        response.setTotalScore(totalScore);
 
         //Mapear criterios con sus niveles
         List<CriteriaResponseViewDTO> criteriaDTOs = criterias.stream()
@@ -101,6 +108,8 @@ public class RubricEvaluationService implements RubricEvaluationPort {
                     calDto.setCalification(cal.getCalification());
                     calDto.setMessage(cal.getMessage());
                     calDto.setLevel(cal.getLevel());
+                    cal.getEvaluation().getScore();
+
                     return calDto;
                 })
                 .collect(Collectors.toList());

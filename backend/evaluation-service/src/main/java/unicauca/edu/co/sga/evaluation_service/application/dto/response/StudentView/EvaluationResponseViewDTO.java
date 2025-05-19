@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Data
@@ -16,5 +17,6 @@ public class EvaluationResponseViewDTO {
     private String description;
     private List<CriteriaResponseViewDTO> criterias;
     private List<CalificationResponseViewDTO> califications;
+    private BigDecimal totalScore;
 
 }

@@ -2,7 +2,7 @@ package unicauca.edu.co.sga.evaluation_service.application.ports;
 
 import unicauca.edu.co.sga.evaluation_service.application.dto.request.EvaluationRequestDTO;
 import unicauca.edu.co.sga.evaluation_service.application.dto.response.EvaluationResponseDTO;
-
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -14,4 +14,6 @@ public interface EvaluationPort {
     boolean updateEvaluation(Long id, EvaluationRequestDTO evaluation);
     List<EvaluationResponseDTO> getEvaluationsByEnrollId(Long enrollId);
     List<EvaluationResponseDTO> getEvaluationsByRubricId(Long rubricId);
+    Optional<BigDecimal> findEvaluationsByStudentAndSubject(Long studentId, Long subjectId, String semester, Long rubricId);
+
 }
