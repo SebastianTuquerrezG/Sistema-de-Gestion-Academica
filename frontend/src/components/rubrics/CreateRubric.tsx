@@ -298,6 +298,25 @@ export default function CreateRubric()
         ]);
     };
 
+    const handleNotaChange = (rowIndex: number, value: string) => {
+        const numericValue = parseFloat(value);
+
+        // Validación opcional: permitir solo valores decimales entre 0 y 5
+        if (!isNaN(numericValue) && (numericValue < 0 || numericValue > 5)) {
+            setNotification({
+                type: "error",
+                title: "Nota fuera de rango",
+                message: "La nota debe estar entre 0.0 y 5.0",
+            });
+            return;
+        }
+
+        const newRows = [...rows];
+        newRows[rowIndex].crfNota = numericValue || 0;
+        setRows(newRows);
+    };
+
+
     const handleCreate = () => {
         // Validar campos obligatorios
         const requiredFields = [
@@ -440,6 +459,7 @@ export default function CreateRubric()
                         <TableRow>
                             <TableHead>Criterio Evaluación</TableHead>
                             <TableHead>Porcentaje</TableHead>
+                            <TableHead>Nota</TableHead>
                             <TableHead>Comentario</TableHead>
                             {levels.map((level, index) => (
                                 <TableHead key={index}>
@@ -482,6 +502,17 @@ export default function CreateRubric()
                                             placeholder="0.0%"
                                         />
                                     </div>
+                                </TableCell>
+                                <TableCell>
+                                    <input
+                                        type="number"
+                                        min="0"
+                                        max="5"
+                                        step="0.1"
+                                        value={row.crfNota === 0 ? "" : row.crfNota.toString()}
+                                        onChange={(e) =>handleNotaChange(rowIndex, e.target.value)}
+                                        placeholder="Nota"
+                                    />
                                 </TableCell>
                                 <TableCell>
                                     <Textarea
