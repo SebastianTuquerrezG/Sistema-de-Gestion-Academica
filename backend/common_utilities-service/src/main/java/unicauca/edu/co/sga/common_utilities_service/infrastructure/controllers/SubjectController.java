@@ -3,6 +3,7 @@ package unicauca.edu.co.sga.common_utilities_service.infrastructure.controllers;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import unicauca.edu.co.sga.common_utilities_service.application.dto.request.SubjectRequestDTO;
 import unicauca.edu.co.sga.common_utilities_service.application.dto.response.SubjectResponseDTO;
@@ -18,17 +19,19 @@ import java.util.Optional;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/subject")
-@CrossOrigin(value = "*",
-        methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE})
 public class SubjectController {
     private final SubjectPort subjectPort;
 
     @GetMapping
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN_ROLE', 'ROLE_TEACHER_ROLE', 'ROLE_STUDENT_ROLE', 'ROLE_COORDINATOR_ROLE')")
     public ResponseEntity<List<SubjectResponseDTO>> getAllSubjects(){
         return ResponseEntity.ok(subjectPort.getSubjects());
     }
 
     @GetMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN_ROLE', 'ROLE_TEACHER_ROLE', 'ROLE_STUDENT_ROLE', 'ROLE_COORDINATOR_ROLE')")
     public ResponseEntity<SubjectResponseDTO> getSubjectById(@PathVariable Long id){
         return subjectPort.getSubjectById(id)
                 .map(ResponseEntity::ok)
@@ -36,6 +39,8 @@ public class SubjectController {
     }
 
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN_ROLE', 'ROLE_TEACHER_ROLE')")
     public ResponseEntity<SubjectResponseDTO> createSubject(@Valid @RequestBody SubjectRequestDTO subject){
         Optional<SubjectResponseDTO> existingSubject = subjectPort.getByName(subject.getName());
         if (existingSubject.isPresent()) {
@@ -45,6 +50,8 @@ public class SubjectController {
     }
 
     @PutMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN_ROLE', 'ROLE_TEACHER_ROLE')")
     public ResponseEntity<Boolean> updateSubject(@PathVariable Long id, @Valid @RequestBody SubjectRequestDTO subject){
         Optional<SubjectResponseDTO> existingSubject = subjectPort.getSubjectById(id);
         if (existingSubject.isPresent()){
@@ -55,6 +62,8 @@ public class SubjectController {
     }
 
     @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN_ROLE', 'ROLE_TEACHER_ROLE')")
     public ResponseEntity<Boolean> deleteSubject(@PathVariable Long id){
         boolean isDeleted = subjectPort.deleteSubject(id);
         if (!isDeleted) {
@@ -64,6 +73,8 @@ public class SubjectController {
     }
 
     @GetMapping("/search")
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN_ROLE', 'ROLE_TEACHER_ROLE', 'ROLE_STUDENT_ROLE', 'ROLE_COORDINATOR_ROLE')")
     public ResponseEntity<Optional<SubjectResponseDTO>> getSubjectsByName(@RequestParam String name){
         Optional<SubjectResponseDTO> subjects = subjectPort.getByName(name);
         if (subjects.isEmpty()) {
@@ -73,6 +84,8 @@ public class SubjectController {
     }
 
     @GetMapping("/status/{type}")
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN_ROLE', 'ROLE_TEACHER_ROLE', 'ROLE_STUDENT_ROLE', 'ROLE_COORDINATOR_ROLE')")
     public ResponseEntity<List<SubjectResponseDTO>> getStudentByStatus(@PathVariable GeneralEnums.status type){
         List<SubjectResponseDTO> subjects = subjectPort.getByStatus(type);
         if (subjects.isEmpty()) {

@@ -1,10 +1,9 @@
 package unicauca.edu.co.sga.evaluation_service.infrastructure.controllers;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
 import unicauca.edu.co.sga.evaluation_service.adapters.messaging.RabbitMQProducer;
 import unicauca.edu.co.sga.evaluation_service.domain.models.EnrollRabbit;
 
@@ -18,6 +17,8 @@ public class MessageController {
     private final RabbitMQProducer rabbitMQProducer;
 
     @PostMapping("/sendEnroll")
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasRole('ROLE_ADMIN_ROLE')")
     public String sendMessage(@RequestBody EnrollRabbit message){
 //        rabbitMQProducer.sendEnroll(message.getMessage()); TODO Do the exchange and key with message.
         return "Message sent: " + message.getMessage();

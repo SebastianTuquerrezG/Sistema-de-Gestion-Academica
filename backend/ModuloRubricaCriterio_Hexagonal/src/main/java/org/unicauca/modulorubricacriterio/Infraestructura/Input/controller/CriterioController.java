@@ -3,6 +3,7 @@ package org.unicauca.modulorubricacriterio.Infraestructura.Input.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.unicauca.modulorubricacriterio.Aplicacion.Input.IGestionCriterioPort;
 import org.unicauca.modulorubricacriterio.Dominio.Modelos.Criterio;
@@ -22,8 +23,6 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/api")
-@CrossOrigin(value = "*",
-        methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE, RequestMethod.PATCH})
 @RequiredArgsConstructor
 public class CriterioController {
 
@@ -31,6 +30,8 @@ public class CriterioController {
     private final CriterioMapperInfraDominio objCriterioMapper;
 
     @GetMapping("/criterios")
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN_ROLE', 'ROLE_TEACHER_ROLE', 'ROLE_COORDINATOR', 'ROLE_STUDENT_ROLE')")
     public ResponseEntity<List<CriterioDTORespuesta>> getAllCriterios() {
         List<Criterio> lista = criterioService.consultarCriterios();
         List<CriterioDTORespuesta>listaCriterioRespuesta=objCriterioMapper.mapCriterioListToDtoList(lista);
@@ -38,6 +39,8 @@ public class CriterioController {
     }
 
     @GetMapping("/criterios/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN_ROLE', 'ROLE_TEACHER_ROLE', 'ROLE_COORDINATOR', 'ROLE_STUDENT_ROLE')")
     public ResponseEntity<CriterioDTORespuesta> getById(@PathVariable("id") Long id) {
         Criterio objCriterio = this.criterioService.consultarCriterio(id);
         CriterioDTORespuesta objcriterioEncontrado = this.objCriterioMapper.mapCriterioToDto(objCriterio);
@@ -45,6 +48,8 @@ public class CriterioController {
     }
 
     @PostMapping("/criterios")
+    @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN_ROLE', 'ROLE_TEACHER_ROLE', 'ROLE_COORDINATOR', 'ROLE_STUDENT_ROLE')")
     public ResponseEntity<CriterioDTORespuesta>save(@Valid @RequestBody CriterioDTOPeticion criterioDTO) {
         Criterio objCriterioCrear = this.objCriterioMapper.mapDtoaCriterio(criterioDTO);
         Criterio objCriterioCreado = this.criterioService.crearCriterio(objCriterioCrear);
@@ -54,15 +59,18 @@ public class CriterioController {
 
 
     @PutMapping("/criterios")
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN_ROLE', 'ROLE_TEACHER_ROLE', 'ROLE_COORDINATOR', 'ROLE_STUDENT_ROLE')")
     public ResponseEntity<CriterioDTORespuesta>update(@Valid @RequestBody CriterioDTOPeticion criterioDTO,@RequestParam("id") Long id) {
         Criterio objCriterioActualizar = this.objCriterioMapper.mapDtoaCriterio(criterioDTO);
         Criterio objCriterioActualizado = this.criterioService.modificarCriterio(id, objCriterioActualizar);
         CriterioDTORespuesta objCriterio = this.objCriterioMapper.mapCriterioToDto(objCriterioActualizado);
-        ResponseEntity<CriterioDTORespuesta>response=new ResponseEntity<>(objCriterio, HttpStatus.OK);
-        return response;
+        return new ResponseEntity<>(objCriterio, HttpStatus.OK);
     }
 
     @DeleteMapping("/criterios")
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN_ROLE', 'ROLE_TEACHER_ROLE', 'ROLE_COORDINATOR', 'ROLE_STUDENT_ROLE')")
     public ResponseEntity<CriterioDTORespuesta>delete(@RequestParam("id") Long id) {
         Criterio objCriterioEliminar = this.criterioService.eliminarCriterio(id);
         CriterioDTORespuesta objCriterio = this.objCriterioMapper.mapCriterioToDto(objCriterioEliminar);

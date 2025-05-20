@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import unicauca.edu.co.sga.common_utilities_service.application.dto.request.CourseRequestDTO;
 import unicauca.edu.co.sga.common_utilities_service.application.dto.response.CourseResponseDTO;
@@ -17,17 +18,19 @@ import java.util.Optional;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/course")
-@CrossOrigin(value = "*",
-        methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE})
 public class CourseController {
     private final CoursePort coursePort;
 
     @GetMapping
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN_ROLE', 'ROLE_TEACHER_ROLE', 'ROLE_STUDENT_ROLE', 'ROLE_COORDINATOR_ROLE')")
     public ResponseEntity<List<CourseResponseDTO>> getAllCourse(){
         return ResponseEntity.ok(coursePort.getCourses());
     }
 
     @GetMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN_ROLE', 'ROLE_TEACHER_ROLE', 'ROLE_STUDENT_ROLE', 'ROLE_COORDINATOR_ROLE')")
     public ResponseEntity<CourseResponseDTO> getCourseById(@PathVariable Long id){
         return coursePort.getCourseById(id)
                 .map(ResponseEntity::ok)
@@ -35,6 +38,8 @@ public class CourseController {
     }
 
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN_ROLE', 'ROLE_TEACHER_ROLE')")
     public ResponseEntity<CourseResponseDTO> createCourse(@Valid @RequestBody CourseRequestDTO requestDTO){
         List<CourseResponseDTO> course = coursePort.getCoursesBySubjectId(requestDTO.getSubject());
         if (course.isEmpty()){
@@ -44,6 +49,8 @@ public class CourseController {
     }
 
     @PutMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN_ROLE', 'ROLE_TEACHER_ROLE')")
     public ResponseEntity<Boolean> updateCourse(@PathVariable Long id, @Valid @RequestBody CourseRequestDTO courseRequestDTO){
         Optional<CourseResponseDTO> course = coursePort.getCourseById(id);
         if (course.isPresent()){
@@ -54,6 +61,8 @@ public class CourseController {
     }
 
     @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN_ROLE', 'ROLE_TEACHER_ROLE')")
     public ResponseEntity<Boolean> deleteCourse(@PathVariable Long id){
         boolean isDeleted = coursePort.deleteCourse(id);
         if (!isDeleted){
@@ -63,6 +72,8 @@ public class CourseController {
     }
 
     @GetMapping("/subject/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN_ROLE', 'ROLE_TEACHER_ROLE', 'ROLE_STUDENT_ROLE', 'ROLE_COORDINATOR_ROLE')")
     public ResponseEntity<CourseResponseDTO> getCourseBySubjectId(@PathVariable Long id){
         List<CourseResponseDTO> course = coursePort.getCoursesBySubjectId(id);
         if (course.isEmpty()){
@@ -72,6 +83,8 @@ public class CourseController {
     }
 
     @GetMapping("/ra/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN_ROLE', 'ROLE_TEACHER_ROLE', 'ROLE_STUDENT_ROLE', 'ROLE_COORDINATOR_ROLE')")
     public ResponseEntity<CourseResponseDTO> getCourseByRaId(@PathVariable Long id){
         List<CourseResponseDTO> course = coursePort.getCoursesByRAId(id);
         if (course.isEmpty()){
@@ -81,6 +94,8 @@ public class CourseController {
     }
 
     @GetMapping("/teacher/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN_ROLE', 'ROLE_TEACHER_ROLE', 'ROLE_STUDENT_ROLE', 'ROLE_COORDINATOR_ROLE')")
     public ResponseEntity<CourseResponseDTO> getCourseByTeacherId(@PathVariable Long id){
         List<CourseResponseDTO> course = coursePort.getCoursesByTeacherId(id);
         if (course.isEmpty()){

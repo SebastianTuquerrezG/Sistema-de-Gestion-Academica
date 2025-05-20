@@ -3,6 +3,7 @@ package unicauca.edu.co.sga.common_utilities_service.infrastructure.controllers;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import unicauca.edu.co.sga.common_utilities_service.application.dto.request.StudentRequestDTO;
 import unicauca.edu.co.sga.common_utilities_service.application.dto.response.StudentResponseDTO;
@@ -18,17 +19,19 @@ import java.util.Optional;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/students")
-@CrossOrigin(value = "*",
-        methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE})
 public class StudentController {
     private final StudentPort studentPort;
 
     @GetMapping
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN_ROLE', 'ROLE_TEACHER_ROLE', 'ROLE_STUDENT_ROLE', 'ROLE_COORDINATOR_ROLE')")
     public ResponseEntity<List<StudentResponseDTO>> getAllStudents(){
         return ResponseEntity.ok(studentPort.getStudents());
     }
 
     @GetMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN_ROLE', 'ROLE_TEACHER_ROLE', 'ROLE_STUDENT_ROLE', 'ROLE_COORDINATOR_ROLE')")
     public ResponseEntity<StudentResponseDTO> getStudentById(@PathVariable Long id){
         return studentPort.getStudentById(id)
                .map(ResponseEntity::ok)
@@ -36,6 +39,8 @@ public class StudentController {
     }
 
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN_ROLE', 'ROLE_TEACHER_ROLE')")
     public ResponseEntity<StudentResponseDTO> createStudent(@Valid @RequestBody StudentRequestDTO student){
         Optional<StudentResponseDTO> existingStudent = studentPort.getStudentsByIdentification(student.getIdentification());
         if (existingStudent.isPresent()) {
@@ -45,6 +50,8 @@ public class StudentController {
     }
 
     @PutMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN_ROLE', 'ROLE_TEACHER_ROLE')")
     public ResponseEntity<Boolean> updateStudent(@PathVariable Long id, @Valid @RequestBody StudentRequestDTO student){
         Optional<StudentResponseDTO> existingStudent = studentPort.getStudentsByIdentification(student.getIdentification());
         if (existingStudent.isPresent() && !existingStudent.get().getId().equals(id)) {
@@ -58,6 +65,8 @@ public class StudentController {
     }
 
     @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN_ROLE', 'ROLE_TEACHER_ROLE')")
     public ResponseEntity<Boolean> deleteStudent(@PathVariable Long id){
         boolean isDeleted = studentPort.deleteStudent(id);
         if (!isDeleted) {
@@ -67,6 +76,8 @@ public class StudentController {
     }
 
     @GetMapping("/search")
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN_ROLE', 'ROLE_TEACHER_ROLE', 'ROLE_STUDENT_ROLE', 'ROLE_COORDINATOR_ROLE')")
     public ResponseEntity<List<StudentResponseDTO>> getStudentsByName(@RequestParam String name){
         List<StudentResponseDTO> students = studentPort.getStudentsByName(name);
         if (students.isEmpty()) {
@@ -76,6 +87,8 @@ public class StudentController {
     }
 
     @GetMapping("/identification")
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN_ROLE', 'ROLE_TEACHER_ROLE', 'ROLE_STUDENT_ROLE', 'ROLE_COORDINATOR_ROLE')")
     public ResponseEntity<StudentResponseDTO> getStudentByIdentification(@RequestParam Long studentId){
         Optional<StudentResponseDTO> student = studentPort.getStudentsByIdentification(studentId);
         if (student.isEmpty()) {
@@ -85,6 +98,8 @@ public class StudentController {
     }
 
     @GetMapping("/identification-type/{type}")
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN_ROLE', 'ROLE_TEACHER_ROLE', 'ROLE_STUDENT_ROLE', 'ROLE_COORDINATOR_ROLE')")
     public ResponseEntity<List<StudentResponseDTO>> getStudentByTypeId(@PathVariable GeneralEnums.identificationType type){
         List<StudentResponseDTO> students = studentPort.getStudentsByIdentificationType(type);
         if (students.isEmpty()) {
@@ -94,6 +109,8 @@ public class StudentController {
     }
     
     @GetMapping("/courseAndPeriod/{courseId}/{period}")
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN_ROLE', 'ROLE_TEACHER_ROLE', 'ROLE_STUDENT_ROLE', 'ROLE_COORDINATOR_ROLE')")
     public ResponseEntity<List<StudentResponseDTO>> getStudentsByCourseAndPeriod(@PathVariable Long courseId, @PathVariable String period){
         List<StudentResponseDTO> students = studentPort.getStudentsByCourseAndPeriod(courseId, period);
         if (students.isEmpty()) {
