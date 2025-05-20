@@ -1,36 +1,18 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-{
-  /*import './assets/css/style.css';
-import PrimaryButton from './components/buttons/primaryButton';
-import TinyButton from "./components/buttons/tinyButton.tsx";
-import PageTitle from "./components/pageTitle/pageTitle.tsx";
-*/
-}
-import IconButton from "./components/buttons/iconButton.tsx";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import "./assets/css/global.css";
-
+import OtrosPeriodos from "./components/pageTitle/OtrosPeriodos.tsx";
 import Layout from "./components/layout/layout.tsx";
 
-const App: React.FC = () => {
-  const handleButtonClick = () => {
-    alert("Button clicked!");
-  };
-
-  {
-    /*const handleNotificationClose = () => {
-        alert('Notification closed!');
-    };*/
-  }
-
-  return (
-    <Layout>
-      <IconButton onClick={handleButtonClick} icon="logout">
-        Home
-      </IconButton>
-    </Layout>
-  );
-};
+const App: React.FC = () => (
+  <BrowserRouter>
+    <Routes>
+      <Route path="/" element={<Layout />} />
+      <Route path="/otrosperiodos" element={<OtrosPeriodos />} />
+    </Routes>
+  </BrowserRouter>
+);
 
 const rootElement = document.getElementById("app");
 

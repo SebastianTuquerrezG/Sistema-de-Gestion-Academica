@@ -49,3 +49,21 @@
   padding-bottom: 4px; /* Espaciado entre el texto y la barra */
   width: fit-content; /* Ajusta el ancho de la barra al contenido del texto */
 }
+.Curso-actuales {
+  display: flex; /* Usa flexbox para alinear el contenido */
+  justify-content: center; /* Centra el texto horizontalmente */
+  align-items: center; /* Centra el texto verticalmente */
+  font-family: var(--title-font), serif; /* Fuente definida */
+  color: var(
+    --primary-regular-color
+  ); /* Color primario definido en las variables CSS */
+  font-size: var(
+    --title-size
+  ); /* Tamaño de fuente definido en las variables CSS */
+  font-weight: var(--semibold); /* Peso de fuente semibold */
+  text-align: center; /* Asegura que el texto esté centrado */
+  border-bottom: 3px solid var(--secondary-regular-color); /* Barra roja debajo del texto */
+  padding-bottom: 4px; /* Espaciado entre el texto y la barra */
+  width: fit-content; /* Ajusta el ancho de la barra al contenido del texto */
+  margin: -10px auto 38px auto; /* Menos margen arriba, más abajo */
+}

@@ -1,21 +1,23 @@
 .title {
-    font-family: var(--title-font), serif;
-    color: var(--primary-regular-color);
-    position: relative;
-    display: block; /* Cambiar de inline-block a block */
-    width: 100%; /* Ocupar todo el ancho disponible */
+  font-family: var(--title-font), serif;
+  color: var(--primary-regular-color);
+  position: relative;
+  display: block; /* Cambiar de inline-block a block */
+  width: 100%; /* Ocupar todo el ancho disponible */
+  text-align: center; /* <-- Esto centra el texto */
+  margin-top: 90px; /* <-- Ajusta el valor según lo que necesites */
 }
 
 .firstWord {
-    position: relative;
+  position: relative;
 }
 
 .firstWord::after {
-    content: "";
-    position: absolute;
-    left: 0;
-    bottom: -2px;
-    width: 100%;
-    height: 4px;
-    background-color: var(--secondary-regular-color);
+  content: "";
+  position: absolute;
+  left: 1px;
+  bottom: -2px;
+  width: 100%;
+  height: 4px;
+  background-color: var(--secondary-regular-color);
 }
