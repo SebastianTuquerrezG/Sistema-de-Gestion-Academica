@@ -14,6 +14,7 @@ public class Rubrica {
     private String nombreRubrica;
     private Long idMateria;
     private String nombreMateria;
+
     private int notaRubrica;
     private String objetivoEstudio;
     List<Criterio> criterios;

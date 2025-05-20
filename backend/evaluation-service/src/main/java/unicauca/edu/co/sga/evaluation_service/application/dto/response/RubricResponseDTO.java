@@ -12,6 +12,8 @@ import lombok.NoArgsConstructor;
 public class RubricResponseDTO {
     private Long id;
     private String name;
-    private String study_objective;
-    private String competence;
+    private String studyObjective;
+    private int rubricScore;
+
+    private Long ra_id;
 }

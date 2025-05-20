@@ -12,8 +12,6 @@ import java.util.Date;
 import java.util.List;
 
 @Entity
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -30,15 +28,13 @@ public class EvaluationEntity {
     @JsonIgnore
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    @JsonProperty("enroll")
     private EnrollEntity enroll;
 
     @ManyToOne
-    @JoinColumn(name = "rubric_id", nullable = false, foreignKey = @ForeignKey(name = "fk_rubric"))
+    @JoinColumn(name = "id_rubrica", nullable = false, foreignKey = @ForeignKey(name = "fk_rubrica"))
     @JsonIgnore
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    @JsonProperty("rubric")
     private RubricEntity rubric;
 
     @OneToMany(mappedBy = "evaluation", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)

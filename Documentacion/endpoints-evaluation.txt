@@ -1,0 +1,39 @@
+http://localhost:8080  endpoint general
+
+http://localhost:8080/students endpoints de Estudiante [get, post]
+http://localhost:8080/students/${id} endpoints de Estudiante [get, put, delete]
+http://localhost:8080/students/search endpoints de Estudiante (Trae todos) [get]
+http://localhost:8080/students/identification endpoints de Estudiante (Trae por identificación) [get]
+http://localhost:8080/students/identification-type/${type} endpoints de Estudiante (Trae por tipo de Identificación) [get]
+
+http://localhost:8080/subject endpoints de Materia [get, post]
+http://localhost:8080/subject/${id} endpoints de Materia [get, put, delete]
+http://localhost:8080/subject/search endpoints de Materia (Trae por nombre) [get]
+http://localhost:8080/subject/status/${type} endpoints de Materia (Trae por estado) [get]
+
+http://localhost:8080/teacher endpoints de Profesor [get, post]
+http://localhost:8080/teacher/${id} endpoints de Profesor [get, put, delete]
+http://localhost:8080/teacher/course/${id} endpoints de Profesor (Trae por curso) [get]
+http://localhost:8080/teacher/identification/${id} endpoints de Profesor (Trae por identificación) [get]
+
+http://localhost:8080/evaluations endpoints de Evaluaciones [get, post]
+http://localhost:8080/evaluations/${id} endpoints de Evaluaciones [get, put]
+http://localhost:8080/evaluations/enroll/${enrollid} endpoints de Evaluaciones (Trae por asociación) [get]
+http://localhost:8080/evaluations/rubric/${rubricid} endpoints de Evaluaciones (Trae por rubrica) [get]
+
+http://localhost:8080/enroll endpoints de Enroll [get, post]
+http://localhost:8080/enroll/${id} endpoints de Enroll [get, put]
+http://localhost:8080/enroll/student/${id} endpoints de Enroll (Trae por Estudiante) [get]
+
+http://localhost:8080/course endpoints de Curso [get, post]
+http://localhost:8080/course/${id} endpoints de Curso [get, put]
+http://localhost:8080/course/subject/${id} endpoints de Curso (Trae por materia) [get]
+http://localhost:8080/course/ra/${id} endpoints de Curso (Trae por resultado de aprendizaje) [get]
+http://localhost:8080/course/teacher/${id} endpoints de Curso (Trae por profesor) [get]
+
+http://localhost:8080/calification-register endpoints de calification-register [get, post]
+http://localhost:8080/calification-register/${id} endpoints de calification-register [get, put]
+http://localhost:8080/calification-register/level/${level} endpoints de calification-register (Trae por Nivel) [get]
+http://localhost:8080/calification-register/evaluation/${evaluationid} endpoints de calification-register (Trae por Evaluación) [get]
+
+

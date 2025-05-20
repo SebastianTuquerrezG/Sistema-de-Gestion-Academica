@@ -1,4 +1,4 @@
-"use client";
+/*"use client";
 
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -9,13 +9,13 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { userSchema } from "@/validations/userSchema";
 import { toast } from "sonner";
 import { useState, useEffect } from "react";
-/* import { useRouter } from "next/navigation"; */
+
 import { loadCredentials, saveCredentials, clearCredentials } from "@/lib/rememberMe";
 import { authAction } from "@/actions/authAction";
 import { LoginResponse } from "@/actions/responseType";
 
 export default function LoginForm() {
-    /* const router = useRouter(); */
+
     const [rememberMe, setRememberMe] = useState(false);
 
     const { register, handleSubmit, formState: { errors }, setValue, setError } = useForm({
@@ -43,14 +43,14 @@ export default function LoginForm() {
 
     const onSubmit = async (data: FormData) => {
         try {
-            // Usar el Server Action
+
             const res = await authAction(data);
 
-            if (res.success) {
+            if (res.status === 200) {
                 handleSuccessfulLogin(data);
                 return;
             }
-            handleAuthError(res);
+            handleAuthError(res.data);
         } catch (error) {
             console.error("Error al ejecutar Server Action:", error);
             setError("email", { type: "server", message: "" });
@@ -71,10 +71,10 @@ export default function LoginForm() {
         }
 
         toast.success("¡Inicio de sesión exitoso!");
-        /* router.push("/dashboard/home"); */
+
     };
 
-    const handleAuthError = (result: LoginResponse) => {
+    const handleAuthError = (result: unknown) => {
         setError("email", { type: "server", message: "" });
         setError("password", { type: "server", message: "" });
 
@@ -145,4 +145,4 @@ export default function LoginForm() {
             </div>
         </div>
     );
-}
+}*/

@@ -13,10 +13,10 @@ public interface CalificationRegisterRepository extends JpaRepository<Calificati
     List<CalificationRegisterEntity> findByLevel(String level);
     List<CalificationRegisterEntity> findByEvaluationId(Long id);
 
-    @Query("SELECT cr FROM CalificationRegisterEntity cr " +
-            "JOIN cr.evaluation e " +
-            "WHERE e.id = :evaluationId")
-    List<CalificationRegisterEntity> findByEvaluationId2(@Param("evaluationId") Long evaluationId);
+//    @Query("SELECT cr FROM CalificationRegisterEntity cr " +
+//            "JOIN cr.evaluation e " +
+//            "WHERE e.id = :evaluationId")
+//    List<CalificationRegisterEntity> findByEvaluationId2(@Param("evaluationId") Long evaluationId);
 
 
     @Query("SELECT cr FROM CalificationRegisterEntity cr " +
@@ -29,7 +29,7 @@ public interface CalificationRegisterRepository extends JpaRepository<Calificati
             "WHERE s.id = :studentId " +
             "AND sub.id = :subjectId " +
             "AND en.semester = :semester " +
-            "AND r.id = :rubricId")
+            "AND r.idRubrica = :rubricId")
     List<CalificationRegisterEntity> findCalificationsByStudentAndSubject(
             @Param("studentId") Long studentId,
             @Param("subjectId") Long subjectId,

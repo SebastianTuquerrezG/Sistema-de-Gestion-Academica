@@ -1,11 +1,12 @@
 import { CriterionInterface } from './CriterionInterface';
 
 export interface RubricInterface {
-  rubricaId: string;
+  idRubrica: string;
   nombreRubrica: string;
-  materia: string;
+  materia: number;
   notaRubrica: number;
   objetivoEstudio: string;
   criterios: CriterionInterface[];
   estado: string;
+  raId:number;
 }

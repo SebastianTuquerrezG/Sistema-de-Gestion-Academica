@@ -11,20 +11,21 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface RubricRepository extends JpaRepository<RubricEntity, Long> {
-    Optional<RubricEntity> findByNameContainingIgnoreCase(String name);
+public interface RubricRepository  extends JpaRepository<RubricEntity, Long> {
+    Optional<RubricEntity> findByIdRubrica(Long id);
+    Optional<RubricEntity> findByNombreRubricaContainingIgnoreCase(String name);
     List<RubricEntity> findBySubjectId(Long id);
     List<RubricEntity> findByRaId(Long id);
-    //List<RubricEntity> findByCriteriaId(Long id);
-    List<RubricEntity> findByStatus(GeneralEnums.status status);
+    //List<RubricEntity> findByIdCriterio(Long id);
+    List<RubricEntity> findByEstado(GeneralEnums.status status);
 
 
-    @Query("SELECT r.study_objective FROM RubricEntity r " +
+    @Query("SELECT r.objetivoEstudio FROM RubricEntity r " +
             "JOIN r.subject sub " +
             "JOIN sub.course c " +
             "JOIN c.enroll e " +
             "JOIN e.student s " +
-            "WHERE r.id = :rubricId " +
+            "WHERE r.idRubrica = :rubricId " +
             "AND sub.id = :subjectId " +
             "AND s.id = :studentId " +
             "AND e.semester = :semester")

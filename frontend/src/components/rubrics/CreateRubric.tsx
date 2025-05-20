@@ -197,7 +197,6 @@ export default function CreateRubric() {
     const handleCreate = () => {
         // Validar campos obligatorios
         const requiredFields = [
-            { field: (document.getElementById("idRubrica") as HTMLInputElement)?.value, name: "ID Rúbrica" },
             { field: (document.getElementById("nombreRubrica") as HTMLInputElement)?.value, name: "Nombre Rúbrica" },
             { field: (document.getElementById("materia") as HTMLInputElement)?.value, name: "Materia" },
             { field: (document.getElementById("objetivoEstudio") as HTMLInputElement)?.value, name: "Objetivo de Estudio" }
@@ -248,9 +247,9 @@ export default function CreateRubric() {
         }
 
         const rubricData: RubricInterface = {
-            rubricaId: null ,
+            idRubrica: '' ,
             nombreRubrica: (document.getElementById("nombreRubrica") as HTMLInputElement)?.value,
-            materia: (document.getElementById("materia") as HTMLInputElement)?.value,
+            materia: parseFloat((document.getElementById("materia") as HTMLInputElement)?.value),
             notaRubrica: parseFloat((document.getElementById("notaRubrica") as HTMLInputElement)?.value || "0"),
             objetivoEstudio: (document.getElementById("objetivoEstudio") as HTMLInputElement)?.value,
             criterios: rows.map(row => ({
@@ -261,11 +260,14 @@ export default function CreateRubric() {
                 crfComentario: row.crfComentario,
                 niveles: row.niveles
             })),
+            raId:101,
             estado: "ACTIVO"
         };
 
         try {
+            console.log(rubricData);
             createRubric(rubricData).then(r => console.log(r));
+
             setNotification({
                 type: "success",
                 title: "Éxito",
@@ -300,10 +302,6 @@ export default function CreateRubric() {
             <CardContent>
                 <div className="space-y-4">
                     <div className="grid grid-cols-2 gap-4">
-                        <div className="grid w-full max-w-sm items-center gap-1.5">
-                            <Label htmlFor="idRubrica">ID Rúbrica</Label>
-                            <Input id="idRubrica" placeholder="Ej: IS102" />
-                        </div>
                         <div className="grid w-full max-w-sm items-center gap-1.5">
                             <Label htmlFor="nombreRubrica">Nombre Rúbrica</Label>
                             <Input id="nombreRubrica" placeholder="Nombre de la rúbrica" />
