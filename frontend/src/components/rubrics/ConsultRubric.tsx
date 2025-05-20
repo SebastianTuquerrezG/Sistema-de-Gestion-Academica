@@ -5,10 +5,14 @@ import { useEffect, useState } from "react";
 import { Search, Plus, Pencil, Trash2, Share2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useNavigate } from "react-router-dom";
+import { Copy } from "lucide-react";
+
 //import { getAllRubrics } from "@/services/rubricService";
 import Notification from "@/components/notifications/notification";
 import { RubricInterface } from "@/interfaces/RubricInterface";
 import { deleteRubric } from "@/services/rubricService";
+import { createRubric } from "@/services/rubricService";
+import DuplicateRubricModal from "@/components/Modal/DuplicateRubricModal.tsx";
 
 import {
     Dialog,
@@ -46,6 +50,9 @@ export default function ConsultarRubrica() {
     const [rubrics, setRubrics] = useState<RubricInterface[]>([]);
     const navigate = useNavigate(); // Hook to navigate between pages
     const [selectedRubricId, setSelectedRubricId] = useState<string | null>(null);
+
+    const [showDuplicateModal, setShowDuplicateModal] = useState(false);
+    const [rubricToDuplicate, setRubricToDuplicate] = useState<RubricInterface | null>(null);
 
 
     useEffect(() => {
@@ -102,7 +109,7 @@ export default function ConsultarRubrica() {
         } else {
             alert("Error deleting rubric");
         }
-    }
+    };
 
     const form = useForm<z.infer<typeof ShareSchema>>({
         resolver: zodResolver(ShareSchema),
@@ -110,6 +117,37 @@ export default function ConsultarRubrica() {
             email: "",
         },
     });
+
+    // Function to open the duplicate modal
+    const handleOpenDuplicateModal = (rubric: RubricInterface) => {
+        setRubricToDuplicate(rubric);
+        setShowDuplicateModal(true);
+    };
+
+    // Function to handle rubric duplication
+    const handleDuplicate = async (prefix: string, data: { newName: string; shareWithSamePeople: boolean; copyComments: boolean; resolvedComments: boolean }) => {
+        if (!rubricToDuplicate) return;
+
+        const duplicatedRubric: RubricInterface = {
+            idRubrica: `${prefix}${data.newName}`,
+            nombreRubrica: `${prefix}${data.newName}`,
+            materia: rubricToDuplicate.materia,
+            notaRubrica: 0,
+            objetivoEstudio: "Objetivo duplicado",
+            estado: "ACTIVO",
+            criterios: rubricToDuplicate.criterios,
+            raId: rubricToDuplicate.raId,
+            ...data,
+        };
+
+        const response = await createRubric(duplicatedRubric);
+        if (response) {
+            setRubrics((prev) => [...prev, duplicatedRubric]);
+        } else {
+            alert("Error duplicating rubric");
+        }
+        setShowDuplicateModal(false);
+    };
 
     const [notification, setNotification] = useState<NotificationType | null>(null);
 
@@ -170,6 +208,10 @@ export default function ConsultarRubrica() {
                                             <Button variant="ghost" size="icon" className="h-8 w-8 text-orange-500 hover:text-orange-600" onClick={() => handleDelete(rubric.idRubrica)}>
                                                 <Trash2 className="h-4 w-4" />
                                             </Button>
+                                            <Button variant="ghost" size="icon" className="h-8 w-8 text-indigo-500 hover:text-indigo-600" onClick={() => handleOpenDuplicateModal(rubric)}>
+                                                <Copy className="h-4 w-4" />
+                                            </Button>
+
                                             <Dialog>
                                                 <DialogTrigger>
                                                     <Button variant="ghost" size="icon" className="h-8 w-8">
@@ -272,6 +314,12 @@ export default function ConsultarRubrica() {
                         </tbody>
                     </table>
                 </div>
+                <DuplicateRubricModal
+                    open={showDuplicateModal}
+                    onClose={() => setShowDuplicateModal(false)}
+                    originalName={rubricToDuplicate?.nombreRubrica || ""}
+                    onDuplicate={(data) => handleDuplicate("Copia de ", data)}
+                />
             </main>
         </div>
     );

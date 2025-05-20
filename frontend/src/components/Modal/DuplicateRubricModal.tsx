@@ -1,0 +1,79 @@
+import { useState } from "react";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog.tsx";
+import { Input } from "@/components/ui/input.tsx";
+import { Checkbox } from "@/components/ui/checkbox.tsx";
+import { Button } from "@/components/ui/button.tsx";
+
+interface Props {
+    open: boolean;
+    onClose: () => void;
+    originalName: string;
+    onDuplicate: (data: {
+        newName: string;
+        shareWithSamePeople: boolean;
+        copyComments: boolean;
+        resolvedComments: boolean;
+    }) => void;
+}
+
+export default function DuplicateRubricModal({
+    open,
+    onClose,
+    originalName,
+    onDuplicate,
+}: Props) {
+    const [newName, setNewName] = useState(`Copia de ${originalName}`);
+    const [shareWithSamePeople, setShareWithSamePeople] = useState(false);
+    const [copyComments, setCopyComments] = useState(false);
+    const [resolvedComments, setResolvedComments] = useState(false);
+
+    const handleDuplicate = () => {
+        onDuplicate({ newName, shareWithSamePeople, copyComments, resolvedComments });
+        onClose();
+    };
+
+    return (
+        <Dialog open={open} onOpenChange={onClose}>
+            <DialogContent className="w-full max-w-md p-6">
+                <DialogTitle>Copiar rúbrica</DialogTitle>
+
+                <label className="block text-sm font-medium mt-4">Nombre</label>
+                <Input value={newName} onChange={(e) => setNewName(e.target.value)} />
+
+                <div className="mt-4 space-y-2">
+                    <div className="flex items-center gap-2">
+                        <Checkbox
+                            checked={shareWithSamePeople}
+                            onCheckedChange={() => setShareWithSamePeople(!shareWithSamePeople)}
+                        />
+                        <span>Compartir con las mismas personas</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                        <Checkbox
+                            checked={copyComments}
+                            onCheckedChange={() => setCopyComments(!copyComments)}
+                        />
+                        <span>Copiar los comentarios y sugerencias</span>
+                    </div>
+                    <div className="flex items-center gap-2 pl-6">
+                        <Checkbox
+                            checked={resolvedComments}
+                            onCheckedChange={() => setResolvedComments(!resolvedComments)}
+                            disabled={!copyComments}
+                        />
+                        <span>Incluir sugerencias y comentarios resueltos</span>
+                    </div>
+                </div>
+
+                <div className="flex justify-end mt-6 gap-2">
+                    <Button variant="outline" onClick={onClose}>
+                        Cancelar
+                    </Button>
+                    <Button onClick={handleDuplicate}>
+                        Hacer una copia
+                    </Button>
+                </div>
+            </DialogContent>
+        </Dialog>
+    );
+}
