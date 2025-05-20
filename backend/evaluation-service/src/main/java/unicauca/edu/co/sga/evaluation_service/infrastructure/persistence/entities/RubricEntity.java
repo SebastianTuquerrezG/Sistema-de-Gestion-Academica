@@ -54,7 +54,7 @@ public class RubricEntity {
     @EqualsAndHashCode.Exclude
     private CriteriaEntity criteria;*/
 
-    @OneToMany(mappedBy = "rubric", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "rubric", orphanRemoval = true, cascade = CascadeType.ALL)
     @JsonManagedReference("rubric-criteria")
     private List<CriteriaEntity> criterios;
 

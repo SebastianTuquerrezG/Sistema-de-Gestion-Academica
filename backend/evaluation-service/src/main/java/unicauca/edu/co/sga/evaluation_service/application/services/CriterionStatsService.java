@@ -1,6 +1,7 @@
 package unicauca.edu.co.sga.evaluation_service.application.services;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 import unicauca.edu.co.sga.evaluation_service.application.dto.response.stats.CriterionAverageDTO;
 import unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.entities.CriteriaEntity;
 import unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.entities.EvaluationEntity;
@@ -13,6 +14,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Service
 @RequiredArgsConstructor
 public class CriterionStatsService {
     private final EvaluationRepository evaluationRepository;
