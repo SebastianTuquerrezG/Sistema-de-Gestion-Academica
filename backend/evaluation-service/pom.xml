@@ -92,6 +92,11 @@
 			<optional>true</optional>
 		</dependency>
 		<dependency>
+			<groupId>jakarta.servlet</groupId>
+			<artifactId>jakarta.servlet-api</artifactId>
+			<version>6.0.0</version> <scope>provided</scope>
+		</dependency>
+		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-amqp</artifactId>
 			<version>3.4.3</version>
@@ -142,14 +147,18 @@
 			<artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-oauth2-jose</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>io.projectreactor</groupId>
 			<artifactId>reactor-test</artifactId>
 			<version>3.7.4</version>
 			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-webflux</artifactId>
 		</dependency>
 	</dependencies>
 

@@ -7,7 +7,6 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 
 @SpringBootApplication(
 		exclude = {
-				org.springframework.ai.autoconfigure.vectorstore.mariadb.MariaDbStoreAutoConfiguration.class,
 				org.springframework.ai.autoconfigure.vectorstore.mariadb.MariaDbStoreAutoConfiguration.class
 		}
 )
