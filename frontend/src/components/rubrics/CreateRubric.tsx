@@ -360,11 +360,11 @@ export default function CreateRubric()
         }
 
         const totalPercentage = rows.reduce((sum, row) => sum + (parseFloat(row.crfPorcentaje) || 0), 0);
-        if (Math.abs(totalPercentage - 1) > 0.0001) {
+        if (Math.abs(totalPercentage - 100) > 0.0001) {
             setNotification({
                 type: "error",
                 title: "Porcentaje inválido",
-                message: "La suma de los porcentajes debe ser exactamente 100% (1 en decimal)."
+                message: "La suma de los porcentajes debe ser exactamente 100%."
             });
             return;
         }
