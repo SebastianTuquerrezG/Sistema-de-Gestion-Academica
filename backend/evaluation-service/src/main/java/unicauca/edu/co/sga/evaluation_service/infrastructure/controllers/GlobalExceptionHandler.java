@@ -1,4 +1,4 @@
-package unicauca.edu.co.sga.evaluation_service.adapters.rubric.controllers;
+package unicauca.edu.co.sga.evaluation_service.infrastructure.controllers;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
