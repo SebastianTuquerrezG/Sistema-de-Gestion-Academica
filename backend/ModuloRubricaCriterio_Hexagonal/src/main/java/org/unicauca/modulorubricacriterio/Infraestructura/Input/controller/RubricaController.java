@@ -9,6 +9,8 @@ import org.unicauca.modulorubricacriterio.Infraestructura.Input.dtoPeticion.Rubr
 import org.unicauca.modulorubricacriterio.Infraestructura.Input.dtorespuesta.RubricaDTORespuesta;
 import org.unicauca.modulorubricacriterio.Infraestructura.Input.mappers.RubricaMapperInfraDominio;
 
+import jakarta.validation.Valid;
+
 import java.util.List;
 /**
  * Controlador REST para gestionar las rúbricas.
@@ -50,7 +52,7 @@ public class RubricaController {
     }
 
     @PostMapping("/rubricas")
-    public ResponseEntity<RubricaDTORespuesta>save(@RequestBody RubricaDTOPeticion rubricaDTO) {
+    public ResponseEntity<RubricaDTORespuesta>save(@Valid @RequestBody RubricaDTOPeticion rubricaDTO) {
         System.out.println(rubricaDTO);
         Rubrica objRubricaCrear = this.objRubricaMapper.mapDtoaRubrica(rubricaDTO);//MapearDto a rúbrica
         Rubrica objRubricaCreado = this.rubricaService.crearRubrica(objRubricaCrear);//Crear la rúbrica en el dominio
@@ -62,7 +64,7 @@ public class RubricaController {
 
 
     @PutMapping("/rubricas")
-    public ResponseEntity<RubricaDTORespuesta>update(@RequestBody RubricaDTOPeticion rubricaDTO,@RequestParam("id") Long id) {
+    public ResponseEntity<RubricaDTORespuesta>update(@Valid @RequestBody RubricaDTOPeticion rubricaDTO,@RequestParam("id") Long id) {
         System.out.println("Id recibido"+id);
         Rubrica objRubricaActualizar = this.objRubricaMapper.mapDtoaRubrica(rubricaDTO);
         Rubrica objRubricaActualizado = this.rubricaService.modificarRubrica(id, objRubricaActualizar);

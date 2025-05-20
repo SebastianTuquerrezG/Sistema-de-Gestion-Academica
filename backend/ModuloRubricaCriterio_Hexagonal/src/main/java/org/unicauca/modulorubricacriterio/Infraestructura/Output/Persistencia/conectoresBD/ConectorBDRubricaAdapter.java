@@ -1,6 +1,7 @@
 package org.unicauca.modulorubricacriterio.Infraestructura.Output.Persistencia.conectoresBD;
 
 import java.util.List;
+import java.util.ArrayList;
 
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
@@ -40,6 +41,7 @@ public class ConectorBDRubricaAdapter implements IConectorBDRubricaPort {
         List<Rubrica> listRubrica = this.rubricaMapper.map(listRubricaEntity, new TypeToken<List<Rubrica>>() {
         }.getType());
         for (Rubrica rubric : listRubrica) {
+            rubric.setNombreMateria(this.rubricaRepository.findSubjectNameByRubricaId(rubric.getIdRubrica()));
             if(rubric.getCriterios() != null)
             {
                 rubric.getCriterios().forEach(criterio -> {
@@ -62,6 +64,7 @@ public class ConectorBDRubricaAdapter implements IConectorBDRubricaPort {
         }
 
         Rubrica objRubrica = this.rubricaMapper.map(objRubricaEntity, Rubrica.class);
+        objRubrica.setNombreMateria(this.rubricaRepository.findSubjectNameByRubricaId(objRubrica.getIdRubrica()));
         if(objRubrica.getCriterios()!= null)
         {
             objRubrica.getCriterios().forEach(criterio -> {
@@ -79,8 +82,12 @@ public class ConectorBDRubricaAdapter implements IConectorBDRubricaPort {
     @Override
     public Rubrica saveRubric(Rubrica objRubrica) {
         RubricaEntity objRubricaEntity = this.rubricaMapper.map(objRubrica, RubricaEntity.class);
-        MateriaEntity objMateriaEntity = this.materiaRepository.findById(objRubrica.getMateria()).orElseThrow(() -> new EntidadNoExisteException("Materia con el id {"+objRubrica.getMateria()+"} no existe"));
+        MateriaEntity objMateriaEntity = this.materiaRepository.findById(objRubrica.getIdMateria()).orElseThrow(() -> new EntidadNoExisteException("Materia con el id {"+objRubrica.getIdMateria()+"} no existe"));
         RAEntity objRAEntity = this.raRepository.findById(objRubrica.getRaId()).orElseThrow(() -> new EntidadNoExisteException("RA con el id {"+objRubrica.getRaId()+"} no existe"));
+        Integer numRubricasConNombre = this.existeRubricaConNombre(objRubrica.getNombreRubrica());
+        //Para Guardar rúbricas duplicadas
+        if(numRubricasConNombre >= 1) objRubricaEntity.setNombreRubrica(objRubrica.getNombreRubrica()+" ("+numRubricasConNombre+")");
+
 
         objRubricaEntity.setSubject(objMateriaEntity);
         objRubricaEntity.setRa(objRAEntity);
@@ -96,6 +103,7 @@ public class ConectorBDRubricaAdapter implements IConectorBDRubricaPort {
         }
         RubricaEntity objRubricaEntityGuardada = this.rubricaRepository.save(objRubricaEntity);
         Rubrica objRubricaGuardada = this.rubricaMapper.map(objRubricaEntityGuardada, Rubrica.class);
+        objRubricaGuardada.setNombreMateria(this.rubricaRepository.findSubjectNameByRubricaId(objRubricaGuardada.getIdRubrica()));
 
         if(objRubricaGuardada.getCriterios() != null)
         {
@@ -116,7 +124,7 @@ public class ConectorBDRubricaAdapter implements IConectorBDRubricaPort {
         RubricaEntity rubricaEncontrada = this.rubricaRepository.findById(id).orElse(null);
 
         if (objRubricaEntity.getSubject() != null) {
-            MateriaEntity objMateriaEntity = this.materiaRepository.findById(objRubrica.getMateria()).orElseThrow(() -> new EntidadNoExisteException("Materia con el id {"+objRubrica.getMateria()+"} no existe"));
+            MateriaEntity objMateriaEntity = this.materiaRepository.findById(objRubrica.getIdMateria()).orElseThrow(() -> new EntidadNoExisteException("Materia con el id {"+objRubrica.getIdMateria()+"} no existe"));
             objRubricaEntity.setSubject(objMateriaEntity);
         } else {
             assert rubricaEncontrada != null;
@@ -134,34 +142,73 @@ public class ConectorBDRubricaAdapter implements IConectorBDRubricaPort {
             throw new EntidadNoExisteException("Rúbrica con el id {"+id+"} no existe");
         }
 
-        objRubricaEntity.getCriterios().forEach(criterio -> {
-            criterio.setRubrica(rubricaEncontrada);
-            if(criterio.getNiveles() != null) {
-                criterio.getNiveles().forEach(nivel -> nivel.setCriterio(criterio));
-            }
-        });
+        rubricaEncontrada.setCriterios(rubricaEncontrada.getCriterios() == null ? new ArrayList<>() : rubricaEncontrada.getCriterios());
 
-        for(int i=0; i < objRubricaEntity.getCriterios().size(); i++)
-        {
-            objRubricaEntity.getCriterios().get(i).setIdCriterio(rubricaEncontrada.getCriterios().get(i).getIdCriterio());
-            for(int j=0; j < objRubricaEntity.getCriterios().get(i).getNiveles().size(); j++)
-            {
-                objRubricaEntity.getCriterios().get(i).getNiveles().get(j).setIdNivel(rubricaEncontrada.getCriterios().get(i).getNiveles().get(j).getIdNivel());
+        // Actualizar o agregar criterios
+        for (int i = 0; i < objRubricaEntity.getCriterios().size(); i++) {
+            var criterioNuevo = objRubricaEntity.getCriterios().get(i);
+            
+            if (i < rubricaEncontrada.getCriterios().size()) {
+                var criterioExistente = rubricaEncontrada.getCriterios().get(i);
+                criterioExistente.setCrfDescripcion(criterioNuevo.getCrfDescripcion());
+                criterioExistente.setCrfNota(criterioNuevo.getCrfNota());
+                criterioExistente.setCrfPorcentaje(criterioNuevo.getCrfPorcentaje());
+                
+                criterioExistente.setNiveles(
+                    criterioExistente.getNiveles() == null ? new ArrayList<>() : criterioExistente.getNiveles()
+                );
+
+                // Actualizar o agregar niveles
+                for (int j = 0; j < criterioNuevo.getNiveles().size(); j++) {
+                    var nivelNuevo = criterioNuevo.getNiveles().get(j);
+                    nivelNuevo.setCriterio(criterioExistente); // asociación
+
+                    if (j < criterioExistente.getNiveles().size()) {
+                        var nivelExistente = criterioExistente.getNiveles().get(j);
+                        nivelExistente.setNivelDescripcion(nivelNuevo.getNivelDescripcion());
+                        nivelExistente.setRangoNota(nivelNuevo.getRangoNota());
+                    } else {
+                        criterioExistente.getNiveles().add(nivelNuevo);
+                    }
+                }
+
+                // Eliminar niveles sobrantes
+                if (criterioExistente.getNiveles().size() > criterioNuevo.getNiveles().size()) {
+                    criterioExistente.getNiveles().subList(criterioNuevo.getNiveles().size(),criterioExistente.getNiveles().size()).clear();
+                }
+
+            } else {
+                // Agregar nuevo criterio
+                criterioNuevo.setRubrica(rubricaEncontrada);
+
+                // Asociar niveles con el nuevo criterio
+                if (criterioNuevo.getNiveles() != null) {
+                    for (var nivel : criterioNuevo.getNiveles()) {
+                        nivel.setCriterio(criterioNuevo);
+                    }
+                }
+
+                rubricaEncontrada.getCriterios().add(criterioNuevo);
             }
         }
 
 
+    // Eliminar criterios sobrantes
+    if (rubricaEncontrada.getCriterios().size() > objRubricaEntity.getCriterios().size()) {
+        rubricaEncontrada.getCriterios().subList(objRubricaEntity.getCriterios().size(),rubricaEncontrada.getCriterios().size()).clear();
+    }
 
         rubricaEncontrada.setSubject(objRubricaEntity.getSubject());
         rubricaEncontrada.setNombreRubrica(objRubrica.getNombreRubrica());
         rubricaEncontrada.setNotaRubrica(objRubrica.getNotaRubrica());
         rubricaEncontrada.setObjetivoEstudio(objRubrica.getObjetivoEstudio());
-        rubricaEncontrada.setCriterios(objRubricaEntity.getCriterios());
         rubricaEncontrada.setRa(objRubricaEntity.getRa());
 
 
         objRubricaActualizada = this.rubricaRepository.save(rubricaEncontrada);
         Rubrica rubricaActualizadaReturn = this.rubricaMapper.map(objRubricaActualizada, Rubrica.class);
+
+        rubricaActualizadaReturn.setNombreMateria(this.rubricaRepository.findSubjectNameByRubricaId(id));
         
         if(rubricaActualizadaReturn.getCriterios() != null)
         {
@@ -226,6 +273,16 @@ public class ConectorBDRubricaAdapter implements IConectorBDRubricaPort {
         return rubricaRetornar;
     }
 
+    /**
+     * @brief método que verifica que existe una rúbrica con el nombre dado
+     * @param nombreRubrica nombre de la rúbrica a verificar
+     * @return número de coincidencias de rúbricas con el nombre dado
+     */
+    private Integer existeRubricaConNombre(String nombreRubrica) {
+        Integer coincidencias = this.rubricaRepository.existeRubricaConNombre(nombreRubrica);
+        return coincidencias;
+    }
+
     private EstadosEnum validarEstado(String Estado)
     {
         EstadosEnum estadoSiguiente = null;
@@ -239,7 +296,6 @@ public class ConectorBDRubricaAdapter implements IConectorBDRubricaPort {
         }
         return estadoSiguiente;
     }
-
-
+    
 
 }

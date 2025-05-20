@@ -10,6 +10,8 @@ import org.unicauca.modulorubricacriterio.Infraestructura.Input.dtoPeticion.Nive
 import org.unicauca.modulorubricacriterio.Infraestructura.Input.dtorespuesta.NivelDTORespuesta;
 import org.unicauca.modulorubricacriterio.Infraestructura.Input.mappers.NivelMapperInfraDominio;
 
+import jakarta.validation.Valid;
+
 import java.util.List;
 
 @RestController
@@ -43,7 +45,7 @@ public class NivelController {
     }
 
     @PostMapping("/niveles")
-    public ResponseEntity<NivelDTORespuesta>save(@RequestBody NivelDTOPeticion nivelDTO) {
+    public ResponseEntity<NivelDTORespuesta>save(@Valid @RequestBody NivelDTOPeticion nivelDTO) {
         Nivel objNivelCrear = this.objNivelMapper.mapNivelDtoaNivel(nivelDTO);
         Nivel objNivelCreado = this.nivelService.crearNivel(objNivelCrear);
         NivelDTORespuesta objRespuesta = this.objNivelMapper.mapNivelToDto(objNivelCreado);
@@ -53,7 +55,7 @@ public class NivelController {
 
 
     @PutMapping("/niveles")
-    public ResponseEntity<NivelDTORespuesta>update(@RequestBody NivelDTOPeticion nivelDTO,@RequestParam("id") Long id) {
+    public ResponseEntity<NivelDTORespuesta>update(@Valid @RequestBody NivelDTOPeticion nivelDTO,@RequestParam("id") Long id) {
         Nivel objNivelActualizar = this.objNivelMapper.mapNivelDtoaNivel(nivelDTO);
         Nivel objNivelActualizado = this.nivelService.modificarNivel(id, objNivelActualizar);
         NivelDTORespuesta objRespuesta = this.objNivelMapper.mapNivelToDto(objNivelActualizado);
