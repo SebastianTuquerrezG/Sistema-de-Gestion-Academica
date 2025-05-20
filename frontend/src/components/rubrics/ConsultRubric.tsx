@@ -69,16 +69,16 @@ export default function ConsultarRubrica() {
             })
             .catch((error) => console.error(error));
     }, []);
-
-    /* useEffect(() => {
+    /*
+    useEffect(() => {
         getAllRubrics()
             .then((data) => {
                 const activeRubrics = data.filter((rubric: RubricInterface) => rubric.estado !== "INACTIVO");
                 setRubrics(activeRubrics);
             })
             .catch((error) => console.error(error));
-    }, []); */
-
+    }, []);
+*/
     const filteredRubrics = rubrics.filter(
         (rubric) =>
             rubric.nombreRubrica.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -106,8 +106,17 @@ export default function ConsultarRubrica() {
         const success = await deleteRubric(id);
         if (success) {
             setRubrics(rubrics.filter(rubric => rubric.idRubrica !== id));
+            setNotification({
+                type: "success",
+                title: "Rúbrica inactivada",
+                message: "La rúbrica ha sido inactivada correctamente.",
+            });
         } else {
-            alert("Error deleting rubric");
+            setNotification({
+                type: "error",
+                title: "Error",
+                message: "No se pudo inactivar la rúbrica.",
+            })
         }
     };
 
