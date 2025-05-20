@@ -9,6 +9,7 @@ import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "@
 import Notification from "@/components/notifications/notification";
 import { createRubric } from "@/services/rubricService";
 import {RubricInterface} from "@/interfaces/RubricInterface.ts";
+import {useNavigate} from "react-router-dom";
 
 //Definicion del tipo de notificacion
 type NotificationType = {
@@ -19,6 +20,9 @@ type NotificationType = {
 
 export default function CreateRubric()
 {
+    // State to navigate between pages
+    const navigate = useNavigate();
+
     // Estado local para almacenar el valor de la nota (puede ser número o vacío)
     const [nota, setNota] = useState<number | "">("");
 
@@ -26,9 +30,9 @@ export default function CreateRubric()
     const [notaMaxima] = useState<number | null>(null);
 
     const [levels, setLevels] = useState([
-        { idNivel: 1, nivelDescripcion: "", rangoNota: "0-1" },
-        { idNivel: 2, nivelDescripcion: "", rangoNota: "1-3" },
-        { idNivel: 3, nivelDescripcion: "", rangoNota: "2-3" }
+        { idNivel: 1, nivelDescripcion: "", rangoNota: "" },
+        { idNivel: 2, nivelDescripcion: "", rangoNota: "" },
+        { idNivel: 3, nivelDescripcion: "", rangoNota: "" }
     ]);
 
     const [rows, setRows] = useState([
@@ -60,7 +64,6 @@ export default function CreateRubric()
         }
     }, [notification]);
 
-
     // Añade un nuevo nivel a la rúbrica, hasta un máximo de 5
     const addLevel = () => {
         if (levels.length >= 5) {
@@ -71,7 +74,6 @@ export default function CreateRubric()
             });
             return;
         }
-
         // Calculamos el nuevo ID y añadimos un nivel vacío
         const newId = levels.length > 0 ? Math.max(...levels.map(l => l.idNivel)) + 1 : 1;
         const nuevosLevels = [...levels, { idNivel: newId, nivelDescripcion: "", rangoNota: "" }];
@@ -112,7 +114,6 @@ export default function CreateRubric()
         })));
     };
 
-
     //Manejador que calcula los rangos de nota para cada nivel segun la nota maxima
     const handleRangosChanges = (nuevaNotaMaxima: number | null, nivelesActuales: typeof levels) => {
         if (!nuevaNotaMaxima || nivelesActuales.length === 0) {
@@ -129,7 +130,6 @@ export default function CreateRubric()
             rangoNota: `${(paso * index).toFixed(2)}-${(paso * (index + 1)).toFixed(2)}`
         }));
     };
-
 
     // Manejador que se ejecuta cuando cambia el valor del input en Nota Maxima de la Rubrica
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -148,7 +148,7 @@ export default function CreateRubric()
             setNotification({
                 type: "error",
                 title: "Nota Fuera de Rango",
-                message: "La nota debe estar entre 0 y 5",
+                message: "La nota debe estar entre 0.0 y 5.0",
             });
             setNota(""); // Ajustamos el valor al máximo
         }
@@ -266,18 +266,18 @@ export default function CreateRubric()
 
     const handleCancel = () => {
         setLevels([
-            { idNivel: 1, nivelDescripcion: "", rangoNota: "0-1" },
-            { idNivel: 2, nivelDescripcion: "", rangoNota: "1-2" },
-            { idNivel: 3, nivelDescripcion: "", rangoNota: "2-3" }
+            { idNivel: 1, nivelDescripcion: "", rangoNota: "" },
+            { idNivel: 2, nivelDescripcion: "", rangoNota: "" },
+            { idNivel: 3, nivelDescripcion: "", rangoNota: "" }
         ]);
         setRows([
             {
                 idCriterio: 1,
                 crfDescripcion: "",
                 niveles: [
-                    { idNivel: 1, nivelDescripcion: "", rangoNota: "0-1" },
-                    { idNivel: 2, nivelDescripcion: "", rangoNota: "1-2" },
-                    { idNivel: 3, nivelDescripcion: "", rangoNota: "2-3" }
+                    { idNivel: 1, nivelDescripcion: "", rangoNota: "" },
+                    { idNivel: 2, nivelDescripcion: "", rangoNota: "" },
+                    { idNivel: 3, nivelDescripcion: "", rangoNota: "" }
                 ],
                 crfPorcentaje: "",
                 crfNota: 0,
@@ -287,9 +287,9 @@ export default function CreateRubric()
                 idCriterio: 2,
                 crfDescripcion: "",
                 niveles: [
-                    { idNivel: 1, nivelDescripcion: "", rangoNota: "0-1" },
-                    { idNivel: 2, nivelDescripcion: "", rangoNota: "1-2" },
-                    { idNivel: 3, nivelDescripcion: "", rangoNota: "2-3" }
+                    { idNivel: 1, nivelDescripcion: "", rangoNota: "" },
+                    { idNivel: 2, nivelDescripcion: "", rangoNota: "" },
+                    { idNivel: 3, nivelDescripcion: "", rangoNota: "" }
                 ],
                 crfPorcentaje: "",
                 crfNota: 0,
@@ -297,25 +297,6 @@ export default function CreateRubric()
             }
         ]);
     };
-
-    const handleNotaChange = (rowIndex: number, value: string) => {
-        const numericValue = parseFloat(value);
-
-        // Validación opcional: permitir solo valores decimales entre 0 y 5
-        if (!isNaN(numericValue) && (numericValue < 0 || numericValue > 5)) {
-            setNotification({
-                type: "error",
-                title: "Nota fuera de rango",
-                message: "La nota debe estar entre 0.0 y 5.0",
-            });
-            return;
-        }
-
-        const newRows = [...rows];
-        newRows[rowIndex].crfNota = numericValue || 0;
-        setRows(newRows);
-    };
-
 
     const handleCreate = () => {
         // Validar campos obligatorios
@@ -407,6 +388,10 @@ export default function CreateRubric()
         }
     };
 
+    const handleBackToHome =() =>{
+        navigate(`/rubricas/`);
+    }
+
     return (
         <Card className="w-full max-w-[1200px] relative">
             {notification && (
@@ -443,7 +428,7 @@ export default function CreateRubric()
                                 step={0.1}
                                 value={nota}
                                 onChange={handleChange}
-                                placeholder="0 - 5"
+                                placeholder="0.0 - 5.0"
                             />
                         </div>
                         <div className="grid w-full max-w-sm items-center gap-1.5">
@@ -459,7 +444,6 @@ export default function CreateRubric()
                         <TableRow>
                             <TableHead>Criterio Evaluación</TableHead>
                             <TableHead>Porcentaje</TableHead>
-                            <TableHead>Nota</TableHead>
                             <TableHead>Comentario</TableHead>
                             {levels.map((level, index) => (
                                 <TableHead key={index}>
@@ -504,17 +488,6 @@ export default function CreateRubric()
                                     </div>
                                 </TableCell>
                                 <TableCell>
-                                    <input
-                                        type="number"
-                                        min="0"
-                                        max="5"
-                                        step="0.1"
-                                        value={row.crfNota === 0 ? "" : row.crfNota.toString()}
-                                        onChange={(e) =>handleNotaChange(rowIndex, e.target.value)}
-                                        placeholder="Nota"
-                                    />
-                                </TableCell>
-                                <TableCell>
                                     <Textarea
                                         value={row.crfComentario}
                                         onChange={(e) => handleComentarioChange(rowIndex, e.target.value)}
@@ -547,7 +520,12 @@ export default function CreateRubric()
             </CardContent>
             <CardFooter className="flex justify-between">
                 <Button onClick={handleCancel} variant="outline">Cancelar</Button>
-                <Button onClick={handleCreate}>Crear</Button>
+
+                <div className="flex justify-end gap-4">
+                    <Button onClick={handleBackToHome} variant="outline">Volver</Button>
+                    <Button onClick={handleCreate}>Crear</Button>
+                </div>
+
             </CardFooter>
         </Card>
     );

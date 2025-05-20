@@ -28,9 +28,9 @@ export default function CreateRubric()
     const [notaMaxima] = useState<number | null>(null);
 
     const [levels, setLevels] = useState([
-        { idNivel: 1, nivelDescripcion: "", rangoNota: "0-1" },
-        { idNivel: 2, nivelDescripcion: "", rangoNota: "1-3" },
-        { idNivel: 3, nivelDescripcion: "", rangoNota: "2-3" }
+        { idNivel: 1, nivelDescripcion: "", rangoNota: "" },
+        { idNivel: 2, nivelDescripcion: "", rangoNota: "" },
+        { idNivel: 3, nivelDescripcion: "", rangoNota: "" }
     ]);
 
     const [rows, setRows] = useState([
@@ -131,7 +131,6 @@ export default function CreateRubric()
             rangoNota: `${(paso * index).toFixed(2)}-${(paso * (index + 1)).toFixed(2)}`
         }));
     };
-
 
     // Manejador que se ejecuta cuando cambia el valor del input en Nota Maxima de la Rubrica
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -268,18 +267,18 @@ export default function CreateRubric()
 
     const handleCancel = () => {
         setLevels([
-            { idNivel: 1, nivelDescripcion: "", rangoNota: "0-1" },
-            { idNivel: 2, nivelDescripcion: "", rangoNota: "1-2" },
-            { idNivel: 3, nivelDescripcion: "", rangoNota: "2-3" }
+            { idNivel: 1, nivelDescripcion: "", rangoNota: "" },
+            { idNivel: 2, nivelDescripcion: "", rangoNota: "" },
+            { idNivel: 3, nivelDescripcion: "", rangoNota: "" }
         ]);
         setRows([
             {
                 idCriterio: 1,
                 crfDescripcion: "",
                 niveles: [
-                    { idNivel: 1, nivelDescripcion: "", rangoNota: "0-1" },
-                    { idNivel: 2, nivelDescripcion: "", rangoNota: "1-2" },
-                    { idNivel: 3, nivelDescripcion: "", rangoNota: "2-3" }
+                    { idNivel: 1, nivelDescripcion: "", rangoNota: "" },
+                    { idNivel: 2, nivelDescripcion: "", rangoNota: "" },
+                    { idNivel: 3, nivelDescripcion: "", rangoNota: "" }
                 ],
                 crfPorcentaje: "",
                 crfNota: 0,
@@ -289,9 +288,9 @@ export default function CreateRubric()
                 idCriterio: 2,
                 crfDescripcion: "",
                 niveles: [
-                    { idNivel: 1, nivelDescripcion: "", rangoNota: "0-1" },
-                    { idNivel: 2, nivelDescripcion: "", rangoNota: "1-2" },
-                    { idNivel: 3, nivelDescripcion: "", rangoNota: "2-3" }
+                    { idNivel: 1, nivelDescripcion: "", rangoNota: "" },
+                    { idNivel: 2, nivelDescripcion: "", rangoNota: "" },
+                    { idNivel: 3, nivelDescripcion: "", rangoNota: "" }
                 ],
                 crfPorcentaje: "",
                 crfNota: 0,
@@ -547,13 +546,16 @@ export default function CreateRubric()
                     <Button onClick={addRow}>
                         <Plus className="h-4 w-4 mr-2" />Añadir Criterio
                     </Button>
-                    <Button onClick={handleCancel} variant="outline">Cancelar</Button>
                 </div>
             </CardContent>
-            <CardFooter className="flex justify-end gap-4">
+            <CardFooter className="flex justify-between">
+                <Button onClick={handleCancel} variant="outline">Cancelar</Button>
 
-                <Button onClick={handleBacktoHome} variant="outline">Volver</Button>
-                <Button onClick={handleCreate}>Guardar</Button>
+                <div className="flex justify-end gap-4">
+                    <Button onClick={handleBacktoHome} variant="outline">Volver</Button>
+                    <Button onClick={handleCreate}>Crear</Button>
+                </div>
+
             </CardFooter>
         </Card>
     );
