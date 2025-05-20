@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import unicauca.edu.co.sga.evaluation_service.application.dto.response.StudentView.SubjectHeaderResponseViewDTO;
 import unicauca.edu.co.sga.evaluation_service.application.dto.response.StudentView.SubjectResponseViewDTO;
 import unicauca.edu.co.sga.evaluation_service.application.dto.response.StudentView.EvaluationResponseViewDTO;
 import unicauca.edu.co.sga.evaluation_service.application.dto.response.StudentView.RubricResponseViewDTO;
@@ -31,6 +32,11 @@ public class RubricEvaluationController {
     @GetMapping("/{idStudent}/{semester}")
     public ResponseEntity<List<SubjectResponseViewDTO>> getSubjectsFromStudentPeriod(@PathVariable Long idStudent, @PathVariable String semester) {
         return ResponseEntity.ok(rubricEvaluationPort.getSubjectsFromStudentPeriod(idStudent, semester));
+    }
+
+    @GetMapping("/bySubject/{idStudent}/{semester}/{idSubject}")
+    public ResponseEntity<SubjectHeaderResponseViewDTO> getSubjectFromStudentPeriod(@PathVariable Long idStudent, @PathVariable String semester, @PathVariable Long idSubject) {
+        return ResponseEntity.ok(rubricEvaluationPort.getSubjectFromStudentPeriod(idStudent, semester, idSubject));
     }
 
 

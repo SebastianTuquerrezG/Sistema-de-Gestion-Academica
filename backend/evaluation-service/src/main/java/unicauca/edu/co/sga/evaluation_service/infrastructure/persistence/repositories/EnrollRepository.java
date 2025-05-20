@@ -4,6 +4,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import unicauca.edu.co.sga.evaluation_service.application.dto.response.StudentView.SubjectHeaderResponseViewDTO;
 import unicauca.edu.co.sga.evaluation_service.application.dto.response.StudentView.SubjectResponseViewDTO;
 import unicauca.edu.co.sga.evaluation_service.application.dto.response.StudentView.RubricResponseViewDTO;
 import unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.entities.EnrollEntity;
@@ -18,7 +19,7 @@ public interface EnrollRepository extends JpaRepository<EnrollEntity, Long> {
     boolean existsByStudentIdAndCourseIdAndSemester(Long studentId, Long courseId, String semester);
 
     @Query("SELECT NEW unicauca.edu.co.sga.evaluation_service.application.dto.response.StudentView.SubjectResponseViewDTO(" +
-            "s.name, t.name) " +
+            "s.name, t.name ) " +
             "FROM EnrollEntity e " +
             "JOIN e.course c " +
             "JOIN c.subject s " +
@@ -26,6 +27,19 @@ public interface EnrollRepository extends JpaRepository<EnrollEntity, Long> {
             "WHERE e.student.id = :studentId " +
             "AND e.semester = :semester")
     List<SubjectResponseViewDTO> findSubjectsAndTeachersByStudentAndSemester(@Param("studentId") Long studentId, @Param("semester") String semester);
+
+    @Query("SELECT NEW unicauca.edu.co.sga.evaluation_service.application.dto.response.StudentView.SubjectHeaderResponseViewDTO(" +
+            "s.name, t.name, e.semester) " +
+            "FROM EnrollEntity e " +
+            "JOIN e.course c " +
+            "JOIN c.subject s " +
+            "JOIN c.teacher t " +
+            "WHERE e.student.id = :studentId " +
+            "AND e.semester = :semester" +
+            " AND s.id = :subjectId"
+    )
+    SubjectHeaderResponseViewDTO findSubjectAndTeachersByStudentAndSemester(@Param("studentId") Long studentId, @Param("semester") String semester , @Param("subjectId") Long subjectId);
+
 
     @Query("SELECT DISTINCT e.semester FROM EnrollEntity e WHERE e.student.id = :studentId")
     List<String> findDistinctSemestersByStudentId(@Param("studentId") Long studentId);
