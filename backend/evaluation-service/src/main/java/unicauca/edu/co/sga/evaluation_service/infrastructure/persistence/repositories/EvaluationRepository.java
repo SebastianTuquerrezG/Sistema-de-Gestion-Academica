@@ -31,6 +31,21 @@ public interface EvaluationRepository extends JpaRepository<EvaluationEntity, Lo
             @Param("subjectId") Long subjectId,
             @Param("semester") String semester,
             @Param("rubricId") Long rubricId);
+
+    @Query("""
+        SELECT e.score 
+        FROM EvaluationEntity e
+        WHERE e.enroll.course.id = :courseId
+        AND e.rubric.idRubrica = :rubricId
+        AND e.enroll.semester = :semester
+        """)
+    List<BigDecimal> findScoresByCourseRubricAndSemester(
+            @Param("courseId") Long courseId,
+            @Param("rubricId") Long rubricId,
+            @Param("semester") String semester);
+
+    @Query("SELECT s.name FROM SubjectEntity s JOIN s.course c WHERE c.id = :courseId")
+    String findNameByCourseId(@Param("courseId") Long courseId);
 }
 
 
