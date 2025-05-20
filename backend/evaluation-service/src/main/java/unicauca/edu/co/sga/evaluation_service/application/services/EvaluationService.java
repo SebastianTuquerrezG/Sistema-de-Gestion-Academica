@@ -19,6 +19,7 @@ import unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.reposit
 import unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.repositories.EvaluationRepository;
 import unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.repositories.RubricRepository;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -164,5 +165,10 @@ public class EvaluationService implements EvaluationPort {
                 .map(EvaluationMapper::toModel)
                 .map(EvaluationMapper::toDTO)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public Optional<BigDecimal> findEvaluationsByStudentAndSubject(Long studentId, Long subjectId, String semester, Long rubricId) {
+        return evaluationRepository.findEvaluationsByStudentAndSubject(studentId, subjectId, semester, rubricId);
     }
 }

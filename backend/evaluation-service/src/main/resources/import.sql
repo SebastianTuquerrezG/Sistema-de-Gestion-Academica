@@ -18,6 +18,6 @@ INSERT INTO nivel (id_nivel, nivel_descripcion, rango_nota, id_criterio) VALUES 
 
 INSERT INTO course_teacher (course_id, teacher_id) VALUES (10, 1), (20, 2), (30, 3), (40, 1);
 
-INSERT INTO evaluation (evaluation_id, enroll_id, id_rubrica, evaluation_status, description, created_at, updated_at) VALUES (500, 1000, 100, 'EVALUADO', 'Evaluación parcial Redes', '2025-03-01', '2025-03-01'), (501, 1001, 200, 'EVALUADO', 'Evaluación final BD2', '2025-03-15', '2025-03-20'), (502, 1003, 400, 'EVALUADO', 'Avance proyecto Calidad', '2025-04-01', '2025-04-01');
+INSERT INTO evaluation (evaluation_id, enroll_id, id_rubrica, evaluation_status, description, created_at, updated_at,score) VALUES (500, 1000, 100, 'EVALUADO', 'Evaluación parcial Redes', '2025-03-01', '2025-03-01',NULL), (501, 1001, 200, 'EVALUADO', 'Evaluación final BD2', '2025-03-15', '2025-03-20',NULL), (502, 1003, 400, 'EVALUADO', 'Avance proyecto Calidad', '2025-04-01', '2025-04-01',3.5);
 
 INSERT INTO calification_register (calification_id, calification, message, level, evaluation_id) VALUES (10000, 4.2, 'Buen trabajo en la práctica', 'Nivel 2', 502), (10001, 3.8, 'Debe mejorar documentación', 'Nivel 1', 502), (10002, 4.8, 'Excelente implementación', 'Nivel 3', 502);

@@ -1,5 +1,6 @@
 package unicauca.edu.co.sga.evaluation_service.application.services;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import unicauca.edu.co.sga.evaluation_service.application.dto.request.SubjectRequestDTO;
@@ -17,14 +18,10 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class SubjectService implements SubjectPort {
 
-    @Autowired
     private final SubjectRepository subjectRepository;
-
-    public SubjectService(SubjectRepository subjectRepository) {
-        this.subjectRepository = subjectRepository;
-    }
 
     @Override
     public List<SubjectResponseDTO> getSubjects(){

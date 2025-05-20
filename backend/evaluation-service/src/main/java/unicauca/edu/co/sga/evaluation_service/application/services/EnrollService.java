@@ -1,13 +1,11 @@
 package unicauca.edu.co.sga.evaluation_service.application.services;
 
-import jakarta.ws.rs.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import unicauca.edu.co.sga.evaluation_service.application.dto.request.EnrollRequestDTO;
 import unicauca.edu.co.sga.evaluation_service.application.dto.response.EnrollResponseDTO;
 import unicauca.edu.co.sga.evaluation_service.application.ports.EnrollPort;
-import unicauca.edu.co.sga.evaluation_service.domain.models.Enroll;
 import unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.entities.CourseEntity;
 import unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.entities.EnrollEntity;
 import unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.entities.StudentEntity;
