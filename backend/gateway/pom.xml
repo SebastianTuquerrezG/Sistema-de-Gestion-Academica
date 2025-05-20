@@ -92,7 +92,7 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
-			<version>3.4.5</version>
+			<version>3.4.4</version>
 		</dependency>
 
 		<dependency>
@@ -105,11 +105,6 @@
 			<groupId>io.github.classgraph</groupId>
 			<artifactId>classgraph</artifactId>
 			<version>4.8.139</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-webflux</artifactId>
 		</dependency>
 	</dependencies>
 

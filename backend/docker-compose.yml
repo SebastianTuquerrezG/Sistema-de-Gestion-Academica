@@ -7,7 +7,7 @@ services:
       - "8181:8181"
     environment:
       KC_DB: postgres
-      KC_DB_URL: jdbc:postgresql://${KEYCLOAK_DB_HOST}:${KEYCLOAK_DB_PORT}/${KEYCLOAK_DB_NAME}
+      KC_DB_URL: jdbc:postgresql://${KEYCLOAK_DB_HOST}:${KEYCLOAK_DB_PORT}/${KEYCLOAK_DB_NAME}?sslmode=require
       KC_DB_USERNAME: ${KEYCLOAK_DB_USER}
       KC_DB_PASSWORD: ${KEYCLOAK_DB_PASSWORD}
       KC_DB_SCHEMA: ${KEYCLOAK_DB_SCHEMA}
