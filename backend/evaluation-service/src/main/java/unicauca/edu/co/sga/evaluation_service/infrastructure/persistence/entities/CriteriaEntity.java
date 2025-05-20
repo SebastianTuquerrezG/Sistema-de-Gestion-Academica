@@ -59,6 +59,4 @@ public class CriteriaEntity {
     @OneToMany(mappedBy = "criterio", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JsonIgnore
     private List<PerformanceEntity> niveles;
-
-
 }

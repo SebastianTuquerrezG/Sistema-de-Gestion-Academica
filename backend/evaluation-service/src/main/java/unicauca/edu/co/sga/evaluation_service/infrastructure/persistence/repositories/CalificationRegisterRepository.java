@@ -35,5 +35,16 @@ public interface CalificationRegisterRepository extends JpaRepository<Calificati
             @Param("subjectId") Long subjectId,
             @Param("semester") String semester,
             @Param("rubricId") Long rubricId);
+
+    //SELECCIONA A LOS ESTUDIANTES POR NIVEELES
+    @Query("""
+        SELECT cr.level, COUNT(DISTINCT e.enroll.student.id) 
+        FROM CalificationRegisterEntity cr
+        JOIN cr.evaluation e
+        JOIN e.rubric.criterios c
+        WHERE c.idCriterio = :criterionId
+        GROUP BY cr.level
+        """)
+    List<Object[]> countStudentsByLevelForCriterion(@Param("criterionId") Long criterionId);
 }
 

@@ -6,50 +6,43 @@ import unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.entitie
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Collections;
-import java.util.stream.Collectors;
 
 public class StatsCalculator {
 
-    // ESTADISTICAS BASICAZZZ
-    public static RubricStatsResponse calculate(List<EvaluationEntity> evaluations) {
-        if (evaluations == null || evaluations.isEmpty()) {
-            return new RubricStatsResponse(0.0, 0.0, 0.0);
+    public static BigDecimal calculateAverage(List<BigDecimal> scores) {
+        if (scores == null || scores.isEmpty()) {
+            return BigDecimal.ZERO;
         }
 
-        // SCORES
-        List<BigDecimal> scores = evaluations.stream()
-                .map(EvaluationEntity::getScore)
-                .filter(score -> score != null) // Filtra scores nulos
-                .collect(Collectors.toList());
+        BigDecimal sum = scores.stream()
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-        // METRICAS
-        double average = calculateAverage(scores);
-        double min = calculateMin(scores);
-        double max = calculateMax(scores);
-
-        // RESULTADOS
-        return new RubricStatsResponse(average, min, max);
+        return sum.divide(new BigDecimal(scores.size()), 2, BigDecimal.ROUND_HALF_UP);
     }
 
-    private static double calculateAverage(List<BigDecimal> scores) {
-        return scores.stream()
-                .mapToDouble(BigDecimal::doubleValue)
-                .average()
-                .orElse(0.0);
+    public static BigDecimal calculateMedian(List<BigDecimal> scores) {
+        if (scores.isEmpty()) return BigDecimal.ZERO;
+
+        List<BigDecimal> sorted = scores.stream().sorted().toList();
+        int size = sorted.size();
+
+        if (size % 2 == 0) {
+            BigDecimal sum = sorted.get(size/2).add(sorted.get(size/2 - 1));
+
+            return sum.divide(new BigDecimal(2), 2, BigDecimal.ROUND_HALF_UP);
+        }
+        return sorted.get(size/2);
     }
 
-    private static double calculateMin(List<BigDecimal> scores) {
-        return scores.stream()
-                .mapToDouble(BigDecimal::doubleValue)
-                .min()
-                .orElse(0.0);
-    }
+    public static BigDecimal calculateStandardDeviation(List<BigDecimal> scores, BigDecimal mean) {
+        if (scores.isEmpty()) return BigDecimal.ZERO;
 
-    private static double calculateMax(List<BigDecimal> scores) {
-        return scores.stream()
-                .mapToDouble(BigDecimal::doubleValue)
-                .max()
-                .orElse(0.0);
+        BigDecimal variance = scores.stream()
+                .map(score -> score.subtract(mean).pow(2))
+                .reduce(BigDecimal.ZERO, BigDecimal::add)
+                .divide(new BigDecimal(scores.size()), 10, BigDecimal.ROUND_HALF_UP);
+
+        double stdDev = Math.sqrt(variance.doubleValue());
+        return new BigDecimal(stdDev).setScale(2, BigDecimal.ROUND_HALF_UP);
     }
 }
