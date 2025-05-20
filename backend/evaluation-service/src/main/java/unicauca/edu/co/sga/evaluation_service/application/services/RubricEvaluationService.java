@@ -30,6 +30,13 @@ public class RubricEvaluationService implements RubricEvaluationPort {
     }
 
     @Override
+    public SubjectHeaderResponseViewDTO getSubjectFromStudentPeriod(Long idStudent, String semester, Long idSubject) {
+        System.out.println("entraconsultarmaterias");
+        return enrollRepository.findSubjectAndTeachersByStudentAndSemester(idStudent, semester, idSubject);
+
+    }
+
+    @Override
     public List<String> getPeriods(Long idStudent) {
         return enrollRepository.findDistinctSemestersByStudentId(idStudent);
     }
