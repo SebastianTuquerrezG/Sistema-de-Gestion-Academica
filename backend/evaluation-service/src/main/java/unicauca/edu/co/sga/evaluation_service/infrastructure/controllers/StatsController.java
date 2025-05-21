@@ -1,7 +1,9 @@
 package unicauca.edu.co.sga.evaluation_service.infrastructure.controllers;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import unicauca.edu.co.sga.evaluation_service.application.dto.response.stats.CourseStatsDTO;
 import unicauca.edu.co.sga.evaluation_service.application.dto.response.stats.CriterionAverageDTO;
@@ -36,12 +38,16 @@ public class StatsController {
 
     //PROMEDIO DE NOTA POR CRITERIO
     @GetMapping("/{rubricId}/criteria-averages")
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN_ROLE', 'ROLE_COORDINATOR_ROLE', 'ROLE_TEACHER_ROLE')")
     public List<CriterionAverageDTO> getAveragesByCriteria(@PathVariable Long rubricId) {
         return criterionStatsService.calculateAveragesByRubric(rubricId);
     }
 
     //ESTUDIANTES POR CRITERIOS
     @GetMapping("/criteria/{criterionId}/histogram")
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN_ROLE', 'ROLE_COORDINATOR_ROLE', 'ROLE_TEACHER_ROLE')")
     public ResponseEntity<CriterionHistogramDTO> getCriterionHistogram(
             @PathVariable Long criterionId) {
         return ResponseEntity.ok(histogramService.getHistogramData(criterionId));
@@ -49,6 +55,8 @@ public class StatsController {
 
     //ESTADITICAS GENERALES
     @GetMapping("/{courseId}/statistics")
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN_ROLE', 'ROLE_COORDINATOR_ROLE', 'ROLE_TEACHER_ROLE')")
     public ResponseEntity<CourseStatsDTO> getCourseStatistics(
             @PathVariable Long courseId,
             @RequestParam Long rubricId,

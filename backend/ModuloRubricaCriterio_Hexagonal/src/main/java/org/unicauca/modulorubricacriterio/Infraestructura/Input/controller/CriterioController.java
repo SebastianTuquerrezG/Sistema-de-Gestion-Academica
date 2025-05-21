@@ -49,7 +49,7 @@ public class CriterioController {
 
     @PostMapping("/criterios")
     @ResponseStatus(HttpStatus.CREATED)
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN_ROLE', 'ROLE_TEACHER_ROLE', 'ROLE_COORDINATOR', 'ROLE_STUDENT_ROLE')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN_ROLE', 'ROLE_TEACHER_ROLE', 'ROLE_COORDINATOR_ROLE', 'ROLE_STUDENT_ROLE')")
     public ResponseEntity<CriterioDTORespuesta>save(@Valid @RequestBody CriterioDTOPeticion criterioDTO) {
         Criterio objCriterioCrear = this.objCriterioMapper.mapDtoaCriterio(criterioDTO);
         Criterio objCriterioCreado = this.criterioService.crearCriterio(objCriterioCrear);
@@ -60,7 +60,7 @@ public class CriterioController {
 
     @PutMapping("/criterios")
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN_ROLE', 'ROLE_TEACHER_ROLE', 'ROLE_COORDINATOR', 'ROLE_STUDENT_ROLE')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN_ROLE', 'ROLE_TEACHER_ROLE', 'ROLE_COORDINATOR_ROLE', 'ROLE_STUDENT_ROLE')")
     public ResponseEntity<CriterioDTORespuesta>update(@Valid @RequestBody CriterioDTOPeticion criterioDTO,@RequestParam("id") Long id) {
         Criterio objCriterioActualizar = this.objCriterioMapper.mapDtoaCriterio(criterioDTO);
         Criterio objCriterioActualizado = this.criterioService.modificarCriterio(id, objCriterioActualizar);
@@ -70,7 +70,7 @@ public class CriterioController {
 
     @DeleteMapping("/criterios")
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN_ROLE', 'ROLE_TEACHER_ROLE', 'ROLE_COORDINATOR', 'ROLE_STUDENT_ROLE')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN_ROLE', 'ROLE_TEACHER_ROLE', 'ROLE_COORDINATOR_ROLE', 'ROLE_STUDENT_ROLE')")
     public ResponseEntity<CriterioDTORespuesta>delete(@RequestParam("id") Long id) {
         Criterio objCriterioEliminar = this.criterioService.eliminarCriterio(id);
         CriterioDTORespuesta objCriterio = this.objCriterioMapper.mapCriterioToDto(objCriterioEliminar);

@@ -27,21 +27,22 @@ public class RubricEvaluationController {
     //Recuperar cursos de un estudiante en un periodo especifico (de la tabla enroll hay que traer el nombre del curso y el nombre del profesor que dicta el curso)
     @GetMapping("/{idStudent}/{semester}")
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_COORDINATOR', 'ROLE_TEACHER', 'ROLE_STUDENT')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN_ROLE', 'ROLE_COORDINATOR_ROLE', 'ROLE_TEACHER_ROLE', 'ROLE_STUDENT_ROLE')")
     public ResponseEntity<List<SubjectResponseViewDTO>> getSubjectsFromStudentPeriod(@PathVariable Long idStudent, @PathVariable String semester) {
         return ResponseEntity.ok(rubricEvaluationPort.getSubjectsFromStudentPeriod(idStudent, semester));
     }
 
     @GetMapping("/bySubject/{idStudent}/{semester}/{idSubject}")
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_COORDINATOR', 'ROLE_TEACHER', 'ROLE_STUDENT')")
     public ResponseEntity<SubjectHeaderResponseViewDTO> getSubjectFromStudentPeriod(@PathVariable Long idStudent, @PathVariable String semester, @PathVariable Long idSubject) {
         return ResponseEntity.ok(rubricEvaluationPort.getSubjectFromStudentPeriod(idStudent, semester, idSubject));
     }
 
-
     //Recuperar periodos (cuando se unda a otros periodos se tienen que mostrar las fechas de los periodos)
     @GetMapping("/{idStudent}")
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_COORDINATOR', 'ROLE_TEACHER', 'ROLE_STUDENT')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN_ROLE', 'ROLE_COORDINATOR_ROLE', 'ROLE_TEACHER_ROLE', 'ROLE_STUDENT_ROLE')")
     public ResponseEntity<List<String>> getPeriods(@PathVariable Long idStudent) {
         System.out.println("EntraPeriods");
         return ResponseEntity.ok(rubricEvaluationPort.getPeriods(idStudent));
@@ -50,7 +51,7 @@ public class RubricEvaluationController {
     //Recuperar rubricas de curso especifico, estudiante especifico y periodo especifico (Nombre rubrica y fecha de creacion)
     @GetMapping("/{idStudent}/{idSubject}/{semester}")
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_COORDINATOR', 'ROLE_TEACHER', 'ROLE_STUDENT')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN_ROLE', 'ROLE_COORDINATOR_ROLE', 'ROLE_TEACHER_ROLE', 'ROLE_STUDENT_ROLE')")
     public ResponseEntity<List<RubricResponseViewDTO>> getRubricsFromStudentCoursePeriod(@PathVariable Long idStudent, @PathVariable Long idSubject, @PathVariable String semester) {
         return ResponseEntity.ok(rubricEvaluationPort.getRubricsFromStudentSubjectPeriod(idStudent, idSubject, semester));
     }
@@ -58,7 +59,7 @@ public class RubricEvaluationController {
     //Recuperar información de evaluación como descripción rubrica, criterios - niveles - evaluación
     @GetMapping("/{idStudent}/{idSubject}/{semester}/{idRubric}")
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_COORDINATOR', 'ROLE_TEACHER', 'ROLE_STUDENT')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN_ROLE', 'ROLE_COORDINATOR_ROLE', 'ROLE_TEACHER_ROLE', 'ROLE_STUDENT_ROLE')")
     public ResponseEntity<EvaluationResponseViewDTO> getRubricEvaluation(@PathVariable Long idStudent, @PathVariable Long idSubject, @PathVariable String semester, @PathVariable Long idRubric) {
         return ResponseEntity.ok(rubricEvaluationPort.getRubricsFromStudentSubjectPeriodRubric(idStudent, idSubject, semester, idRubric));
 

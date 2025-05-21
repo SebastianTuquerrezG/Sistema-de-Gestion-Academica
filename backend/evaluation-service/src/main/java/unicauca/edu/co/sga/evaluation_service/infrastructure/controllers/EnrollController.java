@@ -23,14 +23,14 @@ public class EnrollController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_COORDINATOR', 'ROLE_TEACHER')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN_ROLE', 'ROLE_COORDINATOR_ROLE', 'ROLE_TEACHER_ROLE')")
     public ResponseEntity<List<EnrollResponseDTO>> getAllEnrolls(){
         return ResponseEntity.ok(enrollPort.getEnrolls());
     }
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_COORDINATOR', 'ROLE_TEACHER')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN_ROLE', 'ROLE_COORDINATOR_ROLE', 'ROLE_TEACHER_ROLE')")
     public ResponseEntity<EnrollResponseDTO> getEnrollById(@PathVariable Long id){
         return enrollPort.getEnrollsById(id)
                 .map(ResponseEntity::ok)
@@ -39,7 +39,7 @@ public class EnrollController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_COORDINATOR', 'ROLE_TEACHER')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN_ROLE', 'ROLE_COORDINATOR_ROLE', 'ROLE_TEACHER_ROLE')")
     public ResponseEntity<EnrollResponseDTO> createEnroll(@Valid @RequestBody EnrollRequestDTO enroll){
         boolean exists = enrollPort.existsByStudentIdAndCourseIdAndSemester(enroll.getStudent(), enroll.getCourse(), enroll.getSemester());
         if (exists) {
@@ -51,7 +51,7 @@ public class EnrollController {
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_COORDINATOR', 'ROLE_TEACHER')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN_ROLE', 'ROLE_COORDINATOR_ROLE', 'ROLE_TEACHER_ROLE')")
     public ResponseEntity<Boolean> updateEnroll(@PathVariable Long id, @Valid @RequestBody EnrollRequestDTO enroll){
         Optional<EnrollResponseDTO> enrollExist = enrollPort.getEnrollsById(id);
         if (enrollExist.isPresent()){
@@ -63,7 +63,7 @@ public class EnrollController {
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_COORDINATOR', 'ROLE_TEACHER')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN_ROLE', 'ROLE_COORDINATOR_ROLE', 'ROLE_TEACHER_ROLE')")
     public ResponseEntity<Boolean> deleteEnroll(@PathVariable Long id){
         boolean isDeleted = enrollPort.deleteEnroll(id);
         if (!isDeleted){
@@ -74,7 +74,7 @@ public class EnrollController {
 
     @GetMapping("/student/{id}")
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_COORDINATOR', 'ROLE_TEACHER')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN_ROLE', 'ROLE_COORDINATOR_ROLE', 'ROLE_TEACHER_ROLE', 'ROLE_STUDENT_ROLE')")
     public ResponseEntity<EnrollResponseDTO> getEnrollsByStudentId(@PathVariable Long id){
         List<EnrollResponseDTO> enrollResponseDTO = enrollPort.getEnrollsByStudentId(id);
         if (enrollResponseDTO.isEmpty()){

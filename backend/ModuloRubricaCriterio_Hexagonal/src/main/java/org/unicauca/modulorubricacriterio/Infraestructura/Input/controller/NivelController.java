@@ -26,7 +26,7 @@ public class NivelController {
 
     @GetMapping("/niveles")
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN_ROLE', 'ROLE_TEACHER_ROLE', 'ROLE_COORDINATOR', 'ROLE_STUDENT_ROLE')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN_ROLE', 'ROLE_TEACHER_ROLE', 'ROLE_COORDINATOR_ROLE', 'ROLE_STUDENT_ROLE')")
     public ResponseEntity<List<NivelDTORespuesta>> getAllNiveles() {
         List<Nivel>lista=nivelService.consultarNiveles();
         List<NivelDTORespuesta> listaDTO = objNivelMapper.mapNivelListToDtoList(lista);
@@ -35,7 +35,7 @@ public class NivelController {
 
     @GetMapping("/niveles/{id}")
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN_ROLE', 'ROLE_TEACHER_ROLE', 'ROLE_COORDINATOR', 'ROLE_STUDENT_ROLE')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN_ROLE', 'ROLE_TEACHER_ROLE', 'ROLE_COORDINATOR_ROLE', 'ROLE_STUDENT_ROLE')")
     public ResponseEntity<NivelDTORespuesta> getById(@PathVariable("id") Long id) {
         Nivel objNivel = this.nivelService.consultarNivel(id);
         NivelDTORespuesta objNivelEncontrado = this.objNivelMapper.mapNivelToDto(objNivel);
@@ -44,7 +44,7 @@ public class NivelController {
 
     @PostMapping("/niveles")
     @ResponseStatus(HttpStatus.CREATED)
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN_ROLE', 'ROLE_TEACHER_ROLE', 'ROLE_COORDINATOR', 'ROLE_STUDENT_ROLE')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN_ROLE', 'ROLE_TEACHER_ROLE', 'ROLE_COORDINATOR_ROLE', 'ROLE_STUDENT_ROLE')")
     public ResponseEntity<NivelDTORespuesta>save(@Valid @RequestBody NivelDTOPeticion nivelDTO) {
         Nivel objNivelCrear = this.objNivelMapper.mapNivelDtoaNivel(nivelDTO);
         Nivel objNivelCreado = this.nivelService.crearNivel(objNivelCrear);
@@ -55,7 +55,7 @@ public class NivelController {
 
     @PutMapping("/niveles")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN_ROLE', 'ROLE_TEACHER_ROLE', 'ROLE_COORDINATOR', 'ROLE_STUDENT_ROLE')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN_ROLE', 'ROLE_TEACHER_ROLE', 'ROLE_COORDINATOR_ROLE', 'ROLE_STUDENT_ROLE')")
     public ResponseEntity<NivelDTORespuesta>update(@Valid @RequestBody NivelDTOPeticion nivelDTO,@RequestParam("id") Long id) {
         Nivel objNivelActualizar = this.objNivelMapper.mapNivelDtoaNivel(nivelDTO);
         Nivel objNivelActualizado = this.nivelService.modificarNivel(id, objNivelActualizar);
@@ -65,7 +65,7 @@ public class NivelController {
 
     @DeleteMapping("/niveles")
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN_ROLE', 'ROLE_TEACHER_ROLE', 'ROLE_COORDINATOR', 'ROLE_STUDENT_ROLE')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN_ROLE', 'ROLE_TEACHER_ROLE', 'ROLE_COORDINATOR_ROLE', 'ROLE_STUDENT_ROLE')")
     public ResponseEntity<NivelDTORespuesta>delete(@RequestParam("id") Long id) {
         Nivel objNivelEliminar = this.nivelService.eliminarNivel(id);
         NivelDTORespuesta objNivelEliminado = this.objNivelMapper.mapNivelToDto(objNivelEliminar);

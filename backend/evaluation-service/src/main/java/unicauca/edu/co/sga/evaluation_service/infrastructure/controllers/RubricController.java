@@ -20,14 +20,14 @@ public class RubricController {
 
     @GetMapping("/ping")
     @ResponseStatus
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_COORDINATOR', 'ROLE_TEACHER')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN_ROLE', 'ROLE_COORDINATOR_ROLE', 'ROLE_TEACHER_ROLE')")
     public ResponseEntity<String> ping() {
         return ResponseEntity.ok("Servicio Activo!");
     }
 
     @GetMapping("/subject/{id}")
     @ResponseStatus
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_COORDINATOR', 'ROLE_TEACHER')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN_ROLE', 'ROLE_COORDINATOR_ROLE', 'ROLE_TEACHER_ROLE')")
     public ResponseEntity<List<RubricResponseDTO>> getRubricsBySubjectId(@PathVariable Long id){
         return ResponseEntity.ok(rubricPort.getRubricsBySubject(id));
     }

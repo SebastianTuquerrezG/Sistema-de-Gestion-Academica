@@ -1,5 +1,7 @@
 services:
   keycloak:
+    env_file:
+      - .env
     container_name: keycloak_sga
     image: quay.io/keycloak/keycloak:26.2.0
     command: [ "start-dev" ]
@@ -21,6 +23,8 @@ services:
       - keycloak_data_sga:/opt/keycloak/data
 
   auth-service:
+    env_file:
+      - .env
     container_name: auth-service-sga
     build:
       context: ./auth-service
@@ -37,6 +41,8 @@ services:
       - "keycloak:host-gateway"
 
   eureka-server:
+    env_file:
+      - .env
     build:
       context: ./eureka-server
       dockerfile: Dockerfile
@@ -49,8 +55,9 @@ services:
       EUREKA_USERNAME: ${EUREKA_USERNAME}
       EUREKA_PASSWORD: ${EUREKA_PASSWORD}
 
-
   gateway:
+    env_file:
+      - .env
     build:
       context: ./gateway
       dockerfile: Dockerfile
@@ -68,9 +75,11 @@ services:
       EUREKA_USERNAME: ${EUREKA_USERNAME}
       EUREKA_PASSWORD: ${EUREKA_PASSWORD}
       KC_CLIENT_SECRET: ${KC_CLIENT_SECRET}
-      SPRING_PROFILES_ACTIVE: docker
+      ACTIVE_PROFILE: docker
 
   modulorubricacriterio:
+    env_file:
+      - .env
     build:
       context: ./ModuloRubricaCriterio_Hexagonal
       dockerfile: Dockerfile
@@ -80,18 +89,20 @@ services:
     depends_on:
       - eureka-server
       - gateway
-      - mariadb
+      - rubric_mariadb
     environment:
-      RUBRIC_DATASOURCE_URL: ${RUBRIC_DATASOURCE_URL}
+      RUBRIC_DATASOURCE_URL: ${RUBRIC_DOCKER_DATASOURCE_URL}
       RUBRIC_DATASOURCE_USERNAME: ${RUBRIC_DATASOURCE_USERNAME}
       RUBRIC_DATASOURCE_PASSWORD: ${RUBRIC_DATASOURCE_PASSWORD}
       EUREKA_USERNAME: ${EUREKA_USERNAME}
       EUREKA_PASSWORD: ${EUREKA_PASSWORD}
-      SPRING_PROFILES_ACTIVE: docker
+      ACTIVE_PROFILE: docker
     networks:
       - backend-network
 
   evaluation-service:
+    env_file:
+      - .env
     build:
       context: ./evaluation-service
       dockerfile: Dockerfile
@@ -103,16 +114,20 @@ services:
       - gateway
       - mariadb
     environment:
-      EVALUATION_DATASOURCE_URL: ${EVALUATION_DATASOURCE_URL}
+      EVALUATION_DATASOURCE_URL: ${EVALUATION_DOCKER_DATASOURCE_URL}
       EVALUATION_DATASOURCE_USERNAME: ${EVALUATION_DATASOURCE_USERNAME}
       EVALUATION_DATASOURCE_PASSWORD: ${EVALUATION_DATASOURCE_PASSWORD}
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS}
       EUREKA_USERNAME: ${EUREKA_USERNAME}
       EUREKA_PASSWORD: ${EUREKA_PASSWORD}
-      SPRING_PROFILES_ACTIVE: docker
+      ACTIVE_PROFILE: docker
     networks:
       - backend-network
 
   common_utilities-service:
+    env_file:
+      - .env
     build:
         context: ./common_utilities-service
         dockerfile: Dockerfile
@@ -125,15 +140,23 @@ services:
       - common_utilities_mariadb
       - evaluation-service
     environment:
-      - COMMON_DATASOURCE_URL=${COMMON_DATASOURCE_URL}
-      - COMMON_DATASOURCE_USERNAME=${COMMON_DATASOURCE_USERNAME}
-      - COMMON_DATASOURCE_PASSWORD=${COMMON_DATASOURCE_PASSWORD}
+      COMMON_DATASOURCE_URL: ${COMMON_DOCKER_DATASOURCE_URL}
+      COMMON_DATASOURCE_USERNAME: ${COMMON_DATASOURCE_USERNAME}
+      COMMON_DATASOURCE_PASSWORD: ${COMMON_DATASOURCE_PASSWORD}
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS}
+      EUREKA_USERNAME: ${EUREKA_USERNAME}
+      EUREKA_PASSWORD: ${EUREKA_PASSWORD}
+      ACTIVE_PROFILE: docker
+      SPRING_RABBITMQ_HOST: rabbit
     networks:
       - backend-network
 
   mariadb:
     image: mariadb:10.5
     restart: always
+    env_file:
+      - .env
     environment:
       MYSQL_ROOT_PASSWORD: ${EVALUATION_DATASOURCE_PASSWORD}
       MYSQL_DATABASE: ${EVALUATION_DATASOURCE_NAME}
@@ -148,6 +171,8 @@ services:
   common_utilities_mariadb:
     image: mariadb:10.5
     restart: always
+    env_file:
+      - .env
     environment:
       MYSQL_ROOT_PASSWORD: ${COMMON_DATASOURCE_PASSWORD}
       MYSQL_DATABASE: ${COMMON_DATASOURCE_NAME}
@@ -162,6 +187,8 @@ services:
   rubric_mariadb:
     image: mariadb:10.5
     restart: always
+    env_file:
+      - .env
     environment:
       MYSQL_ROOT_PASSWORD: ${RUBRIC_DATASOURCE_PASSWORD}
       MYSQL_DATABASE: ${RUBRIC_DATASOURCE_NAME}
@@ -173,21 +200,28 @@ services:
     networks:
       - backend-network
 
-  rabbit:
+  rabbit-1:
     image: rabbitmq:3.12-management
+    container_name: rabbit
     ports:
       - "5672:5672"
       - "15672:15672"
+    env_file:
+      - .env
     environment:
       RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER}
       RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS}
     networks:
-      - backend-network
+      backend-network:
+        aliases:
+          - rabbit
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin:latest
     container_name: phpmyadmin_sga
     restart: always
+    env_file:
+      - .env
     ports:
       - "8888:80" # Accede a phpMyAdmin en localhost:8888
     environment:
@@ -199,6 +233,7 @@ services:
     depends_on:
       - mariadb
       - common_utilities_mariadb
+      - rubric_mariadb
 
 networks:
   backend-network:

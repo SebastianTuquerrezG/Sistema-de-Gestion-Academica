@@ -22,8 +22,8 @@ public class EvaluationController {
     private final EvaluationPort evaluationPort;
 
     @GetMapping
-    @ResponseStatus
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_COORDINATOR', 'ROLE_TEACHER', 'ROLE_STUDENT')")
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN_ROLE', 'ROLE_COORDINATOR_ROLE', 'ROLE_TEACHER_ROLE', 'ROLE_STUDENT_ROLE')")
     public ResponseEntity<List<EvaluationResponseDTO>> getAllEvaluations() {
         List<EvaluationResponseDTO> evaluations = evaluationPort.getEvaluations();
         if (evaluations.isEmpty()) {
@@ -34,7 +34,7 @@ public class EvaluationController {
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_COORDINATOR', 'ROLE_TEACHER', 'ROLE_STUDENT')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN_ROLE', 'ROLE_COORDINATOR_ROLE', 'ROLE_TEACHER_ROLE', 'ROLE_STUDENT_ROLE')")
     public ResponseEntity<EvaluationResponseDTO> getEvaluation(@PathVariable Long id) {
         return evaluationPort.getEvaluationById(id)
                 .map(ResponseEntity::ok)
@@ -43,7 +43,7 @@ public class EvaluationController {
 
     @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_COORDINATOR', 'ROLE_TEACHER')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN_ROLE', 'ROLE_COORDINATOR_ROLE', 'ROLE_TEACHER_ROLE')")
     public ResponseEntity<EvaluationResponseDTO> createEvaluation(
             @Valid @RequestBody EvaluationRequestDTO requestDTO) {
         EvaluationResponseDTO response = evaluationPort.saveEvaluation(requestDTO);
@@ -52,7 +52,7 @@ public class EvaluationController {
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_COORDINATOR', 'ROLE_TEACHER')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN_ROLE', 'ROLE_COORDINATOR_ROLE', 'ROLE_TEACHER_ROLE')")
     public ResponseEntity<Boolean> updateEvaluation(@PathVariable Long id, @Valid @RequestBody EvaluationRequestDTO evaluationRequestDTO) {
         try {
             boolean isUpdated = evaluationPort.updateEvaluation(id, evaluationRequestDTO);
@@ -68,7 +68,7 @@ public class EvaluationController {
 
     @GetMapping("/enroll/{enrollId}")
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_COORDINATOR', 'ROLE_TEACHER', 'ROLE_STUDENT')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN_ROLE', 'ROLE_COORDINATOR_ROLE', 'ROLE_TEACHER_ROLE', 'ROLE_STUDENT_ROLE')")
     public ResponseEntity<List<EvaluationResponseDTO>> getEvaluationsByEnroll(@PathVariable Long enrollId) {
         List<EvaluationResponseDTO> evaluations = evaluationPort.getEvaluationsByEnrollId(enrollId);
         if (evaluations.isEmpty()) {
@@ -79,7 +79,7 @@ public class EvaluationController {
 
     @GetMapping("/rubric/{rubricId}")
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_COORDINATOR', 'ROLE_TEACHER', 'ROLE_STUDENT')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN_ROLE', 'ROLE_COORDINATOR_ROLE', 'ROLE_TEACHER_ROLE', 'ROLE_STUDENT_ROLE')")
     public ResponseEntity<List<EvaluationResponseDTO>> getEvaluationsByRubric(@PathVariable Long rubricId) {
         List<EvaluationResponseDTO> evaluations = evaluationPort.getEvaluationsByRubricId(rubricId);
         if (evaluations.isEmpty()) {

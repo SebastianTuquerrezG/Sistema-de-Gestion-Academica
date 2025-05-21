@@ -29,7 +29,7 @@ public class RubricaController {
 
     @GetMapping("/rubricas")
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN_ROLE', 'ROLE_TEACHER_ROLE', 'ROLE_COORDINATOR', 'ROLE_STUDENT_ROLE')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN_ROLE', 'ROLE_TEACHER_ROLE', 'ROLE_COORDINATOR_ROLE', 'ROLE_STUDENT_ROLE')")
     public ResponseEntity<List<RubricaDTORespuesta>> getAllRubricas() {
         List<Rubrica>lista=rubricaService.consultarRubricas();//Consultar la lista de rúbricas en el dominio
         List<RubricaDTORespuesta> listaDTO = objRubricaMapper.mapRubricaListToDtoList(lista);
@@ -41,7 +41,7 @@ public class RubricaController {
 
     @GetMapping("/rubricas/{id}")
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN_ROLE', 'ROLE_TEACHER_ROLE', 'ROLE_COORDINATOR', 'ROLE_STUDENT_ROLE')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN_ROLE', 'ROLE_TEACHER_ROLE', 'ROLE_COORDINATOR_ROLE', 'ROLE_STUDENT_ROLE')")
     public ResponseEntity<RubricaDTORespuesta>findById(@PathVariable("id") Long id) {
         Rubrica objRubrica = this.rubricaService.consultarRubrica(id);//Consultar rúbrica en el dominio
         RubricaDTORespuesta objRubricaDTO = this.objRubricaMapper.mapRubricaToDto(objRubrica);
@@ -51,7 +51,7 @@ public class RubricaController {
 
     @PostMapping("/rubricas")
     @ResponseStatus(HttpStatus.CREATED)
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN_ROLE', 'ROLE_TEACHER_ROLE', 'ROLE_COORDINATOR', 'ROLE_STUDENT_ROLE')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN_ROLE', 'ROLE_TEACHER_ROLE', 'ROLE_COORDINATOR_ROLE', 'ROLE_STUDENT_ROLE')")
     public ResponseEntity<RubricaDTORespuesta>save(@Valid @RequestBody RubricaDTOPeticion rubricaDTO) {
         System.out.println(rubricaDTO);
         Rubrica objRubricaCrear = this.objRubricaMapper.mapDtoaRubrica(rubricaDTO);//MapearDto a rúbrica
@@ -64,7 +64,7 @@ public class RubricaController {
 
     @PutMapping("/rubricas")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN_ROLE', 'ROLE_TEACHER_ROLE', 'ROLE_COORDINATOR', 'ROLE_STUDENT_ROLE')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN_ROLE', 'ROLE_TEACHER_ROLE', 'ROLE_COORDINATOR_ROLE', 'ROLE_STUDENT_ROLE')")
     public ResponseEntity<RubricaDTORespuesta>update(@Valid @RequestBody RubricaDTOPeticion rubricaDTO,@RequestParam("id") Long id) {
         System.out.println("Id recibido"+id);
         Rubrica objRubricaActualizar = this.objRubricaMapper.mapDtoaRubrica(rubricaDTO);
@@ -76,7 +76,7 @@ public class RubricaController {
 
     @PatchMapping("/rubricas")
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN_ROLE', 'ROLE_TEACHER_ROLE', 'ROLE_COORDINATOR', 'ROLE_STUDENT_ROLE')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN_ROLE', 'ROLE_TEACHER_ROLE', 'ROLE_COORDINATOR_ROLE', 'ROLE_STUDENT_ROLE')")
     public ResponseEntity<RubricaDTORespuesta>changeState(@RequestParam("id") Long id, @RequestBody RubricaDTOPeticion estado) {
         Rubrica objRubricaActualizado = this.rubricaService.editarEstadoRubrica(id, estado.getEstado());
         RubricaDTORespuesta objRubrica = this.objRubricaMapper.mapRubricaToDto(objRubricaActualizado);
