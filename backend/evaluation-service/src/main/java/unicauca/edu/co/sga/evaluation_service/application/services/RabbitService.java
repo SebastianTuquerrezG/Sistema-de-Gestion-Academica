@@ -8,8 +8,6 @@ import unicauca.edu.co.sga.evaluation_service.application.dto.request.EnrollRequ
 import unicauca.edu.co.sga.evaluation_service.application.dto.request.EvaluationRequestDTO;
 import unicauca.edu.co.sga.evaluation_service.application.ports.RabbitPort;
 import unicauca.edu.co.sga.evaluation_service.infrastructure.config.RabbitMQConfig;
-import unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.entities.EnrollEntity;
-import unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.entities.EvaluationEntity;
 
 @Service
 @Transactional

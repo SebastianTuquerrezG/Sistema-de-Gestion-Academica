@@ -32,6 +32,7 @@ public interface EvaluationRepository extends JpaRepository<EvaluationEntity, Lo
             @Param("semester") String semester,
             @Param("rubricId") Long rubricId);
 
+    //SELECCIONA LA PUNTUACION PARA CADA ESTUDIANTE
     @Query("""
         SELECT e.score 
         FROM EvaluationEntity e

@@ -6,13 +6,13 @@ import org.unicauca.modulorubricacriterio.Dominio.Modelos.Criterio;
 
 public interface IConectorBDCriterioPort {
 
-    public List<Criterio> findAll();
+     List<Criterio> findAll();
 
-    public Criterio findById(Long idCriterio);
+     Criterio findById(Long idCriterio);
 
-    public Criterio save(Criterio objCriterio);
+     Criterio save(Criterio objCriterio);
 
-    public Criterio update(Long id, Criterio objCriterio);
+     Criterio update(Long id, Criterio objCriterio);
 
-    public Criterio delete(Long objCriterio);
+     Criterio delete(Long objCriterio);
 }

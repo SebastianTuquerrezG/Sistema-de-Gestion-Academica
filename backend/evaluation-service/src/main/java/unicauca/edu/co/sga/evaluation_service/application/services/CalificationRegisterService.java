@@ -2,7 +2,6 @@ package unicauca.edu.co.sga.evaluation_service.application.services;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import unicauca.edu.co.sga.evaluation_service.application.dto.request.CalificationRegisterRequestDTO;
 import unicauca.edu.co.sga.evaluation_service.application.dto.response.CalificationRegisterResponseDTO;

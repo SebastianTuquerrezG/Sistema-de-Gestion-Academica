@@ -17,39 +17,33 @@ public class GestionRubricasAdapter implements IGestionRubricaPort{
     
     @Override
     public Rubrica consultarRubrica(Long Id) {
-        Rubrica rubricaEncontrada = this.conectorBDRubricaPort.findById(Id);
-        return rubricaEncontrada;
+        return this.conectorBDRubricaPort.findById(Id);
     }
 
     @Override
     public List<Rubrica> consultarRubricas() {
-        List<Rubrica> listaRubricas = this.conectorBDRubricaPort.findAll();
-        return listaRubricas;
+        return this.conectorBDRubricaPort.findAll();
     }
 
     @Override
     public Rubrica crearRubrica(Rubrica objPRubrica) {
         objPRubrica.setEstado(EstadosEnum.ACTIVO);//Crear Rúbricas con estado activo por defecto
-        Rubrica rubricaCreada = conectorBDRubricaPort.saveRubric(objPRubrica);
-        return rubricaCreada;
+        return conectorBDRubricaPort.saveRubric(objPRubrica);
     }
 
     @Override
     public Rubrica modificarRubrica(Long Id, Rubrica objPRubrica) {
-        Rubrica rubricaModificada = conectorBDRubricaPort.updateRubric(Id, objPRubrica);
-        return rubricaModificada;
+        return conectorBDRubricaPort.updateRubric(Id, objPRubrica);
     }
 
     @Override
     public Rubrica editarEstadoRubrica(Long Id, String objPRubrica) {
-        Rubrica rubricaModificada = conectorBDRubricaPort.changeEstate(Id, objPRubrica);
-        return rubricaModificada;
+        return conectorBDRubricaPort.changeEstate(Id, objPRubrica);
     }
 
     @Override
     public Rubrica eliminarRubrica(Long Id) {
-        Rubrica rubricaEliminada = conectorBDRubricaPort.deleteRubric(Id);
-        return rubricaEliminada;
+        return conectorBDRubricaPort.deleteRubric(Id);
     }
 
 }

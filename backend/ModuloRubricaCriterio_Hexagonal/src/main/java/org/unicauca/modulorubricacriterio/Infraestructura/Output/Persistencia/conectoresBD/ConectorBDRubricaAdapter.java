@@ -114,7 +114,7 @@ public class ConectorBDRubricaAdapter implements IConectorBDRubricaPort {
     @Override
     public Rubrica updateRubric(Long id, Rubrica objRubrica) 
     {
-        RubricaEntity objRubricaActualizada = null;
+        RubricaEntity objRubricaActualizada;
         RubricaEntity objRubricaEntity = this.rubricaMapper.map(objRubrica, RubricaEntity.class);
         RubricaEntity rubricaEncontrada = this.rubricaRepository.findById(id).orElse(null);
 
@@ -233,7 +233,7 @@ public class ConectorBDRubricaAdapter implements IConectorBDRubricaPort {
 
     @Override
     public Rubrica changeEstate(Long idRubrica, String estadoRubrica) {
-        RubricaEntity objRubricaActualizada = null;
+        RubricaEntity objRubricaActualizada;
         EstadosEnum estadoSiguiente = validarEstado(estadoRubrica);
         RubricaEntity rubricaEncontrada = this.rubricaRepository.findById(idRubrica).orElse(null);
         if(rubricaEncontrada==null)

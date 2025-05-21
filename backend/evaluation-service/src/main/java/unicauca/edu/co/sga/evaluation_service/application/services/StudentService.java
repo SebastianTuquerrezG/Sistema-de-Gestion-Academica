@@ -24,7 +24,7 @@ public class StudentService implements StudentPort {
     private final StudentRepository studentRepository;
     private final EnrollRepository enrollRepository;
     private final EnrollMapper enrollMapper;
-    private final StudentMapper studentMapper;
+    // private final StudentMapper studentMapper;
 
     @Override
     public List<StudentResponseDTO> getStudents() {

@@ -19,7 +19,6 @@ public class RabbitMQConsumer {
     private final TeacherService teacherService;
     private final SubjectService subjectService;
     private final StudentService studentService;
-//    private final RAServive raServive;
 
     // TODO: Create all the methods to read the message from Rubric
 

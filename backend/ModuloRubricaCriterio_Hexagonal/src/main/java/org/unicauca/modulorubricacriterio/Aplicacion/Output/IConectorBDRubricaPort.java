@@ -5,15 +5,15 @@ import java.util.List;
 import org.unicauca.modulorubricacriterio.Dominio.Modelos.Rubrica;
 
 public interface IConectorBDRubricaPort {
-    public List<Rubrica> findAll();
+     List<Rubrica> findAll();
 
-    public Rubrica findById(Long idRubrica);
+     Rubrica findById(Long idRubrica);
 
-    public Rubrica saveRubric(Rubrica objRubrica);
+     Rubrica saveRubric(Rubrica objRubrica);
 
-    public Rubrica updateRubric(Long id, Rubrica objRubrica);
+     Rubrica updateRubric(Long id, Rubrica objRubrica);
 
-    public Rubrica deleteRubric(Long Id);
+     Rubrica deleteRubric(Long Id);
 
-    public Rubrica changeEstate(Long idRubrica, String estadoRubrica);
+     Rubrica changeEstate(Long idRubrica, String estadoRubrica);
 }

@@ -8,8 +8,8 @@ import java.util.List;
 
 public interface RubricEvaluationPort {
 
-    public List<SubjectResponseViewDTO> getSubjectsFromStudentPeriod(Long idStudent, String semester);
-    public List<String> getPeriods(Long idStudent);
-    public List<RubricResponseViewDTO> getRubricsFromStudentSubjectPeriod(Long idStudent, Long idSubject, String semester);
-    public EvaluationResponseViewDTO getRubricsFromStudentSubjectPeriodRubric(Long idStudent, Long idSubject, String semester, Long idRubric);
+    List<SubjectResponseViewDTO> getSubjectsFromStudentPeriod(Long idStudent, String semester);
+    List<String> getPeriods(Long idStudent);
+    List<RubricResponseViewDTO> getRubricsFromStudentSubjectPeriod(Long idStudent, Long idSubject, String semester);
+    EvaluationResponseViewDTO getRubricsFromStudentSubjectPeriodRubric(Long idStudent, Long idSubject, String semester, Long idRubric);
 }

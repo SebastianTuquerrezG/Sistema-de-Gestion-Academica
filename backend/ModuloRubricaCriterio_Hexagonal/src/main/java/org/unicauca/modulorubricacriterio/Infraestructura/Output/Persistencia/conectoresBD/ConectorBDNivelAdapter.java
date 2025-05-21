@@ -72,7 +72,7 @@ public class ConectorBDNivelAdapter implements IConectorBDNivelPort{
 
     @Override
     public Nivel update(Long id, Nivel objNivel) {
-        NivelEntity objNivelActualizado = null;
+        NivelEntity objNivelActualizado;
         NivelEntity objNivelActual = this.nivelRepository.findById(id).orElse(null);
         if(objNivelActual == null)
         {

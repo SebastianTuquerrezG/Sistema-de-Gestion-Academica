@@ -2,7 +2,6 @@ package unicauca.edu.co.sga.evaluation_service.application.ports;
 
 import unicauca.edu.co.sga.evaluation_service.application.dto.request.EvaluationRequestDTO;
 import unicauca.edu.co.sga.evaluation_service.application.dto.response.EvaluationResponseDTO;
-import unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.entities.EvaluationEntity;
 
 import java.math.BigDecimal;
 import java.util.List;

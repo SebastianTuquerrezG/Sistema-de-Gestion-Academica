@@ -16,32 +16,27 @@ public class GestionNivelAdapter implements IGestionNivelPort {
 
     @Override
     public List<Nivel> consultarNiveles() {
-        List<Nivel> objListNivel = this.conectorBDNivelPort.findAll();
-        return objListNivel;
+        return this.conectorBDNivelPort.findAll();
     }
 
     @Override
     public Nivel consultarNivel(Long Id) {
-        Nivel objNivelEncontrado = this.conectorBDNivelPort.findById(Id);
-        return objNivelEncontrado;
+        return this.conectorBDNivelPort.findById(Id);
     }
 
     @Override
     public Nivel crearNivel(Nivel objPNivel) {
-        Nivel objNivelCreado = this.conectorBDNivelPort.save(objPNivel);
-        return objNivelCreado;
+        return this.conectorBDNivelPort.save(objPNivel);
     }
 
     @Override
     public Nivel modificarNivel(Long Id, Nivel objPNivel) {
-        Nivel objActualizado = this.conectorBDNivelPort.update(Id, objPNivel);
-        return objActualizado;
+        return this.conectorBDNivelPort.update(Id, objPNivel);
     }
 
     @Override
     public Nivel eliminarNivel(Long Id) {
-        Nivel objNivelEliminado = this.conectorBDNivelPort.delete(Id);
-        return objNivelEliminado;
+        return this.conectorBDNivelPort.delete(Id);
     }
 
 }

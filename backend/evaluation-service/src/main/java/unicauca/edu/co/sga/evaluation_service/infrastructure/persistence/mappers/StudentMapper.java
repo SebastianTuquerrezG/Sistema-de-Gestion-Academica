@@ -4,10 +4,7 @@ import org.springframework.stereotype.Component;
 import unicauca.edu.co.sga.evaluation_service.application.dto.request.StudentRequestDTO;
 import unicauca.edu.co.sga.evaluation_service.application.dto.response.StudentResponseDTO;
 import unicauca.edu.co.sga.evaluation_service.domain.models.Student;
-import unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.entities.EnrollEntity;
 import unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.entities.StudentEntity;
-
-import java.util.stream.Collectors;
 
 @Component
 public class StudentMapper {

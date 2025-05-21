@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -27,11 +26,11 @@ public class CriterionStatsService {
         }
 
         //CRITERIOS RUBRICA
-        RubricEntity rubric = evaluations.get(0).getRubric();
+        RubricEntity rubric = evaluations.getFirst().getRubric();
         List<CriteriaEntity> criteriaList = rubric.getCriterios()
                 .stream()
                 .sorted(Comparator.comparing(CriteriaEntity::getIdCriterio))
-                .collect(Collectors.toList());
+                .toList();
 
         // VALIDACION
         evaluations.forEach(evaluation -> {
@@ -50,7 +49,7 @@ public class CriterionStatsService {
 
             List<Double> scores = evaluations.stream()
                     .map(eval -> eval.getCalifications().get(criterionIndex).getCalification())
-                    .collect(Collectors.toList());
+                    .toList();
 
             double average = scores.stream()
                     .mapToDouble(Double::doubleValue)

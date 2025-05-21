@@ -29,8 +29,8 @@ public class CourseStatsService {
         BigDecimal average = StatsCalculator.calculateAverage(scores);
         BigDecimal median = StatsCalculator.calculateMedian(scores);
         BigDecimal stdDev = StatsCalculator.calculateStandardDeviation(scores, average);
-        BigDecimal min = scores.stream().min(BigDecimal::compareTo).get();
-        BigDecimal max = scores.stream().max(BigDecimal::compareTo).get();
+        BigDecimal min = scores.stream().min(BigDecimal::compareTo).orElse(BigDecimal.ZERO);
+        BigDecimal max = scores.stream().max(BigDecimal::compareTo).orElse(BigDecimal.ZERO);
 
         return CourseStatsDTO.builder()
                 .courseId(courseId)

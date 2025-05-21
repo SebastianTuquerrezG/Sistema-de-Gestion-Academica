@@ -19,15 +19,13 @@ import org.unicauca.modulorubricacriterio.Infraestructura.Fachada.exception.exce
 import org.unicauca.modulorubricacriterio.Infraestructura.Fachada.exception.exceptionOwn.ReglaNegocioException;
 
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 
 @ControllerAdvice
 public class RestApiExceptionHandler {
 
         @ExceptionHandler(Exception.class)
-        public ResponseEntity<Error> handleGenericException(final HttpServletRequest req,
-                                                        final Exception ex, final Locale locale) {
+        public ResponseEntity<Error> handleGenericException(final HttpServletRequest req) {
         final Error error = ErrorUtils
                 .crearError(CodigoError.ERROR_GENERICO.getCodigo(),
                         CodigoError.ERROR_GENERICO.getLlaveMensaje(),
@@ -50,7 +48,7 @@ public class RestApiExceptionHandler {
 
         @ExceptionHandler(ReglaNegocioException.class)
         public ResponseEntity<Error> handleGenericException(final HttpServletRequest req,
-                                                        final ReglaNegocioException ex, final Locale locale) {
+                                                        final ReglaNegocioException ex) {
         final Error error = ErrorUtils
                 .crearError(CodigoError.VIOLACION_REGLA_DE_NEGOCIO.getCodigo(), ex.formatException(),
                         HttpStatus.BAD_REQUEST.value())
@@ -60,7 +58,7 @@ public class RestApiExceptionHandler {
 
         @ExceptionHandler(EntidadNoExisteException.class)
         public ResponseEntity<Error> handleGenericException(final HttpServletRequest req,
-                                                        final EntidadNoExisteException ex, final Locale locale) {
+                                                        final EntidadNoExisteException ex) {
                 final Error error = ErrorUtils
                         .crearError(CodigoError.ENTIDAD_NO_ENCONTRADA.getCodigo(),
                                 String.format("%s, %s",
@@ -73,7 +71,7 @@ public class RestApiExceptionHandler {
         
         @ExceptionHandler(CambioInvalidoException.class)
         public ResponseEntity<Error> handleGenericException(final HttpServletRequest req,
-                                                                final CambioInvalidoException ex, final Locale locale) {
+                                                                final CambioInvalidoException ex) {
                 final Error error = ErrorUtils
                         .crearError(CodigoError.CAMBIO_INVALIDO.getCodigo(),
                                 String.format("%s, %s",
@@ -94,7 +92,7 @@ public class RestApiExceptionHandler {
                         errores.put(campo, mensajeDeError);
                 });
 
-                return new ResponseEntity<Map<String, String>>(errores, HttpStatus.BAD_REQUEST);
+                return new ResponseEntity<>(errores, HttpStatus.BAD_REQUEST);
         }
 
         

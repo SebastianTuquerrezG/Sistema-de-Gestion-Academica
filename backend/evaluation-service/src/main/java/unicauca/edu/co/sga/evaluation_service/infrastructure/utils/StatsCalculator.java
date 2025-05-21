@@ -1,9 +1,5 @@
 package unicauca.edu.co.sga.evaluation_service.infrastructure.utils;
 
-import unicauca.edu.co.sga.evaluation_service.application.dto.response.stats.RubricStatsResponse;
-import unicauca.edu.co.sga.evaluation_service.domain.models.Evaluation;
-import unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.entities.EvaluationEntity;
-
 import java.math.BigDecimal;
 import java.util.List;
 

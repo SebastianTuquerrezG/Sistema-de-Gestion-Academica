@@ -2,7 +2,6 @@ package org.unicauca.modulorubricacriterio.Infraestructura.Input.dtorespuesta;
 
 import java.util.List;
 
-import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;

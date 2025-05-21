@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 import unicauca.edu.co.sga.evaluation_service.domain.exceptions.NotFoundException;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/evaluations")

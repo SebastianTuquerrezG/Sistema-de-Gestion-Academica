@@ -17,7 +17,10 @@ public class RabbitMQProducer {
         System.out.println("Sending message...");
         rabbitTemplate.convertAndSend(exchange, routing_key, message);
         try {
-            rabbitMQReceive.getLatch().await(10000, TimeUnit.MILLISECONDS);
+            boolean completed = rabbitMQReceive.getLatch().await(10000, TimeUnit.MILLISECONDS);
+            if (!completed) {
+                throw new RuntimeException("Timeout esperando la respuesta de RabbitMQ");
+            }
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }

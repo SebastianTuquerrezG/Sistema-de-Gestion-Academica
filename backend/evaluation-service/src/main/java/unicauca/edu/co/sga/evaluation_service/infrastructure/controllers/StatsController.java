@@ -6,13 +6,10 @@ import org.springframework.web.bind.annotation.*;
 import unicauca.edu.co.sga.evaluation_service.application.dto.response.stats.CourseStatsDTO;
 import unicauca.edu.co.sga.evaluation_service.application.dto.response.stats.CriterionAverageDTO;
 import unicauca.edu.co.sga.evaluation_service.application.dto.response.stats.CriterionHistogramDTO;
-import unicauca.edu.co.sga.evaluation_service.application.dto.response.stats.RubricStatsResponse;
 import unicauca.edu.co.sga.evaluation_service.application.services.CourseStatsService;
 import unicauca.edu.co.sga.evaluation_service.application.services.CriterionHistogramService;
 import unicauca.edu.co.sga.evaluation_service.application.services.CriterionStatsService;
-import unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.entities.EvaluationEntity;
 import unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.repositories.EvaluationRepository;
-import unicauca.edu.co.sga.evaluation_service.infrastructure.utils.StatsCalculator;
 
 import java.util.List;
 
@@ -22,7 +19,7 @@ import java.util.List;
 
 public class StatsController {
 
-    private final EvaluationRepository evaluationRepository;
+    //private final EvaluationRepository evaluationRepository;
     private final CriterionStatsService criterionStatsService;
     private final CriterionHistogramService histogramService;
     private final CourseStatsService courseStatsService;

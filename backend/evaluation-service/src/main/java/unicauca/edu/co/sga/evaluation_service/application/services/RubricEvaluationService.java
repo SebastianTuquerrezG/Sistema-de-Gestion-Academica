@@ -101,7 +101,7 @@ public class RubricEvaluationService implements RubricEvaluationPort {
                     calDto.setCalification(cal.getCalification());
                     calDto.setMessage(cal.getMessage());
                     calDto.setLevel(cal.getLevel());
-                    cal.getEvaluation().getScore();
+                    //cal.getEvaluation().getScore();
                     return calDto;
                 })
                 .collect(Collectors.toList());

@@ -1,7 +1,6 @@
 package unicauca.edu.co.sga.evaluation_service.infrastructure.controllers;
 
 import lombok.RequiredArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -15,7 +14,6 @@ import unicauca.edu.co.sga.evaluation_service.application.dto.response.StudentVi
 import unicauca.edu.co.sga.evaluation_service.application.dto.response.StudentView.EvaluationResponseViewDTO;
 import unicauca.edu.co.sga.evaluation_service.application.dto.response.StudentView.RubricResponseViewDTO;
 import unicauca.edu.co.sga.evaluation_service.application.ports.RubricEvaluationPort;
-import unicauca.edu.co.sga.evaluation_service.domain.exceptions.RubricEvaluation.EmptyReturnException;
 
 import java.util.List;
 

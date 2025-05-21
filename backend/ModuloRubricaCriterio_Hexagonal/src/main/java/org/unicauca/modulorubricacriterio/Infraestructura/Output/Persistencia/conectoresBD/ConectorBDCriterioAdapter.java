@@ -72,7 +72,7 @@ public class ConectorBDCriterioAdapter implements IConectorBDCriterioPort{
 
     @Override
     public Criterio update(Long id, Criterio objCriterio) {
-        CriterioEntity objCriterioActualizado = null;
+        CriterioEntity objCriterioActualizado;
         CriterioEntity objCriterioActual = this.criterioRepository.findById(id).orElse(null);
         if(objCriterioActual==null)
         {
