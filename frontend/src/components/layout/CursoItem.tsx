@@ -4,6 +4,7 @@ import "./CursoItem.css";
 interface CursoItemProps {
   nombre: string;
   docente: string;
+    id: number;
   onClick?: () => void;
 }
 

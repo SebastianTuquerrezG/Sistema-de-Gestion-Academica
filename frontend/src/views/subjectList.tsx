@@ -22,11 +22,13 @@ const SubjectList : React.FC = ({  }) => {
        // id: number
         nombre: string;
         docente: string;
+        id: number
     };
 
 
     const [subjects, setSubjects] = useState<Curso[]>([]);
     const [period, setPeriod] = useState<string>(periodoSeleccionado || "2025-1");
+
 
     // Si cambia el periodo seleccionado, actualiza el semestre
     useEffect(() => {
@@ -46,6 +48,7 @@ const SubjectList : React.FC = ({  }) => {
                 const cursosTransformados = subjectData.map((curso: any) => ({
                     nombre: curso.nameSubject,
                     docente: curso.nameTeacher,
+                    id: curso.id,
                 }));
                 setSubjects(cursosTransformados);
             } catch (error) {
@@ -57,12 +60,12 @@ const SubjectList : React.FC = ({  }) => {
     }, [idStudent, period]);
 
     // Función para manejar el clic en un curso
-    const handleCursoClick = (curso: { nombre: string; docente: string }) => {
+    const handleCursoClick = (curso: { nombre: string; docente: string; id:number; }) => {
         alert(
-            `Seleccionaste el curso: ${curso.nombre} con el docente: ${curso.docente}`
+            `Seleccionaste el curso: ${curso.nombre} con el docente: ${curso.docente}  id: ${curso.id}`
         );
-        const idSubject = 3;
-        navigate(`/rubric/${idStudent}/${idSubject}/${period}`);
+       // const idSubject = 3;
+        navigate(`/rubric/${idStudent}/${curso.id}/${period}`);
     };
     // Función para manejar el clic en "Otros Periodos"
     const handleClick = () => {

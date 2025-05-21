@@ -4,6 +4,7 @@ import CursoItem from "./CursoItem";
 interface Curso {
   nombre: string;
   docente: string;
+    id: number;
 }
 
 interface CursosListProps {
@@ -18,6 +19,7 @@ const CursosList: React.FC<CursosListProps> = ({ cursos, onCursoClick }) => (
         key={idx}
         nombre={curso.nombre}
         docente={curso.docente}
+        id={curso.id}
         onClick={() => onCursoClick && onCursoClick(curso)}
       />
     ))}

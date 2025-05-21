@@ -4,6 +4,8 @@ import PageTitle from "../pageTitle/pageTitle";
 import Sidebar from "../layout/sidebar";
 import Header from "../layout/header";
 import CursosList from "../layout/CursosList";
+//import {getSubject} from "../../services/subjectList.tsx";
+import {getPeriod} from "../../services/subjectList.tsx"; // Asegúrate de que esta función esté exportada correctamente
 
 const idStudent = 1; // Cambia esto por el id real del estudiante
 
@@ -16,18 +18,12 @@ const OtrosPeriodos = () => {
   useEffect(() => {
     const fetchPeriodo = async () => {
       try {
-        const response = await fetch(
-          `http://localhost:8080/api/RubricEvaluation/${idStudent}`
-        );
-        if (!response.ok) {
-          const errorText = await response.text();
-          throw new Error(
-            `Error al consultar periodos: ${response.status} - ${errorText}`
-          );
-        }
-        const data = await response.json();
+        const [subjectData] = await Promise.all([
+             getPeriod(idStudent),
+
+        ]);
         // Si data es un array de strings, lo transformamos:
-        const periodosTransformados = data.map((periodo: string) => ({
+        const periodosTransformados = subjectData.map((periodo: string) => ({
           nombre: periodo,
           docente: "", // O puedes poner "N/A" o algún texto
         }));
