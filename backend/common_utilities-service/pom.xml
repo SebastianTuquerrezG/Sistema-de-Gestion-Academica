@@ -8,7 +8,7 @@
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
 
-	<artifactId>common_utilities-service</artifactId>
+	<artifactId>common-utilities-service</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>common_utilities-service</name>
 	<description>Helper service to contain different entities.</description>
