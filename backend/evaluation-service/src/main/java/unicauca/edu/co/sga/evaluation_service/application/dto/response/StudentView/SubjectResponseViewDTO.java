@@ -13,6 +13,7 @@ public class SubjectResponseViewDTO {
 
     private String nameSubject;
     private String nameTeacher;
+    private Long id;
 
 
 }
