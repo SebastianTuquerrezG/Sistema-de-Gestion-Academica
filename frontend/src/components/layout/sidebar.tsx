@@ -1,8 +1,17 @@
 import React from "react";
-import "./sidebar.css"; // Importa tu CSS si es necesario
+import "./sidebar.css";
+import { useNavigate} from "react-router-dom"; // Importa tu CSS si es necesario
 
 const Sidebar: React.FC = () => {
-  return (
+    const navigate = useNavigate();
+    //const location = useLocation();
+
+    const handleClick = () => {
+        navigate("/");
+        // alert("No hay otros periodos disponibles");
+    };
+
+    return (
     <aside className="sidebar open">
       {/* Imagen */}
       <div className="sidebar-image">
@@ -25,7 +34,7 @@ const Sidebar: React.FC = () => {
         </li> */}
         <li className="menu-item">
           <span className="material-symbols-outlined">school</span>
-          <span className="title5">Estudiante</span>
+          <span className="title5" onClick={handleClick}>Estudiante</span>
         </li>
       </ul>
     </aside>

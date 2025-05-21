@@ -7,13 +7,14 @@ import Layout   from "../components/layout/layout.tsx";
 import IconButton from "../components/buttons/iconButton.tsx";
 import CursosList from "../components/layout/CursosList.tsx";
 //import Footer from "../components/layout/Footer .tsx";
-import { useNavigate, useLocation } from "react-router-dom";
-
+import {useNavigate, useLocation} from "react-router-dom";
 
 const SubjectList : React.FC = ({  }) => {
 
+
     const navigate = useNavigate();
     const location = useLocation();
+
     const periodoSeleccionado = location.state?.periodoSeleccionado;
     const idStudent = 1; // Cambia esto por el id real del estudiante
 
@@ -60,7 +61,8 @@ const SubjectList : React.FC = ({  }) => {
         alert(
             `Seleccionaste el curso: ${curso.nombre} con el docente: ${curso.docente}`
         );
-        // navigate(`/curso/${curso.nombre}`);
+        const idSubject = 3;
+        navigate(`/rubric/${idStudent}/${idSubject}/${period}`);
     };
     // Función para manejar el clic en "Otros Periodos"
     const handleClick = () => {

@@ -1,0 +1,22 @@
+.subject-header {
+    background: var(--primary-regular-color);
+    color: white;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+
+}
+
+.subject-title {
+    font-family: var(--title-font), serif;
+    font-size: var(--title-size);
+    font-weight: var(--bold);
+}
+
+.subject-period, .subject-professor {
+    display: flex;
+    flex-direction: column;
+    margin-top: 8px;
+    font-family: var(--title-font), serif;
+    font-weight: var(--semibold); ;
+}
