@@ -125,13 +125,13 @@ services:
     networks:
       - backend-network
 
-  common_utilities-service:
+  common-utilities-service:
     env_file:
       - .env
     build:
-        context: ./common_utilities-service
+        context: ./common-utilities-service
         dockerfile: Dockerfile
-    container_name: common_utilities-service
+    container_name: common-utilities-service
     ports:
       - "0:5004"
     depends_on:

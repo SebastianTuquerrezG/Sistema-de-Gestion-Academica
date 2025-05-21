@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Definir la lista de microservicios
-services=("common_utilities-service" "eureka-server" "evaluation-service" "gateway" "ModuloRubricaCriterio_Hexagonal" "auth-service")
+services=("common-utilities-service" "eureka-server" "evaluation-service" "gateway" "ModuloRubricaCriterio_Hexagonal" "auth-service")
 
 echo "🚀 Generando .jar para todos los servicios..."
 
