@@ -3,12 +3,13 @@ import ReactDOM from "react-dom/client";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import "./assets/css/global.css";
 import OtrosPeriodos from "./components/pageTitle/OtrosPeriodos.tsx";
-import Layout from "./components/layout/layout.tsx";
+import SubjectList from "./views/subjectList.tsx";
+
 
 const App: React.FC = () => (
   <BrowserRouter>
     <Routes>
-      <Route path="/" element={<Layout />} />
+      <Route path="/" element={<SubjectList />} />
       <Route path="/otrosperiodos" element={<OtrosPeriodos />} />
     </Routes>
   </BrowserRouter>
