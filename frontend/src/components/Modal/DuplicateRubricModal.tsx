@@ -1,8 +1,9 @@
-import { useState } from "react";
-import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog.tsx";
+import {useEffect, useState} from "react";
+import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog.tsx";
 import { Input } from "@/components/ui/input.tsx";
 import { Checkbox } from "@/components/ui/checkbox.tsx";
 import { Button } from "@/components/ui/button.tsx";
+import {  Copy } from "lucide-react"
 
 interface Props {
     open: boolean;
@@ -16,30 +17,41 @@ interface Props {
     }) => void;
 }
 
+
 export default function DuplicateRubricModal({
     open,
     onClose,
     originalName,
     onDuplicate,
 }: Props) {
-    const [newName, setNewName] = useState(`Copia de ${originalName}`);
+    const [newName, setNewName] = useState('');
     const [shareWithSamePeople, setShareWithSamePeople] = useState(false);
     const [copyComments, setCopyComments] = useState(false);
     const [resolvedComments, setResolvedComments] = useState(false);
+
 
     const handleDuplicate = () => {
         onDuplicate({ newName, shareWithSamePeople, copyComments, resolvedComments });
         onClose();
     };
+    //Resetea el nombre de la rubrica al abrir el modal
+    useEffect(() => {
+        if(open) {
+            setNewName(originalName); //coloca el nombre original en el input al abrir el modal
+        }
+    }, [open, originalName]);
 
     return (
         <Dialog open={open} onOpenChange={onClose}>
             <DialogContent className="w-full max-w-md p-6">
-                <DialogTitle>Copiar rúbrica</DialogTitle>
-
+                <DialogTitle  className="flex items-center gap-2 text-lg">
+                    <Copy className="h-5 w-5" />
+                    Duplicar Rúbrica
+                </DialogTitle>
+                <DialogDescription>Crear una copia de "{originalName}":</DialogDescription>
                 <label className="block text-sm font-medium mt-4">Nombre</label>
-                <Input value={newName} onChange={(e) => setNewName(e.target.value)} />
-
+                <Input value={newName}  onChange={e => setNewName(e.target.value)}  style={{ width: '100%' }}
+                />
                 <div className="mt-4 space-y-2">
                     <div className="flex items-center gap-2">
                         <Checkbox
