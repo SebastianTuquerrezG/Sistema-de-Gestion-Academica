@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input.tsx";
 import { Button } from "@/components/ui/button.tsx";
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Switch } from "@/components/ui/switch"
-import { Loader2, Share2, AlertCircle, Copy, Mail, Plus, X, LinkIcon, Eye, Edit, UserPlus } from "lucide-react"
+import {Loader2, Share2, AlertCircle, Copy, Mail, Plus, X, LinkIcon, Eye, Edit, UserPlus, Pencil} from "lucide-react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Badge } from "@/components/ui/badge"
@@ -27,7 +27,7 @@ interface props {
     validationErrors?: string[]
 
 }
-interface Collaborator {
+interface Colaborador {
     id: string
     name: string
     email: string
@@ -37,14 +37,14 @@ interface Collaborator {
 export default function ShareRubricModal({ open, onClose, onShare,rubricName,isLoading=false,validationErrors=[]}: props) {
     const [activeTab, setActiveTab] = useState("personas")
     const [email, setEmail] = useState("")
-    const [permission, setPermission] = useState("ver")
+    const [permission, setPermission] = useState("Editor")
     const [message, setMessage] = useState("")
     const [notifyUsers, setNotifyUsers] = useState(true)
     const [createLink, setCreateLink] = useState(false)
     const [linkPermission, setLinkPermission] = useState("ver")
     const [emails, setEmails] = useState<string[]>([])
     const [localErrors, setLocalErrors] = useState<string[]>([])
-    const [collaborators, setCollaborators] = useState<Collaborator[]>([
+    const [collaborators, setCollaborators] = useState<Colaborador[]>([
         {
             id: "1",
             name: "Prof. Ana Martínez",
@@ -76,23 +76,23 @@ export default function ShareRubricModal({ open, onClose, onShare,rubricName,isL
             setLocalErrors(["Este correo electrónico ya ha sido añadido"])
             return
         }
-
         setEmails([...emails, email])
         setEmail("")
         setLocalErrors([])
     }
+    //Funcion para eliminar un email de la lista de colaboradores
     const handleRemoveEmail = (emailToRemove: string) => {
         setEmails(emails.filter((e) => e !== emailToRemove))
     }
-
+    //Funcion para cambiar el permiso de un colaborador
     const handleChangePermission = (userId: string, newPermission: string) => {
         setCollaborators(collaborators.map((c) => (c.id === userId ? { ...c, permission: newPermission } : c)))
     }
-
+    //Funcion para eliminar un colaborador
     const handleRemoveCollaborator = (userId: string) => {
         setCollaborators(collaborators.filter((c) => c.id !== userId))
     }
-
+    //Funcion para compartir la rubrica
     const handleSubmit = async () => {
         try {
             // Compartir con cada email de la lista
@@ -117,7 +117,6 @@ export default function ShareRubricModal({ open, onClose, onShare,rubricName,isL
                     linkPermission,
                 });
             }
-
             // Resetear formulario
             setEmails([]);
             setEmail("");
@@ -128,29 +127,25 @@ export default function ShareRubricModal({ open, onClose, onShare,rubricName,isL
             setLocalErrors(["Error al compartir la rúbrica"]);
         }
     }
-
     const getPermissionLabel = (permission: string) => {
         switch (permission) {
-            case "propietario":
+            case "Propietario":
                 return "Propietario"
-            case "editar":
-                return "Puede editar"
-            case "comentar":
-                return "Puede comentar"
-            case "ver":
-                return "Puede ver"
+            case "Editor":
+                return "Editor"
+            case "Lector":
+                return "Lector"
             default:
                 return permission
         }
     }
-
     const getPermissionBadge = (permission: string) => {
         switch (permission) {
-            case "propietario":
-                return <Badge className="bg-purple-500">Propietario</Badge>
-            case "editar":
-                return <Badge className="bg-blue-500">Editor</Badge>
-            case "ver":
+            case "Propietario":
+                return <Badge className="bg-gray-500">Propietario</Badge>
+            case "Editor":
+                return <Badge className="bg-gray-500">Editor</Badge>
+            case "Lector":
                 return <Badge className="bg-gray-500">Lector</Badge>
             default:
                 return <Badge>{permission}</Badge>
@@ -166,7 +161,7 @@ export default function ShareRubricModal({ open, onClose, onShare,rubricName,isL
                     <Share2 className="h-5 w-5" />
                     Compartir Rubrica
                 </DialogTitle>
-                <DialogDescription> Comparte {rubricName} con otros profesores o colaboradores </DialogDescription>
+                <DialogDescription> Comparte "{rubricName}" con otros profesores o colaboradores </DialogDescription>
                 <div className="space-y-4 py-4">
                     {allErrors.length > 0 && (
                         <Alert variant="destructive">
@@ -204,6 +199,7 @@ export default function ShareRubricModal({ open, onClose, onShare,rubricName,isL
                                             onChange={(e) => setEmail(e.target.value)}
                                             placeholder="Correo electrónico"
                                             className="pl-10"
+                                            //Si el usuario presiona Enter, añadir el email
                                             onKeyDown={(e) => {
                                                 if (e.key === "Enter") {
                                                     e.preventDefault()
@@ -217,22 +213,22 @@ export default function ShareRubricModal({ open, onClose, onShare,rubricName,isL
                                             <SelectValue />
                                         </SelectTrigger>
                                         <SelectContent>
-                                            <SelectItem value="ver">
+                                            <SelectItem value="Lector">
                                                 <div className="flex items-center">
                                                     <Eye className="mr-2 h-4 w-4" />
-                                                    Ver
+                                                    Lector
                                                 </div>
                                             </SelectItem>
-                                            <SelectItem value="comentar">
+                                            <SelectItem value="Comentador">
                                                 <div className="flex items-center">
-                                                    <Edit className="mr-2 h-4 w-4" />
-                                                    Comentar
+                                                    <Pencil className="mr-2 h-4 w-4" />
+                                                    Comentador
                                                 </div>
                                             </SelectItem>
-                                            <SelectItem value="editar">
+                                            <SelectItem value="Editor">
                                                 <div className="flex items-center">
                                                     <Edit className="mr-2 h-4 w-4" />
-                                                    Editar
+                                                    Editor
                                                 </div>
                                             </SelectItem>
                                         </SelectContent>
@@ -245,7 +241,6 @@ export default function ShareRubricModal({ open, onClose, onShare,rubricName,isL
 
                             {emails.length > 0 && (
                                 <div className="space-y-2">
-                                    <Label>Nuevos colaboradores</Label>
                                     <div className="space-y-2">
                                         {emails.map((email) => (
                                             <div key={email} className="flex items-center justify-between p-2 bg-gray-50 rounded-md">
@@ -256,7 +251,7 @@ export default function ShareRubricModal({ open, onClose, onShare,rubricName,isL
                                                     <span>{email}</span>
                                                 </div>
                                                 <div className="flex items-center gap-2">
-                                                    <Badge className="bg-blue-500">{getPermissionLabel(permission)}</Badge>
+                                                    <Badge className="bg-gray-500">{getPermissionLabel(permission)}</Badge>
                                                     <Button variant="ghost" size="icon" onClick={() => handleRemoveEmail(email)}>
                                                         <X className="h-4 w-4" />
                                                     </Button>
@@ -266,9 +261,8 @@ export default function ShareRubricModal({ open, onClose, onShare,rubricName,isL
                                     </div>
                                 </div>
                             )}
-
                             <div className="space-y-2">
-                                <Label>Colaboradores actuales</Label>
+                                <Label>Colaboradores</Label>
                                 <div className="space-y-2 max-h-[200px] overflow-y-auto">
                                     {collaborators.map((collaborator) => (
                                         <div key={collaborator.id} className="flex items-center justify-between p-2 bg-gray-50 rounded-md">
@@ -288,7 +282,7 @@ export default function ShareRubricModal({ open, onClose, onShare,rubricName,isL
                                                 </div>
                                             </div>
                                             <div className="flex items-center gap-2">
-                                                {collaborator.permission === "propietario" ? (
+                                                {collaborator.permission === "Propietario" ? (
                                                     getPermissionBadge(collaborator.permission)
                                                 ) : (
                                                     <Select
@@ -299,9 +293,9 @@ export default function ShareRubricModal({ open, onClose, onShare,rubricName,isL
                                                             <SelectValue />
                                                         </SelectTrigger>
                                                         <SelectContent>
-                                                            <SelectItem value="editar">Editar</SelectItem>
-                                                            <SelectItem value="comentar">Comentar</SelectItem>
-                                                            <SelectItem value="ver">Ver</SelectItem>
+                                                            <SelectItem value="editar">Editor</SelectItem>
+                                                            <SelectItem value="comentar">Comentador</SelectItem>
+                                                            <SelectItem value="ver">Lector</SelectItem>
                                                         </SelectContent>
                                                     </Select>
                                                 )}
@@ -399,7 +393,6 @@ export default function ShareRubricModal({ open, onClose, onShare,rubricName,isL
                         </TabsContent>
                     </Tabs>
                 </div>
-
                 <DialogFooter>
                     <Button variant="outline" onClick={onClose} disabled={isLoading}>
                         Cancelar

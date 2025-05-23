@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { useNavigate } from "react-router-dom";
 import { Copy } from "lucide-react";
 
-//import { getAllRubrics } from "@/services/rubricService";
+import { getAllRubrics } from "@/services/rubricService";
 import Notification from "@/components/notifications/notification";
 import { RubricInterface } from "@/interfaces/RubricInterface";
 import { deleteRubric } from "@/services/rubricService";
@@ -33,7 +33,7 @@ export default function ConsultarRubrica() {
     const [showDuplicateModal, setShowDuplicateModal] = useState(false);
     const [rubricToDuplicate, setRubricToDuplicate] = useState<RubricInterface | null>(null);
     const [showShareModal, setShowShareModal] = useState(false);
-
+    /*
     useEffect(() => {
         fetch('/rubricas.json')
             .then((response) => {
@@ -47,17 +47,16 @@ export default function ConsultarRubrica() {
                 setRubrics(activeRubrics);
             })
             .catch((error) => console.error(error));
-    }, []);
-    /*
+    }, []);*/
+
     useEffect(() => {
         getAllRubrics()
-            .then((data) => {
-                const activeRubrics = data.filter((rubric: RubricInterface) => rubric.estado !== "INACTIVO");
-                setRubrics(activeRubrics);
+            .then(data => {
+                setRubrics(data);
             })
             .catch((error) => console.error(error));
     }, []);
-*/
+
     const filteredRubrics = rubrics.filter(
         (rubric) =>
             rubric.nombreRubrica.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -117,6 +116,7 @@ export default function ConsultarRubrica() {
             idRubrica: '', // id generado por el backend
             nombreRubrica: `${data.newName}`,
             materia: rubricToDuplicate.materia,
+            nombreMateria: rubricToDuplicate.nombreMateria,
             notaRubrica: rubricToDuplicate.notaRubrica,
             objetivoEstudio: rubricToDuplicate.objetivoEstudio,
             estado: "ACTIVO",
@@ -184,7 +184,7 @@ export default function ConsultarRubrica() {
                             <SelectContent>
                                 {rubrics.map((rubric) => (
                                     <SelectItem key={rubric.idRubrica} value={rubric.nombreRubrica}>
-                                        {rubric.materia}
+                                        {rubric.nombreMateria}
                                     </SelectItem>
                                 ))}
                             </SelectContent>
@@ -230,7 +230,7 @@ export default function ConsultarRubrica() {
                                     </td>
                                     <td className={`px-6 py-4 cursor-pointer ${selectedRubricId === rubric.idRubrica ? "text-blue-600" : ""}`}
                                         onClick={() => handleDetail(rubric.idRubrica)}>
-                                        {rubric.materia}
+                                        {rubric.nombreMateria}
                                     </td>
                                     <td>
                                         <TableCell>{getStatusBadge(rubric.estado)}</TableCell>
