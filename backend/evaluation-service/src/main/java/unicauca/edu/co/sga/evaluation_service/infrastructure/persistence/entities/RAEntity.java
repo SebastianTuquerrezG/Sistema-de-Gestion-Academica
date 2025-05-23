@@ -22,6 +22,9 @@ public class RAEntity {
     @Column(name = "ra_id", nullable = false, unique = true, updatable = false)
     private Long id;
 
+    @Column(name = "name", nullable = false)
+    private String name;
+
     @OneToMany(mappedBy = "ra", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference("ra-rubric")
     @ToString.Exclude

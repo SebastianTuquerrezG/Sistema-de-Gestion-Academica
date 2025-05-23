@@ -4,10 +4,14 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import unicauca.edu.co.sga.evaluation_service.application.dto.response.stats.HistogramRowDTO;
 import unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.entities.EvaluationEntity;
+import unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.repositories.stats.CriterioHistogramaRepository;
+import unicauca.edu.co.sga.evaluation_service.application.dto.response.stats.EvaluationStats;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Repository
@@ -33,20 +37,55 @@ public interface EvaluationRepository extends JpaRepository<EvaluationEntity, Lo
             @Param("rubricId") Long rubricId);
 
     //SELECCIONA LA PUNTUACION PARA CADA ESTUDIANTE
-    @Query("""
-        SELECT e.score 
-        FROM EvaluationEntity e
-        WHERE e.enroll.course.id = :courseId
-        AND e.rubric.idRubrica = :rubricId
-        AND e.enroll.semester = :semester
-        """)
-    List<BigDecimal> findScoresByCourseRubricAndSemester(
-            @Param("courseId") Long courseId,
-            @Param("rubricId") Long rubricId,
-            @Param("semester") String semester);
 
-    @Query("SELECT s.name FROM SubjectEntity s JOIN s.course c WHERE c.id = :courseId")
-    String findNameByCourseId(@Param("courseId") Long courseId);
+    //@Query("SELECT s.name FROM SubjectEntity s JOIN s.course c WHERE c.id = :courseId")
+    //String findNameByCourseId(@Param("courseId") Long courseId);
+
+    @Query("""
+    SELECT new unicauca.edu.co.sga.evaluation_service.application.dto.response.stats.EvaluationStats(e.score, ra.name)
+    FROM EvaluationEntity e
+    JOIN e.enroll en
+    JOIN en.course co
+    JOIN co.subject s
+    JOIN e.rubric r
+    JOIN r.ra ra
+    WHERE (:subjectName IS NULL OR s.name = :subjectName)
+    AND (:rubricName IS NULL OR r.nombreRubrica = :rubricName)
+    AND (:period IS NULL OR en.semester = :period)
+    AND e.score IS NOT NULL
+    """)
+    List<EvaluationStats> findStatsByFilters(@Param("rubricName") String rubricName,
+                                             @Param("subjectName") String subjectName,
+                                             @Param("period") String period);
+
+
+
+
+
+    //PROMEDIO POR CRITERIO
+    /*@Query("""
+SELECT new unicauca.edu.co.sga.evaluation_service.application.dto.response.stats.HistogramRowDTO(
+    'GLOBAL',  -- nombre ficticio de criterio
+    c.level,
+    COUNT(c)
+)
+FROM CalificationRegisterEntity c
+JOIN c.evaluation e
+JOIN e.rubric r
+JOIN e.enroll en
+JOIN en.course co
+JOIN co.subject s
+WHERE (:rubricName IS NULL OR r.nombreRubrica = :rubricName)
+AND (:subjectName IS NULL OR s.name = :subjectName)
+AND (:period IS NULL OR en.semester = :period)
+GROUP BY c.level
+""")
+    List<HistogramRowDTO> getHistogramRawData(
+            @Param("rubricName") String rubricName,
+            @Param("subjectName") String subjectName,
+            @Param("period") String period
+    );*/
+
 }
 
 
