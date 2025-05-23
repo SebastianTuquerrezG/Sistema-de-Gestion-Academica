@@ -17,6 +17,8 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/evaluations")
 @RequiredArgsConstructor
+@CrossOrigin(value = "*",
+        methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE})
 public class EvaluationController {
 
     private final EvaluationPort evaluationPort;

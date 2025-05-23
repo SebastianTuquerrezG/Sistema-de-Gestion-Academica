@@ -1,184 +1,202 @@
-@import url('../../../assets/css/variables.css');
-
+@import url("../../../assets/css/variables.css");
 
 .evaluation-table {
-    width: 100%;
-    max-width: 1350px;
-    margin: 20px auto;
-    border-collapse: collapse;
-    background-color: var(--while-color);
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
-    overflow: hidden;
-    table-layout: fixed;
+  width: 100%;
+  max-width: 90%;
+  min-width: 1800px;
+  margin: 20px auto;
+  border-collapse: collapse;
+  background-color: var(--while-color);
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  overflow-x: auto;
+  table-layout: fixed;
 }
-
+.evaluation-table-container {
+  max-width: 90%;
+  overflow-x: auto;
+}
 /* Encabezados */
 .evaluation-table th {
-    background-color: var(--primary-regular-color);
-    color: var(--while-color);
-    padding: 12px;
-    text-align: center;
-    font-family: var(--title-font);
-    font-size: var(--title4-size);
-    font-weight: var(--bold);
-    vertical-align: middle;
-    /* Asegura que el texto se alinee bien */
-    max-width: 250px;
-    /* Ajusta este valor según necesidad */
-    white-space: normal;
-    /* Permite el salto de línea */
-    border: 1px solid var(--while-color);
+  background-color: var(--primary-regular-color);
+  color: var(--while-color);
+  padding: 12px;
+  text-align: center;
+  font-family: var(--title-font);
+  font-size: var(--title4-size);
+  font-weight: var(--bold);
+  vertical-align: middle;
+  /* Asegura que el texto se alinee bien */
+  max-width: 250px;
+  /* Ajusta este valor según necesidad */
+  white-space: normal;
+  /* Permite el salto de línea */
+  border: 1px solid var(--while-color);
 }
 
 /* Celdas */
 .evaluation-table td {
-    padding: 12px;
-    border-bottom: 1px solid var(--hover-regular-color);
-    text-align: center;
-    font-family: var(--text-font);
-    font-size: var(--text-size);
-    font-weight: var(--regular);
-    vertical-align: middle;
-    /* Asegura que el texto se alinee bien */
-    max-width: 250px;
-    /* Ajusta este valor según necesidad */
-    word-wrap: break-word;
-    white-space: normal;
-    /* Permite el salto de línea */
+  padding: 12px;
+  border-bottom: 1px solid var(--hover-regular-color);
+  text-align: center;
+  font-family: var(--text-font);
+  font-size: var(--text-size);
+  font-weight: var(--regular);
+  vertical-align: middle;
+  /* Asegura que el texto se alinee bien */
+  max-width: 250px;
+  /* Ajusta este valor según necesidad */
+  word-wrap: break-word;
+  white-space: normal;
+  /* Permite el salto de línea */
 }
 
 /* Filas alternadas */
 .evaluation-table tbody tr:nth-child(even) {
-    background-color: #fcfcfc;
+  background-color: #fcfcfc;
 }
 
 /* Hover en filas */
 .evaluation-table tbody tr:hover {
-    background-color: var(--hover-regular-color);
-    transition: background 0.3s ease;
+  background-color: var(--hover-regular-color);
+  transition: background 0.3s ease;
 }
 
 /* Botón dentro de la tabla */
 .evaluation-button {
-    background-color: var(--secondary-regular-color);
-    color: var(--while-color);
-    border: none;
-    padding: 8px 12px;
-    border-radius: 5px;
-    font-family: var(--text-font);
-    font-size: var(--buttons-size);
-    font-weight: var(--bold);
-    cursor: pointer;
-    transition: background 0.3s;
+  background-color: var(--secondary-regular-color);
+  color: var(--while-color);
+  border: none;
+  padding: 8px 12px;
+  border-radius: 5px;
+  font-family: var(--text-font);
+  font-size: var(--buttons-size);
+  font-weight: var(--bold);
+  cursor: pointer;
+  transition: background 0.3s;
+  align-items: end;
 }
 
 .evaluation-button:hover {
-    background-color: var(--secondary-dark-color);
+  background-color: var(--secondary-dark-color);
 }
 
 #header-level1 {
-    background-color: #13137c;
+  background-color: #13137c;
 }
 
 #header-level2 {
-    background-color: #22229e;
+  background-color: #22229e;
 }
 
 #header-level3 {
-    background-color: #2e2ebe;
+  background-color: #2e2ebe;
 }
 
 #secondary-title {
-    background-color: #ececec;
-    color: var(--primary-regular-color);
+  background-color: #ececec;
+  color: var(--primary-regular-color);
 }
 
 #criterios-column {
-    background-color: #e1e1ff;
+  background-color: #e1e1ff;
 }
 
 .font-ranges {
-    font-size: 1px;
+  font-size: 1px;
 }
-
 
 /* Estilos específicos para el input de calificación */
 .evaluation-input {
-    width: 80px;
-    padding: 5px;
-    font-size: var(--text-size);
-    font-family: var(--text-font);
-    font-weight: var(--regular);
-    text-align: center;
-    border: 2px solid var(--hover-regular-color);
-    border-radius: 5px;
-    background-color: #f8f8f8;
-    color: var(--primary-regular-color);
-    transition: border 0.3s ease, background 0.3s ease;
+  width: 80px;
+  padding: 5px;
+  font-size: var(--text-size);
+  font-family: var(--text-font);
+  font-weight: var(--regular);
+  text-align: center;
+  border: 2px solid var(--hover-regular-color);
+  border-radius: 5px;
+  background-color: #f8f8f8;
+  color: var(--primary-regular-color);
+  transition: border 0.3s ease, background 0.3s ease;
 }
 
 /* Efecto al enfocar */
 .evaluation-input:focus {
-    border-color: #e9e9e9;
-    background-color: #ffffff;
-    outline: none;
+  border-color: #e9e9e9;
+  background-color: #ffffff;
+  outline: none;
 }
 
 .button-container {
-    text-align: right;
-    /* Alinea el botón a la derecha */
-    width: 100%;
-    margin-top: 30px;
-    /* Más separación de la tabla */
+  text-align: right;
+  /* Alinea el botón a la derecha */
+  width: 100%;
+  margin-top: 30px;
+  /* Más separación de la tabla */
 }
 
 .evaluate-button {
-    margin-right: 130px;
-    padding: 15px 25px;
-    /* Más grande */
-    font-size: 18px;
-    /* Fuente más grande */
-    background-color: var(--confirm-border-color);
-    color: white;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: background 0.3s;
+  margin-right: 130px;
+  padding: 15px 25px;
+  /* Más grande */
+  font-size: 18px;
+  /* Fuente más grande */
+  background-color: var(--confirm-border-color);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.3s;
 }
 
 .evaluate-button:hover {
-    background-color: #1a6827;
+  background-color: #1a6827;
 }
 
 .comment-box {
-    width: 80%;
-    height: 80px;
-    /* Más grande */
-    resize: none;
-    /* No permitir redimensionar */
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    padding: 8px;
-    font-size: 14px;
-    font-family: Arial, sans-serif;
+  width: 100%;
+  height: 80px;
+  /* Más grande */
+  resize: none;
+  /* No permitir redimensionar */
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 8px;
+  font-size: 14px;
+  font-family: Arial, sans-serif;
 }
 
 .comment-box:focus {
-    border-color: #2e2ebe;
-    outline: none;
+  border-color: #2e2ebe;
+  outline: none;
 }
 
 .char-count {
-    font-size: 12px;
-    color: gray;
-    text-align: right;
-    margin-top: 4px;
-    font-family: Arial, sans-serif;
-  }
-  
-  .char-limit-reached {
-    color: #d32f2f;
-    font-weight: bold;
-  }
-  
+  font-size: 12px;
+  color: gray;
+  text-align: right;
+  margin-top: 4px;
+  font-family: Arial, sans-serif;
+}
+
+.char-limit-reached {
+  color: #d32f2f;
+  font-weight: bold;
+}
+
+.disabled-eval-btn {
+  background-color: #ccc !important;
+  color: #666 !important;
+  cursor: not-allowed !important;
+  pointer-events: none !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.lock-icon {
+  margin-right: 10px;
+  font-size: 24px;
+  color: #555;
+  vertical-align: middle;
+}

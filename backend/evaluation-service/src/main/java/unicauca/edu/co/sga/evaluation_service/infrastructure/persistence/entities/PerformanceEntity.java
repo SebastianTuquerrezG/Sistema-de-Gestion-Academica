@@ -12,22 +12,21 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Table(name = "performance_level")
+@Table(name = "Nivel")
 public class PerformanceEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false, unique = true, updatable = false)
-    private Long id;
+    private Long idNivel;
 
-    @Column(nullable = false, length = 200)
-    private String name;
+//    @Column(nullable = false, length = 200)
+//    private String name;
 
     @Column(nullable = false, length = 300)
-    private String description;
+    private String nivelDescripcion;
 
     @Column(nullable = false)
-
-    private String rango;
+    private String rangoNota;
 
     /*@OneToMany(mappedBy = "performanceLevel", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
@@ -36,7 +35,7 @@ public class PerformanceEntity {
     private Set<CriteriaEntity> criteria;*/
 
     @ManyToOne
-    @JoinColumn(name = "criteria_id")
+    @JoinColumn(name = "id_criterio")
     @JsonBackReference
     private CriteriaEntity criterio;
 }

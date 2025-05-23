@@ -11,8 +11,10 @@ const Dropdown: React.FC<DropdownProps> = ({ label, options, onSelect }) => {
   const [query, setQuery] = useState("");
   const [showOptions, setShowOptions] = useState(false);
 
-  const filteredOptions = options.filter((option) =>
-    option.toLowerCase().includes(query.toLowerCase())
+  const filteredOptions = options.filter(
+    (option) =>
+      typeof option === "string" &&
+      option.toLowerCase().includes(query.toLowerCase())
   );
 
   const handleSelect = (value: string) => {
@@ -28,9 +30,14 @@ const Dropdown: React.FC<DropdownProps> = ({ label, options, onSelect }) => {
         type="text"
         value={query}
         onChange={(e) => {
-          setQuery(e.target.value);
+          const value = e.target.value;
+          setQuery(value);
           setShowOptions(true);
+          if (value.trim() === "" && onSelect) {
+            onSelect(""); // ← Notifica que se borró el contenido
+          }
         }}
+        
         onFocus={() => setShowOptions(true)}
         onBlur={() => setTimeout(() => setShowOptions(false), 100)} // evita cierre instantáneo al hacer clic
         className="dropdown"

@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import unicauca.edu.co.sga.evaluation_service.domain.enums.GeneralEnums;
 
 import java.util.Set;
 
@@ -13,12 +14,13 @@ import java.util.Set;
 @NoArgsConstructor
 @Builder
 public class Rubric {
-    private Long id;
-    private String name;
-    private String study_objective;
-    private String competence;
+    private Long idRubrica;
+    private String nombreRubrica;
+    private String objetivoEstudio;
+    private int notaRubrica;
     private Set<Long> subject;
-    private Set<Long> ra;
-    private Set<Long> criteria;
+    private Long ra;
+    private Set<Long> criterios;
+    private GeneralEnums.status status;
     private Set<Long> evaluation;
 }

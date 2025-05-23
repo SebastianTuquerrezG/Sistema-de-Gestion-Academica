@@ -4,13 +4,19 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import unicauca.edu.co.sga.evaluation_service.domain.enums.GeneralEnums;
+
+import java.util.Set;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 public class RubricRequestDTO {
-    private String name;
-    private String study_objective;
-    private String competence;
+    private Long idRubrica;
+    private String nombreRubrica;
+    private String objetivoEstudio;
+    private int notaRubrica;
+    private Long ra_id;
+    private GeneralEnums.status status;
 }

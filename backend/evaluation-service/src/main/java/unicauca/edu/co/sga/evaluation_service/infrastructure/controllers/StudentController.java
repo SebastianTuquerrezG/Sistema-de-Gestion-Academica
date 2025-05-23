@@ -18,6 +18,8 @@ import java.util.Optional;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/students")
+@CrossOrigin(value = "*",
+        methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE})
 public class StudentController {
     private final StudentPort studentPort;
 
@@ -87,6 +89,15 @@ public class StudentController {
         List<StudentResponseDTO> students = studentPort.getStudentsByIdentificationType(type);
         if (students.isEmpty()) {
             throw new NotFoundException("No students found with identification type: " + type);
+        }
+        return ResponseEntity.ok(students);
+    }
+    
+    @GetMapping("/courseAndPeriod/{courseId}/{period}")
+    public ResponseEntity<List<StudentResponseDTO>> getStudentsByCourseAndPeriod(@PathVariable Long courseId, @PathVariable String period){
+        List<StudentResponseDTO> students = studentPort.getStudentsByCourseAndPeriod(courseId, period);
+        if (students.isEmpty()) {
+            throw new NotFoundException("No students found for course " + courseId + " and period " + period);
         }
         return ResponseEntity.ok(students);
     }

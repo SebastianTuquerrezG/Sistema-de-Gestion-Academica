@@ -14,6 +14,6 @@ import java.util.Date;
 public class RubricResponseViewDTO {
 
     private String nameRubric;
-    private Date created_at;
+    //private Date created_at;
 
 }

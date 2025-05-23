@@ -17,6 +17,8 @@ import java.util.Optional;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/enroll")
+@CrossOrigin(value = "*",
+        methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE})
 public class EnrollController {
     private final EnrollPort enrollPort;
 
@@ -34,11 +36,12 @@ public class EnrollController {
 
     @PostMapping
     public ResponseEntity<EnrollResponseDTO> createEnroll(@Valid @RequestBody EnrollRequestDTO enroll){
-        List<EnrollResponseDTO> existingSemester = enrollPort.getEnrollsBySemester(enroll.getSemester());
-        if (existingSemester.isEmpty()){
-            return ResponseEntity.status(HttpStatus.CREATED).body(enrollPort.saveEnroll(enroll));
+        boolean exists = enrollPort.existsByStudentIdAndCourseIdAndSemester(enroll.getStudent(), enroll.getCourse(), enroll.getSemester());
+        if (exists) {
+            throw new AlreadyExistException("Enroll for student ID " + enroll.getStudent() + " in course ID " + enroll.getCourse() + " for semester " + enroll.getSemester() + " already exists.");
         }
-        throw new AlreadyExistException("Enroll with ID " + existingSemester.getFirst().getId() + " already exist.");
+        EnrollResponseDTO createdEnroll = enrollPort.saveEnroll(enroll);
+        return new ResponseEntity<>(createdEnroll, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")

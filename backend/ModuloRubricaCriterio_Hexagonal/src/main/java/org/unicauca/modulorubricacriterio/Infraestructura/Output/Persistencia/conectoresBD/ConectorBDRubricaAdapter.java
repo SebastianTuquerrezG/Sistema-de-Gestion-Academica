@@ -88,6 +88,7 @@ public class ConectorBDRubricaAdapter implements IConectorBDRubricaPort {
         //Para Guardar rúbricas duplicadas
         if(numRubricasConNombre >= 1) objRubricaEntity.setNombreRubrica(objRubrica.getNombreRubrica()+" ("+numRubricasConNombre+")");
 
+
         objRubricaEntity.setSubject(objMateriaEntity);
         objRubricaEntity.setRa(objRAEntity);
 
@@ -191,6 +192,7 @@ public class ConectorBDRubricaAdapter implements IConectorBDRubricaPort {
             }
         }
 
+
     // Eliminar criterios sobrantes
     if (rubricaEncontrada.getCriterios().size() > objRubricaEntity.getCriterios().size()) {
         rubricaEncontrada.getCriterios().subList(objRubricaEntity.getCriterios().size(),rubricaEncontrada.getCriterios().size()).clear();
@@ -201,6 +203,7 @@ public class ConectorBDRubricaAdapter implements IConectorBDRubricaPort {
         rubricaEncontrada.setNotaRubrica(objRubrica.getNotaRubrica());
         rubricaEncontrada.setObjetivoEstudio(objRubrica.getObjetivoEstudio());
         rubricaEncontrada.setRa(objRubricaEntity.getRa());
+
 
         objRubricaActualizada = this.rubricaRepository.save(rubricaEncontrada);
         Rubrica rubricaActualizadaReturn = this.rubricaMapper.map(objRubricaActualizada, Rubrica.class);

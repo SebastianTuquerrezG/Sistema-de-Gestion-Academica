@@ -2,29 +2,35 @@ package unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.entiti
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Table(name = "criteria")
+@Table(name = "Criterio")
 public class CriteriaEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "criteria_id", nullable = false, unique = true, updatable = false)
-    private Long id;
+    @Column(name = "id_criterio", nullable = false, unique = true, updatable = false)
+    private Long idCriterio;
 
-    @Column(nullable = false, length = 300)
-    private String description;
+    @Column(nullable = false, length = 500)
+    private String crfDescripcion;
 
     @Column(nullable = false)
-    private float percentage;
+    private Float crfPorcentaje;
+
+    @Column
+    private Float crfNota;
+
+    @Column(length = 500)
+    private String crfComentario;
 
     /*@OneToMany(mappedBy = "criteria", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
@@ -33,8 +39,9 @@ public class CriteriaEntity {
     private Set<RubricEntity> rubric;*/
 
     @ManyToOne
-    @JoinColumn(name = "rubric_id")
+    @JoinColumn(name = "id_rubrica")
     @JsonBackReference
+    @JsonProperty("rubric")
     private RubricEntity rubric;
 
     /*@ManyToOne
@@ -44,9 +51,9 @@ public class CriteriaEntity {
     @EqualsAndHashCode.Exclude
     private PerformanceEntity performanceLevel;*/
 
-    @OneToMany(mappedBy = "criterio", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "criterio", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JsonManagedReference
-    private List<PerformanceEntity> levels;
+    private List<PerformanceEntity> niveles;
 
 
 }

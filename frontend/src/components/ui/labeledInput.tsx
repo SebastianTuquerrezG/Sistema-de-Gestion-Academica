@@ -11,10 +11,11 @@ interface LabeledInputProps extends React.InputHTMLAttributes<HTMLInputElement> 
 }
 
 const LabeledInput = forwardRef<HTMLInputElement, LabeledInputProps>(
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     ({ label, id, placeholder, required = false, type = "text", ...props }, ref) => {
         return (
             <div className="flex flex-col gap-2">
-                <Label htmlFor={id} required={required}>{label}</Label>
+                <Label htmlFor={id}>{label}</Label>
                 {type === "password" ? (
                     <PasswordInput id={id} placeholder={placeholder} ref={ref} {...props} />
                 ) : type === "email" ? (
