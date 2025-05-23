@@ -6,7 +6,9 @@ interface ExportarExcelButtonProps {
   estadisticas: any;
 }
 
-const ExportarExcelButton: React.FC<ExportarExcelButtonProps> = ({ estadisticas }) => {
+const ExportarExcelButton: React.FC<ExportarExcelButtonProps> = ({
+  estadisticas,
+}) => {
   const handleExport = () => {
     // 1. Tarjetas
     const resumen = [
@@ -19,10 +21,12 @@ const ExportarExcelButton: React.FC<ExportarExcelButtonProps> = ({ estadisticas 
     ];
 
     // 2. Promedio General
-    const promedioGeneral = estadisticas.promedioGeneral.map((valor: number, idx: number) => ({
-      Item: idx + 1,
-      Promedio: valor,
-    }));
+    const promedioGeneral = estadisticas.promedioGeneral.map(
+      (valor: number, idx: number) => ({
+        Item: idx + 1,
+        Promedio: valor,
+      })
+    );
 
     // 3. Promedio por Criterio
     const promedioPorCriterio = estadisticas.criterios.map((c: any) => ({
@@ -42,39 +46,47 @@ const ExportarExcelButton: React.FC<ExportarExcelButtonProps> = ({ estadisticas 
 
     // Crear libro de Excel
     const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(resumen), "Resumen");
-    XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(promedioGeneral), "Promedio General");
-    XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(promedioPorCriterio), "Promedio por Criterio");
-    XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(histogramas), "Histogramas");
+    XLSX.utils.book_append_sheet(
+      wb,
+      XLSX.utils.aoa_to_sheet(resumen),
+      "Resumen"
+    );
+    XLSX.utils.book_append_sheet(
+      wb,
+      XLSX.utils.json_to_sheet(promedioGeneral),
+      "Promedio General"
+    );
+    XLSX.utils.book_append_sheet(
+      wb,
+      XLSX.utils.json_to_sheet(promedioPorCriterio),
+      "Promedio por Criterio"
+    );
+    XLSX.utils.book_append_sheet(
+      wb,
+      XLSX.utils.json_to_sheet(histogramas),
+      "Histogramas"
+    );
 
     // Guardar archivo
     const wbout = XLSX.write(wb, { bookType: "xlsx", type: "array" });
-    saveAs(new Blob([wbout], { type: "application/octet-stream" }), "estadisticas_rubricas.xlsx");
+    saveAs(
+      new Blob([wbout], { type: "application/octet-stream" }),
+      "estadisticas_rubricas.xlsx"
+    );
   };
 
   return (
     <button
+      type="button"
       onClick={handleExport}
-      style={{
-        background: "#1db954",
-        color: "#fff",
-        border: "none",
-        borderRadius: 8,
-        padding: "10px 24px",
-        fontWeight: 700,
-        fontSize: 16,
-        cursor: "pointer",
-        marginTop: 24,
-        display: "flex",
-        alignItems: "center",
-        gap: 8,
-        boxShadow: "0 2px 8px rgba(44,62,80,0.07)",
-      }}
+      className="bg-green-600 hover:bg-green-700 text-white rounded-lg px-6 py-2 font-semibold flex items-center gap-2 shadow-md"
     >
-      <span className="material-symbols-outlined" style={{ fontSize: 22 }}>download</span>
+      <span className="material-symbols-outlined" style={{ fontSize: 22 }}>
+        download
+      </span>
       Exportar a Excel
     </button>
   );
 };
 
-export default ExportarExcelButton; 
+export default ExportarExcelButton;
