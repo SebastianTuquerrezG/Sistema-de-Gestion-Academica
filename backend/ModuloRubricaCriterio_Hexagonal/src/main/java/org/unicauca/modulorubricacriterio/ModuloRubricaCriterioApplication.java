@@ -91,16 +91,16 @@ public class ModuloRubricaCriterioApplication implements CommandLineRunner {
         this.objRubricaRepository.saveAll(listaRubricas);
 
         List<CriterioEntity> listaCriterios = new ArrayList<>();
-        CriterioEntity criterio1 = new CriterioEntity(rubrica1, "Cumple con los requisitos del proyecto", 0.3f, 0f, "Comentario 1", null);
-        CriterioEntity criterio2 = new CriterioEntity(rubrica5, "Cumple con los estándares de calidad", 0.3f, 0f, "Comentario 2", null);
-        CriterioEntity criterio3 = new CriterioEntity(rubrica2, "Cumple con los plazos establecidos", 0.4f, 0f, "Comentario 3", null);
-        CriterioEntity criterio4 = new CriterioEntity(rubrica2, "Cumple con los requisitos del proyecto", 0.3f, 0f, "Comentario 4", null);
-        CriterioEntity criterio5 = new CriterioEntity(rubrica1, "Cumple con los estándares de calidad", 0.3f, 0f, "Comentario 5", null);
-        CriterioEntity criterio6 = new CriterioEntity(rubrica2, "Cumple con los plazos establecidos", 0.4f, 0f, "Comentario 6", null);
-        CriterioEntity criterio7 = new CriterioEntity(rubrica4, "Cumple con los requisitos del proyecto", 0.3f, 0f, "Comentario 7", null);
-        CriterioEntity criterio8 = new CriterioEntity(rubrica3, "Cumple con los estándares de calidad", 0.3f, 0f, "Comentario 8", null);
-        CriterioEntity criterio9 = new CriterioEntity(rubrica3, "Cumple con los plazos establecidos", 0.4f, 0f, "Comentario 9", null);
-        CriterioEntity criterio10 = new CriterioEntity(rubrica4, "Cumple con los requisitos del proyecto", 0.3f, 0f, "Comentario 10", null);
+        CriterioEntity criterio1 = new CriterioEntity(rubrica1, "Cumple con los requisitos del proyecto", 30, 0f, "Comentario 1: El proyecto cumple parcialmente con los requisitos establecidos.", null);
+        CriterioEntity criterio2 = new CriterioEntity(rubrica5, "Cumple con los estándares de calidad", 30, 0f, "Comentario 2: El proyecto muestra un nivel básico de calidad, pero algunos estándares clave no se cumplen.", null);
+        CriterioEntity criterio3 = new CriterioEntity(rubrica2, "Presentación y documentación del proyecto", 40, 0f, "Comentario 3: La presentación es clara, pero la documentación necesita mejoras significativas", null);
+        CriterioEntity criterio4 = new CriterioEntity(rubrica2, "Trabajo en equipo y colaboración", 30, 0f, "Comentario 4: El equipo ha trabajado de forma efectiva, aunque la colaboración podría mejorar en algunos aspectos", null);
+        CriterioEntity criterio5 = new CriterioEntity(rubrica1, "Claridad en la documentación", 30, 0f, "Comentario 5: El equipo ha trabajado de forma efectiva, aunque la colaboración podría mejorar en algunos aspectos", null);
+        CriterioEntity criterio6 = new CriterioEntity(rubrica2, "Cumple con los plazos establecidos", 40, 0f, "Comentario 6: El equipo ha trabajado de forma efectiva, aunque la colaboración podría mejorar en algunos aspectos", null);
+        CriterioEntity criterio7 = new CriterioEntity(rubrica4, "Cumple con los requisitos del proyecto", 30, 0f, "Comentario 7: El equipo ha trabajado de forma efectiva, aunque la colaboración podría mejorar en algunos aspectos", null);
+        CriterioEntity criterio8 = new CriterioEntity(rubrica3, "Cumple con los estándares de calidad", 30, 0f, "Comentario 8: El equipo ha trabajado de forma efectiva, aunque la colaboración podría mejorar en algunos aspectos", null);
+        CriterioEntity criterio9 = new CriterioEntity(rubrica3, "Cumple con los plazos establecidos", 40, 0f, "Comentario 9: El equipo ha trabajado de forma efectiva, aunque la colaboración podría mejorar en algunos aspectos", null);
+        CriterioEntity criterio10 = new CriterioEntity(rubrica4, "Cumple con los requisitos del proyecto", 30, 0f, "Comentario 10: El equipo ha trabajado de forma efectiva, aunque la colaboración podría mejorar en algunos aspectos", null);
 
         listaCriterios.add(criterio1);
         listaCriterios.add(criterio2);
@@ -116,11 +116,11 @@ public class ModuloRubricaCriterioApplication implements CommandLineRunner {
 
         // Crear niveles y asociarlos a los criterios
         List<NivelEntity> listaNiveles = new ArrayList<>();
-        NivelEntity nivel1 = new NivelEntity(criterio1, "Nivel 1", "0-1");
-        NivelEntity nivel2 = new NivelEntity(criterio1, "Nivel 2", "1-2");
-        NivelEntity nivel3 = new NivelEntity(criterio1, "Nivel 3", "2-3");
-        NivelEntity nivel4 = new NivelEntity(criterio2, "Nivel 1", "3-4");
-        NivelEntity nivel5 = new NivelEntity(criterio2, "Nivel 2", "4-5");
+        NivelEntity nivel1 = new NivelEntity(criterio1, "No se cumplen los requisitos básicos del proyecto.", "0-1");
+        NivelEntity nivel2 = new NivelEntity(criterio1, "Se cumplen algunos de los requisitos, pero hay áreas clave que no están completas.", "1-2");
+        NivelEntity nivel3 = new NivelEntity(criterio1, "Todos los requisitos del proyecto están cumplidos satisfactoriamente.", "2-3");
+        NivelEntity nivel4 = new NivelEntity(criterio2, "La presentación es desordenada, y la documentación está incompleta", "3-4");
+        NivelEntity nivel5 = new NivelEntity(criterio2, "La presentación es aceptable, pero la documentación está parcialmente desarrollada.", "4-5");
 
         listaNiveles.add(nivel1);
         listaNiveles.add(nivel2);

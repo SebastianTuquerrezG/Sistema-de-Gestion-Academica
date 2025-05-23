@@ -12,7 +12,7 @@ public class Criterio {
     private Long idCriterio;
     private Rubrica rubrica;
     private String crfDescripcion;
-    private Float crfPorcentaje;
+    private Integer crfPorcentaje;
     private Float crfNota;
     private String crfComentario;
     private List<Nivel> niveles;

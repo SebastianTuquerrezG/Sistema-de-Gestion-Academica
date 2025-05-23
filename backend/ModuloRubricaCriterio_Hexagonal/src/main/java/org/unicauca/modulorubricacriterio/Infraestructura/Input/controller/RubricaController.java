@@ -5,7 +5,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.unicauca.modulorubricacriterio.Aplicación.Input.IGestionRubricaPort;
 import org.unicauca.modulorubricacriterio.Dominio.Modelos.Rubrica;
+import org.unicauca.modulorubricacriterio.Dominio.Modelos.Materia;
 import org.unicauca.modulorubricacriterio.Infraestructura.Input.dtoPeticion.RubricaDTOPeticion;
+import org.unicauca.modulorubricacriterio.Infraestructura.Input.dtorespuesta.MateriaDTORespuesta;
 import org.unicauca.modulorubricacriterio.Infraestructura.Input.dtorespuesta.RubricaDTORespuesta;
 import org.unicauca.modulorubricacriterio.Infraestructura.Input.mappers.RubricaMapperInfraDominio;
 
@@ -80,6 +82,14 @@ public class RubricaController {
         RubricaDTORespuesta objRubrica = this.objRubricaMapper.mapRubricaToDto(objRubricaActualizado);
         // objRubrica.setIdRubrica("IS10"+objRubricaActualizado.getIdRubrica());
         ResponseEntity<RubricaDTORespuesta>response=new ResponseEntity<>(objRubrica, HttpStatus.OK);
+        return response;
+    }
+
+    @GetMapping("/rubricas/materias")
+    public ResponseEntity<List<MateriaDTORespuesta>>getAllMaterias(){
+        List<Materia> lista=this.rubricaService.consultarMaterias();
+        List<MateriaDTORespuesta> listaDTO = objRubricaMapper.mapMateriaListToDtoList(lista);
+        ResponseEntity<List<MateriaDTORespuesta>>response=new ResponseEntity<>(listaDTO, HttpStatus.OK);
         return response;
     }
 
