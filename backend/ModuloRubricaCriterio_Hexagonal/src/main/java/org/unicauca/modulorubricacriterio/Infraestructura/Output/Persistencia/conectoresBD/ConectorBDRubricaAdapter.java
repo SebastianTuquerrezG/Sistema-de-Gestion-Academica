@@ -9,6 +9,7 @@ import org.modelmapper.TypeToken;
 import org.springframework.stereotype.Service;
 import org.unicauca.modulorubricacriterio.Aplicacion.Output.IConectorBDRubricaPort;
 
+import org.unicauca.modulorubricacriterio.Dominio.Modelos.Materia;
 import org.unicauca.modulorubricacriterio.Dominio.Modelos.Rubrica;
 import org.unicauca.modulorubricacriterio.Infraestructura.Fachada.exception.exceptionOwn.CambioInvalidoException;
 import org.unicauca.modulorubricacriterio.Infraestructura.Fachada.exception.exceptionOwn.EntidadNoExisteException;
@@ -68,9 +69,7 @@ public class ConectorBDRubricaAdapter implements IConectorBDRubricaPort {
                     criterio.getNiveles().forEach(nivel -> nivel.setIdCriterio(criterio.getIdCriterio()));
                 }
             });
-
         }
-        
         return objRubrica;
     }
 
@@ -280,5 +279,13 @@ public class ConectorBDRubricaAdapter implements IConectorBDRubricaPort {
             case "DESACTIVAR" -> EstadosEnum.INACTIVO;
             default -> null;
         };
+    }
+
+    @Override
+    public List<Materia> findAllMaterias() {
+        List<MateriaEntity> listMateriaEntity = this.materiaRepository.findAll();
+        List<Materia> listMateria = this.rubricaMapper.map(listMateriaEntity, new TypeToken<List<Materia>>() {
+        }.getType());
+        return listMateria;
     }
 }

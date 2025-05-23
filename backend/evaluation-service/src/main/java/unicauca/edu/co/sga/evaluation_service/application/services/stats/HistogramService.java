@@ -1,5 +1,6 @@
 package unicauca.edu.co.sga.evaluation_service.application.services.stats;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import unicauca.edu.co.sga.evaluation_service.application.dto.response.stats.CriterionHistogramDTO;
 import unicauca.edu.co.sga.evaluation_service.application.dto.response.stats.NivelDesempenoDTO;
@@ -12,13 +13,10 @@ import java.util.List;
 import java.util.Map;
 //BORRAR
 @Service
+@RequiredArgsConstructor
 public class HistogramService {
 
     private final EvaluationRepository evaluationRepository;
-
-    public HistogramService(EvaluationRepository evaluationRepository) {
-        this.evaluationRepository = evaluationRepository;
-    }
 
 
     /*public List<CriterionHistogramDTO> getHistogram(Long subjectId, Long courseId, Long rubricId, String period) {

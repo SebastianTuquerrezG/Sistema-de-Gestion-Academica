@@ -4,9 +4,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-import unicauca.edu.co.sga.evaluation_service.application.dto.response.stats.HistogramRowDTO;
 import unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.entities.EvaluationEntity;
-import unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.repositories.stats.CriterioHistogramaRepository;
 import unicauca.edu.co.sga.evaluation_service.application.dto.response.stats.EvaluationStats;
 
 import java.math.BigDecimal;

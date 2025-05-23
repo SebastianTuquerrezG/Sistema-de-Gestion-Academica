@@ -2,18 +2,17 @@ package org.unicauca.modulorubricacriterio.Dominio.Services;
 
 import java.util.List;
 
+import lombok.RequiredArgsConstructor;
 import org.unicauca.modulorubricacriterio.Aplicacion.Input.IGestionRubricaPort;
 import org.unicauca.modulorubricacriterio.Aplicacion.Output.IConectorBDRubricaPort;
+import org.unicauca.modulorubricacriterio.Dominio.Modelos.Materia;
 import org.unicauca.modulorubricacriterio.Dominio.Modelos.Rubrica;
 import org.unicauca.modulorubricacriterio.Infraestructura.Input.validacionEstados.EstadosEnum;
 
+@RequiredArgsConstructor
 public class GestionRubricasAdapter implements IGestionRubricaPort{
 
     private final IConectorBDRubricaPort conectorBDRubricaPort;
-
-    public GestionRubricasAdapter(IConectorBDRubricaPort objConectorBDRubricaPort) {
-        this.conectorBDRubricaPort = objConectorBDRubricaPort;
-    }
     
     @Override
     public Rubrica consultarRubrica(Long Id) {
@@ -46,4 +45,8 @@ public class GestionRubricasAdapter implements IGestionRubricaPort{
         return conectorBDRubricaPort.deleteRubric(Id);
     }
 
+    @Override
+    public List<Materia> consultarMaterias() {
+        return this.conectorBDRubricaPort.findAllMaterias();
+    }
 }

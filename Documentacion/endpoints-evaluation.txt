@@ -35,5 +35,3 @@ http://localhost:8080/calification-register endpoints de calification-register [
 http://localhost:8080/calification-register/${id} endpoints de calification-register [get, put]
 http://localhost:8080/calification-register/level/${level} endpoints de calification-register (Trae por Nivel) [get]
 http://localhost:8080/calification-register/evaluation/${evaluationid} endpoints de calification-register (Trae por Evaluación) [get]
-
-

@@ -25,7 +25,7 @@ public class CriterioEntity {
 
     @Column(length = 500)
     private String crfDescripcion;
-    private Float crfPorcentaje;
+    private Integer crfPorcentaje;
     private Float crfNota;
 
     @Column(length = 500)
@@ -34,7 +34,7 @@ public class CriterioEntity {
     @OneToMany(mappedBy = "criterio", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<NivelEntity> niveles;
 
-    public CriterioEntity(RubricaEntity rubrica, String descripcion, float porcentaje, float nota, String comentario, List<NivelEntity> niveles) {
+    public CriterioEntity(RubricaEntity rubrica, String descripcion, Integer porcentaje, float nota, String comentario, List<NivelEntity> niveles) {
         this.rubrica = rubrica;
         this.crfDescripcion = descripcion;
         this.crfPorcentaje = porcentaje;

@@ -1,5 +1,6 @@
 package unicauca.edu.co.sga.evaluation_service.infrastructure.controllers.stats;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -9,15 +10,10 @@ import unicauca.edu.co.sga.evaluation_service.application.dto.response.stats.*;
 import unicauca.edu.co.sga.evaluation_service.application.ports.StatsPort;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/stats")
 public class StatsController {
-
-
     private final StatsPort statsPort;
-
-    public StatsController(StatsPort statsPort) {
-        this.statsPort = statsPort;
-    }
 
     @PostMapping("/by-rubric")
     @ResponseStatus(HttpStatus.CREATED)

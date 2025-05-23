@@ -2,6 +2,7 @@ package org.unicauca.modulorubricacriterio.Aplicacion.Input;
 
 import java.util.List;
 
+import org.unicauca.modulorubricacriterio.Dominio.Modelos.Materia;
 import org.unicauca.modulorubricacriterio.Dominio.Modelos.Rubrica;
 
 public interface IGestionRubricaPort {
@@ -17,4 +18,6 @@ public interface IGestionRubricaPort {
      Rubrica editarEstadoRubrica(Long id, String objPRubrica);/*<!Trata de cambiar el estado de una rúbrica de ACTIVO a INACTIVO y viceversa*/
     
      Rubrica eliminarRubrica(Long Id);/*<!Elimina una rúbrica*/
+
+     List<Materia> consultarMaterias();/*<!Consulta una lista de materias*/
 }

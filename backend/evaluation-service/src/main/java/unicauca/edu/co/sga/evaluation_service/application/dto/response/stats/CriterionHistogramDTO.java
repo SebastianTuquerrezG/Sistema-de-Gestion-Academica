@@ -4,7 +4,7 @@ import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
+
 //BORRAR
 @Data
 @Builder
@@ -15,6 +15,8 @@ import java.util.Map;
 public class CriterionHistogramDTO {
     private Long idCriterio;
     private String descripcion;
+    @Setter
+    @Getter
     private List<NivelDesempenoDTO> niveles;
 
     public CriterionHistogramDTO(Long idCriterio, String descripcion) {
@@ -22,14 +24,5 @@ public class CriterionHistogramDTO {
         this.descripcion = descripcion;
         this.niveles = new ArrayList<>();
     }
-
-    public List<NivelDesempenoDTO> getNiveles() {
-        return niveles;
-    }
-
-    public void setNiveles(List<NivelDesempenoDTO> niveles) {
-        this.niveles = niveles;
-    }
-
 }
 

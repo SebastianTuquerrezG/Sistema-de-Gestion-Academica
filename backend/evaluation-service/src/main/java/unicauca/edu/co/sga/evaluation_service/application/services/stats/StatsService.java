@@ -1,5 +1,6 @@
 package unicauca.edu.co.sga.evaluation_service.application.services.stats;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import unicauca.edu.co.sga.evaluation_service.application.dto.response.stats.CourseStatsDTO;
 import unicauca.edu.co.sga.evaluation_service.application.dto.response.stats.FilterStatsDTO;
@@ -14,14 +15,10 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class StatsService implements StatsPort{
     private final EvaluationRepository evaluationRepository;
     private final StatsRepository statsRepository;
-
-    public StatsService(StatsRepository statsRepository, EvaluationRepository evaluationRepository) {
-        this.statsRepository = statsRepository;
-        this.evaluationRepository = evaluationRepository;
-    }
 
     @Override
     public CourseStatsDTO getStatsByRubric(FilterStatsDTO filter) {
@@ -37,7 +34,7 @@ public class StatsService implements StatsPort{
         }
 
         List<Double> values = evaluations.stream()
-                .map(e -> e.getScore().doubleValue())
+                .map(e -> e.score().doubleValue())
                 .sorted()
                 .toList();
 
@@ -47,7 +44,7 @@ public class StatsService implements StatsPort{
         double min = values.get(0);
         double max = values.get(values.size() - 1);
 
-        String raName = evaluations.get(0).getRaName();
+        String raName = evaluations.get(0).raName();
 
         CourseStatsDTO dto = new CourseStatsDTO();
         dto.setRaName(raName);
