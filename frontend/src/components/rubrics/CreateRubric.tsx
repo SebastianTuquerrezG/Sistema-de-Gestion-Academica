@@ -229,6 +229,8 @@ export default function CreateRubric()
         newRows[rowIndex].crfComentario = value;
         setRows(newRows);
     };
+    const [materia, setMateria] = useState("");
+
 
     const addRow = () => {
         if (rows.length >= 10) {
@@ -416,7 +418,19 @@ export default function CreateRubric()
                         </div>
                         <div className="grid w-full max-w-sm items-center gap-1.5">
                             <Label htmlFor="materia">Materia</Label>
-                            <Input id="materia" placeholder="Nombre de la materia" />
+                            <select
+                                id="materia"
+                                value={materia}
+                                onChange={(e) => setMateria(e.target.value)}
+                                className="w-full rounded-md border px-3 py-2 text-sm"
+                            >
+                                <option value="">Seleccione una materia</option>
+                                <option value="Estructura de Lenguajes">Estructura de Lenguajes</option>
+                                <option value="Ingenieria de Software">Ingenieria de Software</option>
+                                <option value="Sistemas Operativos">Sistemas Operativos</option>
+                                <option value="Estadistica y Probabilidad">Estadistica y Probabilidad</option>
+                                <option value="Analisis Numerico">Analisis Numerico</option>
+                            </select>
                         </div>
                         <div className="grid w-full max-w-sm items-center gap-1.5">
                             <Label htmlFor="notaRubrica" className="whitespace-nowrap">Nota Máxima Rúbrica</Label>
