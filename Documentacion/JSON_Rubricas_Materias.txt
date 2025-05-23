@@ -1,0 +1,22 @@
+[//Respuesta
+    {
+        "idMateria": 1,
+        "name": "Desarrollo de Software"
+    },
+    {
+        "idMateria": 2,
+        "name": "Programación Avanzada"
+    },
+    {
+        "idMateria": 3,
+        "name": "Arquitectura de Software"
+    },
+    {
+        "idMateria": 4,
+        "name": "Ingeniería de Software"
+    },
+    {
+        "idMateria": 5,
+        "name": "Pruebas de Software"
+    }
+]

@@ -2,29 +2,38 @@
 //Petición
 {
     "crfDescripcion":"Descripcion de criterio",
-    "crfPorcentaje":1.3,
+    "crfPorcentaje":30,
     "crfNota":5,
     "crfComentario":"Le faltan cosas",
     "rubrica_id":1
 }
 
 
- {//Respuesta
-        "idCriterio": 2,
-        "crfDescripcion": "Cumple con los estándares de calidad",
-        "crfPorcentaje": 0.3,
-        "crfNota": 0.0,
-        "crfComentario": "Comentario 2",
-        "niveles": [
-            {
-                "idNivel": 4,
-                "nivelDescripcion": "Nivel 1",
-                "rangoNota": "3-4"
-            },
-            {
-                "idNivel": 5,
-                "nivelDescripcion": "Nivel 2",
-                "rangoNota": "4-5"
-            }
-        ]
-    },
+{//Respuesta
+    "idRubrica": 1,
+    "idCriterio": 1,
+    "crfDescripcion": "Cumple con los requisitos del proyecto",
+    "crfPorcentaje": 30,
+    "crfNota": 0.0,
+    "crfComentario": "Comentario 1: El proyecto cumple parcialmente con los requisitos establecidos.",
+    "niveles": [
+        {
+            "idNivel": 1,
+            "idCriterio": 1,
+            "nivelDescripcion": "No se cumplen los requisitos básicos del proyecto.",
+            "rangoNota": "0-1"
+        },
+        {
+            "idNivel": 2,
+            "idCriterio": 1,
+            "nivelDescripcion": "Se cumplen algunos de los requisitos, pero hay áreas clave que no están completas.",
+            "rangoNota": "1-2"
+        },
+        {
+            "idNivel": 3,
+            "idCriterio": 1,
+            "nivelDescripcion": "Todos los requisitos del proyecto están cumplidos satisfactoriamente.",
+            "rangoNota": "2-3"
+        }
+    ]
+}
