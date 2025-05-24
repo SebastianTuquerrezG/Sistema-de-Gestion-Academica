@@ -23,6 +23,7 @@ public class RubricMapper {
     public static RubricResponseDTO toDTO(Rubric model){
         return RubricResponseDTO.builder()
                 .id(model.getIdRubrica())
+                .name(model.getNombreRubrica())
                 .ra_id(model.getRa())
                 .build();
     }
