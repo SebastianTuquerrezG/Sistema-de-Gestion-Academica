@@ -23,7 +23,11 @@ public class RubricMapper {
     public static RubricResponseDTO toDTO(Rubric model){
         return RubricResponseDTO.builder()
                 .id(model.getIdRubrica())
+                .name(model.getNombreRubrica())
+                .studyObjective(model.getObjetivoEstudio())
+                .rubricScore(model.getNotaRubrica())
                 .ra_id(model.getRa())
+                .raName(model.getRaName())
                 .build();
     }
 
@@ -34,6 +38,7 @@ public class RubricMapper {
                 .objetivoEstudio(entity.getObjetivoEstudio())
                 .notaRubrica(entity.getNotaRubrica())
                 .ra(entity.getRa().getId())
+                .raName(entity.getRa().getName())
 //                .competence(entity.getCompetence())
                 .subject(null)
                 .evaluation(null)

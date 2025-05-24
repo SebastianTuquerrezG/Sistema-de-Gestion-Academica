@@ -29,6 +29,12 @@ const Sidebar: React.FC = () => {
                     <span className="title5">Evaluaciones</span>
                     </Link>
                 </li>
+                <li className="menu-item">
+                    <Link to={"/estadisticas"}>
+                    <span className="material-symbols-outlined">chart_line</span>
+                    <span className="title5">Estadísticas</span>
+                    </Link>
+                </li>
             </ul>
         </aside>
     );

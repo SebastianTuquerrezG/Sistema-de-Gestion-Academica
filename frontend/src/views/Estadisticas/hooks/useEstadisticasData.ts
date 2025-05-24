@@ -23,7 +23,7 @@ export const useEstadisticasData = () => {
   useEffect(() => {
     const materia = materias.find((m) => m.name === selectedMateria);
     if (materia) {
-      getRubricsBySubjectId(materia.id).then(setRubricas);
+      getRubricsBySubjectId(Number(materia.id)).then(setRubricas);
     } else {
       setRubricas([]);
     }
@@ -37,7 +37,8 @@ export const useEstadisticasData = () => {
   }, []);
 
   const handleSelectRubrica = (nombre: string) => {
-    const rubrica = rubricas.find((r) => r.nombreRubrica === nombre) || null;
+    // Buscar por ambas propiedades para compatibilidad
+    const rubrica = rubricas.find((r) => r.nombreRubrica === nombre || r.name === nombre) || null;
     setSelectedRubrica(rubrica);
     setSelectedPeriodo("");
   };

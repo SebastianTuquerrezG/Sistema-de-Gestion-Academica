@@ -16,4 +16,5 @@ public class RubricResponseDTO {
     private int rubricScore;
 
     private Long ra_id;
+    private String raName;
 }

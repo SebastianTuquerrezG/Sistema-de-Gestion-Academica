@@ -29,9 +29,14 @@ export const useEvaluationData = () => {
   useEffect(() => {
     const materia = materias.find((m) => m.name === selectedMateria);
     if (materia) {
-      getRubricsBySubjectId(materia.id).then(setRubricas);
+      getRubricsBySubjectId(materia.id)
+        .then((data) => {
+          setRubricas(data);
+          console.log("Contenido retornado (string) en el hook:", JSON.stringify(data, null, 2));
+        });
     } else {
       setRubricas([]);
+      console.log("rubricas")
     }
     setSelectedRubrica(null);
     setSelectedPeriodo("");
@@ -75,7 +80,7 @@ export const useEvaluationData = () => {
   }, [selectedEstudiante, selectedPeriodo]);
 
   const handleSelectRubrica = (nombre: string) => {
-    const rubrica = rubricas.find((r) => r.nombreRubrica === nombre) || null;
+    const rubrica = rubricas.find((r) => r.name === nombre) || null;
     setSelectedRubrica(rubrica);
     setSelectedPeriodo("");
     setSelectedEstudiante("");

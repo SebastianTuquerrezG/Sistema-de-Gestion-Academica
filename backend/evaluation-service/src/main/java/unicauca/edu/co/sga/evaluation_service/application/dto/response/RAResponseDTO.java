@@ -11,4 +11,5 @@ import lombok.NoArgsConstructor;
 @Builder
 public class RAResponseDTO {
     private Long id;
+    private String name;
 }

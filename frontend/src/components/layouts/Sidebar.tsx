@@ -68,6 +68,18 @@ const data = {
                 },
             ],
         },
+        {
+            title: "Estadísticas",
+            url: "#",
+            icon: PieChart,
+            items: [
+                {
+                    title: "Ver Estadísticas",
+                    url: "/estadisticas",
+                },
+                
+            ],
+        },
     ],
     moreOptions: [
         {

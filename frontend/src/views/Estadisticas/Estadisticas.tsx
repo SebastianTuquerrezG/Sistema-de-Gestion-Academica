@@ -10,8 +10,16 @@ import ExportarExcelButton from "./components/ExportarExcelButton";
 import ExportarPDFButton from "./components/ExportarPDFButton";
 import EstadisticasStateHandler from "./components/EstadisticasStateHandler";
 import { useEstadisticasData } from "./hooks/useEstadisticasData";
-import { getEstadisticasGenerales } from "./utils/mockEstadisticasService";
+import { 
+  getStatsByRubric, 
+  getHistogramByCriteria,
+  getCriteriaAverages,
+  HistogramByCriteriaDTO,
+  CriteriaAverageDTO
+} from "../../services/estadisticasService";
+import { CourseStatsDTO } from "./types";
 import "../../assets/css/estadisticas.css";
+import { CourseStatsDTO as CourseStatsDTOType } from "./types/index.ts"; // o la ruta relativa correcta
 
 const Estadisticas: React.FC = () => {
   const {
@@ -26,7 +34,9 @@ const Estadisticas: React.FC = () => {
     handleSelectRubrica,
   } = useEstadisticasData();
 
-  const [estadisticas, setEstadisticas] = useState<any>(null);
+  const [estadisticas, setEstadisticas] = useState<CourseStatsDTO | null>(null);
+  const [histogramas, setHistogramas] = useState<HistogramByCriteriaDTO[]>([]);
+  const [promediosCriterios, setPromediosCriterios] = useState<CriteriaAverageDTO[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const printRef = useRef<HTMLDivElement | null>(null);
@@ -35,8 +45,30 @@ const Estadisticas: React.FC = () => {
     try {
       setLoading(true);
       setError(null);
-      const data = await getEstadisticasGenerales({});
-      setEstadisticas(data);
+      
+      if (!selectedMateria || !selectedRubrica || !selectedPeriodo) {
+        setError("Por favor, selecciona todos los filtros necesarios");
+        return;
+      }
+
+      const filter = {
+        subjectName: selectedMateria,
+        rubricName: selectedRubrica.nombreRubrica,
+        period: selectedPeriodo
+      };
+
+      // Cargar estadísticas generales
+      const statsData = await getStatsByRubric(filter);
+      setEstadisticas(statsData as CourseStatsDTO);
+
+      // Cargar histogramas por criterio
+      const histogramData = await getHistogramByCriteria(filter);
+      setHistogramas(histogramData);
+
+      // Cargar promedios por criterio
+      const promediosData = await getCriteriaAverages(filter);
+      setPromediosCriterios(promediosData);
+
     } catch (err) {
       setError(
         "Error al cargar los datos. Por favor, inténtalo de nuevo más tarde."
@@ -48,14 +80,16 @@ const Estadisticas: React.FC = () => {
   };
 
   useEffect(() => {
-    cargarEstadisticas();
-  }, []);
+    if (selectedMateria && selectedRubrica && selectedPeriodo) {
+      cargarEstadisticas();
+    }
+  }, [selectedMateria, selectedRubrica, selectedPeriodo]);
 
-  const hasData =
+  const hasData = Boolean(
     estadisticas &&
-    (estadisticas.promedioGeneral?.length > 0 ||
-      estadisticas.criterios?.length > 0 ||
-      estadisticas.histogramas?.length > 0);
+    (estadisticas.average !== null && estadisticas.median !== null && estadisticas.standardDeviation !== null &&
+      estadisticas.maxScore !== null && estadisticas.minScore !== null && estadisticas.studentsCount !== null)
+  );
 
   return (
     <div ref={printRef} className="estadisticas-main-container">
@@ -66,10 +100,10 @@ const Estadisticas: React.FC = () => {
 
       <EstadisticasFilters
         materias={materias.map((m) => m.name)}
-        rubricas={rubricas.map((r) => r.nombreRubrica)}
+        rubricas={rubricas.map((r) => r.nombreRubrica || r.name).filter((x): x is string => Boolean(x))}
         periodos={periodos}
         materiaSeleccionada={selectedMateria}
-        rubricaSeleccionada={selectedRubrica?.nombreRubrica || ""}
+        rubricaSeleccionada={selectedRubrica?.nombreRubrica || selectedRubrica?.name || ""}
         periodoSeleccionado={selectedPeriodo}
         resultadoAprendizaje={selectedRubrica?.objetivoEstudio || ""}
         onSelectMateria={setSelectedMateria}
@@ -83,40 +117,43 @@ const Estadisticas: React.FC = () => {
         hasData={hasData}
       />
 
-      {!loading && !error && hasData && (
-        <div className="estadisticas-content-centered">
-          <EstadisticasCards
-            media={estadisticas.media}
-            mediana={estadisticas.mediana}
-            moda={estadisticas.moda}
-            desviacionEstandar={estadisticas.desviacionEstandar}
-            maximo={estadisticas.maximo}
-            minimo={estadisticas.minimo}
-          />
-          <div className="estadisticas-chart-block">
-            <PromedioGeneralChart data={estadisticas.promedioGeneral} />
+      {!loading && !error && hasData && estadisticas && (
+        <>
+          {console.log('Contenido de estadisticas:', estadisticas)}
+          <div className="estadisticas-content-centered">
+            <EstadisticasCards
+              media={estadisticas.average}
+              mediana={estadisticas.median}
+              moda={0}
+              desviacionEstandar={estadisticas.standardDeviation}
+              maximo={estadisticas.maxScore}
+              minimo={estadisticas.minScore}
+            />
+            <div style={{marginTop: 32, textAlign: 'center', color: '#888'}}>No hay datos de gráficos disponibles para esta consulta.</div>
+            <div
+              className="estadisticas-export-buttons"
+              style={{
+                display: "flex",
+                justifyContent: "flex-end",
+                alignItems: "center",
+                verticalAlign: "middle",
+                gap: 16,
+                paddingTop: 24,
+              }}
+            >
+              <ExportarExcelButton 
+                estadisticas={estadisticas} 
+                filtros={{
+                  materia: selectedMateria,
+                  rubrica: selectedRubrica?.nombreRubrica || "",
+                  periodo: selectedPeriodo,
+                  resultadoAprendizaje: selectedRubrica?.objetivoEstudio || "",
+                }}
+              />
+              <ExportarPDFButton targetRef={printRef} />
+            </div>
           </div>
-          <div className="estadisticas-chart-block">
-            <PromedioPorCriterioChart data={estadisticas.criterios} />
-          </div>
-          <div className="estadisticas-chart-block">
-            <HistogramaCriterioChart histogramas={estadisticas.histogramas} />
-          </div>
-          <div
-            className="estadisticas-export-buttons"
-            style={{
-              display: "flex",
-              justifyContent: "flex-end",
-              alignItems: "center",
-              verticalAlign: "middle",
-              gap: 16,
-              paddingTop: 24,
-            }}
-          >
-            <ExportarExcelButton estadisticas={estadisticas} />
-            <ExportarPDFButton targetRef={printRef} />
-          </div>
-        </div>
+        </>
       )}
     </div>
   );

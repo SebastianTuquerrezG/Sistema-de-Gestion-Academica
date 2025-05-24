@@ -14,8 +14,8 @@ export interface Criterio {
 }
 
 export interface Rubrica {
-  idRubrica: number;
-  nombreRubrica: string;
+  id: number;
+  name: string;
   materia: string;
   notaRubrica: number;
   objetivoEstudio: string;
