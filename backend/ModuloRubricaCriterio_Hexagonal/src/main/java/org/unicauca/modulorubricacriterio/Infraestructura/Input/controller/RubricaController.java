@@ -87,6 +87,8 @@ public class RubricaController {
     }
 
     @GetMapping("/rubricas/materias")
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN_ROLE', 'ROLE_TEACHER_ROLE', 'ROLE_COORDINATOR_ROLE', 'ROLE_STUDENT_ROLE')")
     public ResponseEntity<List<MateriaDTORespuesta>>getAllMaterias(){
         List<Materia> lista=this.rubricaService.consultarMaterias();
         List<MateriaDTORespuesta> listaDTO = objRubricaMapper.mapMateriaListToDtoList(lista);
