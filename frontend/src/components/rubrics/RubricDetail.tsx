@@ -20,6 +20,7 @@ export default function RubricDetail() {
         }
     }, [id]);
 
+
     if (!rubric) {
         return <p className="text-center text-red-500">Rúbrica no encontrada.</p>;
     }

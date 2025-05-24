@@ -35,6 +35,10 @@ const data = {
                 {
                     title: "Crear",
                     url: "/rubricas/crear",
+                },
+                {
+                    title: "Repositorio",
+                    url: "/rubricas/repositorio",
                 }
             ],
         },
