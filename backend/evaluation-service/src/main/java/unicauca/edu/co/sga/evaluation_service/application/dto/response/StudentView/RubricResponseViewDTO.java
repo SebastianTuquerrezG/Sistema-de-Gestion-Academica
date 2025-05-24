@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class RubricResponseViewDTO {
-
+    private Long idRubric;
     private String nameRubric;
    // private Date created_at;
 

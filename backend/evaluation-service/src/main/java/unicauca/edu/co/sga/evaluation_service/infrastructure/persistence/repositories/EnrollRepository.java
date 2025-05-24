@@ -45,7 +45,7 @@ public interface EnrollRepository extends JpaRepository<EnrollEntity, Long> {
     List<String> findDistinctSemestersByStudentId(@Param("studentId") Long studentId);
 
 
-    @Query("SELECT new unicauca.edu.co.sga.evaluation_service.application.dto.response.StudentView.RubricResponseViewDTO(r.nombreRubrica) " +
+    @Query("SELECT new unicauca.edu.co.sga.evaluation_service.application.dto.response.StudentView.RubricResponseViewDTO(r.idRubrica, r.nombreRubrica) " +
             "FROM EnrollEntity e " +
             "JOIN e.course c " +
             "JOIN c.subject s " +
