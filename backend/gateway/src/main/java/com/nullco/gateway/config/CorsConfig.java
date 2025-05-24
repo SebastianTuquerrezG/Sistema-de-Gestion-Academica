@@ -17,11 +17,12 @@ public class CorsConfig {
         corsConfig.addAllowedOrigin("http://127.0.0.1:5500");
         corsConfig.addAllowedOrigin("http://127.0.0.1:3000");
         corsConfig.addAllowedOrigin("http://127.0.0.1:80");
+        corsConfig.addAllowedOrigin("http://127.0.0.1");
         corsConfig.addAllowedOrigin("http://localhost:5500");
         corsConfig.addAllowedOrigin("http://localhost:3000");
         corsConfig.addAllowedOrigin("http://localhost:80");
-
         corsConfig.addAllowedOrigin("http://localhost:3000");
+        corsConfig.addAllowedOrigin("http://localhost");
         corsConfig.addAllowedMethod("*");
         corsConfig.addAllowedHeader("*");
         corsConfig.setAllowCredentials(true);
