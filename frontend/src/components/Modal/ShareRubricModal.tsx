@@ -10,23 +10,22 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Label } from "@/components/ui/label"
+import { ModalProps } from "@/interfaces/ModalProps.ts";
 
-interface props {
-    open: boolean;
-    onClose: () => void;
-    onShare: (data:{
-        email: string
-        permission: string
-        message: string
-        notifyUsers: boolean
-        createLink: boolean
-        linkPermission: string
+interface props extends ModalProps {
+    onShare: (data: {
+        email: string;
+        permission: string;
+        message: string;
+        notifyUsers: boolean;
+        createLink: boolean;
+        linkPermission: string;
     }) => void;
-    rubricName: string
-    isLoading?: boolean
-    validationErrors?: string[]
-
+    rubricName: string;
+    isLoading?: boolean;
+    validationErrors?: string[];
 }
+
 interface Colaborador {
     id: string
     name: string

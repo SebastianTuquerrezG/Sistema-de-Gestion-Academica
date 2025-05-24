@@ -4,10 +4,10 @@ import { Input } from "@/components/ui/input.tsx";
 import { Checkbox } from "@/components/ui/checkbox.tsx";
 import { Button } from "@/components/ui/button.tsx";
 import {  Copy } from "lucide-react"
+import { ModalProps } from "@/interfaces/ModalProps.ts";
 
-interface Props {
-    open: boolean;
-    onClose: () => void;
+interface Props extends ModalProps {
+
     originalName: string;
     onDuplicate: (data: {
         newName: string;

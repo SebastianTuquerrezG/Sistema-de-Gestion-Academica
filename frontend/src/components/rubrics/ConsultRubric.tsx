@@ -17,6 +17,7 @@ import ShareRubricModal from "@/components/Modal/ShareRubricModal.tsx";
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select.tsx";
 import {TableCell} from "@/components/ui/table.tsx";
 import { Badge } from "@/components/ui/badge.tsx";
+import ConfirmDeleteModal from "@/components/Modal/ConfirmDeleteModal";
 //import rubricaInfo from "@/views/Evaluaciones/rubricaInfo.tsx";
 
 type NotificationType = {
@@ -33,6 +34,8 @@ export default function ConsultarRubrica() {
     const [showDuplicateModal, setShowDuplicateModal] = useState(false);
     const [rubricToDuplicate, setRubricToDuplicate] = useState<RubricInterface | null>(null);
     const [showShareModal, setShowShareModal] = useState(false);
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [rubricToDelete, setRubricToDelete] = useState<RubricInterface | null>(null);
     /*
     useEffect(() => {
         fetch('/rubricas.json')
@@ -160,6 +163,20 @@ export default function ConsultarRubrica() {
                 return <Badge className="text-purple-500">Desconocido</Badge>;
         }
     };
+    const handleOpenDeleteModal = (rubric: RubricInterface) => {
+        setRubricToDelete(rubric);
+        setShowDeleteModal(true);
+    };
+
+
+    const handleConfirmDelete = async () => {
+        if (rubricToDelete) {
+            await handleDelete(rubricToDelete.idRubrica);
+            setRubricToDelete(null);
+            setShowDeleteModal(false);
+        }
+    };
+
     return (
         <div>
             <h2 className="title2 border-b-2 border-red-500 inline-block" style={{ color: "var(--primary-regular-color)" }}>
@@ -240,7 +257,7 @@ export default function ConsultarRubrica() {
                                             <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => handleEdit(rubric.idRubrica)}>
                                                 <Pencil className="h-4 w-4" />
                                             </Button>
-                                            <Button variant="ghost" size="icon" className="h-8 w-8 text-orange-500 hover:text-orange-600" onClick={() => handleDelete(rubric.idRubrica)}>
+                                            <Button variant="ghost" size="icon" className="h-8 w-8 text-orange-500 hover:text-orange-600" onClick={() => handleOpenDeleteModal(rubric)}>
                                                 <Trash2 className="h-4 w-4" />
                                             </Button>
                                             <Button variant="ghost" size="icon" className="h-8 w-8 text-indigo-500 hover:text-indigo-600" onClick={() => handleOpenDuplicateModal(rubric)}>
@@ -276,7 +293,14 @@ export default function ConsultarRubrica() {
                     onClose={()=>setShowShareModal(false)}
                     onShare={(data) => handleShareRubric(data)}
                     rubricName={rubricToDuplicate?.nombreRubrica || ""}
-                    />
+                />
+                <ConfirmDeleteModal
+                    open={showDeleteModal}
+                    onClose={() => setShowDeleteModal(false)}
+                    onConfirmDelete={handleConfirmDelete}
+                    rubricName={rubricToDelete?.nombreRubrica || ""}
+                />
+
             </main>
         </div>
     );
