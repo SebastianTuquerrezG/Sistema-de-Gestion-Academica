@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.unicauca.modulorubricacriterio.Aplicación.Input.IGestionRubricaPort;
 import org.unicauca.modulorubricacriterio.Aplicación.Output.IConectorBDRubricaPort;
+import org.unicauca.modulorubricacriterio.Dominio.Modelos.Materia;
 import org.unicauca.modulorubricacriterio.Dominio.Modelos.Rubrica;
 import org.unicauca.modulorubricacriterio.Infraestructura.Input.validacionEstados.EstadosEnum;
 
@@ -50,6 +51,12 @@ public class GestionRubricasAdapter implements IGestionRubricaPort{
     public Rubrica eliminarRubrica(Long Id) {
         Rubrica rubricaEliminada = conectorBDRubricaPort.deleteRubric(Id);
         return rubricaEliminada;
+    }
+
+    @Override
+    public List<Materia> consultarMaterias() {
+        List<Materia> listaMaterias = this.conectorBDRubricaPort.findAllMaterias();
+        return listaMaterias;
     }
 
 }

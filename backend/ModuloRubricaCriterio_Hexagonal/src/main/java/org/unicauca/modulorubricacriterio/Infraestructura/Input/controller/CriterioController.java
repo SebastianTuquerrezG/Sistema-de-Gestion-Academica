@@ -9,6 +9,8 @@ import org.unicauca.modulorubricacriterio.Infraestructura.Input.dtoPeticion.Crit
 import org.unicauca.modulorubricacriterio.Infraestructura.Input.dtorespuesta.CriterioDTORespuesta;
 import org.unicauca.modulorubricacriterio.Infraestructura.Input.mappers.CriterioMapperInfraDominio;
 
+import jakarta.validation.Valid;
+
 import java.util.List;
 
 
@@ -48,7 +50,7 @@ public class CriterioController {
     }
 
     @PostMapping("/criterios")
-    public ResponseEntity<CriterioDTORespuesta>save(@RequestBody CriterioDTOPeticion criterioDTO) {
+    public ResponseEntity<CriterioDTORespuesta>save(@Valid @RequestBody CriterioDTOPeticion criterioDTO) {
         Criterio objCriterioCrear = this.objCriterioMapper.mapDtoaCriterio(criterioDTO);
         Criterio objCriterioCreado = this.criterioService.crearCriterio(objCriterioCrear);
         CriterioDTORespuesta objCriterio = this.objCriterioMapper.mapCriterioToDto(objCriterioCreado);
@@ -58,7 +60,7 @@ public class CriterioController {
 
 
     @PutMapping("/criterios")
-    public ResponseEntity<CriterioDTORespuesta>update(@RequestBody CriterioDTOPeticion criterioDTO,@RequestParam("id") Long id) {
+    public ResponseEntity<CriterioDTORespuesta>update(@Valid @RequestBody CriterioDTOPeticion criterioDTO,@RequestParam("id") Long id) {
         Criterio objCriterioActualizar = this.objCriterioMapper.mapDtoaCriterio(criterioDTO);
         Criterio objCriterioActualizado = this.criterioService.modificarCriterio(id, objCriterioActualizar);
         CriterioDTORespuesta objCriterio = this.objCriterioMapper.mapCriterioToDto(objCriterioActualizado);

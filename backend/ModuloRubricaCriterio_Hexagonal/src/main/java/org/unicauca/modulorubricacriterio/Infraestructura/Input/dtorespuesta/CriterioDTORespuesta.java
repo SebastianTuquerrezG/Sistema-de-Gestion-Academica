@@ -14,7 +14,7 @@ public class CriterioDTORespuesta {
     private Long idRubrica;
     private Long idCriterio;
     private String crfDescripcion;
-    private Float crfPorcentaje;
+    private Integer crfPorcentaje;
     private Float crfNota;
     private String crfComentario;
     private List<NivelDTORespuesta> niveles;

@@ -12,7 +12,9 @@ import lombok.Data;
 public class Rubrica {
     private Long idRubrica;
     private String nombreRubrica;
-    private Long materia;
+    private Long idMateria;
+    private String nombreMateria;
+
     private int notaRubrica;
     private String objetivoEstudio;
     List<Criterio> criterios;

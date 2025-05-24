@@ -1,10 +1,15 @@
 package org.unicauca.modulorubricacriterio.Infraestructura.Fachada.exception;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.ConstraintViolationException;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.unicauca.modulorubricacriterio.Infraestructura.Fachada.exception.excepcionStructure.CodigoError;
 import org.unicauca.modulorubricacriterio.Infraestructura.Fachada.exception.excepcionStructure.Error;
 import org.unicauca.modulorubricacriterio.Infraestructura.Fachada.exception.excepcionStructure.ErrorUtils;
@@ -13,7 +18,9 @@ import org.unicauca.modulorubricacriterio.Infraestructura.Fachada.exception.exce
 import org.unicauca.modulorubricacriterio.Infraestructura.Fachada.exception.exceptionOwn.EntidadYaExisteException;
 import org.unicauca.modulorubricacriterio.Infraestructura.Fachada.exception.exceptionOwn.ReglaNegocioException;
 
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 @ControllerAdvice
 public class RestApiExceptionHandler {
@@ -75,5 +82,26 @@ public class RestApiExceptionHandler {
                                 HttpStatus.NOT_ACCEPTABLE.value())
                         .setUrl(req.getRequestURL().toString()).setMetodo(req.getMethod());
                 return new ResponseEntity<>(error, HttpStatus.NOT_ACCEPTABLE);
+        }
+
+        @ExceptionHandler(MethodArgumentNotValidException.class)
+        public ResponseEntity<Map<String, String>> handleValidationExceptions(MethodArgumentNotValidException ex) {
+                System.out.println("Retornando respuesta con los errores identificados");
+                Map<String, String> errores = new HashMap<>();
+                ex.getBindingResult().getAllErrors().forEach((error) -> {
+                        String campo = ((FieldError) error).getField();
+                        String mensajeDeError = error.getDefaultMessage();
+                        errores.put(campo, mensajeDeError);
+                });
+
+                return new ResponseEntity<Map<String, String>>(errores, HttpStatus.BAD_REQUEST);
+        }
+
+        
+        @ResponseStatus(HttpStatus.BAD_REQUEST)
+        @ExceptionHandler(ConstraintViolationException.class)
+        ResponseEntity<String> handleConstraintViolationException(ConstraintViolationException e) {
+                return new ResponseEntity<>(e.getMessage(),
+                                HttpStatus.BAD_REQUEST);
         }
 }

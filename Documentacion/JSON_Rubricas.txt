@@ -1,52 +1,49 @@
-
-
-
-{//Respuesta
-        "rubricaId": "IS102",
-        "nombreRubrica": "Evaluación de Proyecto de Software",
-        "materia": "Ingeniería de Software III",
-        "notaRubrica": 3,
-        "objetivoEstudio": "Objetivo 1",
-        "criterios": [
-            {
-                "idCriterio": 1,
-                "crfDescripcion": "Cumple con los requisitos del proyecto",
-                "crfPorcentaje": 0.3,
-                "crfNota": 0.0,
-                "crfComentario": "Comentario 1",
-                "niveles": [
-                    {
-                        "idNivel": 1,
-                        "nivelDescripcion": "Nivel 1",
-                        "rangoNota": "0-1"
-                    },
-                    {
-                        "idNivel": 2,
-                        "nivelDescripcion": "Nivel 2",
-                        "rangoNota": "1-2"
-                    },
-                    {
-                        "idNivel": 3,
-                        "nivelDescripcion": "Nivel 3",
-                        "rangoNota": "2-3"
-                    },
-                    {
-                        "idNivel": 16,
-                        "nivelDescripcion": "MEDIO",
-                        "rangoNota": "1-10"
-                    }
-                ]
-            },
-            {
-                "idCriterio": 5,
-                "crfDescripcion": "Cumple con los estándares de calidad",
-                "crfPorcentaje": 0.3,
-                "crfNota": 0.0,
-                "crfComentario": "Comentario 5",
-                "niveles": []
-            }
-        ],
-        "estado": "ACTIVO"
-},
-
+{//JSON Respuesta
+    "idRubrica": "1",
+    "nombreRubrica": "Evaluación de Proyecto de Software",
+    "nombreMateria": "Desarrollo de Software",
+    "notaRubrica": 3,
+    "objetivoEstudio": "Objetivo 1",
+    "criterios": [
+        {
+            "idRubrica": 1,
+            "idCriterio": 1,
+            "crfDescripcion": "Cumple con los requisitos del proyecto",
+            "crfPorcentaje": 30,
+            "crfNota": 0.0,
+            "crfComentario": "Comentario 1: El proyecto cumple parcialmente con los requisitos establecidos.",
+            "niveles": [
+                {
+                    "idNivel": 1,
+                    "idCriterio": 1,
+                    "nivelDescripcion": "No se cumplen los requisitos básicos del proyecto.",
+                    "rangoNota": "0-1"
+                },
+                {
+                    "idNivel": 2,
+                    "idCriterio": 1,
+                    "nivelDescripcion": "Se cumplen algunos de los requisitos, pero hay áreas clave que no están completas.",
+                    "rangoNota": "1-2"
+                },
+                {
+                    "idNivel": 3,
+                    "idCriterio": 1,
+                    "nivelDescripcion": "Todos los requisitos del proyecto están cumplidos satisfactoriamente.",
+                    "rangoNota": "2-3"
+                }
+            ]
+        },
+        {
+            "idRubrica": 1,
+            "idCriterio": 5,
+            "crfDescripcion": "Claridad en la documentación",
+            "crfPorcentaje": 30,
+            "crfNota": 0.0,
+            "crfComentario": "Comentario 5: El equipo ha trabajado de forma efectiva, aunque la colaboración podría mejorar en algunos aspectos",
+            "niveles": []
+        }
+    ],
+    "estado": "ACTIVO",
+    "raId": 1
+}
 JSON de ejemplo de la estructura de una rúbrica con criterios y niveles

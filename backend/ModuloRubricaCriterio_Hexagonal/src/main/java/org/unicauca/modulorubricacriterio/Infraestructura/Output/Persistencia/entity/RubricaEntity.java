@@ -27,7 +27,7 @@ public class RubricaEntity {
     private MateriaEntity subject;
     private int notaRubrica;
     private String objetivoEstudio;
-    @OneToMany(mappedBy = "rubrica", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "rubrica", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CriterioEntity>criterios;
 
     @Column(name = "estado")
