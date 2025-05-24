@@ -17,9 +17,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/stats")
 public class StatsController {
-<<<<<<< Updated upstream
-    private final StatsPort statsPort;
-=======
+
 
     private final StatsPort statsPort;
     private final HistogramCriteriaService histogramCriteriaService;
@@ -29,7 +27,7 @@ public class StatsController {
         this.histogramCriteriaService = histogramCriteriaService;
         this.criteriaStatsService = criteriaStatsService;
     }
->>>>>>> Stashed changes
+
 
     @PostMapping("/by-rubric")
     @ResponseStatus(HttpStatus.CREATED)

@@ -4,12 +4,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-<<<<<<< Updated upstream
-=======
 import unicauca.edu.co.sga.evaluation_service.application.dto.response.stats.CriteriaAverageDTO;
 import unicauca.edu.co.sga.evaluation_service.application.dto.response.stats.HistogramByCriteriaDTO;
-import unicauca.edu.co.sga.evaluation_service.application.dto.response.stats.HistogramRowDTO;
->>>>>>> Stashed changes
 import unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.entities.EvaluationEntity;
 import unicauca.edu.co.sga.evaluation_service.application.dto.response.stats.EvaluationStats;
 
