@@ -2,11 +2,13 @@ package unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.entiti
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.proxy.HibernateProxy;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -47,6 +49,10 @@ public class CriteriaEntity {
     @JsonBackReference("rubric-criteria")
     @JsonProperty("rubric")
     private RubricEntity rubric;
+
+    @OneToMany(mappedBy = "criterio", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference("criteria-calification")
+    private List<CalificationRegisterEntity> calificaciones = new ArrayList<>();
 
     /*@ManyToOne
     @JoinColumn(name = "performance_level_id", nullable = false, foreignKey = @ForeignKey(name = "fk_performance"))

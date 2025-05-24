@@ -11,11 +11,17 @@ import java.util.Map;
 @Setter
 @NoArgsConstructor
 public class HistogramByCriteriaDTO {
-    private String criteriaName;
-    private Map<CalificationEnums, Long> countByLevel;
+    private Long criteriaId;
+    private String criteriaDescription;
+    private Long countNivel1; // 0-2.9
+    private Long countNivel2; // 3.0-4.5
+    private Long countNivel3; // 4.6-5.0
 
-    public HistogramByCriteriaDTO(String criteriaName, Map<CalificationEnums, Long> countByLevel) {
-        this.criteriaName = criteriaName;
-        this.countByLevel = countByLevel;
+    public HistogramByCriteriaDTO(Long criteriaId, String criteriaDescription, Long countNivel1, Long countNivel2, Long countNivel3) {
+        this.criteriaId = criteriaId;
+        this.criteriaDescription = criteriaDescription;
+        this.countNivel1 = countNivel1;
+        this.countNivel2 = countNivel2;
+        this.countNivel3 = countNivel3;
     }
 }
