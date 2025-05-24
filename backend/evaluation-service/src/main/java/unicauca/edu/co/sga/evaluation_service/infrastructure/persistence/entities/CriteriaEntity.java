@@ -8,7 +8,6 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.proxy.HibernateProxy;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -52,7 +51,8 @@ public class CriteriaEntity {
 
     @OneToMany(mappedBy = "criterio", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference("criteria-calification")
-    private List<CalificationRegisterEntity> calificaciones = new ArrayList<>();
+    @ToString.Exclude
+    private List<CalificationRegisterEntity> calificaciones;
 
     /*@ManyToOne
     @JoinColumn(name = "performance_level_id", nullable = false, foreignKey = @ForeignKey(name = "fk_performance"))

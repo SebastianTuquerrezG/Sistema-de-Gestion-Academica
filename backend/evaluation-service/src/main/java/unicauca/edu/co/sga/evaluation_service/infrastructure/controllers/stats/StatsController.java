@@ -17,17 +17,9 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/stats")
 public class StatsController {
-
-
     private final StatsPort statsPort;
     private final HistogramCriteriaService histogramCriteriaService;
     private final CriteriaStatsService criteriaStatsService;
-    public StatsController(StatsPort statsPort, HistogramCriteriaService histogramCriteriaService, CriteriaStatsService criteriaStatsService) {
-        this.statsPort = statsPort;
-        this.histogramCriteriaService = histogramCriteriaService;
-        this.criteriaStatsService = criteriaStatsService;
-    }
-
 
     @PostMapping("/by-rubric")
     @ResponseStatus(HttpStatus.CREATED)
