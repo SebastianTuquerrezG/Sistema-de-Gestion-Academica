@@ -22,7 +22,7 @@ const EstadisticasFilters: React.FC<EstadisticasFiltersProps> = ({
   periodos,
   materiaSeleccionada,
   rubricaSeleccionada,
-  periodoSeleccionado,
+  /*periodoSeleccionado,*/
   resultadoAprendizaje,
   onSelectMateria,
   onSelectRubrica,
