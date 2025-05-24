@@ -27,7 +27,7 @@ export default function CreateRubric()
     const [nota, setNota] = useState<number | "">("");
 
     // Estado para guardar la nota máxima ingresada por el usuario.
-    const [notaMaxima] = useState<number | null>(null);
+    //const [notaMaxima] = useState<number | null>(null);
 
     const [levels, setLevels] = useState([
         { idNivel: 1, nivelDescripcion: "", rangoNota: "" },
@@ -81,17 +81,14 @@ export default function CreateRubric()
             { idNivel: newId, nivelDescripcion: "", rangoNota: "" }
         ];
 
-        // Recalcular rangos y preservar los existentes
-        const actualizados = handleRangosChanges(notaMaxima, nuevosLevels).map((level, index) => ({
-            ...level,
-            rangoNota: levels[index]?.rangoNota || level.rangoNota
-        }));
+        // Recalcular rangos para todos los niveles
+        const actualizados = handleRangosChanges(typeof nota === "number" ? nota : null, nuevosLevels);
 
         setLevels(actualizados);
 
         setRows(rows.map(row => ({
             ...row,
-            niveles: actualizados.map((level, index) => ({
+            niveles: nuevosLevels.map((level, index) => ({
                 ...level,
                 nivelDescripcion: row.niveles[index]?.nivelDescripcion || "",
                 rangoNota: level.rangoNota
@@ -112,11 +109,9 @@ export default function CreateRubric()
 
         const nuevosLevels = levels.slice(0, -1);
 
+        const notaActual = typeof nota === "number" ? nota : null;
         // Recalcular rangos y preservar los existentes
-        const actualizados = handleRangosChanges(notaMaxima, nuevosLevels).map((level, index) => ({
-            ...level,
-            rangoNota: levels[index]?.rangoNota || level.rangoNota
-        }));
+        const actualizados =handleRangosChanges(notaActual, nuevosLevels);
 
         setLevels(actualizados);
 
@@ -124,6 +119,7 @@ export default function CreateRubric()
             ...row,
             niveles: row.niveles.slice(0, -1).map((nivel, index) => ({
                 ...nivel,
+                nivelDescripcion: row.niveles[index]?.nivelDescripcion || "",
                 rangoNota: actualizados[index]?.rangoNota || nivel.rangoNota
             }))
         })));
@@ -148,36 +144,47 @@ export default function CreateRubric()
 
     // Manejador que se ejecuta cuando cambia el valor del input en Nota Maxima de la Rubrica
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const value = e.target.valueAsNumber;
+        const value = e.target.value;
 
-        if (isNaN(value)) {
+        // Validar formato con expresión regular (un dígito entero entre 0-5 y hasta dos decimales)
+        const regex = /^[0-5](\.\d{0,2})?$/;
+
+        if (!regex.test(value)) {
+            setNotification({
+                type: "error",
+                title: "Formato Inválido",
+                message: "La nota debe estar entre 0.00 y 5.00, con un máximo de dos decimales.",
+            });
             setNota("");
             return;
         }
 
-        if (value > 5 || value < 0) {
+        const numericValue = parseFloat(value);
+
+        // Validar rango entre 0.00 y 5.00
+        if (numericValue > 5 || numericValue < 0) {
             setNotification({
                 type: "error",
                 title: "Nota Fuera de Rango",
-                message: "La nota debe estar entre 0.0 y 5.0",
+                message: "La nota debe estar entre 0.00 y 5.00.",
             });
             setNota("");
         } else {
-            setNota(value);
+            setNota(value === "" ? "" : parseFloat(value));
+
+            // Recalcular los rangos de los niveles sin borrar las descripciones existentes
+            const nuevosLevels = handleRangosChanges(numericValue, levels);
+            setLevels(nuevosLevels);
+
+            // Actualizar los niveles en las filas de criterios sin borrar las descripciones
+            setRows(rows.map(row => ({
+                ...row,
+                niveles: row.niveles.map((nivel, index) => ({
+                    ...nivel,
+                    rangoNota: nuevosLevels[index]?.rangoNota || nivel.rangoNota
+                }))
+            })));
         }
-
-        // Recalcular los rangos de los niveles sin borrar las descripciones existentes
-        const nuevosLevels = handleRangosChanges(value, levels);
-        setLevels(nuevosLevels);
-
-        // Actualizar los niveles en las filas de criterios sin borrar las descripciones
-        setRows(rows.map(row => ({
-            ...row,
-            niveles: row.niveles.map((nivel, index) => ({
-                ...nivel,
-                rangoNota: nuevosLevels[index]?.rangoNota || nivel.rangoNota
-            }))
-        })));
     };
 
     const handleCriterioChange = (rowIndex: number, value: string) => {
