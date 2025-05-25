@@ -48,12 +48,14 @@ public class RubricEvaluationService implements RubricEvaluationPort {
 
     @Override
     public EvaluationResponseViewDTO getRubricsFromStudentSubjectPeriodRubric(Long idStudent, Long idSubject, String semester, Long idRubric) {
+
         String rubricDescription = String.
                 valueOf(rubricRepository.findRubricDescriptionByStudent(idRubric,idSubject,idStudent,semester).
                         orElseThrow(() -> new EmptyReturnException("1","No existe la rubrica"))); //Es el caso de que a la hora de crear la rubrica la descripcion es obligatoria
 
         List<CriteriaEntity> criterias = criteriaRepository
                 .findByRubricAndStudentAndSubject(idRubric,idStudent,idSubject,semester);
+
 
         if (criterias.isEmpty()) {
             throw new EmptyReturnException("2", "No hay criterios, por lo menos tiene que haber uno");//A la hora de  crear rubrica tiene que haber por lo menos un criterio
@@ -62,7 +64,9 @@ public class RubricEvaluationService implements RubricEvaluationPort {
         List<CalificationRegisterEntity> califications = calificationRegisterRepository
                 .findCalificationsByStudentAndSubject(idStudent, idSubject, semester, idRubric);
 
+
         EvaluationResponseViewDTO response = new EvaluationResponseViewDTO();
+
         response.setDescription(rubricDescription);
 
         BigDecimal totalScore = evaluationRepository
@@ -101,12 +105,16 @@ public class RubricEvaluationService implements RubricEvaluationPort {
                     calDto.setCalification(cal.getCalification());
                     calDto.setMessage(cal.getMessage());
                     calDto.setLevel(cal.getLevel());
-                    //cal.getEvaluation().getScore();
+                    cal.getEvaluation().getScore();
+
                     return calDto;
                 })
                 .collect(Collectors.toList());
         response.setCalifications(calificationDTOs);
 
         return response;
+
     }
+
+
 }
