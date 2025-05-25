@@ -31,7 +31,7 @@ public class CriterioController {
 
     @GetMapping("/criterios")
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN_ROLE', 'ROLE_TEACHER_ROLE', 'ROLE_COORDINATOR', 'ROLE_STUDENT_ROLE')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN_ROLE', 'ROLE_COORDINATOR_ROLE', 'ROLE_TEACHER_ROLE_ROLE', 'ROLE_STUDENT_ROLE')")
     public ResponseEntity<List<CriterioDTORespuesta>> getAllCriterios() {
         List<Criterio> lista = criterioService.consultarCriterios();
         List<CriterioDTORespuesta>listaCriterioRespuesta=objCriterioMapper.mapCriterioListToDtoList(lista);
@@ -40,7 +40,7 @@ public class CriterioController {
 
     @GetMapping("/criterios/{id}")
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN_ROLE', 'ROLE_TEACHER_ROLE', 'ROLE_COORDINATOR', 'ROLE_STUDENT_ROLE')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN_ROLE', 'ROLE_TEACHER_ROLE', 'ROLE_COORDINATOR_ROLE', 'ROLE_STUDENT_ROLE')")
     public ResponseEntity<CriterioDTORespuesta> getById(@PathVariable("id") Long id) {
         Criterio objCriterio = this.criterioService.consultarCriterio(id);
         CriterioDTORespuesta objcriterioEncontrado = this.objCriterioMapper.mapCriterioToDto(objCriterio);
