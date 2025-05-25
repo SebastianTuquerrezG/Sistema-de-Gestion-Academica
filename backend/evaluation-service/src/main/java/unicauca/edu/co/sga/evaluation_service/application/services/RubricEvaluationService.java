@@ -50,13 +50,13 @@ public class RubricEvaluationService implements RubricEvaluationPort {
     public EvaluationResponseViewDTO getRubricsFromStudentSubjectPeriodRubric(Long idStudent, Long idSubject, String semester, Long idRubric) {
         String rubricDescription = String.
                 valueOf(rubricRepository.findRubricDescriptionByStudent(idRubric,idSubject,idStudent,semester).
-                        orElseThrow(() -> new EmptyReturnException("No existe la rubrica"))); //Es el caso de que a la hora de crear la rubrica la descripcion es obligatoria
+                        orElseThrow(() -> new EmptyReturnException("1","No existe la rubrica"))); //Es el caso de que a la hora de crear la rubrica la descripcion es obligatoria
 
         List<CriteriaEntity> criterias = criteriaRepository
                 .findByRubricAndStudentAndSubject(idRubric,idStudent,idSubject,semester);
 
         if (criterias.isEmpty()) {
-            throw new EmptyReturnException("No hay criterios, por lo menos tiene que haber uno");//A la hora de  crear rubrica tiene que haber por lo menos un criterio
+            throw new EmptyReturnException("2", "No hay criterios, por lo menos tiene que haber uno");//A la hora de  crear rubrica tiene que haber por lo menos un criterio
         }
 
         List<CalificationRegisterEntity> califications = calificationRegisterRepository
@@ -67,7 +67,7 @@ public class RubricEvaluationService implements RubricEvaluationPort {
 
         BigDecimal totalScore = evaluationRepository
                 .findEvaluationsByStudentAndSubject(idStudent, idSubject, semester, idRubric)
-                .orElseThrow(() -> new EmptyReturnException("No existe la evaluacion"));
+                .orElseThrow(() -> new EmptyReturnException("3","No existe la evaluacion"));
         response.setTotalScore(totalScore);
 
         //Mapear criterios con sus niveles
