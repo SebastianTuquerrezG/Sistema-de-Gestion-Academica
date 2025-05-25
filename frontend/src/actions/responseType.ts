@@ -4,12 +4,12 @@ export interface LoginResponse {
         token: string;
         user: {
             id: string;
-            email: string;
+            username: string;
             name: string;
         };
     };
     error?: string;
-    field?: 'email' | 'password' | 'root';
+    field?: 'username' | 'password' | 'root';
 }
 
 export interface ErrorResponse {

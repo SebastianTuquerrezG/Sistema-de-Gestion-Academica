@@ -11,7 +11,7 @@ export default function Header() {
         user: {
             name: "Nombre completo del usuario",
             email: "Rol de usuario",
-            avatar: "https://ui.shadcn.com/avatars/01.png",
+            avatar: "https://ui.shadcn.com/avatars/02.png",
         }
     }
     return (

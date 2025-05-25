@@ -2,14 +2,23 @@ import { RubricInterface } from "../interfaces/RubricInterface";
 
 const baseUrl = "http://localhost:8080/api";
 
+function getAuthHeaders(): Record<string, string> {
+  const access_token = localStorage.getItem('auth-token');
+  const headers: Record<string, string> = {
+    "Content-Type": "application/json",
+  };
+  if (access_token) {
+    headers["Authorization"] = `Bearer ${access_token}`;
+  }
+  return headers;
+}
+
 export async function createRubric(
   rubric: RubricInterface
 ): Promise<RubricInterface> {
   const response = await fetch(`${baseUrl}/rubricas`, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
+    headers: getAuthHeaders(),
     body: JSON.stringify(rubric),
   });
   return response.json();
@@ -18,7 +27,9 @@ export async function createRubric(
 export async function getRubricById(
   id: string
 ): Promise<RubricInterface | null> {
-  const response = await fetch(`${baseUrl}/rubricas/${id}`);
+  const response = await fetch(`${baseUrl}/rubricas/${id}`, {
+    headers: getAuthHeaders(),
+  });
   if (!response.ok) {
     return null;
   }
@@ -28,17 +39,16 @@ export async function getRubricById(
 export async function getAllRubrics(): Promise<RubricInterface[]> {
   const response = await fetch(`${baseUrl}/rubricas`, {
     method: 'GET',
+    headers: getAuthHeaders(),
   });
-  console.log(response);
+  console.log(response.json());
   return response.json();
 }
 
 export async function updateRubric(id: string, updatedRubric: RubricInterface): Promise<RubricInterface | null> {
   const response = await fetch(`${baseUrl}/rubricas?id=${id}`, {
     method: 'PUT',
-    headers: {
-      "Content-Type": "application/json",
-    },
+    headers: getAuthHeaders(),
     body: JSON.stringify(updatedRubric),
   });
   if (!response.ok) {
@@ -47,10 +57,10 @@ export async function updateRubric(id: string, updatedRubric: RubricInterface): 
   return response.json();
 }
 
-
 /*export async function deleteRubric(id: string): Promise<boolean> {
   const response = await fetch(`${baseUrl}/rubricas/${id}`, {
     method: "DELETE",
+    headers: getAuthHeaders(),
   });
   return response.ok;
 }*/
@@ -58,9 +68,7 @@ export async function updateRubric(id: string, updatedRubric: RubricInterface): 
 export async function deleteRubric(id: string): Promise<boolean> {
   const response = await fetch(`${baseUrl}/rubricas?id=${id}`, {
     method: 'PATCH',
-    headers: {
-      'Content-Type': 'application/json',
-    },
+    headers: getAuthHeaders(),
     body: JSON.stringify({ estado: 'DESACTIVAR' }),
   });
   return response.ok;
