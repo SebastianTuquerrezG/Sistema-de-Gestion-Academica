@@ -3,8 +3,6 @@ import "./EstadisticasCards.css";
 
 interface EstadisticasCardsProps {
   media: number;
-  mediana: number;
-  moda: number;
   desviacionEstandar: number;
   maximo: number;
   minimo: number;
@@ -12,8 +10,6 @@ interface EstadisticasCardsProps {
 
 const EstadisticasCards: React.FC<EstadisticasCardsProps> = ({
   media,
-  mediana,
-  moda,
   desviacionEstandar,
   maximo,
   minimo,
@@ -23,14 +19,6 @@ const EstadisticasCards: React.FC<EstadisticasCardsProps> = ({
       <div className="estadistica-card">
         <span className="estadistica-label">Media</span>
         <span className="estadistica-valor">{media}</span>
-      </div>
-      <div className="estadistica-card">
-        <span className="estadistica-label">Mediana</span>
-        <span className="estadistica-valor">{mediana}</span>
-      </div>
-      <div className="estadistica-card">
-        <span className="estadistica-label">Moda</span>
-        <span className="estadistica-valor">{moda}</span>
       </div>
       <div className="estadistica-card">
         <span className="estadistica-label">Desviación Estandar</span>

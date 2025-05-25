@@ -3,7 +3,6 @@ import PageTitle from "../../components/pageTitle/pageTitle";
 import ActionButtons from "../../components/utils/actionButtons";
 import EstadisticasFilters from "./components/EstadisticasFilters";
 import EstadisticasCards from "./components/EstadisticasCards";
-import PromedioGeneralChart from "./components/PromedioGeneralChart";
 import PromedioPorCriterioChart from "./components/PromedioPorCriterioChart";
 import HistogramaCriterioChart from "./components/HistogramaCriterioChart";
 import ExportarExcelButton from "./components/ExportarExcelButton";
@@ -15,10 +14,9 @@ import {
   getHistogramByCriteria,
   getCriteriaAverages,
   HistogramByCriteriaDTO,
-  CriteriaAverageDTO
+  CriteriaAverageDTO,
+  CourseStatsDTO
 } from "../../services/estadisticasService";
-import { CourseStatsDTO } from "./types";
-import "../../assets/css/estadisticas.css";
 import { CourseStatsDTO as CourseStatsDTOType } from "./types/index.ts"; // o la ruta relativa correcta
 
 const Estadisticas: React.FC = () => {
@@ -59,14 +57,16 @@ const Estadisticas: React.FC = () => {
 
       // Cargar estadísticas generales
       const statsData = await getStatsByRubric(filter);
-      setEstadisticas(statsData as CourseStatsDTO);
+      setEstadisticas(statsData);
 
       // Cargar histogramas por criterio
       const histogramData = await getHistogramByCriteria(filter);
+      console.log('Datos de histogramas:', histogramData);
       setHistogramas(histogramData);
 
       // Cargar promedios por criterio
       const promediosData = await getCriteriaAverages(filter);
+      console.log('Datos de promedios por criterio:', promediosData);
       setPromediosCriterios(promediosData);
 
     } catch (err) {
@@ -88,14 +88,14 @@ const Estadisticas: React.FC = () => {
   const hasData = Boolean(
     estadisticas &&
     (estadisticas.average !== null && estadisticas.median !== null && estadisticas.standardDeviation !== null &&
-      estadisticas.maxScore !== null && estadisticas.minScore !== null && estadisticas.studentsCount !== null)
+      estadisticas.maxScore !== null && estadisticas.minScore !== null)
   );
 
   return (
     <div ref={printRef} className="estadisticas-main-container">
       <div className="header-row">
         <PageTitle title="Estadísticas" />
-        <ActionButtons />
+        
       </div>
 
       <EstadisticasFilters
@@ -123,13 +123,27 @@ const Estadisticas: React.FC = () => {
           <div className="estadisticas-content-centered">
             <EstadisticasCards
               media={estadisticas.average}
-              mediana={estadisticas.median}
-              moda={0}
               desviacionEstandar={estadisticas.standardDeviation}
               maximo={estadisticas.maxScore}
               minimo={estadisticas.minScore}
             />
-            <div style={{marginTop: 32, textAlign: 'center', color: '#888'}}>No hay datos de gráficos disponibles para esta consulta.</div>
+            <HistogramaCriterioChart 
+              histogramas={histogramas.map(h => ({
+                criterio: h.criteriaDescription,
+                descripcion: h.criteriaDescription,
+                niveles: [
+                  { nivel: 'Nivel 1', cantidad: h.countNivel1 },
+                  { nivel: 'Nivel 2', cantidad: h.countNivel2 },
+                  { nivel: 'Nivel 3', cantidad: h.countNivel3 }
+                ]
+              }))} 
+            />
+            <PromedioPorCriterioChart 
+              data={promediosCriterios.map(c => ({
+                nombre: c.criterioDescripcion,
+                promedio: c.promedioNota
+              }))} 
+            />
             <div
               className="estadisticas-export-buttons"
               style={{

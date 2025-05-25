@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const baseUrl = "http://localhost:8080";
-const token = "Bearer eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJuOWlwWXQxU0RNNzhMeU5lZ3BvekpTSVdQNDZyQURUdG1CLUNpYngyS1FJIn0.eyJleHAiOjE3NDgxMzMxNDYsImlhdCI6MTc0ODEyMjM0NiwianRpIjoib25ydHJvOjA1MWVlYjg2LTViMmYtNGU3NS04YTZiLTQyY2JmZWMwMjMyNSIsImlzcyI6Imh0dHA6Ly9rZXljbG9hay5sb2NhbDo4MTgxL3JlYWxtcy9iYWNrZW5kX3Byb3llY3RvMV9zZ2EiLCJhdWQiOiJhY2NvdW50Iiwic3ViIjoiODkwMGExNDItZjFhMC00OTg3LThjOWEtNDgwZTRkZGFjMjU2IiwidHlwIjoiQmVhcmVyIiwiYXpwIjoiYmFja2VuZF9zZ2FfY2xpZW50Iiwic2lkIjoiY2YxOTQ4YmEtZWU5ZC00NjE5LTk0NTItZjMzYmI1NGMyYWU1IiwiYWNyIjoiMSIsImFsbG93ZWQtb3JpZ2lucyI6WyJodHRwOi8vbG9jYWxob3N0OjgwODAiLCJodHRwczovL29hdXRoLnBzdG1uLmlvIl0sInJlYWxtX2FjY2VzcyI6eyJyb2xlcyI6WyJDT09SRElOQVRPUl9ST0xFIiwib2ZmbGluZV9hY2Nlc3MiLCJTVFVERU5UX1JPTEUiLCJkZWZhdWx0LXJvbGVzLWJhY2tlbmRfcHJveWVjdG8xX3NnYSIsIkFETUlOX1JPTEUiLCJ1bWFfYXV0aG9yaXphdGlvbiIsIlRFQUNIRVJfUk9MRSJdfSwicmVzb3VyY2VfYWNjZXNzIjp7ImFjY291bnQiOnsicm9sZXMiOlsibWFuYWdlLWFjY291bnQiLCJtYW5hZ2UtYWNjb3VudC1saW5rcyIsInZpZXctcHJvZmlsZSJdfX0sInNjb3BlIjoicHJvZmlsZSBlbWFpbCIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJuYW1lIjoiSm9hbiBUdXF1ZXJyZXogR29tZXoiLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJhZG1pbl91c2VyIiwiZ2l2ZW5fbmFtZSI6IkpvYW4iLCJmYW1pbHlfbmFtZSI6IlR1cXVlcnJleiBHb21leiIsImVtYWlsIjoiam9hbmdvbWV6c2ViYXNAZ21haWwuY29tIn0.sEQ_ZFpQUp7BlrYsxWq1eXAb9kvYKjhrARX9TEcrwpjq6StuKpvhQZ3piCjCmEHg62LCS5ykJYB_a9HcNR22aVJ4bXHR31hr4zS38n5qp0J_aDeu5kyDm1ajTIXnshgk8B11BfPPGi7wwf26-weEs9sMRzenlCGlFBP70DER-M8W4DJ0Tp6kEKIgATa6az-g7ToQeJhwyMDDSJsqg6VIdAOGU_2D9q9BfbyUp4kMwBcur4gkNK8XTEwpZ-IChG1FeBzRn1c1S4r8tjDw1u0fwq-6EUTtNM-Eu_XB3cKvblZF9IBjR7uvKM_98hCcqQwJDV8NFMxgeTOze6uvGq2weQ";
+const token = "Bearer eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJuOWlwWXQxU0RNNzhMeU5lZ3BvekpTSVdQNDZyQURUdG1CLUNpYngyS1FJIn0.eyJleHAiOjE3NDgxNDY4NDUsImlhdCI6MTc0ODEzNjA0NSwianRpIjoib25ydHJvOjk5MDM1YzkxLTUwOGYtNGVlNy1iYTIwLTBkYzUyYzBhYWYyNyIsImlzcyI6Imh0dHA6Ly9rZXljbG9hay5sb2NhbDo4MTgxL3JlYWxtcy9iYWNrZW5kX3Byb3llY3RvMV9zZ2EiLCJhdWQiOiJhY2NvdW50Iiwic3ViIjoiODkwMGExNDItZjFhMC00OTg3LThjOWEtNDgwZTRkZGFjMjU2IiwidHlwIjoiQmVhcmVyIiwiYXpwIjoiYmFja2VuZF9zZ2FfY2xpZW50Iiwic2lkIjoiYWVlNmIwMTktMTUwYi00NTBhLTgzMGUtOGU3MTNhNWFhNDI5IiwiYWNyIjoiMSIsImFsbG93ZWQtb3JpZ2lucyI6WyJodHRwOi8vbG9jYWxob3N0OjgwODAiLCJodHRwczovL29hdXRoLnBzdG1uLmlvIl0sInJlYWxtX2FjY2VzcyI6eyJyb2xlcyI6WyJDT09SRElOQVRPUl9ST0xFIiwib2ZmbGluZV9hY2Nlc3MiLCJTVFVERU5UX1JPTEUiLCJkZWZhdWx0LXJvbGVzLWJhY2tlbmRfcHJveWVjdG8xX3NnYSIsIkFETUlOX1JPTEUiLCJ1bWFfYXV0aG9yaXphdGlvbiIsIlRFQUNIRVJfUk9MRSJdfSwicmVzb3VyY2VfYWNjZXNzIjp7ImFjY291bnQiOnsicm9sZXMiOlsibWFuYWdlLWFjY291bnQiLCJtYW5hZ2UtYWNjb3VudC1saW5rcyIsInZpZXctcHJvZmlsZSJdfX0sInNjb3BlIjoicHJvZmlsZSBlbWFpbCIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJuYW1lIjoiSm9hbiBUdXF1ZXJyZXogR29tZXoiLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJhZG1pbl91c2VyIiwiZ2l2ZW5fbmFtZSI6IkpvYW4iLCJmYW1pbHlfbmFtZSI6IlR1cXVlcnJleiBHb21leiIsImVtYWlsIjoiam9hbmdvbWV6c2ViYXNAZ21haWwuY29tIn0.sRmhUM4VTN1VRc-i2nP0d02YNMWXOEGAeGNPH31ORI1RHWVTytYg_RBwwItecXcoLYV8egcIdfwYUkEW7i4ztp89lSIGl7x6AhXvBoY_e1HjQB-AVong5ejXYNLoNx0JKL5NsX1xW6Xn7-ATT50-1MMsT2yjJH0O-Y_NfUEm3im0jG8DSSbEheHdvV5fNDyAs7FnzXtszvjyTqvI_CnmqiQjFkBG0fjNB6HH_fv8HBC4N3-JAmoYC--HuBu4HU08tls75XVKrkmI-zXLes5Eg8-yj38Tmj784j2lCsf09BHsbytJCcN8d-tese6c8Ml2Q6_2Ec6NUzuGqEoa1FTiUw";
 
 const headers = {
   "Content-Type": "application/json",
@@ -15,39 +15,27 @@ export interface FilterStatsDTO {
 }
 
 export interface CourseStatsDTO {
-  media: number;
-  mediana: number;
-  moda: number;
-  desviacionEstandar: number;
-  maximo: number;
-  minimo: number;
-  promedioGeneral: number[];
-  criterios: {
-    nombre: string;
-    promedio: number;
-  }[];
-  histogramas: {
-    criterio: string;
-    descripcion: string;
-    niveles: {
-      nivel: string;
-      cantidad: number;
-    }[];
-  }[];
+  raName: string;
+  average: number;
+  median: number;
+  standardDeviation: number;
+  minScore: number;
+  maxScore: number;
+  studentsCount: number;
 }
 
 export interface HistogramByCriteriaDTO {
-  criterio: string;
-  descripcion: string;
-  niveles: {
-    nivel: string;
-    cantidad: number;
-  }[];
+  criteriaId: number;
+  criteriaDescription: string;
+  countNivel1: number;
+  countNivel2: number;
+  countNivel3: number;
 }
 
 export interface CriteriaAverageDTO {
-  criterio: string;
-  promedio: number;
+  idCriterio: number;
+  criterioDescripcion: string;
+  promedioNota: number;
 }
 
 export const getStatsByRubric = async (filter: FilterStatsDTO): Promise<CourseStatsDTO> => {

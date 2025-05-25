@@ -45,13 +45,6 @@ const EstadisticasFilters: React.FC<EstadisticasFiltersProps> = ({
               onSelect={onSelectRubrica}
             />
           )}
-
-          {rubricaSeleccionada && (
-            <StaticField
-              label="Resultado de Aprendizaje"
-              value={resultadoAprendizaje}
-            />
-          )}
         </div>
 
         <div className="filter-block">
@@ -60,6 +53,12 @@ const EstadisticasFilters: React.FC<EstadisticasFiltersProps> = ({
               label="Período"
               options={periodos}
               onSelect={onSelectPeriodo}
+            />
+          )}
+          {periodoSeleccionado && (
+            <StaticField
+              label="Resultado de Aprendizaje"
+              value={resultadoAprendizaje || "No definido"}
             />
           )}
         </div>
