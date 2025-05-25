@@ -1,7 +1,11 @@
 import React, { useRef } from "react";
 import "../../assets/css/actionButtons.css";
 
-const ActionButtons: React.FC = () => {
+interface ActionButtonsProps {
+  onEstadisticas?: () => void;
+}
+
+const ActionButtons: React.FC<ActionButtonsProps> = ({ onEstadisticas }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleUploadClick = () => {
@@ -34,9 +38,9 @@ const ActionButtons: React.FC = () => {
         Descargar evidencias
       </button>
 
-      <button className="action-button">
-        <span className="material-symbols-outlined">description</span>
-        Informes
+      <button className="action-button" onClick={onEstadisticas}>
+        <span className="material-symbols-outlined">bar_chart</span>
+        Estadísticas
       </button>
 
       <button className="action-button">

@@ -3,6 +3,7 @@ export interface Rubrica {
   nombreRubrica: string;
   objetivoEstudio: string;
   name?: string;
+  ra_id?: number;
 }
 
 export interface Materia {

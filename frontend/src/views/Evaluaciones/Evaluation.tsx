@@ -6,6 +6,7 @@ import ActionButtons from "../../components/utils/actionButtons";
 import { useEvaluationData } from "./hooks/useEvaluationData";
 import { Criterio } from "./types";
 import "../../assets/css/evaluaciones.css";
+import { useNavigate } from "react-router-dom";
 
 const Evaluaciones: React.FC = () => {
   const {
@@ -22,7 +23,10 @@ const Evaluaciones: React.FC = () => {
     setSelectedEstudiante,
     enrollId,
     handleSelectRubrica,
+    raName,
   } = useEvaluationData();
+
+  const navigate = useNavigate();
 
   const transformCriterios = (criterios: any[]): Criterio[] => {
     return criterios
@@ -55,7 +59,17 @@ const Evaluaciones: React.FC = () => {
     <>
       <div className="header-row">
         <PageTitle title="Evaluaciones" />
-        <ActionButtons />
+        <ActionButtons
+          onEstadisticas={() => {
+            navigate("/estadisticas", {
+              state: {
+                materia: selectedMateria,
+                rubrica: selectedRubrica?.name || "",
+                periodo: selectedPeriodo,
+              },
+            });
+          }}
+        />
       </div>
 
       <RubricaInfo
@@ -67,7 +81,7 @@ const Evaluaciones: React.FC = () => {
         rubricaSeleccionada={selectedRubrica?.name || ""}
         periodoSeleccionado={selectedPeriodo}
         estudianteSeleccionado={selectedEstudiante}
-        resultadoAprendizaje={selectedRubrica?.objetivoEstudio || ""}
+        resultadoAprendizaje={raName}
         onSelectMateria={setSelectedMateria}
         onSelectRubrica={handleSelectRubrica}
         onSelectPeriodo={setSelectedPeriodo}

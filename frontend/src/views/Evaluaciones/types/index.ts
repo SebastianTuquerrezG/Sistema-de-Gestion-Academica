@@ -30,6 +30,7 @@ export interface Rubrica {
       rangoNota: string;
     }[];
   }[];
+  ra_id?: number;
 }
 
 export interface Estudiante {

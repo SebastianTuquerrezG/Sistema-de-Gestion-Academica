@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
+import { useLocation } from "react-router-dom";
 import PageTitle from "../../components/pageTitle/pageTitle";
 import ActionButtons from "../../components/utils/actionButtons";
 import EstadisticasFilters from "./components/EstadisticasFilters";
@@ -20,6 +21,8 @@ import {
 import { CourseStatsDTO as CourseStatsDTOType } from "./types/index.ts"; // o la ruta relativa correcta
 
 const Estadisticas: React.FC = () => {
+  const location = useLocation();
+  const state = location.state as { materia?: string; rubrica?: string; periodo?: string };
   const {
     materias,
     selectedMateria,
@@ -30,6 +33,7 @@ const Estadisticas: React.FC = () => {
     selectedPeriodo,
     setSelectedPeriodo,
     handleSelectRubrica,
+    raName,
   } = useEstadisticasData();
 
   const [estadisticas, setEstadisticas] = useState<CourseStatsDTO | null>(null);
@@ -38,6 +42,7 @@ const Estadisticas: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const printRef = useRef<HTMLDivElement | null>(null);
+  const [aplicadoFiltrosIniciales, setAplicadoFiltrosIniciales] = useState(false);
 
   const cargarEstadisticas = async () => {
     try {
@@ -79,6 +84,45 @@ const Estadisticas: React.FC = () => {
     }
   };
 
+  // Limpiar filtros al montar si no hay state de navegación
+  useEffect(() => {
+    if (!location.state) {
+      setSelectedMateria("");
+      setSelectedPeriodo("");
+      handleSelectRubrica("");
+      setAplicadoFiltrosIniciales(false);
+    }
+    // eslint-disable-next-line
+  }, []);
+
+  // Fijar materia primero
+  useEffect(() => {
+    if (
+      !aplicadoFiltrosIniciales &&
+      state &&
+      materias.length > 0 &&
+      state.materia &&
+      materias.some((m) => m.name === state.materia)
+    ) {
+      setSelectedMateria(state.materia);
+    }
+  }, [state, materias, aplicadoFiltrosIniciales]);
+
+  // Fijar rúbrica y período después de la materia
+  useEffect(() => {
+    if (
+      !aplicadoFiltrosIniciales &&
+      state &&
+      rubricas.length > 0 &&
+      ((state.rubrica && rubricas.some((r) => r.nombreRubrica === state.rubrica || r.name === state.rubrica)) ||
+        (state.periodo && periodos.includes(state.periodo)))
+    ) {
+      if (state.rubrica) handleSelectRubrica(state.rubrica);
+      if (state.periodo) setSelectedPeriodo(state.periodo);
+      setAplicadoFiltrosIniciales(true);
+    }
+  }, [state, rubricas, periodos, aplicadoFiltrosIniciales]);
+
   useEffect(() => {
     if (selectedMateria && selectedRubrica && selectedPeriodo) {
       cargarEstadisticas();
@@ -105,7 +149,7 @@ const Estadisticas: React.FC = () => {
         materiaSeleccionada={selectedMateria}
         rubricaSeleccionada={selectedRubrica?.nombreRubrica || selectedRubrica?.name || ""}
         periodoSeleccionado={selectedPeriodo}
-        resultadoAprendizaje={selectedRubrica?.objetivoEstudio || ""}
+        resultadoAprendizaje={raName}
         onSelectMateria={setSelectedMateria}
         onSelectRubrica={handleSelectRubrica}
         onSelectPeriodo={setSelectedPeriodo}

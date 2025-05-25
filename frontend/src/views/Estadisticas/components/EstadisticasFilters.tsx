@@ -35,6 +35,7 @@ const EstadisticasFilters: React.FC<EstadisticasFiltersProps> = ({
           <Dropdown
             label="Materia"
             options={materias}
+            value={materiaSeleccionada}
             onSelect={onSelectMateria}
           />
 
@@ -42,6 +43,7 @@ const EstadisticasFilters: React.FC<EstadisticasFiltersProps> = ({
             <Dropdown
               label="Rúbrica"
               options={rubricas}
+              value={rubricaSeleccionada}
               onSelect={onSelectRubrica}
             />
           )}
@@ -52,6 +54,7 @@ const EstadisticasFilters: React.FC<EstadisticasFiltersProps> = ({
             <Dropdown
               label="Período"
               options={periodos}
+              value={periodoSeleccionado}
               onSelect={onSelectPeriodo}
             />
           )}

@@ -1,15 +1,23 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "../../views/Evaluaciones/EvaluacionesCSS/rubricaInfo.css";
 
 interface DropdownProps {
   label: string;
   options: string[];
   onSelect?: (value: string) => void;
+  value?: string;
 }
 
-const Dropdown: React.FC<DropdownProps> = ({ label, options, onSelect }) => {
+const Dropdown: React.FC<DropdownProps> = ({ label, options, onSelect, value }) => {
   const [query, setQuery] = useState("");
   const [showOptions, setShowOptions] = useState(false);
+
+  // Sincroniza el valor externo con el input
+  useEffect(() => {
+    if (typeof value === "string") {
+      setQuery(value);
+    }
+  }, [value]);
 
   const filteredOptions = options.filter(
     (option) =>
@@ -17,10 +25,10 @@ const Dropdown: React.FC<DropdownProps> = ({ label, options, onSelect }) => {
       option.toLowerCase().includes(query.toLowerCase())
   );
 
-  const handleSelect = (value: string) => {
-    setQuery(value);
+  const handleSelect = (val: string) => {
+    setQuery(val);
     setShowOptions(false);
-    if (onSelect) onSelect(value);
+    if (onSelect) onSelect(val);
   };
 
   return (
@@ -28,18 +36,17 @@ const Dropdown: React.FC<DropdownProps> = ({ label, options, onSelect }) => {
       <label className="dropdown-label">{label}:</label>
       <input
         type="text"
-        value={query}
+        value={typeof value === "string" ? value : query}
         onChange={(e) => {
-          const value = e.target.value;
-          setQuery(value);
+          const val = e.target.value;
+          setQuery(val);
           setShowOptions(true);
-          if (value.trim() === "" && onSelect) {
-            onSelect(""); // ← Notifica que se borró el contenido
+          if (val.trim() === "" && onSelect) {
+            onSelect("");
           }
         }}
-        
         onFocus={() => setShowOptions(true)}
-        onBlur={() => setTimeout(() => setShowOptions(false), 100)} // evita cierre instantáneo al hacer clic
+        onBlur={() => setTimeout(() => setShowOptions(false), 100)}
         className="dropdown"
         placeholder={`Seleccione ${label.toLowerCase()}`}
       />
