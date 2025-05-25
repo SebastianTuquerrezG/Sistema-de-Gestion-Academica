@@ -5,4 +5,5 @@ import unicauca.edu.co.auth_service.application.dto.response.TokenResponse;
 
 public interface AuthService {
     TokenResponse login(AuthRequest authRequest);
+    boolean logout(String refreshToken);
 }
