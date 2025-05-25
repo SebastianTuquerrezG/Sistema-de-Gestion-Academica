@@ -7,11 +7,11 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
-public class EmptyReturnException extends RuntimeException {
+public class DefaultException extends RuntimeException {
 
     private final String errorCode;
 
-    public EmptyReturnException(String errorCode, String message)  {
+    public DefaultException(String errorCode, String message)  {
         super(message);
         this.errorCode = errorCode;
     }
