@@ -18,7 +18,7 @@ import {
   CriteriaAverageDTO,
   CourseStatsDTO
 } from "../../services/estadisticasService";
-import { CourseStatsDTO as CourseStatsDTOType } from "./types/index.ts"; // o la ruta relativa correcta
+import { CourseStatsDTO as CourseStatsDTOType } from "./types/index.ts";
 
 const Estadisticas: React.FC = () => {
   const location = useLocation();
@@ -41,8 +41,17 @@ const Estadisticas: React.FC = () => {
   const [promediosCriterios, setPromediosCriterios] = useState<CriteriaAverageDTO[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [isPrintMode, setIsPrintMode] = useState(false);
   const printRef = useRef<HTMLDivElement | null>(null);
   const [aplicadoFiltrosIniciales, setAplicadoFiltrosIniciales] = useState(false);
+
+  const handleBeforePrint = () => {
+    setIsPrintMode(true);
+  };
+
+  const handleAfterPrint = () => {
+    setIsPrintMode(false);
+  };
 
   const cargarEstadisticas = async () => {
     try {
@@ -139,7 +148,6 @@ const Estadisticas: React.FC = () => {
     <div ref={printRef} className="estadisticas-main-container">
       <div className="header-row">
         <PageTitle title="Estadísticas" />
-        
       </div>
 
       <EstadisticasFilters
@@ -162,56 +170,59 @@ const Estadisticas: React.FC = () => {
       />
 
       {!loading && !error && hasData && estadisticas && (
-        <>
-          {console.log('Contenido de estadisticas:', estadisticas)}
-          <div className="estadisticas-content-centered">
-            <EstadisticasCards
-              media={estadisticas.average}
-              desviacionEstandar={estadisticas.standardDeviation}
-              maximo={estadisticas.maxScore}
-              minimo={estadisticas.minScore}
-            />
-            <HistogramaCriterioChart 
-              histogramas={histogramas.map(h => ({
-                criterio: h.criteriaDescription,
-                descripcion: h.criteriaDescription,
-                niveles: [
-                  { nivel: 'Nivel 1', cantidad: h.countNivel1 },
-                  { nivel: 'Nivel 2', cantidad: h.countNivel2 },
-                  { nivel: 'Nivel 3', cantidad: h.countNivel3 }
-                ]
-              }))} 
-            />
-            <PromedioPorCriterioChart 
-              data={promediosCriterios.map(c => ({
-                nombre: c.criterioDescripcion,
-                promedio: c.promedioNota
-              }))} 
-            />
-            <div
-              className="estadisticas-export-buttons"
-              style={{
-                display: "flex",
-                justifyContent: "flex-end",
-                alignItems: "center",
-                verticalAlign: "middle",
-                gap: 16,
-                paddingTop: 24,
+        <div className="estadisticas-content-centered">
+          <EstadisticasCards
+            media={estadisticas.average}
+            desviacionEstandar={estadisticas.standardDeviation}
+            maximo={estadisticas.maxScore}
+            minimo={estadisticas.minScore}
+          />
+          <HistogramaCriterioChart 
+            histogramas={histogramas.map(h => ({
+              criterio: h.criteriaDescription,
+              descripcion: h.criteriaDescription,
+              niveles: [
+                { nivel: 'Nivel 1', cantidad: h.countNivel1 },
+                { nivel: 'Nivel 2', cantidad: h.countNivel2 },
+                { nivel: 'Nivel 3', cantidad: h.countNivel3 }
+              ]
+            }))}
+            isPrintMode={isPrintMode}
+          />
+          <PromedioPorCriterioChart 
+            data={promediosCriterios.map(c => ({
+              nombre: c.criterioDescripcion,
+              promedio: c.promedioNota
+            }))} 
+          />
+          <div
+            className="estadisticas-export-buttons"
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              verticalAlign: "middle",
+              gap: 16,
+              paddingTop: 24,
+              width: "100%"
+            }}
+          >
+            <ExportarExcelButton 
+              estadisticas={estadisticas} 
+              filtros={{
+                materia: selectedMateria,
+                rubrica: selectedRubrica?.name || selectedRubrica?.nombreRubrica || "",
+                periodo: selectedPeriodo,
+                resultadoAprendizaje: selectedRubrica?.objetivoEstudio || "",
               }}
-            >
-              <ExportarExcelButton 
-                estadisticas={estadisticas} 
-                filtros={{
-                  materia: selectedMateria,
-                  rubrica: selectedRubrica?.nombreRubrica || "",
-                  periodo: selectedPeriodo,
-                  resultadoAprendizaje: selectedRubrica?.objetivoEstudio || "",
-                }}
-              />
-              <ExportarPDFButton targetRef={printRef} />
-            </div>
+            />
+            <ExportarPDFButton 
+              targetRef={printRef} 
+              onBeforePrint={handleBeforePrint}
+              onAfterPrint={handleAfterPrint}
+            />
           </div>
-        </>
+        </div>
       )}
     </div>
   );

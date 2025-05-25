@@ -17,13 +17,18 @@ const ExportarExcelButton: React.FC<ExportarExcelButtonProps> = ({
   filtros,
 }) => {
   const handleExport = () => {
+    console.log('Datos recibidos en ExportarExcelButton:', {
+      estadisticas,
+      filtros
+    });
+
     // Crear cabecera con datos de búsqueda
     const cabecera = [
       ["Datos de Búsqueda"],
-      ["Materia", filtros.materia],
-      ["Rúbrica", filtros.rubrica],
-      ["Período", filtros.periodo],
-      ["Resultado de Aprendizaje", filtros.resultadoAprendizaje],
+      ["Materia", filtros.materia || "No especificado"],
+      ["Rúbrica", filtros.rubrica || "No especificado"],
+      ["Período", filtros.periodo || "No especificado"],
+      ["Resultado de Aprendizaje", filtros.resultadoAprendizaje || "No especificado"],
       [], // Línea en blanco para separar
     ];
 
@@ -31,12 +36,12 @@ const ExportarExcelButton: React.FC<ExportarExcelButtonProps> = ({
     const resumen = [
       ...cabecera,
       ["Resumen Estadístico"],
-      ["Media", estadisticas.media],
-      ["Mediana", estadisticas.mediana],
-      ["Moda", estadisticas.moda],
-      ["Desviación Estándar", estadisticas.desviacionEstandar],
-      ["Máximo", estadisticas.maximo],
-      ["Mínimo", estadisticas.minimo],
+      ["Media", estadisticas.average],
+      ["Mediana", estadisticas.median],
+      ["Desviación Estándar", estadisticas.standardDeviation],
+      ["Máximo", estadisticas.maxScore],
+      ["Mínimo", estadisticas.minScore],
+      ["Cantidad de Estudiantes", estadisticas.studentsCount],
     ];
 
     // 2. Promedio General
@@ -44,7 +49,7 @@ const ExportarExcelButton: React.FC<ExportarExcelButtonProps> = ({
       ...cabecera,
       ["Promedio General"],
       ["Item", "Promedio"],
-      ...estadisticas.promedioGeneral.map((valor: number, idx: number) => [
+      ...(estadisticas.generalAverages || []).map((valor: number, idx: number) => [
         idx + 1,
         valor,
       ]),
@@ -55,7 +60,10 @@ const ExportarExcelButton: React.FC<ExportarExcelButtonProps> = ({
       ...cabecera,
       ["Promedio por Criterio"],
       ["Criterio", "Promedio"],
-      ...estadisticas.criterios.map((c: any) => [c.nombre, c.promedio]),
+      ...(estadisticas.criteriaAverages || []).map((c: any) => [
+        c.criterioDescripcion,
+        c.promedioNota,
+      ]),
     ];
 
     // 4. Histogramas
@@ -63,9 +71,11 @@ const ExportarExcelButton: React.FC<ExportarExcelButtonProps> = ({
       ...cabecera,
       ["Histogramas"],
       ["Criterio", "Descripción", "Nivel", "Cantidad"],
-      ...estadisticas.histogramas.flatMap((h: any) =>
-        h.niveles.map((n: any) => [h.criterio, h.descripcion, n.nivel, n.cantidad])
-      ),
+      ...(estadisticas.histograms || []).flatMap((h: any) => [
+        [h.criteriaDescription, h.criteriaDescription, "Nivel 1", h.countNivel1],
+        [h.criteriaDescription, h.criteriaDescription, "Nivel 2", h.countNivel2],
+        [h.criteriaDescription, h.criteriaDescription, "Nivel 3", h.countNivel3],
+      ]),
     ];
 
     // Crear libro de Excel
