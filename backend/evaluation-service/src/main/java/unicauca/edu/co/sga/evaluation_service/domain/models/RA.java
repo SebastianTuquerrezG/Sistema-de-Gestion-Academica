@@ -13,5 +13,6 @@ import java.util.Set;
 @Builder
 public class RA {
     private Long id;
+    private String name;
     private Set<Long> course;
 }
