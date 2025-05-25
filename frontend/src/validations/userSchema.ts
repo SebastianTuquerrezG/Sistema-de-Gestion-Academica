@@ -1,16 +1,18 @@
 import { z } from "zod";
 
 export const userSchema = z.object({
-    // Validación de correo institucional
-    email: z
+    username: z
         .string()
-        .min(1, "El correo es obligatorio")
-        .email("Este correo no es válido. Requiere @unicauca.edu.co")
-        .refine((email) => email.endsWith("@unicauca.edu.co"), {
-            message: "Este correo no es válido. Requiere @unicauca.edu.co",
-        }),
+        .min(1, "El correo o usuario es obligatorio")
+        .refine(
+            (value) =>
+                value.endsWith("@unicauca.edu.co") ||
+                /^[a-zA-Z0-9._-]+$/.test(value), // usuario simple
+            {
+                message: "Debe ser un correo institucional o un usuario válido",
+            }
+        ),
 
-    // Validación de contraseña
     password: z
         .string()
         .min(1, "La contraseña es obligatoria")

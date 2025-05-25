@@ -2,7 +2,7 @@
  * Interfaces para manejar credenciales guardadas
  */
 export interface SavedCredentials {
-    email: string;
+    username: string;
     password: string;
     expiry: number;
 }
@@ -12,11 +12,11 @@ const STORAGE_KEY = "rememberedAuth";
 /**
  * Guarda las credenciales en localStorage con expiración
  */
-export function saveCredentials(email: string, password: string): void {
+export function saveCredentials(username: string, password: string): void {
     const expiryDate = Date.now() + (30 * 24 * 60 * 60 * 1000); // 30 días en milisegundos
 
     const credentials: SavedCredentials = {
-        email,
+        username,
         password,
         expiry: expiryDate
     };
