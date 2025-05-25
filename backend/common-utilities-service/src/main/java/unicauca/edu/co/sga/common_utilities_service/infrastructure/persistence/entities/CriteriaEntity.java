@@ -2,6 +2,7 @@ package unicauca.edu.co.sga.common_utilities_service.infrastructure.persistence.
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.*;
@@ -47,6 +48,11 @@ public class CriteriaEntity {
     @JsonBackReference("rubric-criteria")
     @JsonProperty("rubric")
     private RubricEntity rubric;
+
+    @OneToMany(mappedBy = "criterio", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference("criteria-calification")
+    @ToString.Exclude
+    private List<CalificationRegisterEntity> calificaciones;
 
     /*@ManyToOne
     @JoinColumn(name = "performance_level_id", nullable = false, foreignKey = @ForeignKey(name = "fk_performance"))

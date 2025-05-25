@@ -35,6 +35,11 @@ public class CalificationRegisterEntity {
     @JsonBackReference("evaluation-calification")
     private EvaluationEntity evaluation;
 
+    @ManyToOne
+    @JoinColumn(name = "id_criterio", nullable = false, foreignKey = @ForeignKey(name = "fk_criteria"))
+    @JsonBackReference("criteria-calification")
+    private CriteriaEntity criterio;
+
     @Override
     public final boolean equals(Object o) {
         if (this == o) return true;
