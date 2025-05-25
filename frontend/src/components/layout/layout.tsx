@@ -10,9 +10,9 @@ const Layout = ({children}:{children:React.ReactNode}) => {
   
   return (
       <div className="layout-container">
-        <Sidebar />
+          <Sidebar />
         <div className="content-container">
-          <Header />
+            <Header />
           <div className="content">
             <main>
                 {children}

@@ -9,7 +9,7 @@ const Sidebar: React.FC = () => {
     const handleClick = () => {
         navigate("/");
         // alert("No hay otros periodos disponibles");
-    };
+    }
 
     return (
     <aside className="sidebar open">
@@ -34,7 +34,7 @@ const Sidebar: React.FC = () => {
         </li> */}
         <li className="menu-item">
           <span className="material-symbols-outlined">school</span>
-          <span className="title5" onClick={handleClick}>Estudiante</span>
+            <span className="title5" onClick={handleClick}>Estudiante</span>
         </li>
       </ul>
     </aside>

@@ -1,5 +1,5 @@
 .layout-container {
-  display: flex;
+  /*display: flex;*/
   height: 100vh;
 }
 
@@ -16,13 +16,13 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  width: 100%; /* Asegura que ocupe todo el espacio */
+  /* width: 100%;  Asegura que ocupe el espacio */
   margin-left: 268px; /* Ajustar al ancho del sidebar */
 }
 
 .content {
   flex: 1; /* Permite que el contenido ocupe el espacio restante */
-  width: 100%;
+  /*width: 100%;*/
   padding: 1rem;
   overflow-y: auto;
   display: flex; /* Usa flexbox para alinear el contenido */
@@ -31,12 +31,10 @@
   align-items: stretch; /* En lugar de flex-start */
   margin-top: 75px; /* Ajustar al alto del header */
 }
+
 .periodo-actual {
   display: flex; /* Usa flexbox para alinear el contenido */
-  font-family: var(--title-font), serif;
-  color: var(
-    --primary-regular-color
-  ); /* Fuente definida en las variables CSS */
+  font-family: var(--title-font), serif; /* Fuente definida en las variables CSS */
   font-size: var(
     --title-size
   ); /* Tamaño de fuente definido en las variables CSS */
@@ -55,10 +53,10 @@
   align-items: center; /* Centra el texto verticalmente */
   font-family: var(--title-font), serif; /* Fuente definida */
   color: var(
-    --primary-regular-color
+          --primary-regular-color
   ); /* Color primario definido en las variables CSS */
   font-size: var(
-    --title-size
+          --title-size
   ); /* Tamaño de fuente definido en las variables CSS */
   font-weight: var(--semibold); /* Peso de fuente semibold */
   text-align: center; /* Asegura que el texto esté centrado */

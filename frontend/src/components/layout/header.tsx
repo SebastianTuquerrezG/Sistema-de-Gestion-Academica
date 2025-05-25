@@ -9,7 +9,7 @@ const Header: React.FC = () => {
         <span className="material-symbols-outlined">account_circle</span>
         <div className="user-info">
           <span className="title5">
-            Nombre completo de usuario tocando header
+            Nombre completo de usuario
           </span>
           <span className="text3">Rol de usuario</span>
         </div>

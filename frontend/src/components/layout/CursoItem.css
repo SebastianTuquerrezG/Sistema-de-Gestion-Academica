@@ -9,13 +9,14 @@
   ); /* Fondo con el color de la variable */
   color: #fff;
   border-radius: 16px;
-  font-family: var(--title-font, Arial);
+  font-family: var(--title-font, Arial), serif;
   font-size: 1.2rem;
   font-weight: 500;
   margin-bottom: 18px;
   border: none;
   cursor: pointer;
   transition: filter 0.2s;
+  box-shadow: 10px 4px 12px rgba(0, 0, 0, 0.25);
 }
 
 .curso-item:hover {

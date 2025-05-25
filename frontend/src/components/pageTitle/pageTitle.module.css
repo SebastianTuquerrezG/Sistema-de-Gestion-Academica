@@ -1,12 +1,11 @@
 .title {
   font-family: var(--title-font), serif;
   color: var(--primary-regular-color);
-  position: relative;
+  /*position: relative;*/
   display: block; /* Cambiar de inline-block a block */
   width: 100%; /* Ocupar todo el ancho disponible */
-  text-align: center; /* <-- Esto centra el texto */
-  margin-top: 90px; /* <-- Ajusta el valor según lo que necesites */
 }
+
 
 .firstWord {
   position: relative;

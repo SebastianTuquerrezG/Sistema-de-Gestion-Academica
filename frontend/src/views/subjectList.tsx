@@ -16,7 +16,7 @@ const SubjectList : React.FC = ({  }) => {
     const location = useLocation();
 
     const periodoSeleccionado = location.state?.periodoSeleccionado;
-    const idStudent = 1; // Cambia esto por el id real del estudiante
+    const idStudent = 2; // Cambia esto por el id real del estudiante
 
     type Curso = {
        // id: number
