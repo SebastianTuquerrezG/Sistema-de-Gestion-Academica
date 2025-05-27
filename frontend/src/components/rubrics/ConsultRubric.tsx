@@ -251,9 +251,7 @@ export default function ConsultarRubrica() {
                                         onClick={() => handleDetail(rubric.idRubrica)}>
                                         {rubric.nombreMateria}
                                     </td>
-                                    <td>
-                                        <TableCell>{getStatusBadge(rubric.estado)}</TableCell>
-                                    </td>
+                                    <TableCell>{getStatusBadge(rubric.estado)}</TableCell>
                                     <td className="px-6 py-4">
                                         <div className="flex justify-center gap-2">
                                             <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => handleEdit(rubric.idRubrica)}>

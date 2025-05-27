@@ -30,7 +30,7 @@ export async function getAllSubjects(): Promise<any[]> {
 // Obtener rúbricas por materia (subject)
 export async function getRubricsBySubjectId(idMateria: number): Promise<any[]> {
   try {
-    const response = await fetch(`${baseUrl}/rubricas/subject/${idMateria}`, {
+    const response = await fetch(`${baseUrl}/rubrics/subject/${idMateria}`, {
       headers: getAuthHeaders(),
     });
     if (!response.ok) throw new Error(`HTTP error: ${response.status}`);

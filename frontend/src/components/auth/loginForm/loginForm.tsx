@@ -34,7 +34,6 @@ export default function LoginForm() {
         if (isAuthenticated()) {
             navigate("/rubricas");
         }
-        console.log("Verificando autenticación...");
     }, [navigate]);
 
     useEffect(() => {
