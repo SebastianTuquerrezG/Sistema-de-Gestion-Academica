@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
-import {Search, Plus, Pencil, Trash2, Share2} from "lucide-react";
+import { Search, Plus, Pencil, Trash2, Share2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useNavigate } from "react-router-dom";
 import { Copy } from "lucide-react";
@@ -14,8 +14,8 @@ import { deleteRubric } from "@/services/rubricService";
 import { createRubric } from "@/services/rubricService";
 import DuplicateRubricModal from "@/components/Modal/DuplicateRubricModal.tsx";
 import ShareRubricModal from "@/components/Modal/ShareRubricModal.tsx";
-import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select.tsx";
-import {TableCell} from "@/components/ui/table.tsx";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select.tsx";
+import { TableCell } from "@/components/ui/table.tsx";
 import { Badge } from "@/components/ui/badge.tsx";
 import ConfirmDeleteModal from "@/components/Modal/ConfirmDeleteModal";
 //import rubricaInfo from "@/views/Evaluaciones/rubricaInfo.tsx";
@@ -55,10 +55,12 @@ export default function ConsultarRubrica() {
     useEffect(() => {
         getAllRubrics()
             .then(data => {
-                setRubrics(data);
+                setRubrics(Array.isArray(data) ? data : []);
             })
-            .catch((error) => console.error(error));
-    }, []);
+            .catch((error) => {
+                console.log(error.message);
+            });
+    }, [navigate]);
 
     const filteredRubrics = rubrics.filter(
         (rubric) =>
@@ -106,13 +108,13 @@ export default function ConsultarRubrica() {
         setRubricToDuplicate(rubric);
         setShowDuplicateModal(true);
     };
-    const  handleOpenShareModal = (rubric:RubricInterface) => {
+    const handleOpenShareModal = (rubric: RubricInterface) => {
         setRubricToDuplicate(rubric);
         setShowShareModal(true);
     }
 
     // Function to handle rubric duplication
-    const handleDuplicate = async ( data: { newName: string; shareWithSamePeople: boolean; copyComments: boolean; resolvedComments: boolean }) => {
+    const handleDuplicate = async (data: { newName: string; shareWithSamePeople: boolean; copyComments: boolean; resolvedComments: boolean }) => {
         if (!rubricToDuplicate) return;
 
         const duplicatedRubric: RubricInterface = {
@@ -290,7 +292,7 @@ export default function ConsultarRubrica() {
                 />
                 <ShareRubricModal
                     open={showShareModal}
-                    onClose={()=>setShowShareModal(false)}
+                    onClose={() => setShowShareModal(false)}
                     onShare={(data) => handleShareRubric(data)}
                     rubricName={rubricToDuplicate?.nombreRubrica || ""}
                 />

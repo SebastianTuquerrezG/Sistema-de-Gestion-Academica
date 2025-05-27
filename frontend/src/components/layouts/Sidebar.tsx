@@ -98,7 +98,7 @@ export default function AppSidebar() {
             <SidebarContent>
                 <SidebarGroup>
                     <div className="flex h-11 shrink-0 items-center justify-center gap-2 shadow-md px-3">
-                        <a href="/">
+                        <a href="/rubricas">
                             <img src="/logos/logo.svg" alt="Logo" className="h-15" />
                         </a>
                     </div>
