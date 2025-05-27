@@ -13,10 +13,13 @@ import { useNavigate } from "react-router-dom";
 import { loadCredentials, saveCredentials, clearCredentials } from "@/lib/rememberMe";
 import { authAction } from "@/actions/authAction";
 import { LoginResponse } from "@/actions/responseType";
+import { Loader2 } from "lucide-react";
+import { isAuthenticated } from "@/lib/auth";
 
 export default function LoginForm() {
     const navigate = useNavigate();
     const [rememberMe, setRememberMe] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
 
     const { register, handleSubmit, formState: { errors }, setValue, setError } = useForm({
         resolver: zodResolver(userSchema),
@@ -26,6 +29,13 @@ export default function LoginForm() {
         },
         mode: "onSubmit"
     });
+
+    useEffect(() => {
+        if (isAuthenticated()) {
+            navigate("/rubricas");
+        }
+        console.log("Verificando autenticación...");
+    }, [navigate]);
 
     useEffect(() => {
         const savedCredentials = loadCredentials();
@@ -42,8 +52,8 @@ export default function LoginForm() {
     }
 
     const onSubmit = async (data: FormData) => {
+        setIsLoading(true);
         try {
-            // Usar el Server Action
             const res = await authAction(data);
 
             if (res.success) {
@@ -60,6 +70,8 @@ export default function LoginForm() {
                 message: "Error al iniciar sesión. Por favor, inténtalo nuevamente."
             });
             toast.error("Error al iniciar sesión. Por favor, inténtalo nuevamente.");
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -71,7 +83,7 @@ export default function LoginForm() {
         }
 
         toast.success("¡Inicio de sesión exitoso!");
-        navigate("/Dashboard");
+        navigate("/rubricas");
     };
 
     const handleAuthError = (result: LoginResponse) => {
@@ -138,8 +150,15 @@ export default function LoginForm() {
                         </label>
                     </div>
 
-                    <Button variant="default" type="submit" className="w-full">
-                        Iniciar sesión
+                    <Button type="submit" className="w-full" disabled={isLoading}>
+                        {isLoading ? (
+                            <span className="flex items-center justify-center gap-2">
+                                <Loader2 className="animate-spin h-4 w-4" />
+                                Iniciando...
+                            </span>
+                        ) : (
+                            "Iniciar sesión"
+                        )}
                     </Button>
                 </form>
             </div>
