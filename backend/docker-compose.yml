@@ -38,7 +38,7 @@ services:
     networks:
       - backend-network
     extra_hosts:
-      - "keycloak:host-gateway"
+      - "keycloak.local:host-gateway"
 
   eureka-server:
     env_file:
@@ -70,7 +70,7 @@ services:
     networks:
       - backend-network
     extra_hosts:
-      - "keycloak:host-gateway"
+      - "keycloak.local:host-gateway"
     environment:
       EUREKA_USERNAME: ${EUREKA_USERNAME}
       EUREKA_PASSWORD: ${EUREKA_PASSWORD}

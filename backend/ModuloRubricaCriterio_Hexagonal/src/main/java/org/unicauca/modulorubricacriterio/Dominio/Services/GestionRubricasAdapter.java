@@ -16,6 +16,8 @@ public class GestionRubricasAdapter implements IGestionRubricaPort{
     
     @Override
     public Rubrica consultarRubrica(Long Id) {
+        System.out.println("Petición GET /api/rubricas recibida");
+
         return this.conectorBDRubricaPort.findById(Id);
     }
 
