@@ -33,11 +33,11 @@ const ConfirmDeleteModal: React.FC<ConfirmDeleteModalProps> = ({
           </button>
 
           {/* Título */}
-          <h2 className="text-lg font-semibold text-gray-900 mb-2">Confirmar eliminación</h2>
+          <h2 className="text-lg font-semibold text-gray-900 mb-2">Confirmar Desvinculación</h2>
 
           {/* Subtítulo */}
           <p className="text-sm text-gray-700 mb-6">
-            ¿Estás seguro de que deseas eliminar la rúbrica <strong>{rubricName}</strong>?
+            ¿Estás seguro de que deseas desvincular la rúbrica <strong>{rubricName}</strong>?
           </p>
 
           {/* Botones */}
@@ -46,7 +46,7 @@ const ConfirmDeleteModal: React.FC<ConfirmDeleteModalProps> = ({
               Cancelar
             </Button>
             <Button className="bg-red-600 text-white hover:bg-red-700" onClick={handleConfirmDelete}>
-              Eliminar
+              Desvincular
             </Button>
           </div>
         </div>

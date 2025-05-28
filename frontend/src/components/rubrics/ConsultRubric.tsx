@@ -1,24 +1,21 @@
 "use client"
 
-import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
-import {Search, Plus, Pencil, Trash2, Share2} from "lucide-react";
+import {Search, Plus, Pencil, Trash2, Share2, Copy} from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import {TableCell} from "@/components/ui/table.tsx";
+import { Badge } from "@/components/ui/badge.tsx";
+import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select.tsx";
 import { useNavigate } from "react-router-dom";
-import { Copy } from "lucide-react";
-
-import { getAllRubrics } from "@/services/rubricService";
 import Notification from "@/components/notifications/notification";
 import { RubricInterface } from "@/interfaces/RubricInterface";
+import { getAllRubrics } from "@/services/rubricService";
 import { deleteRubric } from "@/services/rubricService";
 import { createRubric } from "@/services/rubricService";
 import DuplicateRubricModal from "@/components/Modal/DuplicateRubricModal.tsx";
 import ShareRubricModal from "@/components/Modal/ShareRubricModal.tsx";
-import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select.tsx";
-import {TableCell} from "@/components/ui/table.tsx";
-import { Badge } from "@/components/ui/badge.tsx";
 import ConfirmDeleteModal from "@/components/Modal/ConfirmDeleteModal";
-//import rubricaInfo from "@/views/Evaluaciones/rubricaInfo.tsx";
 
 type NotificationType = {
     type: "error" | "info" | "success";
@@ -28,6 +25,8 @@ type NotificationType = {
 
 export default function ConsultarRubrica() {
     const [searchTerm, setSearchTerm] = useState("");
+    const [selectedMateria, setSelectedMateria] = useState("");
+    const [selectedEstado, setSelectedEstado] = useState("");
     const [rubrics, setRubrics] = useState<RubricInterface[]>([]);
     const navigate = useNavigate(); // Hook para navegación entre páginas
     const [selectedRubricId, setSelectedRubricId] = useState<string | null>(null);
@@ -36,6 +35,7 @@ export default function ConsultarRubrica() {
     const [showShareModal, setShowShareModal] = useState(false);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [rubricToDelete, setRubricToDelete] = useState<RubricInterface | null>(null);
+    const [notification, setNotification] = useState<NotificationType | null>(null);
     /*
     useEffect(() => {
         fetch('/rubricas.json')
@@ -51,7 +51,7 @@ export default function ConsultarRubrica() {
             })
             .catch((error) => console.error(error));
     }, []);*/
-
+    // Cargar las rúbricas desde el backend
     useEffect(() => {
         getAllRubrics()
             .then(data => {
@@ -62,11 +62,10 @@ export default function ConsultarRubrica() {
 
     const filteredRubrics = rubrics.filter(
         (rubric) =>
-            rubric.nombreRubrica.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            rubric.idRubrica.toLowerCase().includes(searchTerm.toLowerCase())
-        /*       rubric.materia.toLowerCase().includes(searchTerm.toLowerCase())*/
-    );
-
+            (rubric.nombreRubrica.toLowerCase().includes(searchTerm.toLowerCase()) || rubric.idRubrica.toLowerCase().includes(searchTerm.toLowerCase())) &&
+            (selectedMateria== "Todas las materias" || selectedMateria === "" || rubric.nombreMateria === selectedMateria) &&
+            (selectedEstado == "Todos los estados" || selectedEstado === "" || rubric.estado === selectedEstado)
+        );
     // Funcion para navegar a la pagina de editar
     const handleEdit = (id: string) => {
         navigate(`/rubricas/editar/${id}`);
@@ -75,18 +74,20 @@ export default function ConsultarRubrica() {
     const handleAdd = () => {
         navigate(`/rubricas/crear`);
     };
-
-    // Función para navegar a RubricDetail
+    // Función para navegar a detalle de la rúbrica
     const handleDetail = (id: string) => {
         setSelectedRubricId(id);
         navigate(`/rubricas/detalle/${id}`);
     };
-
-    // Function to delete a rubric
+    // Funcion para eliminar una rúbrica
     const handleDelete = async (id: string) => {
         const success = await deleteRubric(id);
         if (success) {
-            setRubrics(rubrics.filter(rubric => rubric.idRubrica !== id));
+            setRubrics(rubrics.map(rubric =>
+                rubric.idRubrica === id
+                    ? { ...rubric, estado: "INACTIVO" }
+                    : rubric
+            ));
             setNotification({
                 type: "success",
                 title: "Rúbrica inactivada",
@@ -97,19 +98,14 @@ export default function ConsultarRubrica() {
                 type: "error",
                 title: "Error",
                 message: "No se pudo inactivar la rúbrica.",
-            })
+            });
         }
     };
-
     // Function to open the duplicate modal
     const handleOpenDuplicateModal = (rubric: RubricInterface) => {
         setRubricToDuplicate(rubric);
         setShowDuplicateModal(true);
     };
-    const  handleOpenShareModal = (rubric:RubricInterface) => {
-        setRubricToDuplicate(rubric);
-        setShowShareModal(true);
-    }
 
     // Function to handle rubric duplication
     const handleDuplicate = async ( data: { newName: string; shareWithSamePeople: boolean; copyComments: boolean; resolvedComments: boolean }) => {
@@ -150,8 +146,10 @@ export default function ConsultarRubrica() {
         console.log("Sharing rubric:", rubricToDuplicate, data);
         setShowShareModal(false);
     };
-
-    const [notification, setNotification] = useState<NotificationType | null>(null);
+    const  handleOpenShareModal = (rubric:RubricInterface) => {
+        setRubricToDuplicate(rubric);
+        setShowShareModal(true);
+    }
 
     const getStatusBadge = (status: string) => {
         switch (status) {
@@ -167,7 +165,6 @@ export default function ConsultarRubrica() {
         setRubricToDelete(rubric);
         setShowDeleteModal(true);
     };
-
 
     const handleConfirmDelete = async () => {
         if (rubricToDelete) {
@@ -194,23 +191,27 @@ export default function ConsultarRubrica() {
                         <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
                     </div>
                     <div className="flex gap-2">
-                        <Select>
+                        <Select value={selectedMateria} onValueChange={setSelectedMateria}>
                             <SelectTrigger className="w-[180px]">
                                 <SelectValue placeholder="Filtrar por materia" />
                             </SelectTrigger>
                             <SelectContent>
-                                {rubrics.map((rubric) => (
-                                    <SelectItem key={rubric.idRubrica} value={rubric.nombreRubrica}>
-                                        {rubric.nombreMateria}
+                                <SelectItem value="Todas las materias">Todas las materias </SelectItem>
+                                {[...new Set(rubrics.map(r => r.nombreMateria))]
+                                .filter((materia): materia is string => typeof materia === "string")
+                                .map((materia) => (
+                                    <SelectItem key={materia} value={materia}>
+                                        {materia}
                                     </SelectItem>
                                 ))}
                             </SelectContent>
                         </Select>
-                        <Select>
+                        <Select value={selectedEstado} onValueChange={setSelectedEstado}>
                             <SelectTrigger className="w-[180px]">
                                 <SelectValue placeholder="Filtrar por estado" />
                             </SelectTrigger>
                             <SelectContent>
+                                <SelectItem value="Todos los estados">Todos los estados</SelectItem>
                                 <SelectItem value="ACTIVO">Activo</SelectItem>
                                 <SelectItem value="INACTIVO">Inactivo</SelectItem>
                             </SelectContent>
@@ -254,17 +255,17 @@ export default function ConsultarRubrica() {
                                     </td>
                                     <td className="px-6 py-4">
                                         <div className="flex justify-center gap-2">
-                                            <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => handleEdit(rubric.idRubrica)}>
+                                            <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => handleEdit(rubric.idRubrica)} disabled={rubric.estado === "INACTIVO"}>
                                                 <Pencil className="h-4 w-4" />
                                             </Button>
                                             <Button variant="ghost" size="icon" className="h-8 w-8 text-orange-500 hover:text-orange-600" onClick={() => handleOpenDeleteModal(rubric)}>
                                                 <Trash2 className="h-4 w-4" />
                                             </Button>
-                                            <Button variant="ghost" size="icon" className="h-8 w-8 text-indigo-500 hover:text-indigo-600" onClick={() => handleOpenDuplicateModal(rubric)}>
+                                            <Button variant="ghost" size="icon" className="h-8 w-8 text-indigo-500 hover:text-indigo-600" onClick={() => handleOpenDuplicateModal(rubric)} disabled={rubric.estado === "INACTIVO"}>
                                                 <Copy className="h-4 w-4" />
                                             </Button>
 
-                                            <Button variant="ghost" size="icon" className="h-8 w-8 text-black-500 hover:text-black-600" onClick={() => handleOpenShareModal(rubric)}>
+                                            <Button variant="ghost" size="icon" className="h-8 w-8 text-black-500 hover:text-black-600" onClick={() => handleOpenShareModal(rubric)} disabled={rubric.estado === "INACTIVO"}>
                                                 <Share2 className="h-4 w-4" />
                                             </Button>
                                             {notification && (
