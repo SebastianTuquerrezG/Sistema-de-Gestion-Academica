@@ -34,7 +34,7 @@ public class RubricEvaluationController {
 
     @GetMapping("/bySubject/{idStudent}/{semester}/{idSubject}")
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_COORDINATOR', 'ROLE_TEACHER', 'ROLE_STUDENT')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN_ROLE', 'ROLE_COORDINATOR_ROLE', 'ROLE_TEACHER_ROLE', 'ROLE_STUDENT_ROLE')")
     public ResponseEntity<SubjectHeaderResponseViewDTO> getSubjectFromStudentPeriod(@PathVariable Long idStudent, @PathVariable String semester, @PathVariable Long idSubject) {
         return ResponseEntity.ok(rubricEvaluationPort.getSubjectFromStudentPeriod(idStudent, semester, idSubject));
     }

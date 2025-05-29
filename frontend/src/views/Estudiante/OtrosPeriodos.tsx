@@ -1,25 +1,24 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 import PageTitle from "../../components/pageTitle/pageTitle.tsx";
 import SidebarStudent from "../../components/layout/sidebarStudent.tsx";
 import HeaderStudent from "../../components/layout/headerStudent.tsx";
-import CursosList from "../../components/layout/CursosList.tsx";
 //import {getSubject} from "../../services/subjectList.ts";
-import {getPeriod} from "../../services/subjectList.ts"; // Asegúrate de que esta función esté exportada correctamente
+import {getPeriod} from "@/services/subjectList.ts";
+import PeriodosList from "@/components/layouts/PeriodosList.tsx"; // Asegúrate de que esta función esté exportada correctamente
 
-const idStudent = 1; // Cambia esto por el id real del estudiante
-
-const OtrosPeriodos = () => {
+const OtrosPeriodos: React.FC = () => {
+  const { idStudent } = useParams();
   const navigate = useNavigate();
   const [periodos, setPeriodos] = useState<
-    { nombre: string; docente: string }[]
+      { nombre: string; docente: string }[]
   >([]);
 
   useEffect(() => {
     const fetchPeriodo = async () => {
       try {
         const [subjectData] = await Promise.all([
-             getPeriod(idStudent),
+          getPeriod(idStudent),
 
         ]);
         // Si data es un array de strings, lo transformamos:
@@ -37,23 +36,23 @@ const OtrosPeriodos = () => {
   }, []);
 
   // Puedes reutilizar el handler si quieres hacer algo al hacer click en un periodo
-  const handlePeriodoClick = (periodo: { nombre: string; docente: string }) => {
+  const handlePeriodoClick = (periodo: { nombre: string}) => {
     alert(`Seleccionaste el periodo: ${periodo.nombre}`);
     // Aquí podrías navegar a otra vista si lo necesitas
-    navigate("/", { state: { periodoSeleccionado: periodo.nombre } });
+    navigate("/subjectList", { state: { periodoSeleccionado: periodo.nombre } });
   };
 
   return (
-    <div className="layout-container">
-      <SidebarStudent />
-      <div className="content-container">
-        <HeaderStudent />
-        <PageTitle title="Otros Periodos" />
-        <div className="content">
-          <CursosList cursos={periodos} onCursoClick={handlePeriodoClick} />
+      <div className="layout-container">
+        <SidebarStudent />
+        <div className="content-container">
+          <HeaderStudent />
+          <PageTitle title="Otros Periodos" />
+          <div className="content">
+            <PeriodosList periodos={periodos} onPeriodoClick={handlePeriodoClick} />
+          </div>
         </div>
       </div>
-    </div>
   );
 };
 

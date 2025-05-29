@@ -23,10 +23,26 @@ export type EvaluationResponseViewDTO = {
     totalScore: number;
 };
 
+function getAuthHeaders(): Record<string, string> {
+    const access_token = localStorage.getItem('auth-token');
+    if (!access_token) {
+        throw new Error("No se encontró el token de autenticación");
+    }
+    const headers: Record<string, string> = {
+        "Content-Type": "application/json",
+    };
+    if (access_token) {
+        headers["Authorization"] = `Bearer ${access_token}`;
+    }
+    return headers;
+}
+
 export const getRubricEvaluation = async (idStudent: string | undefined, idSubject: string | undefined, period: string | undefined, idRubric: string | undefined) => {
     try {
         console.log("Datos recibidos:",{ idStudent, idSubject, period, idRubric });
-        const response = await fetch(`http://localhost:8080/api/RubricEvaluation/${idStudent}/${idSubject}/${period}/${idRubric}`);
+        const response = await fetch(`http://localhost:8080/api/RubricEvaluation/${idStudent}/${idSubject}/${period}/${idRubric}`,{
+            headers: getAuthHeaders(),
+        });
 
         if (response.status === 404) {
             throw new Error("Por favor comuníquese con el docente o repórtelo a soportetecnico@unicauca.edu.co");

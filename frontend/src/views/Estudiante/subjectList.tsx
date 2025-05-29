@@ -1,5 +1,5 @@
 //import { use } from "react";
-import { getSubject } from "../../services/subjectList.ts";
+import { getSubject } from "@/services/subjectList.ts";
 import React , { useEffect, useState } from "react";
 import LayoutStudent   from "../../components/layout/layoutStudent.tsx";
 //import SidebarStudent from "../components/layout/sidebarStudent.tsx";
@@ -8,7 +8,7 @@ import IconButton from "../../components/buttons/iconButton.tsx";
 import CursosList from "../../components/layout/CursosList.tsx";
 import {useNavigate, useLocation} from "react-router-dom";
 
-const SubjectList : React.FC = ({  }) => {
+const SubjectList : React.FC = () => {
 
     const navigate = useNavigate();
     const location = useLocation();
@@ -21,6 +21,12 @@ const SubjectList : React.FC = ({  }) => {
         nombre: string;
         docente: string;
         id: number
+    };
+
+    type SubjectFromApi = {
+        nameSubject: string;
+        nameTeacher: string;
+        id: number;
     };
 
 
@@ -42,7 +48,7 @@ const SubjectList : React.FC = ({  }) => {
                     getSubject(idStudent, period)
                 ]);
                 // Transforma los datos para que tengan las claves que espera la interfaz
-                const cursosTransformados = subjectData.map((curso: any) => ({
+                const cursosTransformados = subjectData.map((curso: SubjectFromApi) => ({
                     nombre: curso.nameSubject,
                     docente: curso.nameTeacher,
                     id: curso.id,
@@ -66,7 +72,11 @@ const SubjectList : React.FC = ({  }) => {
     };
     // Función para manejar el clic en "Otros Periodos"
     const handleClick = () => {
-       navigate("/otrosperiodos");
+        navigate(`/otrosperiodos/${idStudent}`,{
+            state: {
+                idStudent: idStudent,
+            }
+        });
         // alert("No hay otros periodos disponibles");
     };
 

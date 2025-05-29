@@ -1,4 +1,4 @@
-import React from "react";
+
 import { Routes, Route } from "react-router-dom";
 import { ProtectedRoute } from "./routes/ProtectedRoute";
 import Dashboard from "./pages/Dashboard";
@@ -17,12 +17,12 @@ function App() {
         path="/*"
         element={
           <ProtectedRoute>
-            <Dashboard />
+              <Dashboard />
           </ProtectedRoute>
         }
       />
-        <Route path="/" element={<SubjectList />} />
-        <Route path="/otrosperiodos" element={<OtrosPeriodos />} />
+        <Route path="/subjectList" element={<SubjectList />} />
+        <Route path="/otrosperiodos/:idStudent" element={<OtrosPeriodos />} />
         <Route path="/rubric/:idStudent/:idSubject/:period" element={<RubricWrapper />} />
         <Route path="/rubric/:idStudent/:idSubject/:period/:idRubric" element={<Rubric />} />
     </Routes>
