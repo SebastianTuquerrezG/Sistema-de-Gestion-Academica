@@ -4,11 +4,11 @@
 }
 
 .sidebar {
-  width: 268px; /* Ancho del Sidebar */
+  width: 268px; /* Ancho del SidebarStudent */
 }
 
 .header {
-  height: 75px; /* Altura del Header */
+  height: 75px; /* Altura del HeaderStudent */
   border-bottom: 5px var(--hover-regular-color) solid;
 }
 

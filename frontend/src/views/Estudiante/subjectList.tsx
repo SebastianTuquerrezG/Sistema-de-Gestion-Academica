@@ -1,12 +1,11 @@
 //import { use } from "react";
-import { getSubject } from "../services/subjectList.tsx";
+import { getSubject } from "../../services/subjectList.ts";
 import React , { useEffect, useState } from "react";
-import Layout   from "../components/layout/layout.tsx";
-//import Sidebar from "../components/layout/sidebar.tsx";
-//import Header from "../components/layout/header.tsx";
-import IconButton from "../components/buttons/iconButton.tsx";
-import CursosList from "../components/layout/CursosList.tsx";
-//import Footer from "../components/layout/Footer .tsx";
+import LayoutStudent   from "../../components/layout/layoutStudent.tsx";
+//import SidebarStudent from "../components/layout/sidebarStudent.tsx";
+//import HeaderStudent from "../components/layout/headerStudent.tsx";
+import IconButton from "../../components/buttons/iconButton.tsx";
+import CursosList from "../../components/layout/CursosList.tsx";
 import {useNavigate, useLocation} from "react-router-dom";
 
 const SubjectList : React.FC = ({  }) => {
@@ -74,14 +73,14 @@ const SubjectList : React.FC = ({  }) => {
 
 
     return (
-        <Layout>
+        <LayoutStudent>
             <IconButton onClick={handleClick} icon="add">
                 Otros Periodos
             </IconButton>
             <p className="periodo-actual">Periodo actual: 2025-1</p>{" "}
             <p className="Curso-actuales">Cursos Actuales</p>
             <CursosList cursos={subjects} onCursoClick={handleCursoClick} />
-        </Layout>
+        </LayoutStudent>
     );
 };
 

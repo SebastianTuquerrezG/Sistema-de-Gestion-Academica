@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom";
-import RubricList from "./rubricList";
+import RubricList from "./rubricList.tsx";
 import React from "react";
 
 const RubricWrapper: React.FC = () => {

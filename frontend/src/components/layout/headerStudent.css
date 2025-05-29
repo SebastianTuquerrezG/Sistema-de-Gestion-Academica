@@ -5,9 +5,9 @@
 .header {
   position: fixed;
   top: 0;
-  left: 268px; /* Ancho del Sidebar */
+  left: 268px; /* Ancho del SidebarStudent */
   height: 75px;
-  width: calc(100% - 268px); /* Resta el ancho del Sidebar */
+  width: calc(100% - 268px); /* Resta el ancho del SidebarStudent */
   background-color: white;
   color: var(--primary-regular-color);
   border-bottom: 5px var(--hover-regular-color) solid;

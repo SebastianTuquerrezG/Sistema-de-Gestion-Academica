@@ -1,18 +1,18 @@
-import Sidebar from "./sidebar";
-import Header from "./header";
+import SidebarStudent from "./sidebarStudent.tsx";
+import HeaderStudent from "./headerStudent.tsx";
 import React  from "react";
 
 
-import "./layout.css";
+import "./layoutStudent.css";
 //import PageTitle from "../pageTitle/pageTitle.tsx";
 
-const Layout = ({children}:{children:React.ReactNode}) => {
+const LayoutStudent = ({children}:{children:React.ReactNode}) => {
   
   return (
       <div className="layout-container">
-          <Sidebar />
+          <SidebarStudent />
         <div className="content-container">
-            <Header />
+            <HeaderStudent />
           <div className="content">
             <main>
                 {children}
@@ -23,4 +23,4 @@ const Layout = ({children}:{children:React.ReactNode}) => {
   );
 };
 
-export default Layout;
+export default LayoutStudent;

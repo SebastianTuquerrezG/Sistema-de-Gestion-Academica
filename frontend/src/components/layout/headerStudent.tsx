@@ -1,7 +1,7 @@
 import React from "react";
-import "./header.css"; // Importa tu CSS si es necesario
+import "./headerStudent.css"; // Importa tu CSS si es necesario
 
-const Header: React.FC = () => {
+const HeaderStudent: React.FC = () => {
   return (
     <header className="header">
       <h1 className="title4">Universidad del Cauca</h1>
@@ -18,4 +18,4 @@ const Header: React.FC = () => {
   );
 };
 
-export default Header;
+export default HeaderStudent;

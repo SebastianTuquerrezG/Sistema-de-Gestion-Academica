@@ -1,9 +1,9 @@
 import React, {useEffect} from "react";
-import { SubjectHeader } from "../components/cards/subjectCard.tsx";
-import { RubricCard } from "../components/cards/rubricCard.tsx";
-import { getRubrics, getSubjectHeader } from "../services/rubricListService.ts";
+import { SubjectHeader } from "../../components/cards/subjectCard.tsx";
+import { RubricCard } from "../../components/cards/rubricCard.tsx";
+import { getRubrics, getSubjectHeader } from "../../services/rubricListService.ts";
 import { useNavigate} from "react-router-dom";
-import Layout from "../components/layout/layout.tsx";
+import LayoutStudent from "../../components/layout/layoutStudent.tsx";
 import "./rubricList.css"
 
 type RubricListProps = {
@@ -69,7 +69,7 @@ const RubricList: React.FC<RubricListProps> = ({ idStudent, idSubject, period })
     };
 
     return (
-        <Layout>
+        <LayoutStudent>
             <div className="subject-header">
                 {subjectHeader && (
                     <SubjectHeader
@@ -89,7 +89,7 @@ const RubricList: React.FC<RubricListProps> = ({ idStudent, idSubject, period })
                     />
                 ))}
             </div>
-        </Layout>
+        </LayoutStudent>
     );
 };
 

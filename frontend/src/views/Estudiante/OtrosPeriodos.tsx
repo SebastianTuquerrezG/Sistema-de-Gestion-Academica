@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import PageTitle from "../pageTitle/pageTitle";
-import Sidebar from "../layout/sidebar";
-import Header from "../layout/header";
-import CursosList from "../layout/CursosList";
-//import {getSubject} from "../../services/subjectList.tsx";
-import {getPeriod} from "../../services/subjectList.tsx"; // Asegúrate de que esta función esté exportada correctamente
+import PageTitle from "../../components/pageTitle/pageTitle.tsx";
+import SidebarStudent from "../../components/layout/sidebarStudent.tsx";
+import HeaderStudent from "../../components/layout/headerStudent.tsx";
+import CursosList from "../../components/layout/CursosList.tsx";
+//import {getSubject} from "../../services/subjectList.ts";
+import {getPeriod} from "../../services/subjectList.ts"; // Asegúrate de que esta función esté exportada correctamente
 
 const idStudent = 1; // Cambia esto por el id real del estudiante
 
@@ -45,9 +45,9 @@ const OtrosPeriodos = () => {
 
   return (
     <div className="layout-container">
-      <Sidebar />
+      <SidebarStudent />
       <div className="content-container">
-        <Header />
+        <HeaderStudent />
         <PageTitle title="Otros Periodos" />
         <div className="content">
           <CursosList cursos={periodos} onCursoClick={handlePeriodoClick} />

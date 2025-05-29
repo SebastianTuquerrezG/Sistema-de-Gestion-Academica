@@ -1,11 +1,11 @@
 import React from 'react';
 import "./rubric.css";
 import { useEffect, useState } from "react";
-import Notification from '../../components/notifications/notification.tsx';
+import Notification from '../../../components/notifications/notification.tsx';
 
-import Layout from "../../components/layout/layout.tsx";
+import LayoutStudent from "../../../components/layout/layoutStudent.tsx";
 import {useLocation, useParams} from "react-router-dom";
-import {EvaluationResponseViewDTO, getRubricEvaluation} from "../../services/rubricEvaluationService.ts";
+import {EvaluationResponseViewDTO, getRubricEvaluation} from "../../../services/rubricEvaluationService.ts";
 
 const Rubric: React.FC = () => {
 
@@ -38,7 +38,7 @@ const Rubric: React.FC = () => {
 
 
   return (
-      <Layout>
+      <LayoutStudent>
           <div>
               {showNotification && (
                   <Notification
@@ -138,7 +138,7 @@ const Rubric: React.FC = () => {
               </div>
 
           </div>
-      </Layout>
+      </LayoutStudent>
 
   );
 };
