@@ -11,7 +11,6 @@ import {useNavigate, useLocation} from "react-router-dom";
 
 const SubjectList : React.FC = ({  }) => {
 
-
     const navigate = useNavigate();
     const location = useLocation();
 
@@ -41,7 +40,6 @@ const SubjectList : React.FC = ({  }) => {
         const fetchData = async () => {
             try {
                 const [subjectData] = await Promise.all([
-                 //   getPeriod(idStudent),
                     getSubject(idStudent, period)
                 ]);
                 // Transforma los datos para que tengan las claves que espera la interfaz

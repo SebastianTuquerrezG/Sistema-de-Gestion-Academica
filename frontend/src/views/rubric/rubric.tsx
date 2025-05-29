@@ -5,7 +5,7 @@ import Notification from '../../components/notifications/notification.tsx';
 
 import Layout from "../../components/layout/layout.tsx";
 import {useLocation, useParams} from "react-router-dom";
-import {EvaluationResponseViewDTO, getRubricEvaluation} from "../../services/rubricService.ts";
+import {EvaluationResponseViewDTO, getRubricEvaluation} from "../../services/rubricEvaluationService.ts";
 
 const Rubric: React.FC = () => {
 
