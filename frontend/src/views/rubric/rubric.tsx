@@ -62,70 +62,71 @@ const Rubric: React.FC = () => {
                   <p className="descripcion">{rubrica?.description}</p>
                   <div className='tableRubric'>
                       <div className='scroll'>
-                          <table className='tableRubric2'>
-                              <thead>
-                              <tr>
-                                  <th>Criterios de Evaluación</th>
-                                  {rubrica?.criterias[0]?.levels.map((_, index) => (
-                                      <th key={index}>{`Nivel ${index + 1}`}</th>
-                                  ))}
+                              <table >
+                                  <thead>
+                                  <tr>
+                                      <th>Criterios de Evaluación</th>
+                                      {rubrica?.criterias[0]?.levels.map((_, index) => (
+                                          <th key={index}>{`Nivel ${index + 1}`}</th>
+                                      ))}
 
-                                  <th rowSpan={2}>Calificación</th>
-                                  <th rowSpan={2}>Porcentaje</th>
-                                  <th rowSpan={2}>Ponderación</th>
-                                  <th rowSpan={2}>Comentarios</th>
+                                      <th rowSpan={2}>Calificación</th>
+                                      <th rowSpan={2}>Porcentaje</th>
+                                      <th rowSpan={2}>Ponderación</th>
+                                      <th rowSpan={2}>Comentarios</th>
 
-                              </tr>
-                              <tr>
-                                  <th>Rangos:</th>
-                                  {rubrica?.criterias[0]?.levels.map((level, index) => (
-                                      <th key={index}>{level.range}</th>
-                                  ))}
-                              </tr>
-
-                              </thead>
-                              <tbody>
-                              {rubrica?.criterias.map((criterio, i) => (
-                                  <tr key={i}>
-                                      {/* Nombre del criterio */}
-                                      <td>{criterio.descriptionCriteria}</td>
-
-                                      {/* Descripción de cada nivel */}
-                                      {criterio.levels.map((level, j) => {
-                                          // construye el nombre del nivel como "Nivel 1", "Nivel 2", etc.
-                                          const nivelNombre = `Nivel ${j + 1}`;
-                                          const nivelSeleccionado = rubrica.califications[i]?.level === nivelNombre;
-
-                                          return (
-                                              <td
-                                                  key={j}
-                                                  className={nivelSeleccionado ? "selected-level" : ""}
-                                              >
-                                                  {level.description}
-                                              </td>
-                                          );
-                                      })}
-
-
-                                      {/* Calificación, si existe */}
-                                      <td>{rubrica?.califications[i]?.calification ?? "-"}</td>
-
-                                      {/* Porcentaje del criterio */}
-                                      <td>{criterio.percentage}%</td>
-
-                                      {/* Ponderación: calificación * porcentaje / 100 */}
-                                      <td>
-                                          {rubrica.califications[i]
-                                              ? ((Number(rubrica.califications[i].calification) * Number(criterio.percentage)) / 100).toFixed(2): "-"}
-                                      </td>
-
-                                      {/* Comentario del criterio */}
-                                      <td>{rubrica.califications[i]?.message ?? "-"}</td>
                                   </tr>
-                              ))}
+                                  <tr>
+                                      <th>Rangos:</th>
+                                      {rubrica?.criterias[0]?.levels.map((level, index) => (
+                                          <th key={index}>{level.range}</th>
+                                      ))}
+                                  </tr>
 
-                              </tbody>
-                          </table>
+                                  </thead>
+                                  <tbody>
+                                  {rubrica?.criterias.map((criterio, i) => (
+                                      <tr key={i}>
+                                          {/* Nombre del criterio */}
+                                          <td>{criterio.descriptionCriteria}</td>
+
+                                          {/* Descripción de cada nivel */}
+                                          {criterio.levels.map((level, j) => {
+                                              // construye el nombre del nivel como "Nivel 1", "Nivel 2", etc.
+                                              const nivelNombre = `Nivel ${j + 1}`;
+                                              const nivelSeleccionado = rubrica.califications[i]?.level === nivelNombre;
+
+                                              return (
+                                                  <td
+                                                      key={j}
+                                                      className={nivelSeleccionado ? "selected-level" : ""}
+                                                  >
+                                                      {level.description}
+                                                  </td>
+                                              );
+                                          })}
+
+
+                                          {/* Calificación, si existe */}
+                                          <td>{rubrica?.califications[i]?.calification ?? "-"}</td>
+
+                                          {/* Porcentaje del criterio */}
+                                          <td>{criterio.percentage}%</td>
+
+                                          {/* Ponderación: calificación * porcentaje / 100 */}
+                                          <td>
+                                              {rubrica.califications[i]
+                                                  ? ((Number(rubrica.califications[i].calification) * Number(criterio.percentage)) / 100).toFixed(2): "-"}
+                                          </td>
+
+                                          {/* Comentario del criterio */}
+                                          <td>{rubrica.califications[i]?.message ?? "-"}</td>
+                                      </tr>
+                                  ))}
+
+                                  </tbody>
+                              </table>
+
                       </div>
 
                   </div>

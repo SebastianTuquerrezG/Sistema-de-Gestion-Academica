@@ -12,7 +12,9 @@
 
 
 .descripcion {
+
   padding-bottom: 10px;
+
 }
 
 table {
@@ -41,59 +43,37 @@ thead {
 }
 
 .tableRubric{
-  /*display: flex;*/
-  margin-top: 35px;
-  margin-bottom: 35px;
-  margin-right: 0;
-  /*box-shadow: 0 4px 11px rgba(0, 0, 0, 0.10);*/
-}
-.tableRubric2{
-  /*margin: 0 auto;*/
-  margin-right: 19px;
-  border-collapse: separate;
-  border-spacing: 0;
-  border-radius: 12px;
-  overflow: hidden;
-  box-shadow: 10px 4px 12px rgba(0, 0, 0, 0.25);
-  background-color: white;
+
+  display: flex;
+  justify-content: center;
+
 }
 
 .scroll{
   overflow-x: auto;
-  padding-bottom: 1rem;
 }
 
-.fila1 {
+.fila1{
   font-family: var(--title-font), serif;
   font-size: var(--title6-size);
   color: var(--primary-regular-color);
   display: flex;
-  margin: 10px 10px 0;
-/*padding: 5px 30px;*/
+  flex-direction: row;
+  margin: 0 10px;
+  margin-top: 10px;
+  padding: 5px 30px;
   border-radius: 20px;
   background-color: var(--hover-regular-color);
 }
 
-
 .fila1columna1{
-  width: 60px; /* o el ancho exacto del ícono */
   display: flex;
-  justify-content: center;
-  /* align-items: center;*/
-  padding-top: 28px;
- }
+  flex-direction: column;
+  margin: 28px 10px;
+}
 
- .fila1columna2 h2{
-   margin-bottom: 0;
- }
-
- .fila1columna2 h4
- {
-   margin-top: 0;
- }
-
- .fila1columna2{
-  /* margin: 0 10px;*/
+.fila1columna2{
+  margin: 0 10px;
   display: flex;
   flex-direction: column;
 }
@@ -102,20 +82,20 @@ thead {
   font-family: var(--text-font), serif;
   display: flex;
   flex-direction: column;
-  margin: 10px 10px 0;
-  padding: 20px 5px 10px 60px;
+  margin: 0 10px;
+  margin-top: 10px;
+  padding: 5px 20px;
   border-radius: 10px;
   background-color: var(--hover-regular-color);
-  
+
 }
 
-
 .fila3{
-  font-family: var(--title-font), serif;
-  color: var(--primary-regular-color);
+  font-family: var(--unicauca-font), serif;
   display: flex;
   flex-direction: column;
-  margin: 10px 10px 0;
+  margin: 0 10px;
+  margin-top: 10px;
   padding: 5px 20px;
   border-radius: 10px;
   background-color: var(--hover-regular-color);
@@ -126,7 +106,8 @@ thead {
   font-size: var(--title6-size);
   display: flex;
   flex-direction: column;
-  margin: 10px 10px 0;
+  margin: 0 10px;
+  margin-top: 10px;
   padding: 5px 20px;
   border-radius: 10px;
   background-color: var(--hover-regular-color);
