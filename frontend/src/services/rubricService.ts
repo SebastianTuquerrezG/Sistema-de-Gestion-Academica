@@ -1,10 +1,10 @@
 import { RubricInterface } from "../interfaces/RubricInterface";
+import {MateriaInterface} from "@/interfaces/MateriaInterface.ts";
+import {RubricInterfacePeticion} from "@/interfaces/RubricInterfacePeticion.ts";
 
 const baseUrl = "http://localhost:8080/api";
 
-export async function createRubric(
-  rubric: RubricInterface
-): Promise<RubricInterface> {
+export async function createRubric(rubric: RubricInterfacePeticion): Promise<RubricInterfacePeticion> {
   const response = await fetch(`${baseUrl}/rubricas`, {
     method: "POST",
     headers: {
@@ -15,9 +15,7 @@ export async function createRubric(
   return response.json();
 }
 
-export async function getRubricById(
-  id: string
-): Promise<RubricInterface | null> {
+export async function getRubricById(id: string): Promise<RubricInterface | null> {
   const response = await fetch(`${baseUrl}/rubricas/${id}`);
   if (!response.ok) {
     return null;
@@ -33,7 +31,7 @@ export async function getAllRubrics(): Promise<RubricInterface[]> {
   return response.json();
 }
 
-export async function updateRubric(id: string, updatedRubric: RubricInterface): Promise<RubricInterface | null> {
+export async function updateRubric(id: number | null, updatedRubric: RubricInterfacePeticion): Promise<RubricInterfacePeticion | null> {
   const response = await fetch(`${baseUrl}/rubricas?id=${id}`, {
     method: 'PUT',
     headers: {
@@ -55,7 +53,7 @@ export async function updateRubric(id: string, updatedRubric: RubricInterface): 
   return response.ok;
 }*/
 
-export async function deleteRubric(id: string): Promise<boolean> {
+export async function deleteRubric(id: number): Promise<boolean> {
   const response = await fetch(`${baseUrl}/rubricas?id=${id}`, {
     method: 'PATCH',
     headers: {
@@ -64,4 +62,17 @@ export async function deleteRubric(id: string): Promise<boolean> {
     body: JSON.stringify({ estado: 'DESACTIVAR' }),
   });
   return response.ok;
+}
+
+export async function getAllMaterias(): Promise<MateriaInterface[]> {
+  const response = await fetch(`${baseUrl}/rubricas/materias`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+  if (!response.ok) {
+    throw new Error('Error fetching materias');
+  }
+  return response.json();
 }

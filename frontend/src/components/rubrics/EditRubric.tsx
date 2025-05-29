@@ -7,10 +7,11 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "@/components/ui/table";
 import Notification from "@/components/notifications/notification";
-import { createRubric } from "@/services/rubricService";
-import {RubricInterface} from "@/interfaces/RubricInterface.ts";
+import {getAllMaterias, updateRubric} from "@/services/rubricService";
 import {useNavigate} from "react-router-dom";
-
+import {MateriaInterface} from "@/interfaces/MateriaInterface.ts";
+import {RubricInterfacePeticion} from "@/interfaces/RubricInterfacePeticion.ts";
+import { useParams } from "react-router-dom";
 //Definicion del tipo de notificacion
 type NotificationType = {
     type: "error" | "info" | "success";
@@ -18,14 +19,15 @@ type NotificationType = {
     message: string;
 };
 
-export default function CreateRubric()
-{
-    const navigate = useNavigate(); // Hook to navigate between pages
+export default function CreateRubric() {
+    const {id} = useParams<{ id: string }>();
+    const navigate = useNavigate(); // Hook para la navegación
+
     // Estado local para almacenar el valor de la nota (puede ser número o vacío)
     const [nota, setNota] = useState<number | "">("");
 
     // Estado para guardar la nota máxima ingresada por el usuario.
-    const [notaMaxima] = useState<number | null>(null);
+    //const [notaMaxima] = useState<number | null>(null);
 
     const [levels, setLevels] = useState([
         { idNivel: 1, nivelDescripcion: "", rangoNota: "" },
@@ -53,6 +55,8 @@ export default function CreateRubric()
     ]);
 
     const [notification, setNotification] = useState<NotificationType | null>(null);
+    const [materia, setMateria] = useState("");
+    const [materias, setMaterias] = useState<MateriaInterface[]>([]);
 
     //Efecto de la notificacion
     useEffect(() => {
@@ -61,6 +65,17 @@ export default function CreateRubric()
             return () => clearTimeout(timeout);
         }
     }, [notification]);
+
+    //Efecto para traer las materias
+    useEffect(() => {
+        getAllMaterias()
+            .then(data =>{
+                console.log("Materias obtenidas:", data);
+                setMaterias(data);
+            })
+            .catch(() => setMaterias([]));
+    }, []);
+
 
 
     // Añade un nuevo nivel a la rúbrica, hasta un máximo de 5
@@ -74,18 +89,24 @@ export default function CreateRubric()
             return;
         }
 
-        // Calculamos el nuevo ID y añadimos un nivel vacío
         const newId = levels.length > 0 ? Math.max(...levels.map(l => l.idNivel)) + 1 : 1;
-        const nuevosLevels = [...levels, { idNivel: newId, nivelDescripcion: "", rangoNota: "" }];
+        const nuevosLevels = [
+            ...levels,
+            { idNivel: newId, nivelDescripcion: "", rangoNota: "" }
+        ];
 
-        // Recalculamos los rangos con base en la nueva cantidad de niveles
-        const actualizados = handleRangosChanges(notaMaxima, nuevosLevels);
+        // Recalcular rangos para todos los niveles
+        const actualizados = handleRangosChanges(typeof nota === "number" ? nota : null, nuevosLevels);
+
         setLevels(actualizados);
 
-        // Actualizamos también los criterios existentes
         setRows(rows.map(row => ({
             ...row,
-            niveles: actualizados.map(level => ({ ...level, nivelDescripcion: "" }))
+            niveles: nuevosLevels.map((level, index) => ({
+                ...level,
+                nivelDescripcion: row.niveles[index]?.nivelDescripcion || "",
+                rangoNota: level.rangoNota
+            }))
         })));
     };
 
@@ -100,20 +121,23 @@ export default function CreateRubric()
             return;
         }
 
-        // Quitamos el último nivel
         const nuevosLevels = levels.slice(0, -1);
 
-        // Recalculamos los rangos con la nueva cantidad de niveles
-        const actualizados = handleRangosChanges(notaMaxima, nuevosLevels);
+        const notaActual = typeof nota === "number" ? nota : null;
+        // Recalcular rangos y preservar los existentes
+        const actualizados = handleRangosChanges(notaActual, nuevosLevels);
+
         setLevels(actualizados);
 
-        // También actualizamos las filas de criterios para mantener la consistencia
         setRows(rows.map(row => ({
             ...row,
-            niveles: actualizados.map(level => ({ ...level, nivelDescripcion: "" }))
+            niveles: row.niveles.slice(0, -1).map((nivel, index) => ({
+                ...nivel,
+                nivelDescripcion: row.niveles[index]?.nivelDescripcion || "",
+                rangoNota: actualizados[index]?.rangoNota || nivel.rangoNota
+            }))
         })));
     };
-
 
     //Manejador que calcula los rangos de nota para cada nivel segun la nota maxima
     const handleRangosChanges = (nuevaNotaMaxima: number | null, nivelesActuales: typeof levels) => {
@@ -134,38 +158,47 @@ export default function CreateRubric()
 
     // Manejador que se ejecuta cuando cambia el valor del input en Nota Maxima de la Rubrica
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        // Obtenemos el valor numérico del input
-        const value = e.target.valueAsNumber;
+        const value = e.target.value;
 
-        // Si no es un número ponemos el estado vacío
-        if (isNaN(value))
-        {
+        // Validar formato con expresión regular (un dígito entero entre 0-5 y hasta dos decimales)
+        const regex = /^[0-5](\.\d{0,2})?$/;
+
+        if (!regex.test(value)) {
+            setNotification({
+                type: "error",
+                title: "Formato Inválido",
+                message: "La nota debe estar entre 0.00 y 5.00, con un máximo de dos decimales.",
+            });
             setNota("");
             return;
         }
 
-        // Validamos si el valor esta en el reango de nota
-        if (value > 5 || value < 0) {
+        const numericValue = parseFloat(value);
+
+        // Validar rango entre 0.00 y 5.00
+        if (numericValue > 5 || numericValue < 0) {
             setNotification({
                 type: "error",
                 title: "Nota Fuera de Rango",
-                message: "La nota debe estar entre 0 y 5",
+                message: "La nota debe estar entre 0.00 y 5.00.",
             });
-            setNota(""); // Ajustamos el valor al máximo
-        }
-        // Si el valor está dentro del rango permitido, lo guardamos
-        else {
-            setNota(value);
-        }
-        // ✅ Recalculamos los rangos con la nueva nota
-        const nuevosLevels = handleRangosChanges(value, levels);
-        setLevels(nuevosLevels);
+            setNota("");
+        } else {
+            setNota(value === "" ? "" : parseFloat(value));
 
-        // ✅ También actualizamos los niveles dentro de cada fila de criterio
-        setRows(rows.map(row => ({
-            ...row,
-            niveles: nuevosLevels.map(level => ({ ...level, nivelDescripcion: "" }))
-        })));
+            // Recalcular los rangos de los niveles sin borrar las descripciones existentes
+            const nuevosLevels = handleRangosChanges(numericValue, levels);
+            setLevels(nuevosLevels);
+
+            // Actualizar los niveles en las filas de criterios sin borrar las descripciones
+            setRows(rows.map(row => ({
+                ...row,
+                niveles: row.niveles.map((nivel, index) => ({
+                    ...nivel,
+                    rangoNota: nuevosLevels[index]?.rangoNota || nivel.rangoNota
+                }))
+            })));
+        }
     };
 
     const handleCriterioChange = (rowIndex: number, value: string) => {
@@ -230,6 +263,7 @@ export default function CreateRubric()
         newRows[rowIndex].crfComentario = value;
         setRows(newRows);
     };
+
 
     const addRow = () => {
         if (rows.length >= 10) {
@@ -299,28 +333,7 @@ export default function CreateRubric()
         ]);
     };
 
-    const handleNotaChange = (rowIndex: number, value: string) => {
-        const numericValue = parseFloat(value);
-
-        // Validación opcional: permitir solo valores decimales entre 0 y 5
-        if (!isNaN(numericValue) && (numericValue < 0 || numericValue > 5)) {
-            setNotification({
-                type: "error",
-                title: "Nota fuera de rango",
-                message: "La nota debe estar entre 0.0 y 5.0",
-            });
-            return;
-        }
-
-        const newRows = [...rows];
-        newRows[rowIndex].crfNota = numericValue || 0;
-        setRows(newRows);
-    };
-
-    const handleBacktoHome = () => {
-        navigate(`/rubricas/`);
-    }
-    const handleCreate = () => {
+    const handleCreate = async () => {
         // Validar campos obligatorios
         const requiredFields = [
             { field: (document.getElementById("nombreRubrica") as HTMLInputElement)?.value, name: "Nombre Rúbrica" },
@@ -371,44 +384,51 @@ export default function CreateRubric()
             });
             return;
         }
+        const nuevosLevels = handleRangosChanges(typeof nota === "number" ? nota : null, levels);
 
-        const rubricData: RubricInterface = {
-            idRubrica: '' ,
+        const rubricData: RubricInterfacePeticion = {
+            idRubrica: Number(id),
             nombreRubrica: (document.getElementById("nombreRubrica") as HTMLInputElement)?.value,
-            materia: parseFloat((document.getElementById("materia") as HTMLInputElement)?.value),
+            idMateria: Number((document.getElementById("materia") as HTMLInputElement)?.value),
             notaRubrica: parseFloat((document.getElementById("notaRubrica") as HTMLInputElement)?.value || "0"),
             objetivoEstudio: (document.getElementById("objetivoEstudio") as HTMLInputElement)?.value,
             criterios: rows.map(row => ({
-                idCriterio: row.idCriterio,
                 crfDescripcion: row.crfDescripcion,
                 crfPorcentaje: parseFloat(row.crfPorcentaje),
                 crfNota: row.crfNota,
                 crfComentario: row.crfComentario,
-                niveles: row.niveles
+                niveles: row.niveles.map((nivel, index) => ({
+                    idCriterio: null,
+                    nivelDescripcion: nivel.nivelDescripcion,
+                    rangoNota: nuevosLevels[index]?.rangoNota || nivel.rangoNota,
+                    idNivel: nivel.idNivel
+                })),
+                idRubrica: null
             })),
-            raId:101,
+            raId: 1,
             estado: "ACTIVO"
         };
-
         try {
             console.log(rubricData);
-            createRubric(rubricData).then(r => console.log(r));
-
+            await updateRubric(rubricData.idRubrica, rubricData);
             setNotification({
                 type: "success",
                 title: "Éxito",
-                message: "La rúbrica ha sido creada correctamente."
+                message: "La rúbrica ha sido actualizada correctamente."
             });
             handleCancel();
         } catch (error) {
-            console.error("Error al crear la rúbrica:", error);
+            console.error("Error al actualizar la rúbrica:", error);
             setNotification({
                 type: "error",
                 title: "Error",
-                message: "Ocurrió un error al crear la rúbrica."
+                message: "Ocurrió un error al actualizar la rúbrica."
             });
         }
     };
+    const handleBackToHome =() =>{
+        navigate(`/rubricas/`);
+    }
 
     return (
         <Card className="w-full max-w-[1200px] relative">
@@ -420,10 +440,9 @@ export default function CreateRubric()
                     onClose={() => setNotification(null)}
                 />
             )}
-
             <CardHeader>
                 <CardTitle>Editar Rúbrica de Evaluación</CardTitle>
-                <CardDescription>Ingresa los nuevos datos de la rúbrica en el formulario.</CardDescription>
+                <CardDescription>Ingresa los datos de la rúbrica en el formulario.</CardDescription>
             </CardHeader>
             <CardContent>
                 <div className="space-y-4">
@@ -434,7 +453,15 @@ export default function CreateRubric()
                         </div>
                         <div className="grid w-full max-w-sm items-center gap-1.5">
                             <Label htmlFor="materia">Materia</Label>
-                            <Input id="materia" placeholder="Nombre de la materia" />
+                            <select id="materia"  value={materia}  onChange={(e) => setMateria(e.target.value)}
+                                    className="w-full rounded-md border px-3 py-2 text-sm">
+                                <option value="">Seleccione una materia</option>
+                                {materias.map((mat) => (
+                                    <option key={mat.idMateria} value={mat.idMateria}>
+                                        {mat.name}
+                                    </option>
+                                ))}
+                            </select>
                         </div>
                         <div className="grid w-full max-w-sm items-center gap-1.5">
                             <Label htmlFor="notaRubrica" className="whitespace-nowrap">Nota Máxima Rúbrica</Label>
@@ -446,7 +473,7 @@ export default function CreateRubric()
                                 step={0.1}
                                 value={nota}
                                 onChange={handleChange}
-                                placeholder="0 - 5"
+                                placeholder="0.0 - 5.0"
                             />
                         </div>
                         <div className="grid w-full max-w-sm items-center gap-1.5">
@@ -462,7 +489,6 @@ export default function CreateRubric()
                         <TableRow>
                             <TableHead>Criterio Evaluación</TableHead>
                             <TableHead>Porcentaje</TableHead>
-                            <TableHead>Nota</TableHead>
                             <TableHead>Comentario</TableHead>
                             {levels.map((level, index) => (
                                 <TableHead key={index}>
@@ -507,17 +533,6 @@ export default function CreateRubric()
                                     </div>
                                 </TableCell>
                                 <TableCell>
-                                    <input
-                                        type="number"
-                                        min="0"
-                                        max="5"
-                                        step="0.1"
-                                        value={row.crfNota === 0 ? "" : row.crfNota.toString()}
-                                        onChange={(e) =>handleNotaChange(rowIndex, e.target.value)}
-                                        placeholder="Nota"
-                                    />
-                                </TableCell>
-                                <TableCell>
                                     <Textarea
                                         value={row.crfComentario}
                                         onChange={(e) => handleComentarioChange(rowIndex, e.target.value)}
@@ -542,7 +557,7 @@ export default function CreateRubric()
                         ))}
                     </TableBody>
                 </Table>
-                <div className="flex justify-start gap-4 mt-4">
+                <div className="mt-4">
                     <Button onClick={addRow}>
                         <Plus className="h-4 w-4 mr-2" />Añadir Criterio
                     </Button>
@@ -552,8 +567,8 @@ export default function CreateRubric()
                 <Button onClick={handleCancel} variant="outline">Cancelar</Button>
 
                 <div className="flex justify-end gap-4">
-                    <Button onClick={handleBacktoHome} variant="outline">Volver</Button>
-                    <Button onClick={handleCreate}>Crear</Button>
+                    <Button onClick={handleBackToHome} variant="outline">Volver</Button>
+                    <Button onClick={handleCreate}>Editar</Button>
                 </div>
 
             </CardFooter>
