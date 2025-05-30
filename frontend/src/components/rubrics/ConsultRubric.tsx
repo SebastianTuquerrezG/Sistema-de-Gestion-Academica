@@ -97,29 +97,62 @@ export default function ConsultarRubrica() {
     };
 
     // Duplicar rúbrica usando la interfaz correcta
-    const handleDuplicate = async (data: { newName: string; shareWithSamePeople: boolean; copyComments: boolean; resolvedComments: boolean }) => {
+    const handleDuplicate = async ( data: { newName: string; shareWithSamePeople: boolean; copyComments: boolean; resolvedComments: boolean }) => {
         if (!rubricToDuplicate) return;
 
+        /*const duplicatedRubric: RubricInterface = {
+            idRubrica: 0, // El ID se asignará automáticamente al crear la rúbrica
+            nombreRubrica: `${data.newName}`,
+            materia: rubricToDuplicate.materia,
+            notaRubrica: rubricToDuplicate.notaRubrica,
+            objetivoEstudio: rubricToDuplicate.objetivoEstudio,
+            estado: "ACTIVO",
+            criterios: rubricToDuplicate.criterios.map(criterio => ({
+                idCriterio: 0,
+                crfDescripcion: criterio.crfDescripcion,
+                crfPorcentaje: criterio.crfPorcentaje,
+                crfNota: criterio.crfNota,
+                crfComentario: criterio.crfComentario,
+                niveles: criterio.niveles
+            })),
+            raId: rubricToDuplicate.raId,
+        };*/
         const duplicatedRubric: RubricInterfacePeticion = {
-            idRubrica: null, // El backend lo genera
+            idRubrica: null,
             nombreRubrica: data.newName,
             idMateria: rubricToDuplicate.materia,
             notaRubrica: rubricToDuplicate.notaRubrica,
             objetivoEstudio: rubricToDuplicate.objetivoEstudio,
             estado: "ACTIVO",
-            criterios: rubricToDuplicate.criterios,
+            criterios: rubricToDuplicate.criterios.map(criterio => ({
+                ...criterio,
+                idRubrica: null // o el id correspondiente si aplica
+            })),
             raId: rubricToDuplicate.raId,
         };
 
         const response = await createRubric(duplicatedRubric);
-        if (response) {
-            setRubrics((prev) => [...prev, response]); // Usa la respuesta del backend
-        } else {
-            alert("Error duplicando rúbrica");
+        if (response && response.idRubrica !== null) {
+            const newRubric: RubricInterface = {
+                ...response,
+                idRubrica: response.idRubrica, // Asegúrate de que el ID se asigne correctamente
+                materia: rubricToDuplicate.materia,
+                nombreMateria: rubricToDuplicate.nombreMateria,
+                criterios: response.criterios.map(criterio => ({
+                    ...criterio
+                    // Completa aquí si faltan campos para CriterionInterface
+                }))
+            };
+            setRubrics((prev) => [...prev, newRubric]);
+            setNotification({
+                type: "success",
+                title: "Rúbrica duplicada",
+                message: `La rúbrica ${data.newName} ha sido duplicada exitosamente.`,
+            });
         }
-        setShowDuplicateModal(false);
-    };
+        setShowDuplicateModal(false)
 
+    };
     const handleShareRubric = async (data: {
         email: string;
         permission: string;
@@ -130,6 +163,7 @@ export default function ConsultarRubrica() {
     }) => {
         if (!rubricToDuplicate) return;
         // Lógica de compartir
+        console.log("Compartiendo rúbrica:", rubricToDuplicate, data);
         setShowShareModal(false);
     };
 

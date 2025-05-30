@@ -1,4 +1,5 @@
-import { CriterionInterface } from './CriterionInterface';
+//import { CriterionInterface } from './CriterionInterface';
+import {CriterionInterfacePeticion} from "@/interfaces/CriterionInterfacePeticion.ts";
 
 export interface RubricInterface {
   idRubrica: number;
@@ -7,7 +8,7 @@ export interface RubricInterface {
   nombreMateria?: string;
   notaRubrica: number;
   objetivoEstudio: string;
-  criterios: CriterionInterface[];
+  criterios: CriterionInterfacePeticion[];
   estado: string;
   raId:number;
 }

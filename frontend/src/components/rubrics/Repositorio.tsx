@@ -13,6 +13,7 @@ import {createRubric} from "@/services/rubricService.ts";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Badge } from "@/components/ui/badge"
 import { TableCell } from "@/components/ui/table";
+import {RubricInterfacePeticion} from "@/interfaces/RubricInterfacePeticion.ts";
 //import { z } from "zod"
 //import { useForm } from "react-hook-form";
 //import { zodResolver } from "@hookform/resolvers/zod"
@@ -33,7 +34,7 @@ export default function RepositorioRubricas(){
     const [searchTerm, setSearchTerm] = useState("");
     const [rubrics, setRubrics] = useState<RubricInterface[]>([])
     const navigate = useNavigate(); 
-    const [selectedRubricId, setSelectedRubricId] = useState<string | null>(null);
+    const [selectedRubricId, setSelectedRubricId] = useState<number | null>(null);
     const[showDuplicateModal, setShowDuplicateModal] = useState(false);
     const [rubricToDuplicate, setRubricToDuplicate] = useState<RubricInterface | null>(null);
     useEffect(() => {
@@ -49,13 +50,19 @@ export default function RepositorioRubricas(){
             })
             .catch((error) => console.error(error));
     }, []);
+    useEffect(() => {
+        if (notification) {
+            const timeout = setTimeout(() => setNotification(null), 4000);
+            return () => clearTimeout(timeout);
+        }
+    }, [notification]);
 
     const filteredRubrics = rubrics.filter((rubric) =>
         rubric.nombreRubrica.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        rubric.idRubrica.toLowerCase().includes(searchTerm.toLowerCase()),
+        rubric.idRubrica
     );
     //Funcion para mostrar el detalle de la rúbrica
-    const handleDetail  = (id: string) => {
+    const handleDetail  = (id: number) => {
         setSelectedRubricId(id);
         navigate(`rubricas/detalle/${id}`);
     };
@@ -70,8 +77,8 @@ export default function RepositorioRubricas(){
     const handleDuplicate = async ( data: { newName: string; shareWithSamePeople: boolean; copyComments: boolean; resolvedComments: boolean }) => {
         if (!rubricToDuplicate) return;
 
-        const duplicatedRubric: RubricInterface = {
-            idRubrica: '',
+        /*const duplicatedRubric: RubricInterface = {
+            idRubrica: 0, // El ID se asignará automáticamente al crear la rúbrica
             nombreRubrica: `${data.newName}`,
             materia: rubricToDuplicate.materia,
             notaRubrica: rubricToDuplicate.notaRubrica,
@@ -86,23 +93,39 @@ export default function RepositorioRubricas(){
                 niveles: criterio.niveles
             })),
             raId: rubricToDuplicate.raId,
+        };*/
+        const duplicatedRubric: RubricInterfacePeticion = {
+            idRubrica: null,
+            nombreRubrica: data.newName,
+            idMateria: rubricToDuplicate.materia,
+            notaRubrica: rubricToDuplicate.notaRubrica,
+            objetivoEstudio: rubricToDuplicate.objetivoEstudio,
+            estado: "ACTIVO",
+            criterios: rubricToDuplicate.criterios.map(criterio => ({
+                ...criterio,
+                idRubrica: null // o el id correspondiente si aplica
+            })),
+            raId: rubricToDuplicate.raId,
         };
 
-
         const response = await createRubric(duplicatedRubric);
-        if (response) {
-            setRubrics((prev) => [...prev, duplicatedRubric]);
+        if (response && response.idRubrica !== null) {
+            const newRubric: RubricInterface = {
+                ...response,
+                idRubrica: response.idRubrica, // Asegúrate de que el ID se asigne correctamente
+                materia: rubricToDuplicate.materia,
+                nombreMateria: rubricToDuplicate.nombreMateria,
+                criterios: response.criterios.map(criterio => ({
+                    ...criterio
+                    // Completa aquí si faltan campos para CriterionInterface
+                }))
+            };
+            setRubrics((prev) => [...prev, newRubric]);
             setNotification({
                 type: "success",
                 title: "Rúbrica duplicada",
                 message: `La rúbrica ${data.newName} ha sido duplicada exitosamente.`,
-            })
-        } else {
-            setNotification({
-                type: "error",
-                title: "Error al duplicar la rúbrica",
-                message: `No se pudo duplicar la rúbrica ${data.newName}.`,
-            })
+            });
         }
         setShowDuplicateModal(false)
 
