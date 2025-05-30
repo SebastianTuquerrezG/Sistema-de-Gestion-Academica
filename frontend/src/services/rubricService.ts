@@ -41,7 +41,6 @@ export async function getAllRubrics(): Promise<RubricInterface[]> {
     method: 'GET',
     headers: getAuthHeaders(),
   });
-  console.log(response.json());
   return response.json();
 }
 

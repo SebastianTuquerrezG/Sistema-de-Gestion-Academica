@@ -1,0 +1,12 @@
+.subject-header {
+    display: flex;
+    flex-direction: column;
+
+}
+.rubric-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin: 10px;
+    cursor: pointer;
+}
