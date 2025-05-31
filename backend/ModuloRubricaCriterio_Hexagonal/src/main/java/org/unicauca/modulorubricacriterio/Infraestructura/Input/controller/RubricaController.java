@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import org.unicauca.modulorubricacriterio.Aplicacion.Input.IGestionRubricaPort;
 import org.unicauca.modulorubricacriterio.Dominio.Modelos.Materia;
 import org.unicauca.modulorubricacriterio.Dominio.Modelos.Rubrica;
+import org.unicauca.modulorubricacriterio.Dominio.Modelos.Materia;
 import org.unicauca.modulorubricacriterio.Infraestructura.Input.dtoPeticion.RubricaDTOPeticion;
 import org.unicauca.modulorubricacriterio.Infraestructura.Input.dtorespuesta.MateriaDTORespuesta;
 import org.unicauca.modulorubricacriterio.Infraestructura.Input.dtorespuesta.RubricaDTORespuesta;

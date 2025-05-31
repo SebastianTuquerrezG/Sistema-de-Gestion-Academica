@@ -1,4 +1,6 @@
 import { RubricInterface } from "../interfaces/RubricInterface";
+import { MateriaInterface } from "@/interfaces/MateriaInterface.ts";
+import { RubricInterfacePeticion } from "@/interfaces/RubricInterfacePeticion.ts";
 
 const baseUrl = "http://localhost:8080/api";
 
@@ -44,7 +46,7 @@ export async function getAllRubrics(): Promise<RubricInterface[]> {
   return response.json();
 }
 
-export async function updateRubric(id: string, updatedRubric: RubricInterface): Promise<RubricInterface | null> {
+export async function updateRubric(id: number | null, updatedRubric: RubricInterfacePeticion): Promise<RubricInterfacePeticion | null> {
   const response = await fetch(`${baseUrl}/rubricas?id=${id}`, {
     method: 'PUT',
     headers: getAuthHeaders(),
@@ -64,11 +66,22 @@ export async function updateRubric(id: string, updatedRubric: RubricInterface): 
   return response.ok;
 }*/
 
-export async function deleteRubric(id: string): Promise<boolean> {
+export async function deleteRubric(id: number): Promise<boolean> {
   const response = await fetch(`${baseUrl}/rubricas?id=${id}`, {
     method: 'PATCH',
     headers: getAuthHeaders(),
     body: JSON.stringify({ estado: 'DESACTIVAR' }),
   });
   return response.ok;
+}
+
+export async function getAllMaterias(): Promise<MateriaInterface[]> {
+  const response = await fetch(`${baseUrl}/rubricas/materias`, {
+    method: 'GET',
+    headers: getAuthHeaders(),
+  });
+  if (!response.ok) {
+    throw new Error('Error fetching materias');
+  }
+  return response.json();
 }

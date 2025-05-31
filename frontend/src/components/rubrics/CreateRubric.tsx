@@ -7,11 +7,11 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "@/components/ui/table";
 import Notification from "@/components/notifications/notification";
-import { createRubric } from "@/services/rubricService";
-import { RubricInterface } from "@/interfaces/RubricInterface.ts";
+import { createRubric, getAllMaterias } from "@/services/rubricService";
 import { useNavigate } from "react-router-dom";
+import { MateriaInterface } from "@/interfaces/MateriaInterface.ts";
+import { RubricInterfacePeticion } from "@/interfaces/RubricInterfacePeticion.ts";
 
-//Definicion del tipo de notificacion
 type NotificationType = {
     type: "error" | "info" | "success";
     title: string;
@@ -19,14 +19,10 @@ type NotificationType = {
 };
 
 export default function CreateRubric() {
-    // State to navigate between pages
+    // Hook para la navegación
     const navigate = useNavigate();
-
     // Estado local para almacenar el valor de la nota (puede ser número o vacío)
     const [nota, setNota] = useState<number | "">("");
-
-    // Estado para guardar la nota máxima ingresada por el usuario.
-    const [notaMaxima] = useState<number | null>(null);
 
     const [levels, setLevels] = useState([
         { idNivel: 1, nivelDescripcion: "", rangoNota: "" },
@@ -54,6 +50,8 @@ export default function CreateRubric() {
     ]);
 
     const [notification, setNotification] = useState<NotificationType | null>(null);
+    const [materia, setMateria] = useState("");
+    const [materias, setMaterias] = useState<MateriaInterface[]>([]);
 
     //Efecto de la notificacion
     useEffect(() => {
@@ -62,6 +60,18 @@ export default function CreateRubric() {
             return () => clearTimeout(timeout);
         }
     }, [notification]);
+
+    //Efecto para traer las materias
+    useEffect(() => {
+        getAllMaterias()
+            .then(data => {
+                console.log("Materias obtenidas:", data);
+                setMaterias(data);
+            })
+            .catch(() => setMaterias([]));
+    }, []);
+
+
 
     // Añade un nuevo nivel a la rúbrica, hasta un máximo de 5
     const addLevel = () => {
@@ -73,18 +83,25 @@ export default function CreateRubric() {
             });
             return;
         }
-        // Calculamos el nuevo ID y añadimos un nivel vacío
-        const newId = levels.length > 0 ? Math.max(...levels.map(l => l.idNivel)) + 1 : 1;
-        const nuevosLevels = [...levels, { idNivel: newId, nivelDescripcion: "", rangoNota: "" }];
 
-        // Recalculamos los rangos con base en la nueva cantidad de niveles
-        const actualizados = handleRangosChanges(notaMaxima, nuevosLevels);
+        const newId = levels.length > 0 ? Math.max(...levels.map(l => l.idNivel)) + 1 : 1;
+        const nuevosLevels = [
+            ...levels,
+            { idNivel: newId, nivelDescripcion: "", rangoNota: "" }
+        ];
+
+        // Recalcular rangos para todos los niveles
+        const actualizados = handleRangosChanges(typeof nota === "number" ? nota : null, nuevosLevels);
+
         setLevels(actualizados);
 
-        // Actualizamos también los criterios existentes
         setRows(rows.map(row => ({
             ...row,
-            niveles: actualizados.map(level => ({ ...level, nivelDescripcion: "" }))
+            niveles: nuevosLevels.map((level, index) => ({
+                ...level,
+                nivelDescripcion: row.niveles[index]?.nivelDescripcion || "",
+                rangoNota: level.rangoNota
+            }))
         })));
     };
 
@@ -99,17 +116,21 @@ export default function CreateRubric() {
             return;
         }
 
-        // Quitamos el último nivel
         const nuevosLevels = levels.slice(0, -1);
 
-        // Recalculamos los rangos con la nueva cantidad de niveles
-        const actualizados = handleRangosChanges(notaMaxima, nuevosLevels);
+        const notaActual = typeof nota === "number" ? nota : null;
+        // Recalcular rangos y preservar los existentes
+        const actualizados = handleRangosChanges(notaActual, nuevosLevels);
+
         setLevels(actualizados);
 
-        // También actualizamos las filas de criterios para mantener la consistencia
         setRows(rows.map(row => ({
             ...row,
-            niveles: actualizados.map(level => ({ ...level, nivelDescripcion: "" }))
+            niveles: row.niveles.slice(0, -1).map((nivel, index) => ({
+                ...nivel,
+                nivelDescripcion: row.niveles[index]?.nivelDescripcion || "",
+                rangoNota: actualizados[index]?.rangoNota || nivel.rangoNota
+            }))
         })));
     };
 
@@ -132,37 +153,47 @@ export default function CreateRubric() {
 
     // Manejador que se ejecuta cuando cambia el valor del input en Nota Maxima de la Rubrica
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        // Obtenemos el valor numérico del input
-        const value = e.target.valueAsNumber;
+        const value = e.target.value;
 
-        // Si no es un número ponemos el estado vacío
-        if (isNaN(value)) {
+        // Validar formato con expresión regular (un dígito entero entre 0-5 y hasta dos decimales)
+        const regex = /^[0-5](\.\d{0,2})?$/;
+
+        if (!regex.test(value)) {
+            setNotification({
+                type: "error",
+                title: "Formato Inválido",
+                message: "La nota debe estar entre 0.00 y 5.00, con un máximo de dos decimales.",
+            });
             setNota("");
             return;
         }
 
-        // Validamos si el valor esta en el reango de nota
-        if (value > 5 || value < 0) {
+        const numericValue = parseFloat(value);
+
+        // Validar rango entre 0.00 y 5.00
+        if (numericValue > 5 || numericValue < 0) {
             setNotification({
                 type: "error",
                 title: "Nota Fuera de Rango",
-                message: "La nota debe estar entre 0.0 y 5.0",
+                message: "La nota debe estar entre 0.00 y 5.00.",
             });
-            setNota(""); // Ajustamos el valor al máximo
-        }
-        // Si el valor está dentro del rango permitido, lo guardamos
-        else {
-            setNota(value);
-        }
-        // ✅ Recalculamos los rangos con la nueva nota
-        const nuevosLevels = handleRangosChanges(value, levels);
-        setLevels(nuevosLevels);
+            setNota("");
+        } else {
+            setNota(value === "" ? "" : parseFloat(value));
 
-        // ✅ También actualizamos los niveles dentro de cada fila de criterio
-        setRows(rows.map(row => ({
-            ...row,
-            niveles: nuevosLevels.map(level => ({ ...level, nivelDescripcion: "" }))
-        })));
+            // Recalcular los rangos de los niveles sin borrar las descripciones existentes
+            const nuevosLevels = handleRangosChanges(numericValue, levels);
+            setLevels(nuevosLevels);
+
+            // Actualizar los niveles en las filas de criterios sin borrar las descripciones
+            setRows(rows.map(row => ({
+                ...row,
+                niveles: row.niveles.map((nivel, index) => ({
+                    ...nivel,
+                    rangoNota: nuevosLevels[index]?.rangoNota || nivel.rangoNota
+                }))
+            })));
+        }
     };
 
     const handleCriterioChange = (rowIndex: number, value: string) => {
@@ -227,7 +258,6 @@ export default function CreateRubric() {
         newRows[rowIndex].crfComentario = value;
         setRows(newRows);
     };
-    const [materia, setMateria] = useState("");
 
 
     const addRow = () => {
@@ -298,7 +328,7 @@ export default function CreateRubric() {
         ]);
     };
 
-    const handleCreate = () => {
+    const handleCreate = async () => {
         // Validar campos obligatorios
         const requiredFields = [
             { field: (document.getElementById("nombreRubrica") as HTMLInputElement)?.value, name: "Nombre Rúbrica" },
@@ -349,28 +379,35 @@ export default function CreateRubric() {
             });
             return;
         }
+        const nuevosLevels = handleRangosChanges(typeof nota === "number" ? nota : null, levels);
 
-        const rubricData: RubricInterface = {
-            idRubrica: '',
+        const rubricData: RubricInterfacePeticion = {
+            idRubrica: null,
             nombreRubrica: (document.getElementById("nombreRubrica") as HTMLInputElement)?.value,
-            materia: parseFloat((document.getElementById("materia") as HTMLInputElement)?.value),
+            idMateria: materias.find(mat => mat.idMateria === parseFloat((document.getElementById("materia") as HTMLInputElement)?.value))?.idMateria || 0,
             notaRubrica: parseFloat((document.getElementById("notaRubrica") as HTMLInputElement)?.value || "0"),
             objetivoEstudio: (document.getElementById("objetivoEstudio") as HTMLInputElement)?.value,
             criterios: rows.map(row => ({
-                idCriterio: row.idCriterio,
                 crfDescripcion: row.crfDescripcion,
                 crfPorcentaje: parseFloat(row.crfPorcentaje),
                 crfNota: row.crfNota,
                 crfComentario: row.crfComentario,
-                niveles: row.niveles
+                niveles: row.niveles.map((nivel, index) => ({
+                    ...nivel,
+                    idCriterio: null,
+                    nivelDescripcion: row.niveles[index]?.nivelDescripcion || "",
+                    rangoNota: nuevosLevels[index]?.rangoNota || nivel.rangoNota,
+                    idNivel: nivel.idNivel
+                })),
+                idRubrica: null
             })),
-            raId: 101,
+            raId: 1,
             estado: "ACTIVO"
         };
 
         try {
-            createRubric(rubricData).then(r => console.log(r));
-
+            console.log(rubricData);
+            await createRubric(rubricData);
             setNotification({
                 type: "success",
                 title: "Éxito",
@@ -386,7 +423,6 @@ export default function CreateRubric() {
             });
         }
     };
-
     const handleBackToHome = () => {
         navigate(`/rubricas/`);
     }
@@ -401,7 +437,6 @@ export default function CreateRubric() {
                     onClose={() => setNotification(null)}
                 />
             )}
-
             <CardHeader>
                 <CardTitle>Crear Rúbrica de Evaluación</CardTitle>
                 <CardDescription>Ingresa los datos de la nueva rúbrica en el formulario.</CardDescription>
@@ -415,18 +450,14 @@ export default function CreateRubric() {
                         </div>
                         <div className="grid w-full max-w-sm items-center gap-1.5">
                             <Label htmlFor="materia">Materia</Label>
-                            <select
-                                id="materia"
-                                value={materia}
-                                onChange={(e) => setMateria(e.target.value)}
-                                className="w-full rounded-md border px-3 py-2 text-sm"
-                            >
+                            <select id="materia" value={materia} onChange={(e) => setMateria(e.target.value)}
+                                className="w-full rounded-md border px-3 py-2 text-sm">
                                 <option value="">Seleccione una materia</option>
-                                <option value="Estructura de Lenguajes">Estructura de Lenguajes</option>
-                                <option value="Ingenieria de Software">Ingenieria de Software</option>
-                                <option value="Sistemas Operativos">Sistemas Operativos</option>
-                                <option value="Estadistica y Probabilidad">Estadistica y Probabilidad</option>
-                                <option value="Analisis Numerico">Analisis Numerico</option>
+                                {materias.map((mat) => (
+                                    <option key={mat.idMateria} value={mat.idMateria}>
+                                        {mat.name}
+                                    </option>
+                                ))}
                             </select>
                         </div>
                         <div className="grid w-full max-w-sm items-center gap-1.5">

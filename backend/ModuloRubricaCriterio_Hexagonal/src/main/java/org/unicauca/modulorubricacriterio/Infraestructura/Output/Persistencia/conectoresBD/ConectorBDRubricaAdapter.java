@@ -2,6 +2,7 @@ package org.unicauca.modulorubricacriterio.Infraestructura.Output.Persistencia.c
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ArrayList;
 
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -144,7 +145,6 @@ public class ConectorBDRubricaAdapter implements IConectorBDRubricaPort {
         // Actualizar o agregar criterios
         for (int i = 0; i < objRubricaEntity.getCriterios().size(); i++) {
             var criterioNuevo = objRubricaEntity.getCriterios().get(i);
-
             if (i < rubricaEncontrada.getCriterios().size()) {
                 var criterioExistente = rubricaEncontrada.getCriterios().get(i);
                 criterioExistente.setCrfDescripcion(criterioNuevo.getCrfDescripcion());
@@ -203,7 +203,6 @@ public class ConectorBDRubricaAdapter implements IConectorBDRubricaPort {
         Rubrica rubricaActualizadaReturn = this.rubricaMapper.map(objRubricaActualizada, Rubrica.class);
 
         rubricaActualizadaReturn.setNombreMateria(this.rubricaRepository.findSubjectNameByRubricaId(id));
-
         if(rubricaActualizadaReturn.getCriterios() != null)
         {
             rubricaActualizadaReturn.getCriterios().forEach(criterio -> {

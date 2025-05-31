@@ -2,7 +2,7 @@
 //Petición
 {
     "crfDescripcion":"Descripcion de criterio",
-    "crfPorcentaje": 30,
+    "crfPorcentaje":30,
     "crfNota":5,
     "crfComentario":"Le faltan cosas",
     "rubrica_id":1
