@@ -39,8 +39,11 @@
 .icon-button:hover {
   /* background-color: var(--primary-regular-color); /* Color al pasar el mouse */
   /*background-color: var(--hover-regular-color);*/ /* Color al pasar el mouse */
-  /*color: var(--primary-regular-color);*/
-  background-color: var(--primary-dark-color); /* Color al pasar el mouse */
+  color: var(--primary-regular-color);
+  background-color: var(--hover-regular-color);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1)
+
+  /* Color al pasar el mouse */
 }
 
 .icon-button-text {

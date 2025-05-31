@@ -11,10 +11,11 @@
 
 .rubric-card:hover {
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    color: var(--text-regular-color); /* equivalente a Tailwind bg-gray-200 */
 }
 
 .rubric-icon {
-    background-color: #001A72;
+    background-color: var(--primary-regular-color);
     color: white;
     padding: 5px;
     border-radius: 6px;
