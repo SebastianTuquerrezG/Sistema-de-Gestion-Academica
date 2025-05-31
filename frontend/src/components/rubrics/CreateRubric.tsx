@@ -8,8 +8,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "@/components/ui/table";
 import Notification from "@/components/notifications/notification";
 import { createRubric } from "@/services/rubricService";
-import {RubricInterface} from "@/interfaces/RubricInterface.ts";
-import {useNavigate} from "react-router-dom";
+import { RubricInterface } from "@/interfaces/RubricInterface.ts";
+import { useNavigate } from "react-router-dom";
 
 //Definicion del tipo de notificacion
 type NotificationType = {
@@ -18,8 +18,7 @@ type NotificationType = {
     message: string;
 };
 
-export default function CreateRubric()
-{
+export default function CreateRubric() {
     // State to navigate between pages
     const navigate = useNavigate();
 
@@ -137,8 +136,7 @@ export default function CreateRubric()
         const value = e.target.valueAsNumber;
 
         // Si no es un número ponemos el estado vacío
-        if (isNaN(value))
-        {
+        if (isNaN(value)) {
             setNota("");
             return;
         }
@@ -353,7 +351,7 @@ export default function CreateRubric()
         }
 
         const rubricData: RubricInterface = {
-            idRubrica: '' ,
+            idRubrica: '',
             nombreRubrica: (document.getElementById("nombreRubrica") as HTMLInputElement)?.value,
             materia: parseFloat((document.getElementById("materia") as HTMLInputElement)?.value),
             notaRubrica: parseFloat((document.getElementById("notaRubrica") as HTMLInputElement)?.value || "0"),
@@ -366,12 +364,11 @@ export default function CreateRubric()
                 crfComentario: row.crfComentario,
                 niveles: row.niveles
             })),
-            raId:101,
+            raId: 101,
             estado: "ACTIVO"
         };
 
         try {
-            console.log(rubricData);
             createRubric(rubricData).then(r => console.log(r));
 
             setNotification({
@@ -390,7 +387,7 @@ export default function CreateRubric()
         }
     };
 
-    const handleBackToHome =() =>{
+    const handleBackToHome = () => {
         navigate(`/rubricas/`);
     }
 

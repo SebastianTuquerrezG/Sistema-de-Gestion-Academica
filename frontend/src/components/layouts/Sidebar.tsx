@@ -27,18 +27,22 @@ const data = {
             title: "Rubricas",
             url: "#",
             icon: BookOpen,
+            roles: ["ADMIN_ROLE", "COORDINATOR_ROLE", "TEACHER_ROLE"],
             items: [
                 {
                     title: "Ver Rubricas",
                     url: "/rubricas",
+                    roles: ["ADMIN_ROLE", "COORDINATOR_ROLE", "TEACHER_ROLE"],
                 },
                 {
                     title: "Crear",
                     url: "/rubricas/crear",
+                    roles: ["ADMIN_ROLE", "COORDINATOR_ROLE", "TEACHER_ROLE"],
                 },
                 {
                     title: "Repositorio",
                     url: "/rubricas/repositorio",
+                    roles: ["ADMIN_ROLE", "COORDINATOR_ROLE", "TEACHER_ROLE"],
                 }
             ],
         },
@@ -46,53 +50,65 @@ const data = {
             title: "Evaluaciones",
             url: "#",
             icon: PieChart,
+            roles: ["ADMIN_ROLE", "COORDINATOR_ROLE", "TEACHER_ROLE"],
             items: [
                 {
                     title: "Ver Evaluaciones",
                     url: "/evaluaciones",
+                    roles: ["ADMIN_ROLE", "COORDINATOR_ROLE", "TEACHER_ROLE"],
                 },
                 {
                     title: "Crear",
                     url: "/evaluaciones/crear",
-                },
-            ],
-        },
-        {
-            title: "Cursos",
-            url: "#",
-            icon: Frame,
-            items: [
-                {
-                    title: "Ver Cursos",
-                    url: "/cursos",
+                    roles: ["ADMIN_ROLE", "COORDINATOR_ROLE", "TEACHER_ROLE"],
                 },
                 {
-                    title: "Crear",
-                    url: "/cursos/crear",
+                    title: "Estadisticas",
+                    url: "/estadisticas",
+                    roles: ["ADMIN_ROLE", "COORDINATOR_ROLE", "TEACHER_ROLE"],
                 },
             ],
         },
     ],
     moreOptions: [
         {
-            name: "Estudiantes",
-            url: "/estudiantes",
+            name: "Estudiante",
+            url: "/estudiante",
             icon: User,
+            roles: ["ADMIN_ROLE", "STUDENT_ROLE"],
         },
         {
             name: "Resultados de Aprendizaje",
             url: "/resultados",
             icon: ClipboardList,
-        },
-        {
-            name: "Repositorios de Rubricas",
-            url: "/repositorios",
-            icon: FolderOpen,
+            roles: ["ADMIN_ROLE", "COORDINATOR_ROLE", "TEACHER_ROLE"],
         },
     ],
 };
 
+function getUserRoles() {
+    try {
+        const roles = JSON.parse(localStorage.getItem("roles") || "[]");
+        return Array.isArray(roles) ? roles : [];
+    } catch {
+        return [];
+    }
+}
+
 export default function AppSidebar() {
+    const userRoles = getUserRoles();
+
+    const filteredNavMain = data.navMain
+        .filter(item => item.roles.some(role => userRoles.includes(role)))
+        .map(item => ({
+            ...item,
+            items: item.items.filter(sub => sub.roles.some(role => userRoles.includes(role)))
+        }))
+        .filter(item => item.items.length > 0);
+
+    const filteredMoreOptions = data.moreOptions
+        .filter(opt => opt.roles.some(role => userRoles.includes(role)));
+
     return (
         <Sidebar>
             <SidebarContent>
@@ -106,8 +122,10 @@ export default function AppSidebar() {
                     <SidebarGroupContent>
                         <SidebarMenu>
                             <SidebarContent>
-                                <NavMain items={data.navMain} />
-                                <NavProjects projects={data.moreOptions} />
+                                {filteredNavMain.length > 0 && (
+                                    <NavMain items={filteredNavMain} />
+                                )}
+                                <NavProjects projects={filteredMoreOptions} />
                             </SidebarContent>
                         </SidebarMenu>
                     </SidebarGroupContent>
@@ -115,4 +133,4 @@ export default function AppSidebar() {
             </SidebarContent>
         </Sidebar>
     );
-};
+}

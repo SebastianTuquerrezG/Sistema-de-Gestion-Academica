@@ -2,17 +2,22 @@ package org.unicauca.modulorubricacriterio.Dominio.Services;
 
 import java.util.List;
 
-import lombok.RequiredArgsConstructor;
 import org.unicauca.modulorubricacriterio.Aplicacion.Input.IGestionRubricaPort;
 import org.unicauca.modulorubricacriterio.Aplicacion.Output.IConectorBDRubricaPort;
+import org.unicauca.modulorubricacriterio.Aplicacion.Input.IRabbitPort;
 import org.unicauca.modulorubricacriterio.Dominio.Modelos.Materia;
 import org.unicauca.modulorubricacriterio.Dominio.Modelos.Rubrica;
 import org.unicauca.modulorubricacriterio.Infraestructura.Input.validacionEstados.EstadosEnum;
 
-@RequiredArgsConstructor
 public class GestionRubricasAdapter implements IGestionRubricaPort{
 
     private final IConectorBDRubricaPort conectorBDRubricaPort;
+    private final IRabbitPort rabbitPort;
+
+    public GestionRubricasAdapter(IConectorBDRubricaPort objConectorBDRubricaPort, GestionRabbit rabbit) {
+        this.rabbitPort = rabbit;
+        this.conectorBDRubricaPort = objConectorBDRubricaPort;
+    }
     
     @Override
     public Rubrica consultarRubrica(Long Id) {
@@ -29,22 +34,30 @@ public class GestionRubricasAdapter implements IGestionRubricaPort{
     @Override
     public Rubrica crearRubrica(Rubrica objPRubrica) {
         objPRubrica.setEstado(EstadosEnum.ACTIVO);//Crear Rúbricas con estado activo por defecto
-        return conectorBDRubricaPort.saveRubric(objPRubrica);
+        Rubrica rubricaCreada = conectorBDRubricaPort.saveRubric(objPRubrica);
+        rabbitPort.sendRubric(rubricaCreada);
+        return rubricaCreada;
     }
 
     @Override
     public Rubrica modificarRubrica(Long Id, Rubrica objPRubrica) {
-        return conectorBDRubricaPort.updateRubric(Id, objPRubrica);
+        Rubrica rubricaModificada = conectorBDRubricaPort.updateRubric(Id, objPRubrica);
+        rabbitPort.updateRubric(rubricaModificada);
+        return rubricaModificada;
     }
 
     @Override
     public Rubrica editarEstadoRubrica(Long Id, String objPRubrica) {
-        return conectorBDRubricaPort.changeEstate(Id, objPRubrica);
+        Rubrica rubricaModificada = conectorBDRubricaPort.changeEstate(Id, objPRubrica);
+        rabbitPort.updateRubric(rubricaModificada);
+        return rubricaModificada;
     }
 
     @Override
     public Rubrica eliminarRubrica(Long Id) {
-        return conectorBDRubricaPort.deleteRubric(Id);
+        Rubrica rubricaEliminada = conectorBDRubricaPort.deleteRubric(Id);
+        rabbitPort.deleteRubric(rubricaEliminada);
+        return rubricaEliminada;
     }
 
     @Override
