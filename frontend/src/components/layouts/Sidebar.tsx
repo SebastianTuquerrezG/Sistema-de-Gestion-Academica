@@ -57,11 +57,6 @@ const data = {
                     url: "/evaluaciones",
                     roles: ["ADMIN_ROLE", "COORDINATOR_ROLE", "TEACHER_ROLE"],
                 },
-                {
-                    title: "Crear",
-                    url: "/evaluaciones/crear",
-                    roles: ["ADMIN_ROLE", "COORDINATOR_ROLE", "TEACHER_ROLE"],
-                },
             ],
         },
         {

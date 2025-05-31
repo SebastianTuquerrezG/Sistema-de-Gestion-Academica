@@ -11,7 +11,7 @@ export default function Header() {
         user: {
             name: localStorage.getItem("fullname") || "Nombre de usuario",
             email: localStorage.getItem("email") || "Email",
-            avatar: "https://github.com/SebastianTuquerrezG.png",
+            avatar: "https://github.com/Viperexz.png",
         }
     }
     return (
