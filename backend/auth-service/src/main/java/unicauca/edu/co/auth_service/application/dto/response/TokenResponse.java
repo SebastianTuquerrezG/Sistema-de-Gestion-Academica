@@ -24,6 +24,8 @@ public class TokenResponse {
     @JsonProperty("expires_in")
     private Long expiresIn;
 
+    private String userId;
+
     private String username;
 
     private String email;

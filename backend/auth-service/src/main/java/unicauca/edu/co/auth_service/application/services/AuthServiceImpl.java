@@ -69,6 +69,7 @@ public class AuthServiceImpl implements AuthService {
 
             String username = payloadJson.has("preferred_username") ? payloadJson.get("preferred_username").asText() : null;
             String email = payloadJson.has("email") ? payloadJson.get("email").asText() : null;
+            String userId = payloadJson.has("sub") ? payloadJson.get("sub").asText() : null;
 
             List<String> roles = new ArrayList<>();
             if (payloadJson.has("realm_access")) {
@@ -82,6 +83,7 @@ public class AuthServiceImpl implements AuthService {
                     .accessToken(accessToken)
                     .refreshToken(refreshToken)
                     .expiresIn(expiresIn)
+                    .userId(userId)
                     .username(username)
                     .email(email)
                     .roles(roles)
