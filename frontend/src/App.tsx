@@ -1,30 +1,24 @@
 
 import { Routes, Route } from "react-router-dom";
-import { ProtectedRoute } from "./routes/ProtectedRoute";
-import Dashboard from "./pages/Dashboard";
-import Login from "./pages/Login";
-import SubjectList from "./views/Estudiante/subjectList.tsx";
-import OtrosPeriodos from "./views/Estudiante/OtrosPeriodos.tsx";
-import RubricWrapper from "./views/Estudiante/rubricListWrapper.tsx";
-import Rubric from "./views/Estudiante/rubric/rubric.tsx";
+import { ProtectedRoute } from "@/routes/ProtectedRoute";
+import Dashboard from "@/pages/Dashboard";
+import Login from "@/pages/Login";
+import AccessDenied from "@/pages/AccessDenied";
 
 function App() {
   return (
     <Routes>
       <Route path="/" element={<Login />} />
       <Route path="/login" element={<Login />} />
+      <Route path="/acceso-denegado" element={<AccessDenied />} />
       <Route
         path="/*"
         element={
-          <ProtectedRoute>
-              <Dashboard />
+          <ProtectedRoute allowedRoles={["ADMIN_ROLE", "COORDINATOR_ROLE", "TEACHER_ROLE", "STUDENT_ROLE"]}>
+            <Dashboard />
           </ProtectedRoute>
         }
       />
-        <Route path="/subjectList" element={<SubjectList />} />
-        <Route path="/otrosperiodos/:idStudent" element={<OtrosPeriodos />} />
-        <Route path="/rubric/:idStudent/:idSubject/:period" element={<RubricWrapper />} />
-        <Route path="/rubric/:idStudent/:idSubject/:period/:idRubric" element={<Rubric />} />
     </Routes>
   );
 }

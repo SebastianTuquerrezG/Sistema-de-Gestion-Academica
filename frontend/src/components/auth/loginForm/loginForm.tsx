@@ -32,7 +32,7 @@ export default function LoginForm() {
 
     useEffect(() => {
         if (isAuthenticated()) {
-            navigate("/rubricas");
+            redirectToRolePage();
         }
     }, [navigate]);
 
@@ -82,7 +82,29 @@ export default function LoginForm() {
         }
 
         toast.success("¡Inicio de sesión exitoso!");
-        navigate("/rubricas");
+        redirectToRolePage();
+    };
+
+    const redirectToRolePage = () => {
+        const rolesString = localStorage.getItem("roles");
+        let roles: string[] = [];
+        if (rolesString) {
+            try {
+                roles = JSON.parse(rolesString);
+            } catch {
+                roles = [];
+            }
+        }
+
+
+        if (roles.some(role => ["ADMIN_ROLE", "TEACHER_ROLE", "COORDINATOR_ROLE"].includes(role))) {
+            navigate("/rubricas");
+        }
+        else if (roles.includes("STUDENT_ROLE")) {
+            navigate("/estudiante");
+        } else {
+            navigate("/");
+        }
     };
 
     const handleAuthError = (result: LoginResponse) => {

@@ -39,8 +39,7 @@ function getAuthHeaders(): Record<string, string> {
 
 export const getRubricEvaluation = async (idStudent: string | undefined, idSubject: string | undefined, period: string | undefined, idRubric: string | undefined) => {
     try {
-        console.log("Datos recibidos:",{ idStudent, idSubject, period, idRubric });
-        const response = await fetch(`http://localhost:8080/api/RubricEvaluation/${idStudent}/${idSubject}/${period}/${idRubric}`,{
+        const response = await fetch(`http://localhost:8080/api/RubricEvaluation/${idStudent}/${idSubject}/${period}/${idRubric}`, {
             headers: getAuthHeaders(),
         });
 

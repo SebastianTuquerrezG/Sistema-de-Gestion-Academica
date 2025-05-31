@@ -147,9 +147,6 @@ export default function ConsultarRubrica() {
         linkPermission: string
     }) => {
         if (!rubricToDuplicate) return;
-
-        // Implement the logic to share the rubric here
-        console.log("Sharing rubric:", rubricToDuplicate, data);
         setShowShareModal(false);
     };
 

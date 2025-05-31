@@ -1,8 +1,8 @@
-import React, {useEffect} from "react";
+import React, { useEffect } from "react";
 import { SubjectHeader } from "../../components/cards/subjectCard.tsx";
 import { RubricCard } from "../../components/cards/rubricCard.tsx";
 import { getRubrics, getSubjectHeader } from "../../services/rubricListService.ts";
-import { useNavigate} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import LayoutStudent from "../../components/layout/layoutStudent.tsx";
 import "./rubricList.css"
 
@@ -16,7 +16,7 @@ type RubricListProps = {
 const RubricList: React.FC<RubricListProps> = ({ idStudent, idSubject, period }) => {
 
     const navigate = useNavigate();
-   // const location = useLocation();
+    // const location = useLocation();
 
 
     type Rubric = {
@@ -43,7 +43,7 @@ const RubricList: React.FC<RubricListProps> = ({ idStudent, idSubject, period })
                 const rubricData = await getRubrics(idStudent, idSubject, period);
                 setRubrics(rubricData);
 
-                const subjectData = await getSubjectHeader(idStudent,period, idSubject );
+                const subjectData = await getSubjectHeader(idStudent, period, idSubject);
                 setSubjectHeader(subjectData);
             } catch (error) {
                 console.error("Error en la carga de datos:", error);
@@ -52,14 +52,13 @@ const RubricList: React.FC<RubricListProps> = ({ idStudent, idSubject, period })
         fetchData();
     }, [idStudent, idSubject, period]);
 
-    const handleClick = (idRubric: any, rubricName : any, nameTeacher :any) => {
+    const handleClick = (idRubric: any, rubricName: any, nameTeacher: any) => {
         alert("¡Haz hecho clic en la rubrica con id:" + idSubject)
-        console.log("idRubric", idRubric);
         // const idStudent = '123';
         // const idSubject = '456';
         // const period = '2024-1';
 
-        navigate(`/rubric/${idStudent}/${idSubject}/${period}/${idRubric}`,{
+        navigate(`/rubric/${idStudent}/${idSubject}/${period}/${idRubric}`, {
             state: {
                 rubricName: rubricName,
                 nameTeacher: nameTeacher,

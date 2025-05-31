@@ -1,14 +1,14 @@
 //import { use } from "react";
 import { getSubject } from "@/services/subjectList.ts";
-import React , { useEffect, useState } from "react";
-import LayoutStudent   from "../../components/layout/layoutStudent.tsx";
+import React, { useEffect, useState } from "react";
+import LayoutStudent from "../../components/layout/layoutStudent.tsx";
 //import SidebarStudent from "../components/layout/sidebarStudent.tsx";
 //import HeaderStudent from "../components/layout/headerStudent.tsx";
 import IconButton from "../../components/buttons/iconButton.tsx";
 import CursosList from "../../components/layout/CursosList.tsx";
-import {useNavigate, useLocation} from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
-const SubjectList : React.FC = () => {
+const SubjectList: React.FC = () => {
 
     const navigate = useNavigate();
     const location = useLocation();
@@ -17,7 +17,7 @@ const SubjectList : React.FC = () => {
     const idStudent = 2; // Cambia esto por el id real del estudiante
 
     type Curso = {
-       // id: number
+        // id: number
         nombre: string;
         docente: string;
         id: number
@@ -63,24 +63,22 @@ const SubjectList : React.FC = () => {
     }, [idStudent, period]);
 
     // Función para manejar el clic en un curso
-    const handleCursoClick = (curso: { nombre: string; docente: string; id:number; }) => {
+    const handleCursoClick = (curso: { nombre: string; docente: string; id: number; }) => {
         alert(
             `Seleccionaste el curso: ${curso.nombre} con el docente: ${curso.docente}  id: ${curso.id}`
         );
-       // const idSubject = 3;
+        // const idSubject = 3;
         navigate(`/rubric/${idStudent}/${curso.id}/${period}`);
     };
     // Función para manejar el clic en "Otros Periodos"
     const handleClick = () => {
-        navigate(`/otrosperiodos/${idStudent}`,{
+        navigate(`/otrosperiodos/${idStudent}`, {
             state: {
                 idStudent: idStudent,
             }
         });
         // alert("No hay otros periodos disponibles");
     };
-
-
 
     return (
         <LayoutStudent>

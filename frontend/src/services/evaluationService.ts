@@ -88,7 +88,6 @@ export async function getAllSemesters(): Promise<string[]> {
     const uniqueSemesters = Array.from(
       new Set(data.map((enroll) => enroll.semester))
     );
-    console.log("🎓 Semestres únicos:", uniqueSemesters);
     return uniqueSemesters;
   } catch (error) {
     console.error("Error al obtener períodos:", error);

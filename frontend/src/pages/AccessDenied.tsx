@@ -1,15 +1,15 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { AlertTriangle } from "lucide-react";
+import { Lock } from "lucide-react";
 
-const NotFound = () => {
+const AccessDenied = () => {
     return (
         <div className="min-h-screen bg-background flex items-center justify-center p-4">
             <Card className="min-h-[60vh] flex flex-col items-center justify-center text-primary bg-background rounded-xl shadow-sm p-8 max-w-md mx-auto">
-                <AlertTriangle className="h-16 w-16 text-destructive mb-4" />
-                <h2 className="m-0 mb-3 font-bold text-4xl text-center">No Encontrado</h2>
-                <p className="m-0 mb-6 text-lg text-muted-foreground text-center">
-                    La sección que buscas no existe o no se pudo encontrar.
+                <Lock className="h-16 w-16 text-destructive mb-4" />
+                <h2 className="m-0 mb-3 font-bold text-4xl">Acceso Denegado</h2>
+                <p className="m-0 mb-6 text-lg text-muted-foreground">
+                    No tienes permisos para acceder a esta sección.
                 </p>
                 <Button asChild variant="default">
                     <a href="/" className="no-underline">
@@ -20,4 +20,5 @@ const NotFound = () => {
         </div>
     );
 };
-export default NotFound;
+
+export default AccessDenied;
