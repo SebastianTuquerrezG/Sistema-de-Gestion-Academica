@@ -6,6 +6,7 @@ import ActionButtons from "../../components/utils/actionButtons";
 import { useEvaluationData } from "./hooks/useEvaluationData";
 import { Criterio } from "./types";
 import "../../assets/css/evaluaciones.css";
+import { useNavigate } from "react-router-dom";
 
 const Evaluaciones: React.FC = () => {
   const {
@@ -22,7 +23,10 @@ const Evaluaciones: React.FC = () => {
     setSelectedEstudiante,
     enrollId,
     handleSelectRubrica,
+    raName,
   } = useEvaluationData();
+
+  const navigate = useNavigate();
 
   const transformCriterios = (criterios: any[]): Criterio[] => {
     return criterios
@@ -45,23 +49,39 @@ const Evaluaciones: React.FC = () => {
       }));
   };
 
+  // Agregar logs para depuración
+  if (selectedRubrica && enrollId) {
+    console.log("Contenido de la evaluación seleccionada:", selectedRubrica);
+    console.log("EnrollId seleccionado:", enrollId);
+  }
+
   return (
     <>
       <div className="header-row">
         <PageTitle title="Evaluaciones" />
-        <ActionButtons />
+        <ActionButtons
+          onEstadisticas={() => {
+            navigate("/estadisticas", {
+              state: {
+                materia: selectedMateria,
+                rubrica: selectedRubrica?.name || "",
+                periodo: selectedPeriodo,
+              },
+            });
+          }}
+        />
       </div>
 
       <RubricaInfo
         materias={materias.map((m) => m.name)}
-        rubricas={rubricas.map((r) => r.nombreRubrica)}
+        rubricas={rubricas.map((r) => r.name)}
         periodos={periodos}
         estudiantes={estudiantes}
         materiaSeleccionada={selectedMateria}
-        rubricaSeleccionada={selectedRubrica?.nombreRubrica || ""}
+        rubricaSeleccionada={selectedRubrica?.name || ""}
         periodoSeleccionado={selectedPeriodo}
         estudianteSeleccionado={selectedEstudiante}
-        resultadoAprendizaje={selectedRubrica?.objetivoEstudio || ""}
+        resultadoAprendizaje={raName}
         onSelectMateria={setSelectedMateria}
         onSelectRubrica={handleSelectRubrica}
         onSelectPeriodo={setSelectedPeriodo}
@@ -69,12 +89,14 @@ const Evaluaciones: React.FC = () => {
       />
 
       {selectedRubrica && enrollId && (
-        <EvaluationTable
-          estudiante={selectedEstudiante}
-          criterios={transformCriterios(selectedRubrica.criterios)}
-          rubricaId={selectedRubrica.idRubrica}
-          enrollId={enrollId}
-        />
+        <>
+          <EvaluationTable
+            estudiante={selectedEstudiante}
+            criterios={transformCriterios(selectedRubrica.criterios || [])}
+            rubricaId={selectedRubrica.id}
+            enrollId={enrollId}
+          />
+        </>
       )}
     </>
   );

@@ -7,6 +7,7 @@ import {
   getAllCourses,
   getAllSemesters,
   getEnrollIdFromStudentAndPeriod,
+  getRANameById
 } from '../../../services/evaluationService';
 
 export const useEvaluationData = () => {
@@ -19,6 +20,7 @@ export const useEvaluationData = () => {
   const [estudiantes, setEstudiantes] = useState<string[]>([]);
   const [selectedEstudiante, setSelectedEstudiante] = useState<string>("");
   const [enrollId, setEnrollId] = useState<number | null>(null);
+  const [raName, setRaName] = useState<string>("");
 
   // Cargar materias
   useEffect(() => {
@@ -29,9 +31,14 @@ export const useEvaluationData = () => {
   useEffect(() => {
     const materia = materias.find((m) => m.name === selectedMateria);
     if (materia) {
-      getRubricsBySubjectId(materia.id).then(setRubricas);
+      getRubricsBySubjectId(materia.id)
+        .then((data) => {
+          setRubricas(data);
+          console.log("Contenido retornado (string) en el hook:", JSON.stringify(data, null, 2));
+        });
     } else {
       setRubricas([]);
+      console.log("rubricas")
     }
     setSelectedRubrica(null);
     setSelectedPeriodo("");
@@ -45,23 +52,41 @@ export const useEvaluationData = () => {
     getAllSemesters().then(setPeriodos);
   }, []);
 
+  // Obtener nombre del RA cuando cambia la rúbrica seleccionada
+  useEffect(() => {
+    if (selectedRubrica?.ra_id) {
+      getRANameById(selectedRubrica.ra_id).then(setRaName);
+    } else {
+      setRaName("");
+    }
+  }, [selectedRubrica]);
+
   // Obtener estudiantes por curso y período
   useEffect(() => {
     if (selectedPeriodo && selectedMateria) {
       const materia = materias.find((m) => m.name === selectedMateria);
-      if (!materia) return;
+      if (!materia) {
+        console.log("No se encontró la materia:", selectedMateria, materias);
+        return;
+      }
 
       getAllCourses().then((cursos) => {
         const curso = cursos.find((c: any) => c.subject === materia.id);
-        if (!curso) return;
+        if (!curso) {
+          console.log("No se encontró el curso para la materia:", materia, cursos);
+          return;
+        }
 
         getStudentsByCourseAndPeriod(curso.id, selectedPeriodo).then((data) => {
+          console.log('Retorno de getStudentsByCourseAndPeriod:', data);
           const nombres = data.map((e: any) =>
             `${e.name ?? ""} ${e.lastName ?? ""}`.trim()
           );
           setEstudiantes(nombres);
         });
       });
+    } else {
+      console.log("selectedPeriodo o selectedMateria no definidos", selectedPeriodo, selectedMateria);
     }
   }, [selectedPeriodo, selectedMateria]);
 
@@ -75,7 +100,7 @@ export const useEvaluationData = () => {
   }, [selectedEstudiante, selectedPeriodo]);
 
   const handleSelectRubrica = (nombre: string) => {
-    const rubrica = rubricas.find((r) => r.nombreRubrica === nombre) || null;
+    const rubrica = rubricas.find((r) => r.name === nombre) || null;
     setSelectedRubrica(rubrica);
     setSelectedPeriodo("");
     setSelectedEstudiante("");
@@ -97,5 +122,6 @@ export const useEvaluationData = () => {
     setSelectedEstudiante,
     enrollId,
     handleSelectRubrica,
+    raName,
   };
 }; 

@@ -14,8 +14,8 @@ export interface Criterio {
 }
 
 export interface Rubrica {
-  idRubrica: number;
-  nombreRubrica: string;
+  id: number;
+  name: string;
   materia: string;
   notaRubrica: number;
   objetivoEstudio: string;
@@ -30,6 +30,7 @@ export interface Rubrica {
       rangoNota: string;
     }[];
   }[];
+  ra_id?: number;
 }
 
 export interface Estudiante {

@@ -46,13 +46,17 @@
 }
 
 @media (max-width: 1000px) {
-  .estadisticas-content-centered, .estadisticas-chart-block, .estadisticas-cards-grid {
+  .estadisticas-content-centered,
+  .estadisticas-chart-block,
+  .estadisticas-cards-grid {
     max-width: 98vw;
   }
 }
 
 @media (max-width: 600px) {
-  .estadisticas-content-centered, .estadisticas-chart-block, .estadisticas-cards-grid {
+  .estadisticas-content-centered,
+  .estadisticas-chart-block,
+  .estadisticas-cards-grid {
     padding: 0 4px;
   }
-} 
+}

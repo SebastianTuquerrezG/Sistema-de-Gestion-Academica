@@ -34,7 +34,11 @@ export async function getRubricsBySubjectId(idMateria: number): Promise<any[]> {
       headers: getAuthHeaders(),
     });
     if (!response.ok) throw new Error(`HTTP error: ${response.status}`);
-    return await response.json();
+
+    const data = await response.json();
+    console.log("Contenido retornado (string) en el servicio:", JSON.stringify(data, null, 2));
+
+    return data;
   } catch (error) {
     console.error("Error al obtener rúbricas por materia:", error);
     return [];
