@@ -2,8 +2,6 @@ import React from 'react';
 import "./rubric.css";
 import { useEffect, useState } from "react";
 import Notification from '../../../components/notifications/notification.tsx';
-
-import LayoutStudent from "../../../components/layout/layoutStudent.tsx";
 import {useLocation, useParams} from "react-router-dom";
 import {EvaluationResponseViewDTO, getRubricEvaluation} from "@/services/rubricEvaluationService.ts";
 
@@ -38,8 +36,7 @@ const Rubric: React.FC = () => {
 
 
     return (
-        <LayoutStudent>
-            <div>
+        <div className="w-full flex flex-col flex-1 p-4 ">
                 {showNotification && (
                     <Notification
                         type="error"
@@ -54,7 +51,7 @@ const Rubric: React.FC = () => {
                         <span className="material-symbols-outlined">view_list</span>
                     </div>
                     <div className="fila1columna2">
-                        <h2 className="main">{rubricName}</h2>
+                        <h2 className="text-2xl font-bold">{rubricName}</h2>
                         <h4 className="main">{nameTeacher}</h4>
                     </div>
                 </div>
@@ -138,7 +135,7 @@ const Rubric: React.FC = () => {
                 </div>
 
             </div>
-        </LayoutStudent>
+
 
     );
 };

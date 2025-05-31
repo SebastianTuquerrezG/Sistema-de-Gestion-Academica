@@ -14,12 +14,13 @@
   display: flex;
   align-items: center;
 }*/
-.icon-button-container {
-  position: absolute; /* Posiciona el contenedor del botón */
-  top: 130px; /* Ajusta la distancia desde la parte superior */
-  right: 10px; /* Ajusta la distancia desde la derecha */
-  z-index: 10000; /* Asegura que esté por encima de otros elementos */
-}
+
+/*.icon-button-container {*/
+/*  position: absolute; !* Posiciona el contenedor del botón *!*/
+/*  top: 130px; !* Ajusta la distancia desde la parte superior *!*/
+/*  right: 10px; !* Ajusta la distancia desde la derecha *!*/
+/*  z-index: 10000; !* Asegura que esté por encima de otros elementos *!*/
+/*}*/
 
 .icon-button {
   display: flex;

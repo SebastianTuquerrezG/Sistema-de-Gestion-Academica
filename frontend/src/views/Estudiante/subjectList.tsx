@@ -1,9 +1,6 @@
 //import { use } from "react";
 import { getSubject } from "@/services/subjectList.ts";
-import React, { useEffect, useState } from "react";
-import LayoutStudent from "../../components/layout/layoutStudent.tsx";
-//import SidebarStudent from "../components/layout/sidebarStudent.tsx";
-//import HeaderStudent from "../components/layout/headerStudent.tsx";
+import React , { useEffect, useState } from "react";
 import IconButton from "../../components/buttons/iconButton.tsx";
 import CursosList from "../../components/layout/CursosList.tsx";
 import { useNavigate, useLocation } from "react-router-dom";
@@ -17,7 +14,6 @@ const SubjectList: React.FC = () => {
     const idStudent = 2; // Cambia esto por el id real del estudiante
 
     type Curso = {
-        // id: number
         nombre: string;
         docente: string;
         id: number
@@ -63,11 +59,11 @@ const SubjectList: React.FC = () => {
     }, [idStudent, period]);
 
     // Función para manejar el clic en un curso
-    const handleCursoClick = (curso: { nombre: string; docente: string; id: number; }) => {
-        alert(
-            `Seleccionaste el curso: ${curso.nombre} con el docente: ${curso.docente}  id: ${curso.id}`
-        );
-        // const idSubject = 3;
+    const handleCursoClick = (curso: { nombre: string; docente: string; id:number; }) => {
+        // alert(
+        //     `Seleccionaste el curso: ${curso.nombre} con el docente: ${curso.docente}  id: ${curso.id}`
+        // );
+       // const idSubject = 3;
         navigate(`/rubric/${idStudent}/${curso.id}/${period}`);
     };
     // Función para manejar el clic en "Otros Periodos"
@@ -80,15 +76,29 @@ const SubjectList: React.FC = () => {
         // alert("No hay otros periodos disponibles");
     };
 
+
+
     return (
-        <LayoutStudent>
-            <IconButton onClick={handleClick} icon="add">
-                Otros Periodos
-            </IconButton>
-            <p className="periodo-actual">Periodo actual: 2025-1</p>{" "}
-            <p className="Curso-actuales">Cursos Actuales</p>
+        <div className= "w-full max-w-screen-lg mx-auto flex flex-col flex-1 p-4">
+            <div className=" flex justify-between items-center w-full mb-4">
+                <h2 className="title2 border-b-2 border-red-500 inline-block" style={{ color: "var(--primary-regular-color)" }}>
+                    Periodo actual: {period}
+                </h2>
+                <IconButton onClick={handleClick} icon="add">
+                    Otros Periodos
+                </IconButton>
+            </div>
+            <div className="w-full flex justify-center mt-6 mb-10">
+                <p
+                    className="text-2xl font-bold font-serif border-b-2 border-red-500 pb-1 inline-block"
+                    style={{ color: "var(--primary-regular-color)" }}
+                >
+                    Cursos Actuales
+                </p>
+            </div>
             <CursosList cursos={subjects} onCursoClick={handleCursoClick} />
-        </LayoutStudent>
+        </div>
+
     );
 };
 

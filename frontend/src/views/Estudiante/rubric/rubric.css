@@ -76,6 +76,7 @@ thead {
   margin: 0 10px;
   display: flex;
   flex-direction: column;
+  justify-content: center;
 }
 
 .fila2{
@@ -91,7 +92,8 @@ thead {
 }
 
 .fila3{
-  font-family: var(--unicauca-font), serif;
+  font-weight: bold;
+  font-size: 20px;
   display: flex;
   flex-direction: column;
   margin: 0 10px;

@@ -1,9 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import PageTitle from "../../components/pageTitle/pageTitle.tsx";
-import SidebarStudent from "../../components/layout/sidebarStudent.tsx";
-import HeaderStudent from "../../components/layout/headerStudent.tsx";
-//import {getSubject} from "../../services/subjectList.ts";
 import { getPeriod } from "@/services/subjectList.ts";
 import PeriodosList from "@/components/layouts/PeriodosList.tsx"; // Asegúrate de que esta función esté exportada correctamente
 
@@ -36,22 +32,25 @@ const OtrosPeriodos: React.FC = () => {
 
   // Puedes reutilizar el handler si quieres hacer algo al hacer click en un periodo
   const handlePeriodoClick = (periodo: { nombre: string }) => {
-    alert(`Seleccionaste el periodo: ${periodo.nombre}`);
+    // alert(`Seleccionaste el periodo: ${periodo.nombre}`);
     // Aquí podrías navegar a otra vista si lo necesitas
-    navigate("/subjectList", { state: { periodoSeleccionado: periodo.nombre } });
+    navigate("/estudiante", { state: { periodoSeleccionado: periodo.nombre } });
   };
 
   return (
-    <div className="layout-container">
-      <SidebarStudent />
-      <div className="content-container">
-        <HeaderStudent />
-        <PageTitle title="Otros Periodos" />
-        <div className="content">
+      <div className="w-full max-w-screen-lg mx-auto flex flex-col flex-1 p-4">
+        <div className="w-full flex justify-start mb-4"><h2
+              className="title2 border-b-2 border-red-500 inline-block"
+              style={{ color: "var(--primary-regular-color)" }}
+          >
+            Otros Periodos
+          </h2>
+        </div>
+
+        <div className="p-4">
           <PeriodosList periodos={periodos} onPeriodoClick={handlePeriodoClick} />
         </div>
       </div>
-    </div>
   );
 };
 

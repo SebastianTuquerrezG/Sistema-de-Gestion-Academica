@@ -1,9 +1,8 @@
 import React, { useEffect } from "react";
 import { SubjectHeader } from "../../components/cards/subjectCard.tsx";
 import { RubricCard } from "../../components/cards/rubricCard.tsx";
-import { getRubrics, getSubjectHeader } from "../../services/rubricListService.ts";
+import { getRubrics, getSubjectHeader } from "@/services/rubricListService.ts";
 import { useNavigate } from "react-router-dom";
-import LayoutStudent from "../../components/layout/layoutStudent.tsx";
 import "./rubricList.css"
 
 type RubricListProps = {
@@ -52,8 +51,9 @@ const RubricList: React.FC<RubricListProps> = ({ idStudent, idSubject, period })
         fetchData();
     }, [idStudent, idSubject, period]);
 
-    const handleClick = (idRubric: any, rubricName: any, nameTeacher: any) => {
-        alert("¡Haz hecho clic en la rubrica con id:" + idSubject)
+    const handleClick = (idRubric: any, rubricName : any, nameTeacher :any) => {
+        // alert("¡Haz hecho clic en la rubrica con id:" + idSubject)
+        //console.log("idRubric", idRubric);
         // const idStudent = '123';
         // const idSubject = '456';
         // const period = '2024-1';
@@ -68,7 +68,7 @@ const RubricList: React.FC<RubricListProps> = ({ idStudent, idSubject, period })
     };
 
     return (
-        <LayoutStudent>
+        <div className="w-full max-w-screen-lg mx-auto flex flex-col flex-1 p-4">
             <div className="subject-header">
                 {subjectHeader && (
                     <SubjectHeader
@@ -88,7 +88,7 @@ const RubricList: React.FC<RubricListProps> = ({ idStudent, idSubject, period })
                     />
                 ))}
             </div>
-        </LayoutStudent>
+        </div>
     );
 };
 

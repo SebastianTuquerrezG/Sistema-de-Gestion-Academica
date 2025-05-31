@@ -13,7 +13,7 @@ interface CursosListProps {
 }
 
 const CursosList: React.FC<CursosListProps> = ({ cursos, onCursoClick }) => (
-  <div>
+  <div className= "flex flex-col">
     {cursos.map((curso, idx) => (
       <CursoItem
         key={idx}
