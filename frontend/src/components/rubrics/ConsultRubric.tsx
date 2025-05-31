@@ -1,12 +1,12 @@
 "use client"
 
 import { useEffect, useState } from "react";
-import {Search, Plus, Pencil, Trash2, Share2, Copy} from "lucide-react";
+import { Search, Plus, Pencil, Trash2, Share2, Copy } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import {TableCell} from "@/components/ui/table.tsx";
+import { TableCell } from "@/components/ui/table.tsx";
 import { Badge } from "@/components/ui/badge.tsx";
-import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select.tsx";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select.tsx";
 import { useNavigate } from "react-router-dom";
 import Notification from "@/components/notifications/notification";
 import { RubricInterface } from "@/interfaces/RubricInterface";
@@ -15,6 +15,7 @@ import DuplicateRubricModal from "@/components/Modal/DuplicateRubricModal.tsx";
 import ShareRubricModal from "@/components/Modal/ShareRubricModal.tsx";
 import ConfirmDeleteModal from "@/components/Modal/ConfirmDeleteModal";
 import { RubricInterfacePeticion } from "@/interfaces/RubricInterfacePeticion.ts";
+import { Skeleton } from "@/components/ui/skeleton";
 
 type NotificationType = {
     type: "error" | "info" | "success";
@@ -27,19 +28,27 @@ export default function ConsultarRubrica() {
     const [selectedMateria, setSelectedMateria] = useState("");
     const [selectedEstado, setSelectedEstado] = useState("");
     const [rubrics, setRubrics] = useState<RubricInterface[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
     const navigate = useNavigate();
     const [selectedRubricId, setSelectedRubricId] = useState<string | null>(null);
     const [showDuplicateModal, setShowDuplicateModal] = useState(false);
-    const [rubricToDuplicate, setRubricToDuplicate] = useState<RubricInterface| null>(null);
+    const [rubricToDuplicate, setRubricToDuplicate] = useState<RubricInterface | null>(null);
     const [showShareModal, setShowShareModal] = useState(false);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [rubricToDelete, setRubricToDelete] = useState<RubricInterface | null>(null);
     const [notification, setNotification] = useState<NotificationType | null>(null);
 
     useEffect(() => {
+        setIsLoading(true);
         getAllRubrics()
-            .then(data => setRubrics(data))
-            .catch((error) => console.error(error));
+            .then(data => {
+                setRubrics(data);
+                setIsLoading(false);
+            })
+            .catch((error) => {
+                console.error(error);
+                setIsLoading(false);
+            });
     }, []);
 
     useEffect(() => {
@@ -52,11 +61,10 @@ export default function ConsultarRubrica() {
     const filteredRubrics = rubrics.filter(
         (rubric) =>
             (rubric.nombreRubrica.toLowerCase().includes(searchTerm.toLowerCase()) || rubric.idRubrica) &&
-            (selectedMateria== "Todas las materias" || selectedMateria === "" || rubric.nombreMateria === selectedMateria) &&
+            (selectedMateria == "Todas las materias" || selectedMateria === "" || rubric.nombreMateria === selectedMateria) &&
             (selectedEstado == "Todos los estados" || selectedEstado === "" || rubric.estado === selectedEstado)
     );
 
-    // Navegación: siempre usa string
     const handleEdit = (id: number) => {
         navigate(`/rubricas/editar/${id}`);
     };
@@ -97,7 +105,7 @@ export default function ConsultarRubrica() {
     };
 
     // Duplicar rúbrica usando la interfaz correcta
-    const handleDuplicate = async ( data: { newName: string; shareWithSamePeople: boolean; copyComments: boolean; resolvedComments: boolean }) => {
+    const handleDuplicate = async (data: { newName: string; shareWithSamePeople: boolean; copyComments: boolean; resolvedComments: boolean }) => {
         if (!rubricToDuplicate) return;
 
         /*const duplicatedRubric: RubricInterface = {
@@ -167,7 +175,7 @@ export default function ConsultarRubrica() {
         setShowShareModal(false);
     };
 
-    const handleOpenShareModal = (rubric:RubricInterface) => {
+    const handleOpenShareModal = (rubric: RubricInterface) => {
         setRubricToDuplicate(rubric);
         setShowShareModal(true);
     }
@@ -204,8 +212,8 @@ export default function ConsultarRubrica() {
             <main className="max-w-7xl mx-auto px-4 py-8">
                 <div className="mb-6 flex flex-col sm:flex-row gap-4 justify-between items-start sm:items-center">
                     <div className="relative flex-1 max-w-md">
-                        <Input type="text" placeholder=" Ingrese Rubrica a buscar..."  value={searchTerm}
-                               onChange={(e) => setSearchTerm(e.target.value)} style={{ width: "100%" }} className="pl-10 w-full"
+                        <Input type="text" placeholder=" Ingrese Rubrica a buscar..." value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)} style={{ width: "100%" }} className="pl-10 w-full"
                         />
                         <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
                     </div>
@@ -246,58 +254,84 @@ export default function ConsultarRubrica() {
                 <div>
                     <table className="w-full">
                         <thead>
-                        <tr className="title5 bg-[#000066] text-white ">
-                            <th className="py-3 text-left ">Identificador</th>
-                            <th className="px-6 py-3 text-left">Nombre Rubrica</th>
-                            <th className="px-6 py-3 text-left">Materia</th>
-                            <th className="px-6 py-3 text-left">Estado</th>
-                            <th className="px-6 py-3 text-center">Acciones</th>
-                        </tr>
+                            <tr className="title5 bg-[#000066] text-white ">
+                                <th className="py-3 text-left ">Identificador</th>
+                                <th className="px-6 py-3 text-left">Nombre Rubrica</th>
+                                <th className="px-6 py-3 text-left">Materia</th>
+                                <th className="px-6 py-3 text-left">Estado</th>
+                                <th className="px-6 py-3 text-center">Acciones</th>
+                            </tr>
                         </thead>
                         <tbody>
-                        {filteredRubrics.map((rubric, index) => (
-                            <tr key={rubric.idRubrica} className={index % 2 === 0 ? "bg-gray-50" : "bg-white"}>
-                                <td className={`px-6 py-4 cursor-pointer ${selectedRubricId === String(rubric.idRubrica) ? "text-blue-600" : ""}`}
-                                    onClick={() => handleDetail(rubric.idRubrica)}>
-                                    {rubric.idRubrica}
-                                </td>
-                                <td className={`px-6 py-4 cursor-pointer ${selectedRubricId === String(rubric.idRubrica) ? "text-blue-600" : ""}`}
-                                    onClick={() => handleDetail(rubric.idRubrica)}>
-                                    {rubric.nombreRubrica}
-                                </td>
-                                <td className={`px-6 py-4 cursor-pointer ${selectedRubricId === String(rubric.idRubrica) ? "text-blue-600" : ""}`}
-                                    onClick={() => handleDetail(rubric.idRubrica)}>
-                                    {rubric.nombreMateria}
-                                </td>
-                                <td>
-                                    <TableCell>{getStatusBadge(rubric.estado)}</TableCell>
-                                </td>
-                                <td className="px-6 py-4">
-                                    <div className="flex justify-center gap-2">
-                                        <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => handleEdit(rubric.idRubrica)} disabled={rubric.estado === "INACTIVO"}>
-                                            <Pencil className="h-4 w-4" />
-                                        </Button>
-                                        <Button variant="ghost" size="icon" className="h-8 w-8 text-orange-500 hover:text-orange-600" onClick={() => handleOpenDeleteModal(rubric)}>
-                                            <Trash2 className="h-4 w-4" />
-                                        </Button>
-                                        <Button variant="ghost" size="icon" className="h-8 w-8 text-indigo-500 hover:text-indigo-600" onClick={() => handleOpenDuplicateModal(rubric)} disabled={rubric.estado === "INACTIVO"}>
-                                            <Copy className="h-4 w-4" />
-                                        </Button>
-                                        <Button variant="ghost" size="icon" className="h-8 w-8 text-black-500 hover:text-black-600" onClick={() => handleOpenShareModal(rubric)} disabled={rubric.estado === "INACTIVO"}>
-                                            <Share2 className="h-4 w-4" />
-                                        </Button>
-                                        {notification && (
-                                            <Notification
-                                                type={notification.type}
-                                                title={notification.title}
-                                                message={notification.message}
-                                                onClose={() => setNotification(null)}
-                                            />
-                                        )}
-                                    </div>
-                                </td>
-                            </tr>
-                        ))}
+                            {isLoading ? (
+                                Array.from({ length: 5 }).map((_, index) => (
+                                    <tr key={index} className={index % 2 === 0 ? "bg-gray-50" : "bg-white"}>
+                                        <td className="px-6 py-4">
+                                            <Skeleton className="h-4 w-[50px]" />
+                                        </td>
+                                        <td className="px-6 py-4">
+                                            <Skeleton className="h-4 w-[200px]" />
+                                        </td>
+                                        <td className="px-6 py-4">
+                                            <Skeleton className="h-4 w-[150px]" />
+                                        </td>
+                                        <td className="px-6 py-4">
+                                            <Skeleton className="h-6 w-[70px] rounded-full" />
+                                        </td>
+                                        <td className="px-6 py-4">
+                                            <div className="flex justify-center gap-2">
+                                                {Array.from({ length: 4 }).map((_, i) => (
+                                                    <Skeleton key={i} className="h-8 w-8 rounded-md" />
+                                                ))}
+                                            </div>
+                                        </td>
+                                    </tr>
+                                ))
+                            ) : (
+                                filteredRubrics.map((rubric, index) => (
+                                    <tr key={rubric.idRubrica} className={index % 2 === 0 ? "bg-gray-50" : "bg-white"}>
+                                        <td className={`px-6 py-4 cursor-pointer ${selectedRubricId === String(rubric.idRubrica) ? "text-blue-600" : ""}`}
+                                            onClick={() => handleDetail(rubric.idRubrica)}>
+                                            {rubric.idRubrica}
+                                        </td>
+                                        <td className={`px-6 py-4 cursor-pointer ${selectedRubricId === String(rubric.idRubrica) ? "text-blue-600" : ""}`}
+                                            onClick={() => handleDetail(rubric.idRubrica)}>
+                                            {rubric.nombreRubrica}
+                                        </td>
+                                        <td className={`px-6 py-4 cursor-pointer ${selectedRubricId === String(rubric.idRubrica) ? "text-blue-600" : ""}`}
+                                            onClick={() => handleDetail(rubric.idRubrica)}>
+                                            {rubric.nombreMateria}
+                                        </td>
+                                        <td>
+                                            <TableCell>{getStatusBadge(rubric.estado)}</TableCell>
+                                        </td>
+                                        <td className="px-6 py-4">
+                                            <div className="flex justify-center gap-2">
+                                                <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => handleEdit(rubric.idRubrica)} disabled={rubric.estado === "INACTIVO"}>
+                                                    <Pencil className="h-4 w-4" />
+                                                </Button>
+                                                <Button variant="ghost" size="icon" className="h-8 w-8 text-orange-500 hover:text-orange-600" onClick={() => handleOpenDeleteModal(rubric)}>
+                                                    <Trash2 className="h-4 w-4" />
+                                                </Button>
+                                                <Button variant="ghost" size="icon" className="h-8 w-8 text-indigo-500 hover:text-indigo-600" onClick={() => handleOpenDuplicateModal(rubric)} disabled={rubric.estado === "INACTIVO"}>
+                                                    <Copy className="h-4 w-4" />
+                                                </Button>
+                                                <Button variant="ghost" size="icon" className="h-8 w-8 text-black-500 hover:text-black-600" onClick={() => handleOpenShareModal(rubric)} disabled={rubric.estado === "INACTIVO"}>
+                                                    <Share2 className="h-4 w-4" />
+                                                </Button>
+                                                {notification && (
+                                                    <Notification
+                                                        type={notification.type}
+                                                        title={notification.title}
+                                                        message={notification.message}
+                                                        onClose={() => setNotification(null)}
+                                                    />
+                                                )}
+                                            </div>
+                                        </td>
+                                    </tr>
+                                ))
+                            )}
                         </tbody>
                     </table>
                 </div>
@@ -309,7 +343,7 @@ export default function ConsultarRubrica() {
                 />
                 <ShareRubricModal
                     open={showShareModal}
-                    onClose={()=>setShowShareModal(false)}
+                    onClose={() => setShowShareModal(false)}
                     onShare={handleShareRubric}
                     rubricName={rubricToDuplicate?.nombreRubrica || ""}
                 />
