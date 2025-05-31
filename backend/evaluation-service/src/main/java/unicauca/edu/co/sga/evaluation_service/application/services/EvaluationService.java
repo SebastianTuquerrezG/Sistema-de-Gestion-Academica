@@ -102,6 +102,12 @@ public class EvaluationService implements EvaluationPort {
 
     @Override
     public boolean deleteEvaluation(Long id) {
+        Optional<EvaluationEntity> evaluationEntity = evaluationRepository.findById(id);
+        if (evaluationEntity.isPresent()){
+            rabbitService.sendDeleteEvaluation(evaluationEntity.get());
+            evaluationRepository.deleteById(id);
+            return true;
+        }
         return false;
     }
 
@@ -142,6 +148,9 @@ public class EvaluationService implements EvaluationPort {
             );
             existingEvaluation.setScore(evaluationRequestDTO.getScore());
             existingEvaluation.setEvidenceUrl(evaluationRequestDTO.getEvidenceUrl());
+
+            rabbitService.sendUpdateEvaluation(existingEvaluation);
+
             evaluationRepository.saveAndFlush(existingEvaluation);
             return true;
         } catch (NotFoundException | ResponseStatusException e) {

@@ -5,7 +5,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import unicauca.edu.co.sga.evaluation_service.domain.enums.GeneralEnums;
+import unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.entities.CriteriaEntity;
 
+import java.util.List;
 import java.util.Set;
 
 @Data
@@ -14,9 +16,12 @@ import java.util.Set;
 @Builder
 public class RubricRequestDTO {
     private Long idRubrica;
+    private Long idMateria;
     private String nombreRubrica;
-    private String objetivoEstudio;
+    private String nombreMateria;
     private int notaRubrica;
-    private Long ra_id;
-    private GeneralEnums.status status;
+    private String objetivoEstudio;
+    List<CriteriaEntity> criterios;
+    private GeneralEnums.status estado;
+    private Long raId;
 }
