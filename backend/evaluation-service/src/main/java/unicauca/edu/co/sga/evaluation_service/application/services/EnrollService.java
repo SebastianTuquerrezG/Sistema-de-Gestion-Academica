@@ -58,7 +58,9 @@ public class EnrollService implements EnrollPort {
 
     @Override
     public boolean deleteEnroll(Long id) {
-        if (enrollRepository.existsById(id)){
+        Optional<EnrollEntity> enrollExist = enrollRepository.findById(id);
+        if (enrollExist.isPresent()){
+            rabbitService.sendDeleteEnroll(enrollExist.get());
             enrollRepository.deleteById(id);
             return true;
         }
@@ -75,6 +77,9 @@ public class EnrollService implements EnrollPort {
             studentEntity.ifPresent(enrollEntity::setStudent);
             courseEntity.ifPresent(enrollEntity::setCourse);
             enrollEntity.setSemester(enroll.getSemester());
+
+            rabbitService.sendUpdateEnroll(enrollEntity);
+
             enrollRepository.save(enrollEntity);
             return true;
         }

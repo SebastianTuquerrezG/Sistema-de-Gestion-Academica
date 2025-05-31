@@ -48,7 +48,9 @@ public class TeacherService implements TeacherPort {
 
     @Override
     public boolean deleteTeacher(Long id) {
-        if (teacherRepository.existsById(id)) {
+        Optional<TeacherEntity> teacherExist = teacherRepository.findById(id);
+        if (teacherExist.isPresent()) {
+            rabbitService.deleteTeacher(teacherExist.get());
             teacherRepository.deleteById(id);
             return true;
         } else {
@@ -67,6 +69,9 @@ public class TeacherService implements TeacherPort {
             teacherEntity.setDegree(teacher.getDegree());
             teacherEntity.setTeacherType(teacher.getTeacherType());
             teacherEntity.setStatus(teacher.getStatus());
+
+            rabbitService.updateTeacher(teacherEntity);
+
             teacherRepository.save(teacherEntity);
             return true;
         } else {

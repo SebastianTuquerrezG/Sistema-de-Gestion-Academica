@@ -58,12 +58,13 @@ public class StudentService implements StudentPort {
 
     @Override
     public boolean deleteStudent(Long studentId) {
-        if (studentRepository.existsById(studentId)) {
+        Optional<StudentEntity> studentExist = studentRepository.findById(studentId);
+        if (studentExist.isPresent()) {
+            rabbitService.deleteStudent(studentExist.get());
             studentRepository.deleteById(studentId);
             return true;
-        } else {
-            return false;
         }
+        return false;
     }
 
     @Override
@@ -74,6 +75,9 @@ public class StudentService implements StudentPort {
             studentEntity.setName(student.getName());
             studentEntity.setIdentification(student.getIdentification());
             studentEntity.setIdentificationType(student.getType());
+
+            rabbitService.updateStudent(studentEntity);
+
             studentRepository.save(studentEntity);
             return true;
         }

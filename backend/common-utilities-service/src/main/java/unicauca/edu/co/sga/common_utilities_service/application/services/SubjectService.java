@@ -61,7 +61,9 @@ public class SubjectService implements SubjectPort {
 
     @Override
     public boolean deleteSubject(Long subjectId) {
-        if (subjectRepository.existsById(subjectId)) {
+        Optional<SubjectEntity> subjectExist = subjectRepository.findById(subjectId);
+        if (subjectExist.isPresent()) {
+            rabbitService.deleteSubject(subjectExist.get());
             subjectRepository.deleteById(subjectId);
             return true;
         } else {
@@ -78,6 +80,9 @@ public class SubjectService implements SubjectPort {
             subjectEntity.setCredits(subject.getCredits());
             subjectEntity.setObjectives(subject.getObjectives());
             subjectEntity.setStatus(subject.getStatus());
+
+            rabbitService.updateSubject(subjectEntity);
+
             subjectRepository.save(subjectEntity);
             return true;
         }

@@ -6,6 +6,7 @@ import unicauca.edu.co.sga.evaluation_service.application.dto.request.RubricRequ
 import unicauca.edu.co.sga.evaluation_service.application.dto.response.RubricResponseDTO;
 import unicauca.edu.co.sga.evaluation_service.application.ports.RubricPort;
 import unicauca.edu.co.sga.evaluation_service.domain.enums.GeneralEnums;
+import unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.entities.RubricEntity;
 import unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.mappers.RubricMapper;
 import unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.repositories.RubricRepository;
 
@@ -18,6 +19,7 @@ import java.util.stream.Collectors;
 public class RubricService implements RubricPort {
 
     private final RubricRepository rubricRepository;
+    private final RubricMapper rubricMapper;
 
     @Override
     public List<RubricResponseDTO> getRubrics() {
@@ -30,18 +32,32 @@ public class RubricService implements RubricPort {
     }
 
     @Override
-    public RubricResponseDTO saveRubric(RubricRequestDTO rubric) {
-        return null;
+    public RubricEntity saveRubric(RubricRequestDTO rubric) {
+        rubric.setEstado(GeneralEnums.status.ACTIVO);
+        RubricEntity objRubricaEntity =  rubricMapper.toEntityRubric(rubric);
+        rubricRepository.save(objRubricaEntity);
+        return objRubricaEntity;
     }
 
     @Override
     public boolean deleteRubric(Long id) {
+        Optional<RubricEntity> rubric = rubricRepository.findById(id);
+        if (rubric.isPresent()){
+            rubricRepository.deleteById(id);
+        }
         return false;
     }
 
     @Override
     public boolean updateRubric(Long id, RubricRequestDTO rubric) {
         return false;
+    }
+
+    @Override
+    public RubricEntity updateRubricRabbit(RubricRequestDTO rubric) {
+        RubricEntity objRubricaEntity =  rubricMapper.toEntityRubric(rubric);
+        rubricRepository.save(objRubricaEntity);
+        return objRubricaEntity;
     }
 
     @Override

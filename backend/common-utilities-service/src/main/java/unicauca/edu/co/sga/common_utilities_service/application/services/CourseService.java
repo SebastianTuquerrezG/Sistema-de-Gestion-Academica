@@ -60,7 +60,9 @@ public class CourseService implements CoursePort {
 
     @Override
     public boolean deleteCourse(Long id) {
-        if (courseRepository.existsById(id)){
+        Optional<CourseEntity> entityExist = courseRepository.findById(id);
+        if (entityExist.isPresent()){
+            rabbitService.deleteCourse(entityExist.get());
             courseRepository.deleteById(id);
             return true;
         }
@@ -76,6 +78,9 @@ public class CourseService implements CoursePort {
             courseEntity.setSubject(entityExist.get().getSubject());
             courseEntity.setRa(entityExist.get().getRa());
             courseEntity.setEnroll(entityExist.get().getEnroll());
+
+            rabbitService.updateCourse(courseEntity);
+
             courseRepository.save(courseEntity);
             return true;
         }

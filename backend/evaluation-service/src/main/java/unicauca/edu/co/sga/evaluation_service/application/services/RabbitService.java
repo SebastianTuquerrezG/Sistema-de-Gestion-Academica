@@ -8,6 +8,8 @@ import unicauca.edu.co.sga.evaluation_service.application.dto.request.EnrollRequ
 import unicauca.edu.co.sga.evaluation_service.application.dto.request.EvaluationRequestDTO;
 import unicauca.edu.co.sga.evaluation_service.application.ports.RabbitPort;
 import unicauca.edu.co.sga.evaluation_service.infrastructure.config.RabbitMQConfig;
+import unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.entities.EnrollEntity;
+import unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.entities.EvaluationEntity;
 
 @Service
 @Transactional
@@ -24,7 +26,27 @@ public class RabbitService implements RabbitPort {
     }
 
     @Override
+    public void sendUpdateEnroll(EnrollEntity enroll) {
+        rabbit.sendMessage(RabbitMQConfig.EXCHANGE, RabbitMQConfig.ROUTING_KEY_UPDATE_ENROLL, enroll);
+    }
+
+    @Override
+    public void sendDeleteEnroll(EnrollEntity enroll) {
+        rabbit.sendMessage(RabbitMQConfig.EXCHANGE, RabbitMQConfig.ROUTING_KEY_DELETE_ENROLL, enroll);
+    }
+
+    @Override
     public void sendEvaluation(EvaluationRequestDTO evaluation) {
         rabbit.sendMessage(RabbitMQConfig.EXCHANGE, RabbitMQConfig.ROUTING_KEY_EVALUATION, evaluation);
+    }
+
+    @Override
+    public void sendUpdateEvaluation(EvaluationEntity evaluation) {
+        rabbit.sendMessage(RabbitMQConfig.EXCHANGE, RabbitMQConfig.ROUTING_KEY_UPDATE_EVALUATION, evaluation);
+    }
+
+    @Override
+    public void sendDeleteEvaluation(EvaluationEntity evaluation) {
+        rabbit.sendMessage(RabbitMQConfig.EXCHANGE, RabbitMQConfig.ROUTING_KEY_DELETE_EVALUATION, evaluation);
     }
 }
