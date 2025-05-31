@@ -49,7 +49,7 @@ const data = {
         {
             title: "Evaluaciones",
             url: "#",
-            icon: PieChart,
+            icon: ClipboardList,
             roles: ["ADMIN_ROLE", "COORDINATOR_ROLE", "TEACHER_ROLE"],
             items: [
                 {
@@ -62,25 +62,22 @@ const data = {
                     url: "/evaluaciones/crear",
                     roles: ["ADMIN_ROLE", "COORDINATOR_ROLE", "TEACHER_ROLE"],
                 },
-                {
-                    title: "Estadisticas",
-                    url: "/estadisticas",
-                    roles: ["ADMIN_ROLE", "COORDINATOR_ROLE", "TEACHER_ROLE"],
-                },
             ],
         },
         {
             title: "Estadísticas",
             url: "#",
             icon: PieChart,
+            roles: ["ADMIN_ROLE", "COORDINATOR_ROLE", "TEACHER_ROLE"],
             items: [
                 {
                     title: "Ver Estadísticas",
                     url: "/estadisticas",
+                    roles: ["ADMIN_ROLE", "COORDINATOR_ROLE", "TEACHER_ROLE"],
                 },
-                
+
             ],
-        },
+        }
     ],
     moreOptions: [
         {
@@ -88,12 +85,6 @@ const data = {
             url: "/estudiante",
             icon: User,
             roles: ["ADMIN_ROLE", "STUDENT_ROLE"],
-        },
-        {
-            name: "Resultados de Aprendizaje",
-            url: "/resultados",
-            icon: ClipboardList,
-            roles: ["ADMIN_ROLE", "COORDINATOR_ROLE", "TEACHER_ROLE"],
         },
     ],
 };

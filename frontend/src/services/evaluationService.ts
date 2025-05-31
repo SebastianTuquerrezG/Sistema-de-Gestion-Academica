@@ -224,3 +224,14 @@ export async function getAllCourses(): Promise<any[]> {
   if (!response.ok) throw new Error(`HTTP error: ${response.status}`);
   return await response.json();
 }
+
+export async function getRANameById(raId: number): Promise<string> {
+  try {
+    const response = await fetch(`${baseUrl}/ra/${raId}`, { headers: getAuthHeaders() });
+    if (!response.ok) throw new Error("Error al obtener el nombre del RA");
+    const data = await response.json();
+    return data?.name || "No definido";
+  } catch {
+    return "No definido";
+  }
+}
