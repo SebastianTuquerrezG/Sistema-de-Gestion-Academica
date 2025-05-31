@@ -6,6 +6,11 @@ interface ExportarPDFButtonProps {
   targetRef: React.RefObject<HTMLDivElement | null>;
   onBeforePrint?: () => void;
   onAfterPrint?: () => void;
+  filtros?: {
+    materia: string;
+    rubrica: string;
+    periodo: string;
+  };
 }
 
 const LoadingOverlay = () => (
@@ -61,7 +66,8 @@ const LoadingOverlay = () => (
 const ExportarPDFButton: React.FC<ExportarPDFButtonProps> = ({ 
   targetRef,
   onBeforePrint,
-  onAfterPrint
+  onAfterPrint,
+  filtros
 }) => {
   const [isGenerating, setIsGenerating] = useState(false);
 
@@ -100,6 +106,24 @@ const ExportarPDFButton: React.FC<ExportarPDFButtonProps> = ({
       charts.forEach(chart => {
         (chart as HTMLElement).style.height = '300px';
         (chart as HTMLElement).style.marginBottom = '40px';
+      });
+
+      // Reemplazar inputs por texto plano en el clon
+      const inputs = clone.querySelectorAll('input, .MuiInputBase-input');
+      inputs.forEach(input => {
+        const value = (input as HTMLInputElement).value || input.textContent || '';
+        const span = document.createElement('span');
+        span.textContent = value;
+        span.style.display = 'inline-block';
+        span.style.minWidth = '120px';
+        span.style.padding = '6px 12px';
+        span.style.border = '1px solid #ccc';
+        span.style.borderRadius = '6px';
+        span.style.background = '#f8f9fa';
+        span.style.color = '#222';
+        span.style.fontSize = '15px';
+        span.style.fontFamily = 'inherit';
+        input.parentNode?.replaceChild(span, input);
       });
 
       tempContainer.appendChild(clone);
@@ -164,7 +188,12 @@ const ExportarPDFButton: React.FC<ExportarPDFButtonProps> = ({
       }
 
       // Guardar PDF
-      pdf.save("estadisticas.pdf");
+      // Usar los valores de los filtros recibidos por props
+      let materia = filtros?.materia || '';
+      let rubrica = filtros?.rubrica || '';
+      let periodo = filtros?.periodo || '';
+      const nombreArchivo = `${(materia || 'materia').replace(/\s+/g, '_')}_${(rubrica || 'rubrica').replace(/\s+/g, '_')}_${(periodo || 'periodo').replace(/\s+/g, '_')}.pdf`;
+      pdf.save(nombreArchivo);
       
       onAfterPrint?.();
     } catch (error) {

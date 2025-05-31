@@ -106,7 +106,7 @@ const HistogramaCriterioChart: React.FC<HistogramaCriterioChartProps> = ({ histo
 
   return (
     <div style={{ background: "#fff", borderRadius: 12, boxShadow: "0 2px 8px rgba(44,62,80,0.07)", padding: 24, minHeight: 350, marginTop: 40 }}>
-      <h4 style={{ margin: 0, marginBottom: 18, color: '#22229e', textAlign: 'left' }}>Histogramas por criterios</h4>
+      <h4 style={{ margin: 0, marginBottom: 24, color: '#22229e', textAlign: 'left', fontWeight: 700, fontSize: '1.5rem' }}>Histogramas por criterios</h4>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 16 }}>
         <button onClick={handlePrev} style={{ fontSize: 0, background: 'none', border: 'none', cursor: 'pointer', color: '#0d47a1', marginRight: 8, padding: 8 }} aria-label="Anterior">
           <span className="material-symbols-outlined" style={{ fontSize: 36, color: '#0d47a1' }}>chevron_left</span>

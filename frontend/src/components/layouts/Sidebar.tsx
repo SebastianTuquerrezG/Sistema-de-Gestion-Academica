@@ -47,10 +47,6 @@ const data = {
                     title: "Ver Evaluaciones",
                     url: "/evaluaciones",
                 },
-                {
-                    title: "Crear",
-                    url: "/evaluaciones/crear",
-                },
             ],
         },
         {

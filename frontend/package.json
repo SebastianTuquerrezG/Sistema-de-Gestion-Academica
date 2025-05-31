@@ -32,6 +32,7 @@
     "axios": "^1.9.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "exceljs": "^4.4.0",
     "file-saver": "^2.0.5",
     "html2canvas": "^1.4.1",
     "html2canvas-pro": "^1.5.11",
@@ -51,6 +52,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.19.0",
+    "@types/exceljs": "^0.5.3",
     "@types/node": "^22.13.10",
     "@types/react": "^19.0.8",
     "@types/react-dom": "^19.0.3",

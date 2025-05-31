@@ -45,6 +45,15 @@ const Estadisticas: React.FC = () => {
   const printRef = useRef<HTMLDivElement | null>(null);
   const [aplicadoFiltrosIniciales, setAplicadoFiltrosIniciales] = useState(false);
 
+  // Limpiar datos si falta algún filtro
+  useEffect(() => {
+    if (!selectedMateria || !selectedRubrica || !selectedPeriodo) {
+      setEstadisticas(null);
+      setHistogramas([]);
+      setPromediosCriterios([]);
+    }
+  }, [selectedMateria, selectedRubrica, selectedPeriodo]);
+
   const handleBeforePrint = () => {
     setIsPrintMode(true);
   };
@@ -167,9 +176,10 @@ const Estadisticas: React.FC = () => {
         loading={loading}
         error={error}
         hasData={hasData}
+        filtrosCompletos={Boolean(selectedMateria && selectedRubrica && selectedPeriodo)}
       />
 
-      {!loading && !error && hasData && estadisticas && (
+      {selectedMateria && selectedRubrica && selectedPeriodo && !loading && !error && hasData && estadisticas && (
         <div className="estadisticas-content-centered">
           <EstadisticasCards
             media={estadisticas.average}
@@ -209,17 +219,24 @@ const Estadisticas: React.FC = () => {
           >
             <ExportarExcelButton 
               estadisticas={estadisticas} 
+              criterios={promediosCriterios}
+              histogramas={histogramas}
               filtros={{
                 materia: selectedMateria,
                 rubrica: selectedRubrica?.name || selectedRubrica?.nombreRubrica || "",
                 periodo: selectedPeriodo,
-                resultadoAprendizaje: selectedRubrica?.objetivoEstudio || "",
+                resultadoAprendizaje: raName,
               }}
             />
             <ExportarPDFButton 
               targetRef={printRef} 
               onBeforePrint={handleBeforePrint}
               onAfterPrint={handleAfterPrint}
+              filtros={{
+                materia: selectedMateria,
+                rubrica: selectedRubrica?.name || selectedRubrica?.nombreRubrica || "",
+                periodo: selectedPeriodo
+              }}
             />
           </div>
         </div>

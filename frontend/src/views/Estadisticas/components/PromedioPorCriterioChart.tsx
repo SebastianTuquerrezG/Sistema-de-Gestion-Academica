@@ -25,7 +25,7 @@ const CustomTooltip = ({ active, payload, label }: any) => {
 const PromedioPorCriterioChart: React.FC<PromedioPorCriterioChartProps> = ({ data }) => {
   return (
     <div style={{ background: "#fff", borderRadius: 12, boxShadow: "0 2px 8px rgba(44,62,80,0.07)", padding: 24, minHeight: 350, marginTop: 40 }}>
-      <h4 style={{ margin: 0, marginBottom: 18, color: '#22229e', textAlign: 'left' }}>Promedio de Nota por Criterio Evaluado</h4>
+      <h4 style={{ margin: 0, marginBottom: 24, color: '#22229e', textAlign: 'left', fontWeight: 700, fontSize: '1.5rem' }}>Promedio de Nota por Criterio Evaluado</h4>
       <ResponsiveContainer width="100%" height={280}>
         <BarChart data={data} margin={{ top: 10, right: 20, left: 0, bottom: 0 }}>
           <CartesianGrid strokeDasharray="3 3" vertical={false} />
