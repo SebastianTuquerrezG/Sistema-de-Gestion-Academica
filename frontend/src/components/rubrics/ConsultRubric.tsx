@@ -14,7 +14,7 @@ import { getAllRubrics, deleteRubric, createRubric } from "@/services/rubricServ
 import DuplicateRubricModal from "@/components/Modal/DuplicateRubricModal.tsx";
 import ShareRubricModal from "@/components/Modal/ShareRubricModal.tsx";
 import ConfirmDeleteModal from "@/components/Modal/ConfirmDeleteModal";
-import { RubricInterfacePeticion } from "@/interfaces/RubricInterfacePeticion.ts";
+//import { RubricInterfacePeticion } from "@/interfaces/RubricInterfacePeticion.ts";
 import { Skeleton } from "@/components/ui/skeleton";
 
 type NotificationType = {
@@ -105,62 +105,46 @@ export default function ConsultarRubrica() {
     };
 
     // Duplicar rúbrica usando la interfaz correcta
-    const handleDuplicate = async (data: { newName: string; shareWithSamePeople: boolean; copyComments: boolean; resolvedComments: boolean }) => {
-        if (!rubricToDuplicate) return;
+    const handleDuplicate = async (data: { newName: string }) => {
+        if (!rubricToDuplicate) {
+            console.error("No hay rúbrica seleccionada para duplicar.");
+            return;
+        }
 
-        /*const duplicatedRubric: RubricInterface = {
-            idRubrica: 0, // El ID se asignará automáticamente al crear la rúbrica
-            nombreRubrica: `${data.newName}`,
-            materia: rubricToDuplicate.materia,
-            notaRubrica: rubricToDuplicate.notaRubrica,
-            objetivoEstudio: rubricToDuplicate.objetivoEstudio,
-            estado: "ACTIVO",
-            criterios: rubricToDuplicate.criterios.map(criterio => ({
-                idCriterio: 0,
-                crfDescripcion: criterio.crfDescripcion,
-                crfPorcentaje: criterio.crfPorcentaje,
-                crfNota: criterio.crfNota,
-                crfComentario: criterio.crfComentario,
-                niveles: criterio.niveles
-            })),
-            raId: rubricToDuplicate.raId,
-        };*/
-        const duplicatedRubric: RubricInterfacePeticion = {
-            idRubrica: null,
+        const criteriosClonados = rubricToDuplicate.criterios?.map((criterio) => ({
+            idCriterio: 0, // Cambiar null por un valor válido según la interfaz
+            crfDescripcion: criterio.crfDescripcion,
+            crfPorcentaje: criterio.crfPorcentaje,
+            crfNota: criterio.crfNota,
+            crfComentario: criterio.crfComentario,
+            idRubrica: 0, // Cambiar null por un valor válido según la interfaz
+            niveles: criterio.niveles.map((nivel) => ({
+                idNivel: 0, // Cambiar null por un valor válido según la interfaz
+                idCriterio: 0, // Cambiar null por un valor válido según la interfaz
+                nivelDescripcion: nivel.nivelDescripcion,
+                rangoNota: nivel.rangoNota
+            }))
+        })) ?? [];
+
+        const duplicatedRubric = {
+            idRubrica: 0,
             nombreRubrica: data.newName,
             idMateria: rubricToDuplicate.materia,
             notaRubrica: rubricToDuplicate.notaRubrica,
             objetivoEstudio: rubricToDuplicate.objetivoEstudio,
-            estado: "ACTIVO",
-            criterios: rubricToDuplicate.criterios.map(criterio => ({
-                ...criterio,
-                idRubrica: null // o el id correspondiente si aplica
-            })),
-            raId: rubricToDuplicate.raId,
+            estado: rubricToDuplicate.estado ?? "ACTIVO",
+            criterios: criteriosClonados,
+            raId: rubricToDuplicate.raId ?? 1
         };
 
-        const response = await createRubric(duplicatedRubric);
-        if (response && response.idRubrica !== null) {
-            const newRubric: RubricInterface = {
-                ...response,
-                idRubrica: response.idRubrica, // Asegúrate de que el ID se asigne correctamente
-                materia: rubricToDuplicate.materia,
-                nombreMateria: rubricToDuplicate.nombreMateria,
-                criterios: response.criterios.map(criterio => ({
-                    ...criterio
-                    // Completa aquí si faltan campos para CriterionInterface
-                }))
-            };
-            setRubrics((prev) => [...prev, newRubric]);
-            setNotification({
-                type: "success",
-                title: "Rúbrica duplicada",
-                message: `La rúbrica ${data.newName} ha sido duplicada exitosamente.`,
-            });
+        try {
+            const response = await createRubric(duplicatedRubric);
+            console.log("Rúbrica duplicada exitosamente:", response);
+        } catch (error) {
+            console.error("Error al duplicar la rúbrica:", error);
         }
-        setShowDuplicateModal(false)
-
     };
+
     const handleShareRubric = async (data: {
         email: string;
         permission: string;
