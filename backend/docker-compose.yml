@@ -81,7 +81,7 @@ services:
     env_file:
       - .env
     build:
-      context: ./ModuloRubricaCriterio_Hexagonal
+      context: ./ModuloRubricaCriterio
       dockerfile: Dockerfile
     container_name: modulorubricacriterio
     ports:

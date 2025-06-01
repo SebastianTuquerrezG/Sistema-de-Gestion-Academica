@@ -20,6 +20,8 @@ public class RAEntity {
     @Column(name = "ra_id", nullable = false, unique = true, updatable = false)
     private Long id;
 
+
+
     @Override
     public final boolean equals(Object o) {
         if (this == o) return true;
