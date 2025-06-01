@@ -1,13 +1,17 @@
 services:
   eureka-server:
-    build: ./backend/eureka-server
+    build: 
+        context: ./backend
+        dockerfile: eureka-server/Dockerfile
     ports:
       - "8761:8761"
     networks:
       - backend-network
 
   gateway:
-    build: ./backend/gateway
+    build:
+        context: ./backend
+        dockerfile: gateway/Dockerfile
     ports:
       - "8080:8080"
     depends_on:
