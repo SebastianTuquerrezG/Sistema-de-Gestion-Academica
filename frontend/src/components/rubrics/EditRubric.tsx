@@ -8,7 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "@/components/ui/table";
 import Notification from "@/components/notifications/notification";
 import {getAllMaterias, updateRubric} from "@/services/rubricService";
-import {useNavigate} from "react-router-dom";
+import {useNavigate, useLocation} from "react-router-dom";
 import {MateriaInterface} from "@/interfaces/MateriaInterface.ts";
 import {RubricInterfacePeticion} from "@/interfaces/RubricInterfacePeticion.ts";
 import { useParams } from "react-router-dom";
@@ -22,6 +22,8 @@ type NotificationType = {
 export default function CreateRubric() {
     const {id} = useParams<{ id: string }>();
     const navigate = useNavigate(); // Hook para la navegación
+    const location = useLocation(); // Hook para acceder a la ubicación actual
+    const rubricData = location.state?.rubric; // Obtener los datos de la rúbrica desde el estado de la ubicación
 
     // Estado local para almacenar el valor de la nota (puede ser número o vacío)
     const [nota, setNota] = useState<number | "">("");
@@ -65,6 +67,24 @@ export default function CreateRubric() {
             return () => clearTimeout(timeout);
         }
     }, [notification]);
+
+    useEffect(() => {
+        if (rubricData) {
+            setNota(rubricData.notaRubrica);
+            setMateria(rubricData.idMateria?.toString());
+            setRows(rubricData.criterios);
+            const niveles = rubricData.criterios[0]?.niveles || [];
+            setLevels(niveles);
+
+            setMateria(rubricData.idMateria?.toString());
+            const nombreInput = document.getElementById("nombreRubrica") as HTMLInputElement;
+            const objetivoInput = document.getElementById("objetivoEstudio") as HTMLInputElement;
+            if (nombreInput && objetivoInput) {
+                nombreInput.value = rubricData.nombreRubrica;
+                objetivoInput.value = rubricData.objetivoEstudio;
+            }
+        }
+    }, [rubricData]);
 
     //Efecto para traer las materias
     useEffect(() => {
@@ -334,58 +354,7 @@ export default function CreateRubric() {
     };
 
     const handleCreate = async () => {
-        // Validar campos obligatorios
-        const requiredFields = [
-            { field: (document.getElementById("nombreRubrica") as HTMLInputElement)?.value, name: "Nombre Rúbrica" },
-            { field: (document.getElementById("materia") as HTMLInputElement)?.value, name: "Materia" },
-            { field: (document.getElementById("objetivoEstudio") as HTMLInputElement)?.value, name: "Objetivo de Estudio" }
-        ];
-
-        const missingField = requiredFields.find(f => !f.field);
-        if (missingField) {
-            setNotification({
-                type: "error",
-                title: "Campo requerido",
-                message: `El campo "${missingField.name}" es obligatorio.`
-            });
-            return;
-        }
-
-        // Validar descripciones de criterios
-        const emptyCriteria = rows.find(row => !row.crfDescripcion.trim());
-        if (emptyCriteria) {
-            setNotification({
-                type: "error",
-                title: "Campo requerido",
-                message: "Todos los criterios deben tener una descripción."
-            });
-            return;
-        }
-
-        // Validar descripciones de niveles
-        const emptyLevel = rows.some(row =>
-            row.niveles.some(nivel => !nivel.nivelDescripcion.trim())
-        );
-        if (emptyLevel) {
-            setNotification({
-                type: "error",
-                title: "Campo requerido",
-                message: "Todos los niveles deben tener una descripción."
-            });
-            return;
-        }
-
-        const totalPercentage = rows.reduce((sum, row) => sum + (parseFloat(row.crfPorcentaje) || 0), 0);
-        if (Math.abs(totalPercentage - 100) > 0.0001) {
-            setNotification({
-                type: "error",
-                title: "Porcentaje inválido",
-                message: "La suma de los porcentajes debe ser exactamente 100%."
-            });
-            return;
-        }
-        const nuevosLevels = handleRangosChanges(typeof nota === "number" ? nota : null, levels);
-
+        // Construir los datos de la rúbrica a partir de los estados y valores del formulario
         const rubricData: RubricInterfacePeticion = {
             idRubrica: Number(id),
             nombreRubrica: (document.getElementById("nombreRubrica") as HTMLInputElement)?.value,
@@ -400,7 +369,7 @@ export default function CreateRubric() {
                 niveles: row.niveles.map((nivel, index) => ({
                     idCriterio: null,
                     nivelDescripcion: nivel.nivelDescripcion,
-                    rangoNota: nuevosLevels[index]?.rangoNota || nivel.rangoNota,
+                    rangoNota: levels[index]?.rangoNota || nivel.rangoNota,
                     idNivel: nivel.idNivel
                 })),
                 idRubrica: null
@@ -408,17 +377,24 @@ export default function CreateRubric() {
             raId: 1,
             estado: "ACTIVO"
         };
+
         try {
-            console.log(rubricData);
+            // Llamar al servicio para actualizar la rúbrica
             await updateRubric(rubricData.idRubrica, rubricData);
+
+            // Mostrar notificación de éxito
             setNotification({
                 type: "success",
                 title: "Éxito",
                 message: "La rúbrica ha sido actualizada correctamente."
             });
-            handleCancel();
+
+            // Redirigir a la vista de detalle después de un breve retraso
+            setTimeout(() => {
+                navigate(`/rubricas/detalle/${id}`);
+            }, 2000); // Esperar 2 segundos antes de redirigir
         } catch (error) {
-            console.error("Error al actualizar la rúbrica:", error);
+            // Mostrar notificación de error en caso de fallo
             setNotification({
                 type: "error",
                 title: "Error",
@@ -457,7 +433,7 @@ export default function CreateRubric() {
                                     className="w-full rounded-md border px-3 py-2 text-sm">
                                 <option value="">Seleccione una materia</option>
                                 {materias.map((mat) => (
-                                    <option key={mat.idMateria} value={mat.idMateria}>
+                                    <option key={mat.idMateria} value={mat.idMateria.toString()}>
                                         {mat.name}
                                     </option>
                                 ))}
