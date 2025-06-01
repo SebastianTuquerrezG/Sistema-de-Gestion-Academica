@@ -22,7 +22,7 @@ services:
   modulorubricacriterio:
     build: 
        context: ./backend
-       dockerfile: ModuloRubricaCriterio_Hexagonal/Dockerfile
+       dockerfile: ModuloRubricaCriterio/Dockerfile
     ports:
       - "5001:5001"
     depends_on:
