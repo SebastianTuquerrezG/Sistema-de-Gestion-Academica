@@ -6,6 +6,7 @@
 		<groupId>com.unicauca</groupId>
 		<artifactId>backend</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
+		<relativePath>..</relativePath>
 	</parent>
 	<groupId>unicauca.edu.co.sga</groupId>
 	<artifactId>evaluation-service</artifactId>

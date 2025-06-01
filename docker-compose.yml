@@ -1,13 +1,17 @@
 services:
   eureka-server:
-    build: ./backend/eureka-server
+    build: 
+        context: ./backend
+        dockerfile: eureka-server/Dockerfile
     ports:
       - "8761:8761"
     networks:
       - backend-network
 
   gateway:
-    build: ./backend/gateway
+    build: 
+       context: ./backend
+       dockerfile: gateway/Dockerfile
     ports:
       - "8080:8080"
     depends_on:
@@ -16,7 +20,9 @@ services:
       - backend-network
 
   modulorubricacriterio:
-    build: ./backend/ModuloRubricaCriterio_Hexagonal
+    build: 
+       context: ./backend
+       dockerfile: ModuloRubricaCriterio/Dockerfile
     ports:
       - "5001:5001"
     depends_on:
@@ -30,7 +36,9 @@ services:
       - backend-network
 
   evaluation-service:
-    build: ./backend/evaluation-service
+    build: 
+       context: ./backend
+       dockerfile: evaluation-service/Dockerfile
     ports:
       - "5002:5002"
     depends_on:
@@ -54,16 +62,16 @@ services:
     networks:
       - backend-network
 
-  frontend:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
-    ports:
-      - "80:80"
-    depends_on:
-      - gateway
-    networks:
-      - backend-network
+  # frontend:
+    # build:
+      # context: ./frontend
+      # dockerfile: Dockerfile
+    # ports:
+      # - "80:80"
+    # depends_on:
+      # - gateway
+    # networks:
+      # - backend-network
 
 networks:
   backend-network:

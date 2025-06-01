@@ -1,6 +1,17 @@
-# Dockerfile para eureka-server
-FROM openjdk:21-jdk-slim
+FROM maven:3.9.6-eclipse-temurin-21 AS build
+
 WORKDIR /app
-COPY target/evaluation-service-0.0.1-SNAPSHOT.jar ./app.jar
-EXPOSE 5002
+
+COPY . .
+
+RUN mvn clean package -pl evaluation-service -am
+
+FROM openjdk:21-jdk-slim
+
+WORKDIR /app
+
+COPY --from=build /app/evaluation-service/target/evaluation-service-0.0.1-SNAPSHOT.jar ./app.jar
+
+EXPOSE 8761
+
 ENTRYPOINT ["java", "-jar", "app.jar"]

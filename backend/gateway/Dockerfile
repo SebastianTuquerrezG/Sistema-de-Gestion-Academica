@@ -1,6 +1,17 @@
-# Dockerfile para gateway
-FROM openjdk:21-jdk-slim
+FROM maven:3.9.6-eclipse-temurin-21 AS build
+
 WORKDIR /app
-COPY target/gateway-0.0.1-SNAPSHOT.jar ./app.jar
-EXPOSE 8080
+
+COPY . .
+
+RUN mvn clean package -pl gateway -am
+
+FROM openjdk:21-jdk-slim
+
+WORKDIR /app
+
+COPY --from=build /app/gateway/target/gateway-0.0.1-SNAPSHOT.jar ./app.jar
+
+EXPOSE 8761
+
 ENTRYPOINT ["java", "-jar", "app.jar"]
