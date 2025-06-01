@@ -10,7 +10,9 @@ import Notification from "@/components/notifications/notification";
 import { createRubric, getAllMaterias } from "@/services/rubricService";
 import { useNavigate } from "react-router-dom";
 import { MateriaInterface } from "@/interfaces/MateriaInterface.ts";
+import { RaInteface } from "@/interfaces/RaInterface";
 import { RubricInterfacePeticion } from "@/interfaces/RubricInterfacePeticion.ts";
+import { getAllRAs } from "@/services/raService.ts";
 
 type NotificationType = {
     type: "error" | "info" | "success";
@@ -52,6 +54,9 @@ export default function CreateRubric() {
     const [notification, setNotification] = useState<NotificationType | null>(null);
     const [materia, setMateria] = useState("");
     const [materias, setMaterias] = useState<MateriaInterface[]>([]);
+    const [resultadosAprendizaje, setResultadosAprendizaje] = useState<RaInteface[]>([]);
+    const [resultadoAprendizaje, setResultadoAprendizaje] = useState("");
+
 
     //Efecto de la notificacion
     useEffect(() => {
@@ -71,7 +76,14 @@ export default function CreateRubric() {
             .catch(() => setMaterias([]));
     }, []);
 
-
+    useEffect(() => {
+        getAllRAs()
+            .then(data => {
+                console.log("Resultados de Aprendizaje obtenidos:", data);
+                setResultadosAprendizaje(data);
+            })
+            .catch(() => setResultadosAprendizaje([]));
+    }, []);
 
     // Añade un nuevo nivel a la rúbrica, hasta un máximo de 5
     const addLevel = () => {
@@ -401,7 +413,7 @@ export default function CreateRubric() {
                 })),
                 idRubrica: null
             })),
-            raId: 1,
+            raId: resultadoAprendizaje ? parseInt(resultadoAprendizaje) : 0,
             estado: "ACTIVO"
         };
 
@@ -450,12 +462,32 @@ export default function CreateRubric() {
                         </div>
                         <div className="grid w-full max-w-sm items-center gap-1.5">
                             <Label htmlFor="materia">Materia</Label>
-                            <select id="materia" value={materia} onChange={(e) => setMateria(e.target.value)}
-                                className="w-full rounded-md border px-3 py-2 text-sm">
+                            <select
+                                id="materia"
+                                value={materia}
+                                onChange={(e) => setMateria(e.target.value)}
+                                className="w-full rounded-md border px-3 py-2 text-sm"
+                            >
                                 <option value="">Seleccione una materia</option>
                                 {materias.map((mat) => (
                                     <option key={mat.idMateria} value={mat.idMateria}>
                                         {mat.name}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+                        <div className="grid w-full max-w-sm items-center gap-1.5">
+                            <Label htmlFor="resultadoAprendizaje">Resultado de Aprendizaje</Label>
+                            <select
+                                id="resultadoAprendizaje"
+                                className="w-full rounded-md border px-3 py-2 text-sm"
+                                value={resultadoAprendizaje}
+                                onChange={(e) => setResultadoAprendizaje(e.target.value)}
+                            >
+                                <option value="">Seleccione un resultado</option>
+                                {resultadosAprendizaje.map((ra) => (
+                                    <option key={ra.id} value={ra.id.toString()}>  {/* Asegúrate de que el valor sea string */}
+                                        {ra.name}
                                     </option>
                                 ))}
                             </select>
