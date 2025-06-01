@@ -16,6 +16,7 @@ public class RabbitMQProducer {
     public void sendMessage(String exchange, String routing_key, Object message){
         System.out.println("Sending message...");
         rabbitTemplate.convertAndSend(exchange, routing_key, message);
+        /*
         try {
             boolean completed = rabbitMQReceive.getLatch().await(10000, TimeUnit.MILLISECONDS);
             if (!completed) {
@@ -23,6 +24,6 @@ public class RabbitMQProducer {
             }
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
-        }
+        }*/
     }
 }
