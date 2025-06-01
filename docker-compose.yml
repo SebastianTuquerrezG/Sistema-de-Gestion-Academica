@@ -9,9 +9,9 @@ services:
       - backend-network
 
   gateway:
-    build:
-        context: ./backend
-        dockerfile: gateway/Dockerfile
+    build: 
+       context: ./backend
+       dockerfile: gateway/Dockerfile
     ports:
       - "8080:8080"
     depends_on:
@@ -20,7 +20,9 @@ services:
       - backend-network
 
   modulorubricacriterio:
-    build: ./backend/ModuloRubricaCriterio_Hexagonal
+    build: 
+       context: ./backend
+       dockerfile: ModuloRubricaCriterio_Hexagonal/Dockerfile
     ports:
       - "5001:5001"
     depends_on:
@@ -34,7 +36,9 @@ services:
       - backend-network
 
   evaluation-service:
-    build: ./backend/evaluation-service
+    build: 
+       context: ./backend
+       dockerfile: evaluation-service/Dockerfile
     ports:
       - "5002:5002"
     depends_on:
