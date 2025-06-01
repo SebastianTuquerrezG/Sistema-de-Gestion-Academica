@@ -5,6 +5,7 @@ export interface RubricInterface {
   idRubrica: number;
   nombreRubrica: string;
   materia: number;
+  idMateria?: number;
   nombreMateria?: string;
   notaRubrica: number;
   objetivoEstudio: string;

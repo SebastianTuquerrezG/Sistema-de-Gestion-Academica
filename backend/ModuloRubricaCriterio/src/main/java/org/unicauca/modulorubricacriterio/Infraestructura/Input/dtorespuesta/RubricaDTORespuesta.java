@@ -13,6 +13,7 @@ import java.util.List;
 public class RubricaDTORespuesta {
     private String idRubrica;
     private String nombreRubrica;
+    private Long idMateria;
     private String nombreMateria;
     private int notaRubrica;
     private String objetivoEstudio;

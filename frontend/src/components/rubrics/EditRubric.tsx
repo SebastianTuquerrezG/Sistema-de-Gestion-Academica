@@ -12,6 +12,10 @@ import { useNavigate } from "react-router-dom";
 import { MateriaInterface } from "@/interfaces/MateriaInterface.ts";
 import { RubricInterfacePeticion } from "@/interfaces/RubricInterfacePeticion.ts";
 import { useParams } from "react-router-dom";
+import { getAllRAs } from "@/services/raService.ts";
+import { RaInteface } from "@/interfaces/RaInterface";
+import { getRubricById } from "@/services/rubricService";
+
 //Definicion del tipo de notificacion
 type NotificationType = {
     type: "error" | "info" | "success";
@@ -57,6 +61,42 @@ export default function CreateRubric() {
     const [notification, setNotification] = useState<NotificationType | null>(null);
     const [materia, setMateria] = useState("");
     const [materias, setMaterias] = useState<MateriaInterface[]>([]);
+    const [resultadosAprendizaje, setResultadosAprendizaje] = useState<RaInteface[]>([]);
+    const [resultadoAprendizaje, setResultadoAprendizaje] = useState("");
+
+    useEffect(() => {
+        if (id) {
+            getRubricById(id).then((data) => {
+                if (!data) return;
+                console.log(data)
+                setNota(data.notaRubrica || "");
+                setMateria(data.idMateria?.toString() || "");
+                setResultadoAprendizaje(data.raId?.toString() || "");
+                if (data.criterios && data.criterios.length > 0) {
+                    setLevels(data.criterios[0].niveles.map((nivel: any) => ({
+                        idNivel: nivel.idNivel,
+                        nivelDescripcion: nivel.nivelDescripcion,
+                        rangoNota: nivel.rangoNota
+                    })));
+                }
+                setRows(data.criterios.map((criterio: any, idx: number) => ({
+                    idCriterio: idx + 1,
+                    crfDescripcion: criterio.crfDescripcion,
+                    niveles: criterio.niveles.map((nivel: any) => ({
+                        idNivel: nivel.idNivel,
+                        nivelDescripcion: nivel.nivelDescripcion,
+                        rangoNota: nivel.rangoNota
+                    })),
+                    crfPorcentaje: criterio.crfPorcentaje.toString(),
+                    crfNota: criterio.crfNota,
+                    crfComentario: criterio.crfComentario || ""
+                })));
+                // Rellena los inputs manualmente si no son controlados
+                (document.getElementById("nombreRubrica") as HTMLInputElement).value = data.nombreRubrica || "";
+                (document.getElementById("objetivoEstudio") as HTMLInputElement).value = data.objetivoEstudio || "";
+            });
+        }
+    }, [id]);
 
     //Efecto de la notificacion
     useEffect(() => {
@@ -76,7 +116,14 @@ export default function CreateRubric() {
             .catch(() => setMaterias([]));
     }, []);
 
-
+    useEffect(() => {
+        getAllRAs()
+            .then(data => {
+                console.log("Resultados de Aprendizaje obtenidos:", data);
+                setResultadosAprendizaje(data);
+            })
+            .catch(() => setResultadosAprendizaje([]));
+    }, []);
 
     // Añade un nuevo nivel a la rúbrica, hasta un máximo de 5
     const addLevel = () => {
@@ -405,7 +452,7 @@ export default function CreateRubric() {
                 })),
                 idRubrica: null
             })),
-            raId: 1,
+            raId: resultadoAprendizaje ? parseInt(resultadoAprendizaje) : 0,
             estado: "ACTIVO"
         };
         try {
@@ -459,6 +506,22 @@ export default function CreateRubric() {
                                 {materias.map((mat) => (
                                     <option key={mat.idMateria} value={mat.idMateria}>
                                         {mat.name}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+                        <div className="grid w-full max-w-sm items-center gap-1.5">
+                            <Label htmlFor="resultadoAprendizaje">Resultado de Aprendizaje</Label>
+                            <select
+                                id="resultadoAprendizaje"
+                                className="w-full rounded-md border px-3 py-2 text-sm"
+                                value={resultadoAprendizaje}
+                                onChange={(e) => setResultadoAprendizaje(e.target.value)}
+                            >
+                                <option value="">Seleccione un resultado</option>
+                                {resultadosAprendizaje.map((ra) => (
+                                    <option key={ra.id} value={ra.id.toString()}>  {/* Asegúrate de que el valor sea string */}
+                                        {ra.name}
                                     </option>
                                 ))}
                             </select>
