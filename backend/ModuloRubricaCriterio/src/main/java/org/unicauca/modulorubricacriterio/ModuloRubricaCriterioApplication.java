@@ -16,7 +16,7 @@ import org.unicauca.modulorubricacriterio.Infraestructura.Output.Persistencia.re
 @SpringBootApplication
 @RequiredArgsConstructor
 @EnableDiscoveryClient
-public class ModuloRubricaCriterioApplication implements CommandLineRunner {
+public class ModuloRubricaCriterioApplication{
 
     private final RubricaRepository objRubricaRepository;
     private final CriterioRepository criterioRepository;
@@ -27,14 +27,6 @@ public class ModuloRubricaCriterioApplication implements CommandLineRunner {
     public static void main(String[] args)   {
         SpringApplication.run(ModuloRubricaCriterioApplication.class, args);
     }
-
-    /*
-     * Este método se ejecuta al iniciar la aplicación y se encarga de cargar datos de prueba en la base de datos.
-    */
-    @Override
-	public void run(String... args) throws Exception {
-		cargarDatos();
-	}
 
 
     /*
