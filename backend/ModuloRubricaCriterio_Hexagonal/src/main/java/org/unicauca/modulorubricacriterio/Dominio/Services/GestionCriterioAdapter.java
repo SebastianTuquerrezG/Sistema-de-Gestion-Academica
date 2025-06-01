@@ -3,17 +3,14 @@ package org.unicauca.modulorubricacriterio.Dominio.Services;
 import java.util.List;
 
 import org.unicauca.modulorubricacriterio.Aplicación.Input.IGestionCriterioPort;
-import org.unicauca.modulorubricacriterio.Aplicación.Input.IRabbitPort;
 import org.unicauca.modulorubricacriterio.Aplicación.Output.IConectorBDCriterioPort;
 import org.unicauca.modulorubricacriterio.Dominio.Modelos.Criterio;
 
 public class GestionCriterioAdapter implements IGestionCriterioPort{
     private final IConectorBDCriterioPort conectorBDCriterioPort;
-    private final IRabbitPort rabbitPort;
 
-    public GestionCriterioAdapter(IConectorBDCriterioPort objConectorBDCriterioPort, GestionRabbit gestionRabbit) {
+    public GestionCriterioAdapter(IConectorBDCriterioPort objConectorBDCriterioPort) {
         this.conectorBDCriterioPort = objConectorBDCriterioPort;
-        this.rabbitPort = gestionRabbit;
     }
 
     @Override
@@ -28,22 +25,16 @@ public class GestionCriterioAdapter implements IGestionCriterioPort{
 
     @Override
     public Criterio crearCriterio(Criterio objPCriterio) {
-        Criterio criterio = conectorBDCriterioPort.save(objPCriterio);
-        rabbitPort.sendCriterio(criterio);
-        return criterio;
+        return this.conectorBDCriterioPort.save(objPCriterio);
     }
 
     @Override
     public Criterio modificarCriterio(Long Id, Criterio objPCriterio) {
-        Criterio criterio = this.conectorBDCriterioPort.update(Id, objPCriterio);
-        rabbitPort.updateCriterio(criterio);
-        return criterio;
+        return this.conectorBDCriterioPort.update(Id, objPCriterio);
     }
 
     @Override
     public Criterio eliminarCriterio(Long Id) {
-        Criterio criterio = this.conectorBDCriterioPort.delete(Id);
-        rabbitPort.deleteCriterio(criterio);
-        return criterio;
+        return this.conectorBDCriterioPort.delete(Id);
     }
 }
