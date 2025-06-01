@@ -1,8 +1,10 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { AlertTriangle } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const NotFound = () => {
+    const navigate = useNavigate();
     return (
         <div className="min-h-screen bg-background flex items-center justify-center p-4">
             <Card className="min-h-[60vh] flex flex-col items-center justify-center text-primary bg-background rounded-xl shadow-sm p-8 max-w-md mx-auto">
@@ -11,10 +13,8 @@ const NotFound = () => {
                 <p className="m-0 mb-6 text-lg text-muted-foreground text-center">
                     La sección que buscas no existe o no se pudo encontrar.
                 </p>
-                <Button asChild variant="default">
-                    <a href="/" className="no-underline">
-                        Ir al inicio
-                    </a>
+                <Button variant="default" onClick={() => navigate(-1)}>
+                    Ir atrás
                 </Button>
             </Card>
         </div>

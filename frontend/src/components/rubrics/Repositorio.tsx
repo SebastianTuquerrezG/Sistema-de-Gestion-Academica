@@ -155,7 +155,7 @@ export default function RepositorioRubricas() {
             <h2 className="title2 border-b-2 border-red-500 inline-block" style={{ color: "var(--primary-regular-color)" }}>
                 Repositorio de Rúbricas
             </h2>
-            <main className="max-w-7xl mx-auto px-4 py-8">
+            <main className="max-w-7xl mx-auto py-8">
                 <div className="mb-6 flex flex-col sm:flex-row gap-4 justify-between items-start sm:items-center">
                     <div className="relative flex-1 max-w-md">
                         <Input type="text" placeholder="Buscar en repositorio..." value={searchTerm}

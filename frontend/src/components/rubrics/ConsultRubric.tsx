@@ -1,12 +1,28 @@
 "use client"
 
+"use client"
+
 import { useEffect, useState } from "react";
 import { Search, Plus, Pencil, Trash2, Share2, Copy } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { TableCell } from "@/components/ui/table.tsx";
-import { Badge } from "@/components/ui/badge.tsx";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select.tsx";
+import {
+    Table,
+    TableHeader,
+    TableRow,
+    TableHead,
+    TableBody,
+    TableCell
+} from "@/components/ui/table";
+import { Badge } from "@/components/ui/badge";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue
+} from "@/components/ui/select";
+import { Skeleton } from "@/components/ui/skeleton";
 import { useNavigate } from "react-router-dom";
 import Notification from "@/components/notifications/notification";
 import { RubricInterface } from "@/interfaces/RubricInterface";
@@ -15,7 +31,6 @@ import DuplicateRubricModal from "@/components/Modal/DuplicateRubricModal.tsx";
 import ShareRubricModal from "@/components/Modal/ShareRubricModal.tsx";
 import ConfirmDeleteModal from "@/components/Modal/ConfirmDeleteModal";
 import { RubricInterfacePeticion } from "@/interfaces/RubricInterfacePeticion.ts";
-import { Skeleton } from "@/components/ui/skeleton";
 
 type NotificationType = {
     type: "error" | "info" | "success";
@@ -60,7 +75,8 @@ export default function ConsultarRubrica() {
 
     const filteredRubrics = rubrics.filter(
         (rubric) =>
-            (rubric.nombreRubrica.toLowerCase().includes(searchTerm.toLowerCase()) || rubric.idRubrica) &&
+            (rubric.nombreRubrica.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                String(rubric.idRubrica).includes(searchTerm)) &&
             (selectedMateria == "Todas las materias" || selectedMateria === "" || rubric.nombreMateria === selectedMateria) &&
             (selectedEstado == "Todos los estados" || selectedEstado === "" || rubric.estado === selectedEstado)
     );
@@ -209,7 +225,7 @@ export default function ConsultarRubrica() {
             <h2 className="title2 border-b-2 border-red-500 inline-block" style={{ color: "var(--primary-regular-color)" }}>
                 Mis Rubricas
             </h2>
-            <main className="max-w-7xl mx-auto px-4 py-8">
+            <main className="max-w-7xl mx-auto py-8">
                 <div className="mb-6 flex flex-col sm:flex-row gap-4 justify-between items-start sm:items-center">
                     <div className="relative flex-1 max-w-md">
                         <Input type="text" placeholder=" Ingrese Rubrica a buscar..." value={searchTerm}
@@ -247,74 +263,105 @@ export default function ConsultarRubrica() {
                     <div className="flex gap-2">
                         <Button className="outline" onClick={handleAdd}>
                             <Plus className="h-4 w-4 mr-2" />
-                            Añadir Rubrica
+                            Crear Rubrica
                         </Button>
                     </div>
                 </div>
                 <div>
-                    <table className="w-full">
-                        <thead>
-                            <tr className="title5 bg-[#000066] text-white ">
-                                <th className="py-3 text-left ">Identificador</th>
-                                <th className="px-6 py-3 text-left">Nombre Rubrica</th>
-                                <th className="px-6 py-3 text-left">Materia</th>
-                                <th className="px-6 py-3 text-left">Estado</th>
-                                <th className="px-6 py-3 text-center">Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody>
+                    <Table>
+                        <TableHeader>
+                            <TableRow className="bg-[#000066] hover:bg-[#000066]">
+                                <TableHead className="text-white">Identificador</TableHead>
+                                <TableHead className="text-white">Nombre Rubrica</TableHead>
+                                <TableHead className="text-white">Materia</TableHead>
+                                <TableHead className="text-white">Estado</TableHead>
+                                <TableHead className="text-center text-white">Acciones</TableHead>
+                            </TableRow>
+                        </TableHeader>
+                        <TableBody>
                             {isLoading ? (
                                 Array.from({ length: 5 }).map((_, index) => (
-                                    <tr key={index} className={index % 2 === 0 ? "bg-gray-50" : "bg-white"}>
-                                        <td className="px-6 py-4">
+                                    <TableRow key={index}>
+                                        <TableCell>
                                             <Skeleton className="h-4 w-[50px]" />
-                                        </td>
-                                        <td className="px-6 py-4">
+                                        </TableCell>
+                                        <TableCell>
                                             <Skeleton className="h-4 w-[200px]" />
-                                        </td>
-                                        <td className="px-6 py-4">
+                                        </TableCell>
+                                        <TableCell>
                                             <Skeleton className="h-4 w-[150px]" />
-                                        </td>
-                                        <td className="px-6 py-4">
+                                        </TableCell>
+                                        <TableCell>
                                             <Skeleton className="h-6 w-[70px] rounded-full" />
-                                        </td>
-                                        <td className="px-6 py-4">
+                                        </TableCell>
+                                        <TableCell>
                                             <div className="flex justify-center gap-2">
                                                 {Array.from({ length: 4 }).map((_, i) => (
                                                     <Skeleton key={i} className="h-8 w-8 rounded-md" />
                                                 ))}
                                             </div>
-                                        </td>
-                                    </tr>
+                                        </TableCell>
+                                    </TableRow>
                                 ))
                             ) : (
-                                filteredRubrics.map((rubric, index) => (
-                                    <tr key={rubric.idRubrica} className={index % 2 === 0 ? "bg-gray-50" : "bg-white"}>
-                                        <td className={`px-6 py-4 cursor-pointer ${selectedRubricId === String(rubric.idRubrica) ? "text-blue-600" : ""}`}
-                                            onClick={() => handleDetail(rubric.idRubrica)}>
+                                filteredRubrics.map((rubric) => (
+                                    <TableRow key={rubric.idRubrica} className={rubric.estado === "INACTIVO" ? "opacity-70" : ""}>
+                                        <TableCell
+                                            className={`cursor-pointer ${selectedRubricId === String(rubric.idRubrica) ? "text-blue-600" : ""}`}
+                                            onClick={() => handleDetail(rubric.idRubrica)}
+                                        >
                                             {rubric.idRubrica}
-                                        </td>
-                                        <td className={`px-6 py-4 cursor-pointer ${selectedRubricId === String(rubric.idRubrica) ? "text-blue-600" : ""}`}
-                                            onClick={() => handleDetail(rubric.idRubrica)}>
+                                        </TableCell>
+                                        <TableCell
+                                            className={`cursor-pointer ${selectedRubricId === String(rubric.idRubrica) ? "text-blue-600" : ""}`}
+                                            onClick={() => handleDetail(rubric.idRubrica)}
+                                        >
                                             {rubric.nombreRubrica}
-                                        </td>
-                                        <td className={`px-6 py-4 cursor-pointer ${selectedRubricId === String(rubric.idRubrica) ? "text-blue-600" : ""}`}
-                                            onClick={() => handleDetail(rubric.idRubrica)}>
+                                        </TableCell>
+                                        <TableCell
+                                            className={`cursor-pointer ${selectedRubricId === String(rubric.idRubrica) ? "text-blue-600" : ""}`}
+                                            onClick={() => handleDetail(rubric.idRubrica)}
+                                        >
                                             {rubric.nombreMateria}
-                                        </td>
-                                        <TableCell>{getStatusBadge(rubric.estado)}</TableCell>
-                                        <td className="px-6 py-4">
+                                        </TableCell>
+                                        <TableCell>
+                                            {getStatusBadge(rubric.estado)}
+                                        </TableCell>
+                                        <TableCell>
                                             <div className="flex justify-center gap-2">
-                                                <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => handleEdit(rubric.idRubrica)} disabled={rubric.estado === "INACTIVO"}>
+                                                <Button
+                                                    variant="ghost"
+                                                    size="icon"
+                                                    className="h-8 w-8"
+                                                    onClick={() => handleEdit(rubric.idRubrica)}
+                                                    disabled={rubric.estado === "INACTIVO"}
+                                                >
                                                     <Pencil className="h-4 w-4" />
                                                 </Button>
-                                                <Button variant="ghost" size="icon" className="h-8 w-8 text-orange-500 hover:text-orange-600" onClick={() => handleOpenDeleteModal(rubric)}>
+                                                <Button
+                                                    variant="ghost"
+                                                    size="icon"
+                                                    className="h-8 w-8 text-orange-500 hover:text-orange-600"
+                                                    onClick={() => handleOpenDeleteModal(rubric)}
+                                                >
                                                     <Trash2 className="h-4 w-4" />
                                                 </Button>
-                                                <Button variant="ghost" size="icon" className="h-8 w-8 text-indigo-500 hover:text-indigo-600" onClick={() => handleOpenDuplicateModal(rubric)} disabled={rubric.estado === "INACTIVO"}>
+                                                <Button
+                                                    variant="ghost"
+                                                    size="icon"
+                                                    className="h-8 w-8 text-indigo-500 hover:text-indigo-600"
+                                                    onClick={() => handleOpenDuplicateModal(rubric)}
+                                                    disabled={rubric.estado === "INACTIVO"}
+                                                >
                                                     <Copy className="h-4 w-4" />
                                                 </Button>
-                                                <Button variant="ghost" size="icon" className="h-8 w-8 text-black-500 hover:text-black-600" onClick={() => handleOpenShareModal(rubric)} disabled={rubric.estado === "INACTIVO"}>
+                                                <Button
+                                                    variant="ghost"
+                                                    size="icon"
+                                                    className="h-8 w-8 text-black-500 hover:text-black-600"
+                                                    onClick={() => handleOpenShareModal(rubric)}
+                                                    disabled={rubric.estado === "INACTIVO"}
+                                                >
                                                     <Share2 className="h-4 w-4" />
                                                 </Button>
                                                 {notification && (
@@ -326,12 +373,12 @@ export default function ConsultarRubrica() {
                                                     />
                                                 )}
                                             </div>
-                                        </td>
-                                    </tr>
+                                        </TableCell>
+                                    </TableRow>
                                 ))
                             )}
-                        </tbody>
-                    </table>
+                        </TableBody>
+                    </Table>
                 </div>
                 <DuplicateRubricModal
                     open={showDuplicateModal}

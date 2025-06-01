@@ -15,6 +15,13 @@ import { useParams } from "react-router-dom";
 import { getAllRAs } from "@/services/raService.ts";
 import { RaInteface } from "@/interfaces/RaInterface";
 import { getRubricById } from "@/services/rubricService";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue
+} from "@/components/ui/select";
 
 //Definicion del tipo de notificacion
 type NotificationType = {
