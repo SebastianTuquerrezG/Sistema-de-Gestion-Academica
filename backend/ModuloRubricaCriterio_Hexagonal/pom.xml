@@ -6,7 +6,7 @@
         <groupId>com.unicauca</groupId>
         <artifactId>backend</artifactId>
         <version>0.0.1-SNAPSHOT</version>
-        <relativePath>../pom.xml</relativePath>
+        <relativePath>..</relativePath>
     </parent>
     <groupId>org.unicauca</groupId>
     <artifactId>ModuloRubricaCriterio</artifactId>
