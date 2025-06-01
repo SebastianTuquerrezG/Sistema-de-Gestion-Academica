@@ -1,5 +1,8 @@
 package org.unicauca.modulorubricacriterio.Infraestructura.Output.Persistencia.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -17,22 +20,30 @@ import java.util.List;
 public class CriterioEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_criterio", nullable = false, unique = true, updatable = false)
     private Long idCriterio;
 
-    @ManyToOne
-    @JoinColumn(name = "id_rubrica")
-    private RubricaEntity rubrica;
-
-    @Column(length = 500)
+    @Column(nullable = false, length = 500)
     private String crfDescripcion;
+
+    @Column(nullable = false)
     private Integer crfPorcentaje;
+
+    @Column
     private Float crfNota;
 
     @Column(length = 500)
     private String crfComentario;
 
     @OneToMany(mappedBy = "criterio", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
     private List<NivelEntity> niveles;
+
+    @ManyToOne
+    @JoinColumn(name = "id_rubrica")
+    @JsonBackReference("rubric-criteria")
+    @JsonProperty("rubric")
+    private RubricaEntity rubrica;
 
     public CriterioEntity(RubricaEntity rubrica, String descripcion, Integer porcentaje, float nota, String comentario, List<NivelEntity> niveles) {
         this.rubrica = rubrica;
@@ -42,8 +53,4 @@ public class CriterioEntity {
         this.crfComentario = comentario;
         this.niveles = niveles;
     }
-    
-
-
-
 }

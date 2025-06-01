@@ -42,10 +42,10 @@ public class ModuloRubricaCriterioApplication implements CommandLineRunner {
     */
     private void cargarDatos(){
         List<RAEntity> listaRA = new ArrayList<>();
-        RAEntity ra1 = new RAEntity();
-        RAEntity ra2 = new RAEntity();
-        RAEntity ra3 = new RAEntity();
-        RAEntity ra4 = new RAEntity();
+        RAEntity ra1 = new RAEntity(null, "Desarrollar un software funcional");
+        RAEntity ra2 = new RAEntity(null, "Implementar prácticas de programación avanzadas");
+        RAEntity ra3 = new RAEntity(null, "Diseñar una arquitectura de software eficiente");
+        RAEntity ra4 = new RAEntity(null, "Crear documentación técnica de software");
 
         listaRA.add(ra1);
         listaRA.add(ra2);

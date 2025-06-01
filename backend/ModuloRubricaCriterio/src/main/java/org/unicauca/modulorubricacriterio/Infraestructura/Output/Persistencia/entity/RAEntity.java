@@ -20,7 +20,8 @@ public class RAEntity {
     @Column(name = "ra_id", nullable = false, unique = true, updatable = false)
     private Long id;
 
-
+    @Column(name = "name", nullable = false)
+    private String name;
 
     @Override
     public final boolean equals(Object o) {

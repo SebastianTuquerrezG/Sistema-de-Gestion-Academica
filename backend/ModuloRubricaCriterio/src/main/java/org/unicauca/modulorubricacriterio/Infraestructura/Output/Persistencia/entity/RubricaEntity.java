@@ -1,6 +1,7 @@
 package org.unicauca.modulorubricacriterio.Infraestructura.Output.Persistencia.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -14,20 +15,33 @@ import org.unicauca.modulorubricacriterio.Infraestructura.Input.validacionEstado
 @Table(name="Rubrica")
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
+@ToString
 public class RubricaEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_rubrica", unique = true, nullable = false, updatable = false)
     private Long idRubrica;
+
+    @Column(nullable = false, length = 100)
     private String nombreRubrica;
+
+    @Column(nullable = false, length = 300)
+    private String objetivoEstudio;
+
+    @Column(nullable = false)
+    private int notaRubrica;
+
     @ManyToOne
     @JoinColumn(name = "subject_id", nullable = false, foreignKey = @ForeignKey(name = "fk_subject"))
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    @JsonBackReference
+    @JsonBackReference("subject-rubric")
     private MateriaEntity subject;
-    private int notaRubrica;
-    private String objetivoEstudio;
+
     @OneToMany(mappedBy = "rubrica", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference("rubric-criteria")
+    @ToString.Exclude
     private List<CriterioEntity>criterios;
 
     @Column(name = "estado")

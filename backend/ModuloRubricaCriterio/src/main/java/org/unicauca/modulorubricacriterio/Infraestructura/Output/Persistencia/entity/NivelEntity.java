@@ -1,5 +1,6 @@
 package org.unicauca.modulorubricacriterio.Infraestructura.Output.Persistencia.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.proxy.HibernateProxy;
@@ -14,6 +15,7 @@ import java.util.Objects;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class NivelEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,9 +23,13 @@ public class NivelEntity {
 
     @ManyToOne
     @JoinColumn(name = "id_criterio")
+    @JsonIgnore
     private CriterioEntity criterio;
 
+    @Column(nullable = false, length = 300)
     private String nivelDescripcion;
+
+    @Column(nullable = false)
     private String rangoNota;
 
     public NivelEntity(CriterioEntity criterio1, String nDescripcion, String rangoNota) {
