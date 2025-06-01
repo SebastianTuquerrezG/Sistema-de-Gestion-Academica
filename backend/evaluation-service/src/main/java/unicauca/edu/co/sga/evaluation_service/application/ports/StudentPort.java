@@ -25,4 +25,8 @@ public interface StudentPort {
     List<StudentResponseDTO> getStudentsByIdentificationType(GeneralEnums.identificationType identificationType);
 
     List<StudentResponseDTO> getStudentsByCourseAndPeriod(Long courseId, String period);
+
+    Optional<Long> getStudentIdByName(String name);
+
+
 }

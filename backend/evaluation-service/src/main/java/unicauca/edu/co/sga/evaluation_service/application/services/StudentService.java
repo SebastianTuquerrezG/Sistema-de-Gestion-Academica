@@ -14,6 +14,7 @@ import unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.mappers
 import unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.repositories.EnrollRepository;
 import unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.repositories.StudentRepository;
 
+import java.text.Normalizer;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -31,7 +32,7 @@ public class StudentService implements StudentPort {
         return studentRepository.findAll().stream()
                 .map(StudentMapper::toModel)
                 .map(StudentMapper::toDTO)
-                .toList();
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -111,5 +112,26 @@ public class StudentService implements StudentPort {
                 .map(StudentMapper::toModel)
                 .map(StudentMapper::toDTO)
                 .collect(Collectors.toList());
+    }
+    @Override
+    public Optional<Long> getStudentIdByName(String name) {
+        String normalizedName = normalize(name); // normalización desde Java
+        List<Long> ids = studentRepository.findIdsByName(normalizedName);
+        if (ids.isEmpty()) {
+            return Optional.empty();
+        } else {
+            return Optional.of(ids.get(0));
+        }
+    }
+
+
+
+
+    public String normalize(String input) {
+        if (input == null) return null;
+        return Normalizer.normalize(input, Normalizer.Form.NFD)
+                .replaceAll("\\p{M}", "") // elimina tildes
+                .replaceAll("\\s+", "")   // elimina espacios
+                .toLowerCase();           // convierte a minúsculas
     }
 }

@@ -14,8 +14,10 @@ import unicauca.edu.co.sga.evaluation_service.application.dto.response.StudentVi
 import unicauca.edu.co.sga.evaluation_service.application.dto.response.StudentView.EvaluationResponseViewDTO;
 import unicauca.edu.co.sga.evaluation_service.application.dto.response.StudentView.RubricResponseViewDTO;
 import unicauca.edu.co.sga.evaluation_service.application.ports.RubricEvaluationPort;
+import unicauca.edu.co.sga.evaluation_service.application.services.StudentService;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/RubricEvaluation")
@@ -23,6 +25,7 @@ import java.util.List;
 public class RubricEvaluationController {
 
     private final RubricEvaluationPort rubricEvaluationPort;
+    private final StudentService studentService;
 
     //Recuperar cursos de un estudiante en un periodo especifico (de la tabla enroll hay que traer el nombre del curso y el nombre del profesor que dicta el curso)
     @GetMapping("/{idStudent}/{semester}")
@@ -64,5 +67,13 @@ public class RubricEvaluationController {
         return ResponseEntity.ok(rubricEvaluationPort.getRubricsFromStudentSubjectPeriodRubric(idStudent, idSubject, semester, idRubric));
 
     }
+    @GetMapping("/byName/{name}")
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN_ROLE', 'ROLE_COORDINATOR_ROLE', 'ROLE_TEACHER_ROLE', 'ROLE_STUDENT_ROLE')")
+    public Optional<Long> getStudentByUser( @PathVariable String name) {
+        return studentService.getStudentIdByName(name);
+    }
+
+
 
 }
