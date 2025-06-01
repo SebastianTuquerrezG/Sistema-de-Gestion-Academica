@@ -131,10 +131,10 @@ export default function LoginForm() {
                     onSubmit={handleSubmit(onSubmit)}
                 >
                     <LabeledInput
-                        label="Correo institucional"
+                        label="Correo institucional o usuario"
                         id="username"
                         type="text"
-                        placeholder="Correo institucional"
+                        placeholder="Correo institucional o usuario"
                         required={true}
                         className={errors.username ? "border-error" : ""}
                         {...register("username")}
