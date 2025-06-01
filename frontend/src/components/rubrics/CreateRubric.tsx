@@ -40,14 +40,6 @@ export default function CreateRubric() {
             crfPorcentaje: "",
             crfNota: 0,
             crfComentario: ""
-        },
-        {
-            idCriterio: 2,
-            crfDescripcion: "",
-            niveles: levels.map(level => ({ ...level, nivelDescripcion: "" })),
-            crfPorcentaje: "",
-            crfNota: 0,
-            crfComentario: ""
         }
     ]);
 

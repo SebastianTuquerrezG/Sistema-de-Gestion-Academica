@@ -1,4 +1,4 @@
-INSERT INTO student (student_id, name, identification, identification_type) VALUES (1, 'María González', 1001234567, 'CC'), (2, 'Carlos Rodríguez', 1007654321, 'TI'), (3, 'Laura Martínez', 1001122334, 'CC'), (4, 'Jesus Parra', 1085903234, 'CC'), (5, 'Elkin Morillo', 1004523871, 'CC'), (6, 'Edwin Orlando', 5654124584, 'CC'), (7, 'Sebastian Tuquerres', 123456789, 'CC');
+INSERT INTO student (student_id, name, identification, identification_type) VALUES (1, 'María González', 1001234567, 'CC'), (2, 'Carlos Rodríguez', 1007654321, 'TI'), (3, 'Laura Martínez', 1001122334, 'CC'), (4, 'Jesus Parra', 1085903234, 'CC'), (5, 'Elkin Morillo', 1004523871, 'CC'), (6, 'Edwin Orlando', 5654124584, 'CC'), (7, 'Joan Tuquerrez Gomez', 123456789, 'CC'), (8, 'Oscar Fernando Hoyos Carvajal', 1009876543, 'CC');
 
 INSERT INTO subject (subject_id, credits, objectives, name, created_at, updated_at) VALUES (1, 4, '', 'Redes', '2025-01-10', '2025-01-10'), (2, 3, '', 'Base de datos 2', '2025-01-10', '2025-01-10'), (3, 3, '', 'Proyecto 1', '2025-01-10', '2025-01-10'), (4, 3, '', 'Calidad de software', '2025-01-10', '2025-01-10');
 
@@ -8,7 +8,7 @@ INSERT INTO learning_results (ra_id, name) VALUES (101, 'Gestión de Proyectos T
 
 INSERT INTO course (course_id, subject_id, ra_id) VALUES (10, 1, 101), (20, 2, 102), (30, 3, 103), (40, 4, 104), (50, 4, 104), (60, 3, 104);
 
-INSERT INTO enroll (enroll_id, course_id, student_id, semester) VALUES (1000, 10, 1, '2025-1'), (1001, 20, 1, '2024-1'), (1002, 30, 1, '2025-1'), (1003, 40, 2, '2025-1'), (1005, 30,2,'2025-1'), (1006, 40, 3, '2025-1'), (1007, 40, 4, '2025-1'), (1008, 40, 5, '2025-1'), (1009, 50, 6, '2025-1'), (1010, 60, 7, '2025-1');
+INSERT INTO enroll (enroll_id, course_id, student_id, semester) VALUES (1000, 10, 1, '2025-1'), (1001, 20, 1, '2024-1'), (1002, 30, 1, '2025-1'), (1003, 40, 2, '2025-1'), (1005, 30,2,'2025-1'), (1006, 40, 3, '2025-1'), (1007, 40, 4, '2025-1'), (1008, 40, 5, '2025-1'), (1009, 50, 6, '2025-1'), (1010, 60, 7, '2025-1'), (1011, 40, 7, '2024-1'), (1012, 40, 7, '2025-1'), (1013, 40, 8, '2024-1'), (1014, 40, 8, '2025-1');
 
 INSERT INTO rubrica (id_rubrica, nombre_rubrica, objetivo_estudio, nota_rubrica, subject_id, ra_id, estado) VALUES (100, 'Rúbrica Redes', 'Diseñar topologías de red', 5, 1, 101, 'ACTIVO'), (200, 'Rúbrica BD2', 'Modelado de bases de datos', 5, 2, 102, 'ACTIVO'), (300, 'Rúbrica Proyecto', 'Gestión de proyectos TI', 5, 3, 103, 'ACTIVO'), (400, 'Rúbrica Calidad', 'Pruebas de software', 5, 4, 104, 'ACTIVO');
 
