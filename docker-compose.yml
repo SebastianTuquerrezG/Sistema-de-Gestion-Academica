@@ -62,16 +62,16 @@ services:
     networks:
       - backend-network
 
-  frontend:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
-    ports:
-      - "80:80"
-    depends_on:
-      - gateway
-    networks:
-      - backend-network
+  # frontend:
+    # build:
+      # context: ./frontend
+      # dockerfile: Dockerfile
+    # ports:
+      # - "80:80"
+    # depends_on:
+      # - gateway
+    # networks:
+      # - backend-network
 
 networks:
   backend-network:
