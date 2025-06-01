@@ -3,10 +3,20 @@ import React , { useEffect, useState } from "react";
 import IconButton from "../../components/buttons/iconButton.tsx";
 import CursosList from "../../components/layout/CursosList.tsx";
 import { useNavigate, useLocation } from "react-router-dom";
+import Notification from "@/components/notifications/notification.tsx";
+
 const SubjectList: React.FC = () => {
 
     const navigate = useNavigate();
     const location = useLocation();
+    const [showNotification, setShowNotification] = useState(false);
+    const [notificationMessage, setNotificationMessage] = useState("");
+
+
+    const handleClose = () => {
+        setShowNotification(false);
+    };
+
 
     const periodoSeleccionado = location.state?.periodoSeleccionado;
 
@@ -50,14 +60,22 @@ const SubjectList: React.FC = () => {
         const fetchStudentId = async () => {
             try {
                 const id = await getIdStudent();
+
+                if (id === null || id === undefined) {
+                    throw new Error("No se encontró un estudiante asociado a este usuario.");
+                }
+
                 setIdStudent(id);
-            } catch (error) {
+            } catch (error: any) {
                 console.error("Error al obtener el ID del estudiante:", error);
+                setNotificationMessage(error.message || "Ocurrió un error inesperado.");
+                setShowNotification(true);
             }
         };
 
         fetchStudentId();
     }, []);
+
     // Cuando ya se tenga el ID y el periodo, obtener las materias
     useEffect(() => {
         const fetchData = async () => {
@@ -71,7 +89,9 @@ const SubjectList: React.FC = () => {
                     id: curso.id,
                 }));
                 setSubjects(cursosTransformados);
-            } catch (error) {
+            } catch (error:any) {
+                setNotificationMessage(error.message);
+                setShowNotification(true);
                 console.error("Error al obtener datos:", error);
             }
         };
@@ -99,6 +119,14 @@ const SubjectList: React.FC = () => {
 
     return (
         <div className= "w-full max-w-screen-lg mx-auto flex flex-col flex-1 p-4">
+            {showNotification && (
+                <Notification
+                    type="error"
+                    title="Error al cargar los datos"
+                    message={notificationMessage}
+                    onClose={handleClose}
+                />
+            )}
             <div className=" flex justify-between items-center w-full mb-4">
                 <h2 className="title2 border-b-2 border-red-500 inline-block" style={{ color: "var(--primary-regular-color)" }}>
                     Periodo actual: {period}

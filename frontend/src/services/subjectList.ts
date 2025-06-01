@@ -14,14 +14,25 @@ function getAuthHeaders(): Record<string, string> {
     return headers;
 }
 
-export const getSubject = async (idStudent :number, period :string) => {
-    const response = await fetch(`${API_BASE}/${idStudent}/${period}`,{
+export const getSubject = async (idStudent: number, period: string) => {
+    const response = await fetch(`${API_BASE}/${idStudent}/${period}`, {
         headers: getAuthHeaders(),
-        }
-    );
-    if (!response.ok) throw new Error("Error al obtener las rúbricas");
-    return await response.json();
+    });
+
+    if (!response.ok) throw new Error("Error al obtener las Materias");
+
+    const data = await response.json();
+
+    console.log("Datos obtenidos:", data);
+
+    if (data === null || (Array.isArray(data) && data.length === 0)) {
+        throw new Error("No se encontraron materias para el estudiante en el periodo seleccionado");
+    }
+
+    return data;
 };
+
+
 
 export const getPeriod = async (idStudent : string|undefined) => {
     const response = await fetch(`${API_BASE}/${idStudent}`,{
