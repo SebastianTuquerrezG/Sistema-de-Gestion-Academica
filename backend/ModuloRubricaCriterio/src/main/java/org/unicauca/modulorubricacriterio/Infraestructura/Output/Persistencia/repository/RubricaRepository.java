@@ -6,6 +6,8 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.unicauca.modulorubricacriterio.Infraestructura.Output.Persistencia.entity.RubricaEntity;
 
+import java.util.List;
+
 @Repository
 public interface RubricaRepository extends JpaRepository<RubricaEntity,Long> {
     /**
@@ -23,4 +25,6 @@ public interface RubricaRepository extends JpaRepository<RubricaEntity,Long> {
      */
     @Query(value = "SELECT COUNT(*) FROM rubrica r WHERE r.nombre_Rubrica = :nombreRubrica",nativeQuery = true)
     Integer existeRubricaConNombre(@Param("nombreRubrica") String nombreRubrica);
+
+    List<RubricaEntity> findAllBySubjectId(Long idMateria); /*<!Consulta una lista de rúbricas por materia*/
 }

@@ -57,4 +57,13 @@ public class GestionRubricasAdapter implements IGestionRubricaPort{
     public List<Materia> consultarMaterias() {
         return this.conectorBDRubricaPort.findAllMaterias();
     }
+
+    @Override
+    public List<Rubrica> consultarRubricasPorMateria(Long idMateria) {
+        List<Rubrica> listaRubricas = this.conectorBDRubricaPort.findAllRubricsBySubject(idMateria);
+        if (listaRubricas.isEmpty()) {
+            throw new RuntimeException("No se encontraron rúbricas para la materia con ID: " + idMateria);
+        }
+        return listaRubricas;
+    }
 }

@@ -20,4 +20,6 @@ public interface IGestionRubricaPort {
      Rubrica eliminarRubrica(Long Id);/*<!Elimina una rúbrica*/
 
      List<Materia> consultarMaterias();/*<!Consulta una lista de materias*/
+
+     List<Rubrica> consultarRubricasPorMateria(Long idMateria);/*<!Consulta una lista de rúbricas por materia*/
 }

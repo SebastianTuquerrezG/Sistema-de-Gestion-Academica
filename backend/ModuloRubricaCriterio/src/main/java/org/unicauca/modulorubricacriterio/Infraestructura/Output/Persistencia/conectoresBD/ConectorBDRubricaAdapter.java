@@ -288,4 +288,27 @@ public class ConectorBDRubricaAdapter implements IConectorBDRubricaPort {
         }.getType());
         return listMateria;
     }
+
+    @Override
+    public List<Rubrica> findAllRubricsBySubject(Long idMateria) {
+        List<RubricaEntity> listRubricaEntity = this.rubricaRepository.findAllBySubjectId(idMateria);
+        if (listRubricaEntity.isEmpty()) {
+            throw new EntidadNoExisteException("No se encontraron rúbricas para la materia con ID: " + idMateria);
+        }
+        List<Rubrica> listRubrica = this.rubricaMapper.map(listRubricaEntity, new TypeToken<List<Rubrica>>() {
+        }.getType());
+        for (Rubrica rubric : listRubrica) {
+            rubric.setNombreMateria(this.rubricaRepository.findSubjectNameByRubricaId(rubric.getIdRubrica()));
+            if(rubric.getCriterios() != null)
+            {
+                rubric.getCriterios().forEach(criterio -> {
+                    criterio.setIdRubrica(rubric.getIdRubrica());
+                    if(criterio.getNiveles() != null) {
+                        criterio.getNiveles().forEach(nivel -> nivel.setIdCriterio(criterio.getIdCriterio()));
+                    }
+                });
+            }
+        }
+        return listRubrica;
+    }
 }
