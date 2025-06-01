@@ -95,4 +95,13 @@ public class RubricaController {
         List<MateriaDTORespuesta> listaDTO = objRubricaMapper.mapMateriaListToDtoList(lista);
         return new ResponseEntity<>(listaDTO, HttpStatus.OK);
     }
+
+    @GetMapping("/rubricas/materias/{idMateria}")
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN_ROLE', 'ROLE_TEACHER_ROLE', 'ROLE_COORDINATOR_ROLE', 'ROLE_STUDENT_ROLE')")
+    public ResponseEntity<List<RubricaDTORespuesta>>getRubricasByMateria(@PathVariable("idMateria") Long idMateria){
+        List<Rubrica> lista=this.rubricaService.consultarRubricasPorMateria(idMateria);
+        List<RubricaDTORespuesta> listaDTO = objRubricaMapper.mapRubricaListToDtoList(lista);
+        return new ResponseEntity<>(listaDTO, HttpStatus.OK);
+    }
 }

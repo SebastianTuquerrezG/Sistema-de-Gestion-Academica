@@ -19,4 +19,6 @@ public interface IConectorBDRubricaPort {
      Rubrica changeEstate(Long idRubrica, String estadoRubrica);
 
      List<Materia> findAllMaterias();
+
+     List<Rubrica> findAllRubricsBySubject(Long idMateria);
 }
