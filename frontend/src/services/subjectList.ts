@@ -1,24 +1,5 @@
 const API_BASE = "http://localhost:8080/api/RubricEvaluation";
 
-// export const login = async (username:string, password:string)=> {
-//     const response = await fetch("http://localhost:9090/auth/login", {
-//         method: "POST",
-//         headers: {
-//             "Content-Type": "application/json"
-//         },
-//         body: JSON.stringify({ username, password })
-//     });
-//
-//     const data = await response.json();
-//
-//     if (!response.ok) {
-//         throw new Error("Credenciales incorrectas");
-//     }
-//
-//     localStorage.setItem("access_token", data.access_token);
-//
-//     return data.access_token;
-// };
 function getAuthHeaders(): Record<string, string> {
     const access_token = localStorage.getItem('auth-token');
     if (!access_token) {
@@ -49,3 +30,55 @@ export const getPeriod = async (idStudent : string|undefined) => {
     if (!response.ok) throw new Error("Error al obtener la cabecera");
     return await response.json();
 };
+
+export const parseJwt =(token: string): any =>{
+    try {
+        const base64Payload = token.split('.')[1]; // El segundo segmento es el payload
+        const decodedPayload = atob(base64Payload); // Decodifica Base64
+        return JSON.parse(decodedPayload); // Convierte a objeto
+
+    } catch (e) {
+        throw new Error("Token inválido");
+    }
+
+};
+
+export const getLoggedUserFullName = (): string => {
+    const tokenRaw = localStorage.getItem("auth-token");
+
+    if (!tokenRaw) {
+        throw new Error("Token no encontrado en localStorage");
+    }
+
+    try {
+        const base64Payload = tokenRaw.split(".")[1];
+        const payload = JSON.parse(atob(base64Payload));
+        return payload.name; // ← Este es el campo correcto según tu token
+    } catch (error) {
+        console.error("Error al decodificar el token:", error);
+        throw new Error("Token inválido");
+    }
+};
+
+
+
+export const getIdStudent = async () => {
+    const fullName = getLoggedUserFullName();
+
+    const response = await fetch(`${API_BASE}/byName/${fullName}`,{
+        headers: getAuthHeaders(),
+    });
+
+    if (!response.ok) {
+        throw new Error("Error al obtener el estudiante");
+    }
+
+    return await response.json();
+};
+
+
+
+
+
+
+

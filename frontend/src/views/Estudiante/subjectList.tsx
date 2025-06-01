@@ -1,17 +1,17 @@
-//import { use } from "react";
-import { getSubject } from "@/services/subjectList.ts";
+import {getSubject, parseJwt,getIdStudent} from "@/services/subjectList.ts";
 import React , { useEffect, useState } from "react";
 import IconButton from "../../components/buttons/iconButton.tsx";
 import CursosList from "../../components/layout/CursosList.tsx";
 import { useNavigate, useLocation } from "react-router-dom";
-
 const SubjectList: React.FC = () => {
 
     const navigate = useNavigate();
     const location = useLocation();
 
     const periodoSeleccionado = location.state?.periodoSeleccionado;
-    const idStudent = 2; // Cambia esto por el id real del estudiante
+
+    const [idStudent, setIdStudent] = useState<number | null>(null); // Nuevo estado para el ID del estudiante
+
 
     type Curso = {
         nombre: string;
@@ -27,7 +27,15 @@ const SubjectList: React.FC = () => {
 
 
     const [subjects, setSubjects] = useState<Curso[]>([]);
-    const [period, setPeriod] = useState<string>(periodoSeleccionado || "2025-1");
+    const [period, setPeriod] = useState<string>(periodoSeleccionado ?? "2025-1");
+    useEffect(() => {
+        const tokenRaw = localStorage.getItem("auth-token");
+        if (tokenRaw) {
+            const payload = parseJwt(tokenRaw);
+            console.log("Contenido del token:", payload);
+        }
+    }, []);
+
 
 
     // Si cambia el periodo seleccionado, actualiza el semestre
@@ -37,13 +45,26 @@ const SubjectList: React.FC = () => {
         }
     }, [periodoSeleccionado]);
 
+    // Cargar ID del estudiante al inicio
+    useEffect(() => {
+        const fetchStudentId = async () => {
+            try {
+                const id = await getIdStudent();
+                setIdStudent(id);
+            } catch (error) {
+                console.error("Error al obtener el ID del estudiante:", error);
+            }
+        };
+
+        fetchStudentId();
+    }, []);
+    // Cuando ya se tenga el ID y el periodo, obtener las materias
     useEffect(() => {
         const fetchData = async () => {
+            if (idStudent === null) return;
+
             try {
-                const [subjectData] = await Promise.all([
-                    getSubject(idStudent, period)
-                ]);
-                // Transforma los datos para que tengan las claves que espera la interfaz
+                const subjectData = await getSubject(idStudent, period);
                 const cursosTransformados = subjectData.map((curso: SubjectFromApi) => ({
                     nombre: curso.nameSubject,
                     docente: curso.nameTeacher,
@@ -58,12 +79,11 @@ const SubjectList: React.FC = () => {
         fetchData();
     }, [idStudent, period]);
 
+
+
     // Función para manejar el clic en un curso
     const handleCursoClick = (curso: { nombre: string; docente: string; id:number; }) => {
-        // alert(
-        //     `Seleccionaste el curso: ${curso.nombre} con el docente: ${curso.docente}  id: ${curso.id}`
-        // );
-       // const idSubject = 3;
+
         navigate(`/rubric/${idStudent}/${curso.id}/${period}`);
     };
     // Función para manejar el clic en "Otros Periodos"
@@ -73,7 +93,6 @@ const SubjectList: React.FC = () => {
                 idStudent: idStudent,
             }
         });
-        // alert("No hay otros periodos disponibles");
     };
 
 
