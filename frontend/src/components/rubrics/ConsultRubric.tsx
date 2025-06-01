@@ -22,6 +22,8 @@ import {
     SelectTrigger,
     SelectValue
 } from "@/components/ui/select";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { Eye } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useNavigate } from "react-router-dom";
 import Notification from "@/components/notifications/notification";
@@ -337,45 +339,89 @@ export default function ConsultarRubrica() {
                                     </TableCell>
                                     <TableCell className="py-2">
                                         <div className="flex justify-center gap-1 sm:gap-2 flex-wrap">
-                                            <Button
-                                                variant="ghost"
-                                                size="icon"
-                                                className="h-7 w-7 p-0"
-                                                onClick={() => handleEdit(rubric.idRubrica)}
-                                                disabled={rubric.estado === "INACTIVO"}
-                                                title="Editar"
-                                            >
-                                                <Pencil className="h-3.5 w-3.5" />
-                                            </Button>
-                                            <Button
-                                                variant="ghost"
-                                                size="icon"
-                                                className="h-7 w-7 p-0 text-orange-500 hover:text-orange-600"
-                                                onClick={() => handleOpenDeleteModal(rubric)}
-                                                title="Eliminar"
-                                            >
-                                                <Trash2 className="h-3.5 w-3.5" />
-                                            </Button>
-                                            <Button
-                                                variant="ghost"
-                                                size="icon"
-                                                className="h-7 w-7 p-0 text-indigo-500 hover:text-indigo-600"
-                                                onClick={() => handleOpenDuplicateModal(rubric)}
-                                                disabled={rubric.estado === "INACTIVO"}
-                                                title="Duplicar"
-                                            >
-                                                <Copy className="h-3.5 w-3.5" />
-                                            </Button>
-                                            <Button
-                                                variant="ghost"
-                                                size="icon"
-                                                className="h-7 w-7 p-0 text-black-500 hover:text-black-600"
-                                                onClick={() => handleOpenShareModal(rubric)}
-                                                disabled={rubric.estado === "INACTIVO"}
-                                                title="Compartir"
-                                            >
-                                                <Share2 className="h-3.5 w-3.5" />
-                                            </Button>
+                                            <Tooltip>
+                                                <TooltipTrigger asChild>
+                                                    <Button
+                                                        variant="ghost"
+                                                        size="icon"
+                                                        className="h-7 w-7 p-0 text-primary hover:text-primary/80"
+                                                        onClick={() => handleDetail(rubric.idRubrica)}
+                                                    >
+                                                        <Eye className="h-3.5 w-3.5" />
+                                                        <span className="sr-only">Ver detalles</span>
+                                                    </Button>
+                                                </TooltipTrigger>
+                                                <TooltipContent>
+                                                    <p>Ver detalles</p>
+                                                </TooltipContent>
+                                            </Tooltip>
+                                            <Tooltip>
+                                                <TooltipTrigger asChild>
+                                                    <Button
+                                                        variant="ghost"
+                                                        size="icon"
+                                                        className="h-7 w-7 p-0"
+                                                        onClick={() => handleEdit(rubric.idRubrica)}
+                                                        disabled={rubric.estado === "INACTIVO"}
+                                                    >
+                                                        <Pencil className="h-3.5 w-3.5" />
+                                                        <span className="sr-only">Editar</span>
+                                                    </Button>
+                                                </TooltipTrigger>
+                                                <TooltipContent>
+                                                    <p>Editar</p>
+                                                </TooltipContent>
+                                            </Tooltip>
+                                            <Tooltip>
+                                                <TooltipTrigger asChild>
+                                                    <Button
+                                                        variant="ghost"
+                                                        size="icon"
+                                                        className="h-7 w-7 p-0 text-orange-500 hover:text-orange-600"
+                                                        onClick={() => handleOpenDeleteModal(rubric)}
+                                                    >
+                                                        <Trash2 className="h-3.5 w-3.5" />
+                                                        <span className="sr-only">Eliminar</span>
+                                                    </Button>
+                                                </TooltipTrigger>
+                                                <TooltipContent>
+                                                    <p>Eliminar</p>
+                                                </TooltipContent>
+                                            </Tooltip>
+                                            <Tooltip>
+                                                <TooltipTrigger asChild>
+                                                    <Button
+                                                        variant="ghost"
+                                                        size="icon"
+                                                        className="h-7 w-7 p-0 text-indigo-500 hover:text-indigo-600"
+                                                        onClick={() => handleOpenDuplicateModal(rubric)}
+                                                        disabled={rubric.estado === "INACTIVO"}
+                                                    >
+                                                        <Copy className="h-3.5 w-3.5" />
+                                                        <span className="sr-only">Duplicar</span>
+                                                    </Button>
+                                                </TooltipTrigger>
+                                                <TooltipContent>
+                                                    <p>Duplicar</p>
+                                                </TooltipContent>
+                                            </Tooltip>
+                                            <Tooltip>
+                                                <TooltipTrigger asChild>
+                                                    <Button
+                                                        variant="ghost"
+                                                        size="icon"
+                                                        className="h-7 w-7 p-0 text-black-500 hover:text-black-600"
+                                                        onClick={() => handleOpenShareModal(rubric)}
+                                                        disabled={rubric.estado === "INACTIVO"}
+                                                    >
+                                                        <Share2 className="h-3.5 w-3.5" />
+                                                        <span className="sr-only">Compartir</span>
+                                                    </Button>
+                                                </TooltipTrigger>
+                                                <TooltipContent>
+                                                    <p>Compartir</p>
+                                                </TooltipContent>
+                                            </Tooltip>
                                         </div>
                                     </TableCell>
                                 </TableRow>

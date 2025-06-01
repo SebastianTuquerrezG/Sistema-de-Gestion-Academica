@@ -9,19 +9,12 @@ import { RubricInterface } from "@/interfaces/RubricInterface";
 import Notification from "@/components/notifications/notification";
 import DuplicateRubricModal from "@/components/Modal/DuplicateRubricModal.tsx";
 import { createRubric } from "@/services/rubricService.ts";
-//import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Badge } from "@/components/ui/badge"
-import { TableCell } from "@/components/ui/table";
 import { RubricInterfacePeticion } from "@/interfaces/RubricInterfacePeticion.ts";
-//import { z } from "zod"
-//import { useForm } from "react-hook-form";
-//import { zodResolver } from "@hookform/resolvers/zod"
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "@/components/ui/table";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
-
-/*const ShareSchema = z.object({
-    email: z.string().email("Correo no valido"),
-})*/
 
 type NotificationType = {
     type: "error" | "info" | "success";
@@ -37,6 +30,9 @@ export default function RepositorioRubricas() {
     const [selectedRubricId, setSelectedRubricId] = useState<number | null>(null);
     const [showDuplicateModal, setShowDuplicateModal] = useState(false);
     const [rubricToDuplicate, setRubricToDuplicate] = useState<RubricInterface | null>(null);
+    const [materiaFilter, setMateriaFilter] = useState("todas");
+    const [estadoFilter, setEstadoFilter] = useState("todas");
+
     useEffect(() => {
         fetch('/rubricas.json')
             .then((response) => {
@@ -57,14 +53,28 @@ export default function RepositorioRubricas() {
         }
     }, [notification]);
 
-    const filteredRubrics = rubrics.filter((rubric) =>
-        rubric.nombreRubrica.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        rubric.idRubrica
-    );
+    const filteredRubrics = rubrics.filter((rubric) => {
+        // Filtro de búsqueda
+        const matchesSearch = rubric.nombreRubrica.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            rubric.idRubrica.toString().includes(searchTerm);
+
+        // Filtro de materia
+        const matchesMateria = materiaFilter === "todas" ||
+            (materiaFilter === "v" && rubric.nombreMateria === "Ingeniería de Software III") ||
+            (materiaFilter === "v" && rubric.nombreMateria === "Diseño de Experiencia de Usuario");
+
+        // Filtro de estado
+        const matchesEstado = estadoFilter === "todas" ||
+            (estadoFilter === "activo" && rubric.estado === "ACTIVO") ||
+            (estadoFilter === "inactivo" && rubric.estado === "INACTIVO");
+
+        return matchesSearch && matchesMateria && matchesEstado;
+    });
+
     //Funcion para mostrar el detalle de la rúbrica
     const handleDetail = (id: number) => {
         setSelectedRubricId(id);
-        navigate(`rubricas/detalle/${id}`);
+        navigate(`/rubricas/detalle/${id}`);
     };
 
     // Function para abrir el modal de duplicar
@@ -76,24 +86,6 @@ export default function RepositorioRubricas() {
     // Function para duplicar la rúbrica
     const handleDuplicate = async (data: { newName: string; shareWithSamePeople: boolean; copyComments: boolean; resolvedComments: boolean }) => {
         if (!rubricToDuplicate) return;
-
-        /*const duplicatedRubric: RubricInterface = {
-            idRubrica: 0, // El ID se asignará automáticamente al crear la rúbrica
-            nombreRubrica: `${data.newName}`,
-            materia: rubricToDuplicate.materia,
-            notaRubrica: rubricToDuplicate.notaRubrica,
-            objetivoEstudio: rubricToDuplicate.objetivoEstudio,
-            estado: "ACTIVO",
-            criterios: rubricToDuplicate.criterios.map(criterio => ({
-                idCriterio: 0,
-                crfDescripcion: criterio.crfDescripcion,
-                crfPorcentaje: criterio.crfPorcentaje,
-                crfNota: criterio.crfNota,
-                crfComentario: criterio.crfComentario,
-                niveles: criterio.niveles
-            })),
-            raId: rubricToDuplicate.raId,
-        };*/
         const duplicatedRubric: RubricInterfacePeticion = {
             idRubrica: null,
             nombreRubrica: data.newName,
@@ -142,31 +134,32 @@ export default function RepositorioRubricas() {
         }
     }
 
-    /*const form = useForm<z.infer<typeof ShareSchema>>({
-        resolver: zodResolver(ShareSchema),
-        defaultValues: {
-            email: "",
-        },
-    });*/
-
-
     return (
-        <div>
-            <h2 className="title2 border-b-2 border-red-500 inline-block" style={{ color: "var(--primary-regular-color)" }}>
+        <div className="container mx-auto p-4">
+            <h2 className="title2 border-b-2 border-red-500 inline-block text-primary mb-4">
                 Repositorio de Rúbricas
             </h2>
-            <main className="max-w-7xl mx-auto py-8">
-                <div className="mb-6 flex flex-col sm:flex-row gap-4 justify-between items-start sm:items-center">
-                    <div className="relative flex-1 max-w-md">
-                        <Input type="text" placeholder="Buscar en repositorio..." value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)} style={{ width: "100%" }}
+
+            {/* Filtros y búsqueda */}
+            <div className="mb-6 space-y-4">
+                <div className="flex flex-col md:flex-row gap-4 items-stretch">
+                    <div className="relative flex-1">
+                        <Input
+                            type="text"
+                            placeholder="Buscar en repositorio..."
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
                             className="pl-10 w-full"
                         />
-                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
-                    </div >
-                    <div className="flex gap-2">
-                        <Select defaultValue="todas">
-                            <SelectTrigger className="w-[180px]">
+                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                    </div>
+
+                    <div className="flex flex-col sm:flex-row gap-2 flex-1">
+                        <Select
+                            defaultValue="todas"
+                            onValueChange={(value) => setMateriaFilter(value)}
+                        >
+                            <SelectTrigger className="w-full">
                                 <SelectValue placeholder="Materia" />
                             </SelectTrigger>
                             <SelectContent>
@@ -175,8 +168,12 @@ export default function RepositorioRubricas() {
                                 <SelectItem value="v">Diseño de Experiencia de Usuario</SelectItem>
                             </SelectContent>
                         </Select>
-                        <Select defaultValue="todas">
-                            <SelectTrigger className="w-[180px]">
+
+                        <Select
+                            defaultValue="todas"
+                            onValueChange={(value) => setEstadoFilter(value)}
+                        >
+                            <SelectTrigger className="w-full">
                                 <SelectValue placeholder="Estado" />
                             </SelectTrigger>
                             <SelectContent>
@@ -185,57 +182,103 @@ export default function RepositorioRubricas() {
                                 <SelectItem value="inactivo">Inactivo</SelectItem>
                             </SelectContent>
                         </Select>
-                        <Button variant="ghost" size="icon">
-                            <Filter className="h-4 w-4" />
+
+                        <Button variant="outline" className="w-full sm:w-auto">
+                            <Filter className="h-4 w-4 mr-2" />
+                            Filtros
                         </Button>
                     </div>
-                </div >
-                <div>
-                    <table className="w-full">
-                        <thead>
-                            <tr className="title5 bg-[#000066] text-white ">
-                                <th className="py-3 text-left">Identificador</th>
-                                <th className="px-6 py-3 text-left">Nombre Rubrica</th>
-                                <th className="px-6 py-3 text-left">Materia</th>
-                                <th className="px-6 py-3 text-left">Estado</th>
-                                <th className="px-6 py-3 text-center">Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {filteredRubrics.map((rubric, index) => (
-                                <tr key={rubric.idRubrica} className={index % 2 === 0 ? "bg-gray-50" : "bg-white"}>
-                                    <td className={`px-6 py-4 cursor-pointer ${selectedRubricId === rubric.idRubrica ? "text-blue-600" : ""}`} onClick={() => handleDetail(rubric.idRubrica)}                                >
-                                        {rubric.idRubrica}
-                                    </td>
-                                    <td className={`px-6 py-4 cursor-pointer ${selectedRubricId === rubric.idRubrica ? "text-blue-600" : ""}`} onClick={() => handleDetail(rubric.idRubrica)}>
-                                        {rubric.nombreRubrica}
-                                    </td>
-                                    <td className={`px-6 py-4 cursor-pointer ${selectedRubricId === rubric.idRubrica ? "text-blue-600" : ""}`} onClick={() => handleDetail(rubric.idRubrica)}>
-                                        {rubric.materia}
-                                    </td>
-                                    <TableCell>{getStatusBadge(rubric.estado)}</TableCell>
-                                    <td className="px-6 py-4">
-                                        <div className="flex justify-center gap-2">
-                                            <Button variant="ghost" size="icon" className="h-8 w-8 text-indigo-500 hover:text-indigo-600" onClick={() => handleDetail(rubric.idRubrica)}>
-                                                <Eye className="h-4 w-4" />
-                                            </Button>
-                                            <Button variant="ghost" size="icon" className="h-8 w-8 text-orange-500 hover:text-black-600" onClick={() => handleOpenDuplicateModal(rubric)}>
-                                                <Copy className="h-4 w-4" />
-                                            </Button>
-                                        </div>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table >
-                </div >
-                <DuplicateRubricModal
-                    open={showDuplicateModal}
-                    onClose={() => setShowDuplicateModal(false)}
-                    originalName={rubricToDuplicate?.nombreRubrica || ""}
-                    onDuplicate={(data) => handleDuplicate(data)}
-                />
-            </main >
+                </div>
+            </div>
+
+            {/* Tabla con componentes shadcn */}
+            <div className="overflow-x-auto border border-gray-200 rounded-md">
+                <Table className="min-w-[600px]">
+                    <TableHeader className="sticky top-0 z-10 bg-primary">
+                        <TableRow className="hover:bg-primary">
+                            <TableHead className="text-primary-foreground py-3">Identificador</TableHead>
+                            <TableHead className="text-primary-foreground py-3">Nombre Rubrica</TableHead>
+                            <TableHead className="text-primary-foreground py-3 hidden sm:table-cell">Materia</TableHead>
+                            <TableHead className="text-primary-foreground py-3 hidden md:table-cell">Estado</TableHead>
+                            <TableHead className="text-primary-foreground py-3 text-center">Acciones</TableHead>
+                        </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                        {filteredRubrics.map((rubric) => (
+                            <TableRow key={rubric.idRubrica} className="hover:bg-muted/50">
+                                <TableCell
+                                    className={`py-2 font-medium cursor-pointer ${selectedRubricId === rubric.idRubrica ? "text-blue-600" : ""}`}
+                                    onClick={() => handleDetail(rubric.idRubrica)}
+                                >
+                                    {rubric.idRubrica}
+                                </TableCell>
+                                <TableCell
+                                    className={`py-2 cursor-pointer ${selectedRubricId === rubric.idRubrica ? "text-blue-600" : ""}`}
+                                    onClick={() => handleDetail(rubric.idRubrica)}
+                                >
+                                    {rubric.nombreRubrica}
+                                </TableCell>
+                                <TableCell
+                                    className={`py-2 hidden sm:table-cell cursor-pointer ${selectedRubricId === rubric.idRubrica ? "text-blue-600" : ""}`}
+                                    onClick={() => handleDetail(rubric.idRubrica)}
+                                >
+                                    {rubric.materia}
+                                </TableCell>
+                                <TableCell className="py-2 hidden md:table-cell">
+                                    {getStatusBadge(rubric.estado)}
+                                </TableCell>
+                                <TableCell className="py-2">
+                                    <div className="flex justify-center gap-1 sm:gap-2 flex-wrap">
+                                        <Tooltip>
+                                            <TooltipTrigger asChild>
+                                                <Button
+                                                    variant="ghost"
+                                                    size="icon"
+                                                    className="h-7 w-7 p-0 text-primary hover:text-primary/80"
+                                                    onClick={() => handleDetail(rubric.idRubrica)}
+                                                >
+                                                    <Eye className="h-3.5 w-3.5" />
+                                                    <span className="sr-only">Ver detalles</span>
+                                                </Button>
+                                            </TooltipTrigger>
+                                            <TooltipContent>
+                                                <p>Ver detalles</p>
+                                            </TooltipContent>
+                                        </Tooltip>
+
+                                        <Tooltip>
+                                            <TooltipTrigger asChild>
+                                                <Button
+                                                    variant="ghost"
+                                                    size="icon"
+                                                    className="h-7 w-7 p-0 text-orange-500 hover:text-orange-600"
+                                                    onClick={() => handleOpenDuplicateModal(rubric)}
+                                                >
+                                                    <Copy className="h-3.5 w-3.5" />
+                                                    <span className="sr-only">Duplicar</span>
+                                                </Button>
+                                            </TooltipTrigger>
+                                            <TooltipContent>
+                                                <p>Duplicar rúbrica</p>
+                                            </TooltipContent>
+                                        </Tooltip>
+                                    </div>
+                                </TableCell>
+                            </TableRow>
+                        ))}
+                    </TableBody>
+                </Table>
+            </div>
+
+            {/* Modal de duplicación */}
+            <DuplicateRubricModal
+                open={showDuplicateModal}
+                onClose={() => setShowDuplicateModal(false)}
+                originalName={rubricToDuplicate?.nombreRubrica || ""}
+                onDuplicate={(data) => handleDuplicate(data)}
+            />
+
+            {/* Notificación */}
             {notification && (
                 <Notification
                     type={notification.type}
@@ -243,8 +286,7 @@ export default function RepositorioRubricas() {
                     message={notification.message}
                     onClose={() => setNotification(null)}
                 />
-            )
-            }
-        </div >
+            )}
+        </div>
     );
 }
