@@ -31,7 +31,7 @@ public class StudentService implements StudentPort {
         return studentRepository.findAll().stream()
                 .map(StudentMapper::toModel)
                 .map(StudentMapper::toDTO)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override

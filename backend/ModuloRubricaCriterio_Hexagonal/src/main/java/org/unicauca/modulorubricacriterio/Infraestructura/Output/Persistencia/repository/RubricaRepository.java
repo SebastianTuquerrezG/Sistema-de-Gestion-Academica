@@ -21,6 +21,6 @@ public interface RubricaRepository extends JpaRepository<RubricaEntity,Long> {
      * @param nombreRubrica
      * @return Número de rúbricas con el nombre dado
      */
-    @Query(value = "SELECT COUNT(*) FROM Rubrica r WHERE r.nombre_Rubrica = :nombreRubrica",nativeQuery = true)
+    @Query(value = "SELECT COUNT(*) FROM rubrica r WHERE r.nombre_Rubrica = :nombreRubrica",nativeQuery = true)
     Integer existeRubricaConNombre(@Param("nombreRubrica") String nombreRubrica);
 }

@@ -6,11 +6,15 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.entities.CriteriaEntity;
+import unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.entities.RubricEntity;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface CriteriaRepository extends JpaRepository<CriteriaEntity, Long> {
+    Optional<CriteriaEntity> findByIdCriterio(Long id);
+    List<CriteriaEntity> findByRubric(Optional<RubricEntity> rubric);
     //List<CriteriaEntity> findByPerformanceLevelId(Long performanceLevelId);
 //    @Query("SELECT c FROM CriteriaEntity c " +
 //            "WHERE c.rubric.idRubrica = :rubricId")

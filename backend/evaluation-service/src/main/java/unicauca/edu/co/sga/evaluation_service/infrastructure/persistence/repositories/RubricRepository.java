@@ -13,12 +13,10 @@ import java.util.Optional;
 @Repository
 public interface RubricRepository  extends JpaRepository<RubricEntity, Long> {
     Optional<RubricEntity> findByIdRubrica(Long id);
-    Optional<RubricEntity> findByNombreRubricaContainingIgnoreCase(String name);
+    List<RubricEntity> findByNombreRubricaContainingIgnoreCase(String name);
     List<RubricEntity> findBySubjectId(Long id);
     List<RubricEntity> findByRaId(Long id);
-    //List<RubricEntity> findByIdCriterio(Long id);
     List<RubricEntity> findByEstado(GeneralEnums.status status);
-
 
     @Query("SELECT r.objetivoEstudio FROM RubricEntity r " +
             "JOIN r.subject sub " +

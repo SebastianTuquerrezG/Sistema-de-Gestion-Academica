@@ -3,7 +3,10 @@ package unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.entiti
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import jakarta.transaction.Transactional;
 import lombok.*;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.hibernate.proxy.HibernateProxy;
 import unicauca.edu.co.sga.evaluation_service.domain.enums.GeneralEnums;
 
@@ -58,7 +61,7 @@ public class RubricEntity {
     @EqualsAndHashCode.Exclude
     private CriteriaEntity criteria;*/
 
-    @OneToMany(mappedBy = "rubric", orphanRemoval = true, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "rubric", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JsonManagedReference("rubric-criteria")
     @ToString.Exclude
     private List<CriteriaEntity> criterios;
@@ -67,6 +70,7 @@ public class RubricEntity {
     @JsonManagedReference("rubric-evaluation")
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
+    @Fetch(FetchMode.JOIN)
     private Set<EvaluationEntity> evaluation;
 
 //    @Column(updatable = false)

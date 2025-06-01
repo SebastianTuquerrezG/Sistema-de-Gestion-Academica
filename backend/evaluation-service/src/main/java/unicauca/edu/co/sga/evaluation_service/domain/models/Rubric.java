@@ -19,7 +19,6 @@ public class Rubric {
     private int notaRubrica;
     private Set<Long> subject;
     private Long ra;
-    private String raName;
     private Set<Long> criterios;
     private GeneralEnums.status status;
     private Set<Long> evaluation;

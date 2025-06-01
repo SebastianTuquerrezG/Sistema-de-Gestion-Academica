@@ -15,13 +15,11 @@ import java.util.Set;
 @NoArgsConstructor
 @Builder
 public class RubricRequestDTO {
-    private Long idRubrica;
-    private Long idMateria;
     private String nombreRubrica;
-    private String nombreMateria;
+    private Long idMateria;
     private int notaRubrica;
     private String objetivoEstudio;
-    List<CriteriaEntity> criterios;
+    private List<CriteriaEntity> criterios;
     private GeneralEnums.status estado;
     private Long raId;
 }

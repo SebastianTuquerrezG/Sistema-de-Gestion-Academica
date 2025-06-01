@@ -29,7 +29,7 @@ public class CriteriaEntity {
     private String crfDescripcion;
 
     @Column(nullable = false)
-    private Float crfPorcentaje;
+    private Integer crfPorcentaje;
 
     @Column
     private Float crfNota;

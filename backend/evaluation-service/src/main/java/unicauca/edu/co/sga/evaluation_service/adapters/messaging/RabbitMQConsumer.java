@@ -30,7 +30,7 @@ public class RabbitMQConsumer {
     private final CriteriaService criteriaService;
     private final PerformanceLevelService performanceLevelService;
 
-    // Methods to read the message from Rubric
+    /* Methods to read the message from Rubric
     @RabbitListener(queues = RabbitMQConfig.QUEUE_RUBRIC)
     public void readRubricData(@Payload RubricRequestDTO message) {
         RubricEntity rubricResponseDTO = rubricService.saveRubric(message);
@@ -128,9 +128,7 @@ public class RabbitMQConsumer {
         }else{
             log.info("There are some errors with the database (PERFORMANCE DELETED).");
         }
-    }
-
-
+    }*/
 
     // Methods for consumer from Common_utilities microservice.
     @RabbitListener(queues = RabbitMQConfig.QUEUE_COURSE)

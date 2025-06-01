@@ -50,7 +50,7 @@ public class StudentService implements StudentPort {
 
         // Sending message for Evaluation_service
         rabbitService.sendStudent(studentDTO);
-
+        System.out.println("Student saved: " + studentEntity);
         return StudentMapper.toDTO(
                 StudentMapper.toModel(
                         studentRepository.save(studentEntity)));

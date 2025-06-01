@@ -4,6 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.entities.PerformanceEntity;
+
+import java.util.Set;
 
 @Data
 @AllArgsConstructor
@@ -11,6 +14,10 @@ import lombok.NoArgsConstructor;
 @Builder
 public class CriteriaResponseDTO {
     private Long id;
+    private String comment;
     private String description;
-    private Long score;
+    private Integer percentage;
+    private Float score;
+    private Long rubricId;
+    private Set<PerformanceEntity> performanceLevel;
 }

@@ -10,7 +10,7 @@ import java.util.Optional;
 public interface PerformanceLevelPort {
     List<PerformanceLevelResponseDTO> getPerformanceLevels();
     Optional<PerformanceLevelResponseDTO> getPerformanceLevelById(Long id);
-    PerformanceEntity savePerformanceLevel(PerformanceLevelRequestDTO performanceLevel);
+    PerformanceLevelResponseDTO savePerformanceLevel(PerformanceLevelRequestDTO performanceLevel);
     boolean deletePerformanceLevel(Long id);
     boolean updatePerformanceLevel(Long id, PerformanceLevelRequestDTO performanceLevel);
     Optional<PerformanceLevelResponseDTO> getPerformanceLevelByName(String name);

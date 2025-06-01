@@ -22,7 +22,6 @@ public class RabbitMQConfig {
 
     public static final String EXCHANGE = "messaging_exchange";
 
-
     // Variables for rabbit of rubric module
     // TODO: Create the different use of these variables into the other microserver.
     public static final String ROUTING_KEY_RUBRIC = "rubric_routing_key";
@@ -36,17 +35,6 @@ public class RabbitMQConfig {
     public static final String ROUTING_KEY_CRITERIA = "criteria_routing_key";
     public static final String ROUTING_KEY_UPDATE_CRITERIA = "criteria_update_routing_key";
     public static final String ROUTING_KEY_DELETE_CRITERIA = "criteria_delete_routing_key";
-
-
-
-    public static final String ROUTING_KEY_SUBJECT = "subject_routing_key";
-
-    // Queues of rubric module
-    // TODO: Implement these queues with the other microservice
-
-    public static final String QUEUE_SUBJECT = "queue_subject";
-
-
 
     // Serialization for JSON
     @Bean
@@ -78,11 +66,9 @@ public class RabbitMQConfig {
      * Método para agregar mapeos de DTOs
      */
     private void addDTOMapping(Map<String, Class<?>> idClassMapping){
-
         idClassMapping.put("Criterio", Criterio.class);
         idClassMapping.put("Nivel", Nivel.class);
         idClassMapping.put("Rubrica", Rubrica.class);
-
     }
 
     // This method is in both Publisher and Consumer
@@ -99,26 +85,8 @@ public class RabbitMQConfig {
         return new TopicExchange(EXCHANGE);
     }
 
-
-
 //    @Bean
 //    public Binding bindingRa(Queue queueRa, TopicExchange exchange){
 //        return BindingBuilder.bind(queueRa).to(exchange).with(ROUTING_KEY_RA);
 //    }
-
-
-    @Bean
-    public Queue queueSubject(){
-        return new Queue(QUEUE_SUBJECT, false);
-    }
-
-
-
-    // These queues are for to be used with the other microservice
-    // TODO: Use this queues to get the data of the other microservice and then
-    // create each instance in each table of the database.
-    @Bean
-    public Binding bindingSubject(Queue queueSubject, TopicExchange exchange){
-        return BindingBuilder.bind(queueSubject).to(exchange).with(ROUTING_KEY_SUBJECT);
-    }
 }

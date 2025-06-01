@@ -14,8 +14,6 @@ import java.util.List;
 @Builder
 public class CriteriaRequestDTO {
     private Long idRubrica;
-    private Long idCriterio;
-    private RubricRequestDTO rubrica;
     private String crfDescripcion;
     private Integer crfPorcentaje;
     private Float crfNota;

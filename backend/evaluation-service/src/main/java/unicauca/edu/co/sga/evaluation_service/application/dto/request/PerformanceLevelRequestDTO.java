@@ -11,9 +11,9 @@ import unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.entitie
 @NoArgsConstructor
 @Builder
 public class PerformanceLevelRequestDTO {
-    private Long idNivel;
+    //    private Long idNivel;
     private Long idCriterio;
-    private CriteriaEntity criterio;
+    //    private CriteriaEntity criterio;
     private String nivelDescripcion;
     private String rangoNota;
 }
