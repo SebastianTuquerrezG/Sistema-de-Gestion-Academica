@@ -449,12 +449,12 @@ export default function CreateRubric() {
                 </CardHeader>
                 <CardContent>
                     <div className="space-y-4">
-                        <div className="grid grid-cols-2 gap-4">
-                            <div className="grid w-full max-w-sm items-center gap-1.5">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div className="grid w-full items-center gap-1.5">
                                 <Label htmlFor="nombreRubrica">Nombre Rúbrica</Label>
                                 <Input id="nombreRubrica" placeholder="Nombre de la rúbrica" />
                             </div>
-                            <div className="grid w-full max-w-sm items-center gap-1.5">
+                            <div className="grid w-full items-center gap-1.5">
                                 <Label htmlFor="materia">Materia</Label>
                                 <Select value={materia} onValueChange={setMateria}>
                                     <SelectTrigger className="w-50">
@@ -472,7 +472,7 @@ export default function CreateRubric() {
                                     </SelectContent>
                                 </Select>
                             </div>
-                            <div className="grid w-full max-w-sm items-center gap-1.5">
+                            <div className="grid w-full items-center gap-1.5">
                                 <Label htmlFor="resultadoAprendizaje">Resultado de Aprendizaje</Label>
                                 <Select value={resultadoAprendizaje} onValueChange={setResultadoAprendizaje}>
                                     <SelectTrigger className="w-50">
@@ -490,7 +490,7 @@ export default function CreateRubric() {
                                     </SelectContent>
                                 </Select>
                             </div>
-                            <div className="grid w-full max-w-sm items-center gap-1.5">
+                            <div className="grid w-full items-center gap-1.5">
                                 <Label htmlFor="notaRubrica" className="whitespace-nowrap">Nota Máxima Rúbrica</Label>
                                 <Input
                                     id="notaRubrica"
@@ -503,101 +503,109 @@ export default function CreateRubric() {
                                     placeholder="0.0 - 5.0"
                                 />
                             </div>
-                            <div className="grid w-full max-w-sm items-center gap-1.5">
+                            <div className="grid w-full items-center gap-1.5 md:col-span-2">
                                 <Label htmlFor="objetivoEstudio">Objetivo de Estudio</Label>
                                 <Input id="objetivoEstudio" placeholder="Objetivo de la evaluación" />
                             </div>
                         </div>
                     </div>
+
                     <CardTitle className="mt-6">Criterios de Evaluación</CardTitle>
                     <CardDescription className="mb-4">Ingresa los criterios de evaluación y sus niveles.</CardDescription>
-                    <Table>
-                        <TableHeader>
-                            <TableRow>
-                                <TableHead>Criterio Evaluación</TableHead>
-                                <TableHead>Porcentaje</TableHead>
-                                <TableHead>Comentario</TableHead>
-                                {levels.map((level, index) => (
-                                    <TableHead key={index}>
-                                        <div className="flex flex-col">
-                                            <span>Nivel {level.idNivel}</span>
-                                            <span className="text-xs">{level.rangoNota}</span>
+
+                    <div className="overflow-x-auto">
+                        <Table className="min-w-[800px]">
+                            <TableHeader>
+                                <TableRow>
+                                    <TableHead>Criterio Evaluación</TableHead>
+                                    <TableHead>Porcentaje</TableHead>
+                                    <TableHead>Comentario</TableHead>
+                                    {levels.map((level, index) => (
+                                        <TableHead key={index}>
+                                            <div className="flex flex-col">
+                                                <span>Nivel {level.idNivel}</span>
+                                                <span className="text-xs">{level.rangoNota}</span>
+                                            </div>
+                                        </TableHead>
+                                    ))}
+                                    <TableHead>
+                                        <div className="flex gap-1">
+                                            <Button onClick={addLevel} variant="ghost" size="icon">
+                                                <PlusCircle className="h-4 w-4" />
+                                            </Button>
+                                            <Button onClick={removeLevel} variant="ghost" size="icon" className="text-red-600">
+                                                <Trash2 className="h-4 w-4" />
+                                            </Button>
                                         </div>
                                     </TableHead>
-                                ))}
-                                <TableHead>
-                                    <Button onClick={addLevel} variant="ghost" size="icon">
-                                        <PlusCircle className="h-4 w-4" />
-                                    </Button>
-                                    <Button onClick={removeLevel} variant="ghost" size="icon" className="text-red-600">
-                                        <Trash2 className="h-4 w-4" />
-                                    </Button>
-                                </TableHead>
-                            </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                            {rows.map((row, rowIndex) => (
-                                <TableRow key={rowIndex}>
-                                    <TableCell>
-                                        <Textarea
-                                            value={row.crfDescripcion}
-                                            onChange={(e) => handleCriterioChange(rowIndex, e.target.value)}
-                                            placeholder="Descripción del criterio"
-                                        />
-                                    </TableCell>
-                                    <TableCell>
-                                        <div className="flex items-center">
-                                            {/* Input controlado */}
-                                            <Input
-                                                type="number"
-                                                min="0"
-                                                max="100"
-                                                step="0.1"
-                                                onChange={(e) => handlePorcentajeChange(rowIndex, e.target.value)}
-                                                value={row.crfPorcentaje}
-                                                placeholder="0.0%"
-                                            />
-                                        </div>
-                                    </TableCell>
-                                    <TableCell>
-                                        <Textarea
-                                            value={row.crfComentario}
-                                            onChange={(e) => handleComentarioChange(rowIndex, e.target.value)}
-                                            placeholder="Comentario para el criterio"
-                                        />
-                                    </TableCell>
-                                    {row.niveles.map((nivel, nivelIndex) => (
-                                        <TableCell key={nivelIndex}>
+                                </TableRow>
+                            </TableHeader>
+                            <TableBody>
+                                {rows.map((row, rowIndex) => (
+                                    <TableRow key={rowIndex}>
+                                        <TableCell>
                                             <Textarea
-                                                value={nivel.nivelDescripcion}
-                                                onChange={(e) => handleNivelChange(rowIndex, nivelIndex, e.target.value)}
-                                                placeholder={`Descripción nivel ${nivel.idNivel}`}
+                                                value={row.crfDescripcion}
+                                                onChange={(e) => handleCriterioChange(rowIndex, e.target.value)}
+                                                placeholder="Descripción del criterio"
+                                                className="min-w-[150px]"
                                             />
                                         </TableCell>
-                                    ))}
-                                    <TableCell className="text-center">
-                                        <Button onClick={() => removeRow(rowIndex)} variant="ghost" size="icon" className="text-red-600">
-                                            <Trash2 className="h-1 w-1" />
-                                        </Button>
-                                    </TableCell>
-                                </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
+                                        <TableCell>
+                                            <div className="flex items-center">
+                                                <Input
+                                                    type="number"
+                                                    min="0"
+                                                    max="100"
+                                                    step="0.1"
+                                                    onChange={(e) => handlePorcentajeChange(rowIndex, e.target.value)}
+                                                    value={row.crfPorcentaje}
+                                                    placeholder="0.0%"
+                                                    className="w-24"
+                                                />
+                                            </div>
+                                        </TableCell>
+                                        <TableCell>
+                                            <Textarea
+                                                value={row.crfComentario}
+                                                onChange={(e) => handleComentarioChange(rowIndex, e.target.value)}
+                                                placeholder="Comentario para el criterio"
+                                                className="min-w-[150px]"
+                                            />
+                                        </TableCell>
+                                        {row.niveles.map((nivel, nivelIndex) => (
+                                            <TableCell key={nivelIndex}>
+                                                <Textarea
+                                                    value={nivel.nivelDescripcion}
+                                                    onChange={(e) => handleNivelChange(rowIndex, nivelIndex, e.target.value)}
+                                                    placeholder={`Descripción nivel ${nivel.idNivel}`}
+                                                    className="min-w-[120px]"
+                                                />
+                                            </TableCell>
+                                        ))}
+                                        <TableCell className="text-center">
+                                            <Button onClick={() => removeRow(rowIndex)} variant="ghost" size="icon" className="text-red-600">
+                                                <Trash2 className="h-4 w-4" />
+                                            </Button>
+                                        </TableCell>
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </div>
+
                     <div className="mt-4">
                         <Button onClick={addRow}>
                             <Plus className="h-4 w-4 mr-2" />Añadir Criterio
                         </Button>
                     </div>
                 </CardContent>
-                <CardFooter className="flex justify-between">
-                    <Button onClick={handleCancel} variant="outline">Cancelar</Button>
-
-                    <div className="flex justify-end gap-4">
-                        <Button onClick={handleBackToHome} variant="outline">Volver</Button>
-                        <Button onClick={handleCreate}>Crear</Button>
+                <CardFooter className="flex flex-col sm:flex-row justify-between gap-4">
+                    <Button onClick={handleCancel} variant="outline" className="w-full sm:w-auto">Cancelar</Button>
+                    <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
+                        <Button onClick={handleBackToHome} variant="outline" className="w-full sm:w-auto">Volver</Button>
+                        <Button onClick={handleCreate} className="w-full sm:w-auto">Crear</Button>
                     </div>
-
                 </CardFooter>
             </Card>
         </div>

@@ -371,18 +371,6 @@ export default function CreateRubric() {
                 crfPorcentaje: "",
                 crfNota: 0,
                 crfComentario: ""
-            },
-            {
-                idCriterio: 2,
-                crfDescripcion: "",
-                niveles: [
-                    { idNivel: 1, nivelDescripcion: "", rangoNota: "" },
-                    { idNivel: 2, nivelDescripcion: "", rangoNota: "" },
-                    { idNivel: 3, nivelDescripcion: "", rangoNota: "" }
-                ],
-                crfPorcentaje: "",
-                crfNota: 0,
-                crfComentario: ""
             }
         ]);
     };

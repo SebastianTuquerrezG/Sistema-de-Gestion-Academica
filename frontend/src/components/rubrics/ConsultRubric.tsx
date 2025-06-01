@@ -221,25 +221,31 @@ export default function ConsultarRubrica() {
     };
 
     return (
-        <div>
-            <h2 className="title2 border-b-2 border-red-500 inline-block" style={{ color: "var(--primary-regular-color)" }}>
+        <div className="container mx-auto p-4">
+            <h2 className="title2 border-b-2 border-red-500 inline-block mb-4" style={{ color: "var(--primary-regular-color)" }}>
                 Mis Rubricas
             </h2>
-            <main className="max-w-7xl mx-auto py-8">
-                <div className="mb-6 flex flex-col sm:flex-row gap-4 justify-between items-start sm:items-center">
-                    <div className="relative flex-1 max-w-md">
-                        <Input type="text" placeholder=" Ingrese Rubrica a buscar..." value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)} style={{ width: "100%" }} className="pl-10 w-full"
+
+            <div className="mb-6 space-y-4">
+                <div className="flex flex-col md:flex-row gap-4 items-stretch">
+                    <div className="relative flex-1">
+                        <Input
+                            type="text"
+                            placeholder="Ingrese Rubrica a buscar..."
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                            className="pl-10 w-full"
                         />
                         <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
                     </div>
-                    <div className="flex gap-2">
+
+                    <div className="flex flex-col sm:flex-row gap-2 flex-1">
                         <Select value={selectedMateria} onValueChange={setSelectedMateria}>
-                            <SelectTrigger className="w-[180px]">
+                            <SelectTrigger className="w-full">
                                 <SelectValue placeholder="Filtrar por materia" />
                             </SelectTrigger>
                             <SelectContent>
-                                <SelectItem value="Todas las materias">Todas las materias </SelectItem>
+                                <SelectItem value="Todas las materias">Todas las materias</SelectItem>
                                 {[...new Set(rubrics.map(r => r.nombreMateria))]
                                     .filter((materia): materia is string => typeof materia === "string")
                                     .map((materia) => (
@@ -249,8 +255,9 @@ export default function ConsultarRubrica() {
                                     ))}
                             </SelectContent>
                         </Select>
+
                         <Select value={selectedEstado} onValueChange={setSelectedEstado}>
-                            <SelectTrigger className="w-[180px]">
+                            <SelectTrigger className="w-full">
                                 <SelectValue placeholder="Filtrar por estado" />
                             </SelectTrigger>
                             <SelectContent>
@@ -260,145 +267,151 @@ export default function ConsultarRubrica() {
                             </SelectContent>
                         </Select>
                     </div>
-                    <div className="flex gap-2">
-                        <Button className="outline" onClick={handleAdd}>
-                            <Plus className="h-4 w-4 mr-2" />
-                            Crear Rubrica
-                        </Button>
-                    </div>
+
+                    <Button className="w-full md:w-auto" onClick={handleAdd}>
+                        <Plus className="h-4 w-4 mr-2" />
+                        Crear Rubrica
+                    </Button>
                 </div>
-                <div>
-                    <Table>
-                        <TableHeader>
-                            <TableRow className="bg-[#000066] hover:bg-[#000066]">
-                                <TableHead className="text-white">Identificador</TableHead>
-                                <TableHead className="text-white">Nombre Rubrica</TableHead>
-                                <TableHead className="text-white">Materia</TableHead>
-                                <TableHead className="text-white">Estado</TableHead>
-                                <TableHead className="text-center text-white">Acciones</TableHead>
-                            </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                            {isLoading ? (
-                                Array.from({ length: 5 }).map((_, index) => (
-                                    <TableRow key={index}>
-                                        <TableCell>
-                                            <Skeleton className="h-4 w-[50px]" />
-                                        </TableCell>
-                                        <TableCell>
-                                            <Skeleton className="h-4 w-[200px]" />
-                                        </TableCell>
-                                        <TableCell>
-                                            <Skeleton className="h-4 w-[150px]" />
-                                        </TableCell>
-                                        <TableCell>
-                                            <Skeleton className="h-6 w-[70px] rounded-full" />
-                                        </TableCell>
-                                        <TableCell>
-                                            <div className="flex justify-center gap-2">
-                                                {Array.from({ length: 4 }).map((_, i) => (
-                                                    <Skeleton key={i} className="h-8 w-8 rounded-md" />
-                                                ))}
-                                            </div>
-                                        </TableCell>
-                                    </TableRow>
-                                ))
-                            ) : (
-                                filteredRubrics.map((rubric) => (
-                                    <TableRow key={rubric.idRubrica} className={rubric.estado === "INACTIVO" ? "opacity-70" : ""}>
-                                        <TableCell
-                                            className={`cursor-pointer ${selectedRubricId === String(rubric.idRubrica) ? "text-blue-600" : ""}`}
-                                            onClick={() => handleDetail(rubric.idRubrica)}
-                                        >
-                                            {rubric.idRubrica}
-                                        </TableCell>
-                                        <TableCell
-                                            className={`cursor-pointer ${selectedRubricId === String(rubric.idRubrica) ? "text-blue-600" : ""}`}
-                                            onClick={() => handleDetail(rubric.idRubrica)}
-                                        >
-                                            {rubric.nombreRubrica}
-                                        </TableCell>
-                                        <TableCell
-                                            className={`cursor-pointer ${selectedRubricId === String(rubric.idRubrica) ? "text-blue-600" : ""}`}
-                                            onClick={() => handleDetail(rubric.idRubrica)}
-                                        >
-                                            {rubric.nombreMateria}
-                                        </TableCell>
-                                        <TableCell>
-                                            {getStatusBadge(rubric.estado)}
-                                        </TableCell>
-                                        <TableCell>
-                                            <div className="flex justify-center gap-2">
-                                                <Button
-                                                    variant="ghost"
-                                                    size="icon"
-                                                    className="h-8 w-8"
-                                                    onClick={() => handleEdit(rubric.idRubrica)}
-                                                    disabled={rubric.estado === "INACTIVO"}
-                                                >
-                                                    <Pencil className="h-4 w-4" />
-                                                </Button>
-                                                <Button
-                                                    variant="ghost"
-                                                    size="icon"
-                                                    className="h-8 w-8 text-orange-500 hover:text-orange-600"
-                                                    onClick={() => handleOpenDeleteModal(rubric)}
-                                                >
-                                                    <Trash2 className="h-4 w-4" />
-                                                </Button>
-                                                <Button
-                                                    variant="ghost"
-                                                    size="icon"
-                                                    className="h-8 w-8 text-indigo-500 hover:text-indigo-600"
-                                                    onClick={() => handleOpenDuplicateModal(rubric)}
-                                                    disabled={rubric.estado === "INACTIVO"}
-                                                >
-                                                    <Copy className="h-4 w-4" />
-                                                </Button>
-                                                <Button
-                                                    variant="ghost"
-                                                    size="icon"
-                                                    className="h-8 w-8 text-black-500 hover:text-black-600"
-                                                    onClick={() => handleOpenShareModal(rubric)}
-                                                    disabled={rubric.estado === "INACTIVO"}
-                                                >
-                                                    <Share2 className="h-4 w-4" />
-                                                </Button>
-                                                {notification && (
-                                                    <Notification
-                                                        type={notification.type}
-                                                        title={notification.title}
-                                                        message={notification.message}
-                                                        onClose={() => setNotification(null)}
-                                                    />
-                                                )}
-                                            </div>
-                                        </TableCell>
-                                    </TableRow>
-                                ))
-                            )}
-                        </TableBody>
-                    </Table>
-                </div>
-                <DuplicateRubricModal
-                    open={showDuplicateModal}
-                    onClose={() => setShowDuplicateModal(false)}
-                    originalName={rubricToDuplicate?.nombreRubrica || ""}
-                    onDuplicate={handleDuplicate}
+            </div>
+
+            <div className="overflow-x-auto border border-gray-200">
+                <Table className="min-w-[600px]">
+                    <TableHeader className="sticky top-0 z-10">
+                        <TableRow className="bg-[#000066] hover:bg-[#000066]">
+                            <TableHead className="text-white py-3">ID</TableHead>
+                            <TableHead className="text-white py-3">Nombre</TableHead>
+                            <TableHead className="text-white py-3">Materia</TableHead>
+                            <TableHead className="text-white py-3">Estado</TableHead>
+                            <TableHead className="text-center text-white py-3">Acciones</TableHead>
+                        </TableRow>
+                    </TableHeader>
+                    <TableBody className="divide-y divide-gray-200">
+                        {isLoading ? (
+                            Array.from({ length: 5 }).map((_, index) => (
+                                <TableRow key={index}>
+                                    <TableCell className="py-2">
+                                        <Skeleton className="h-4 w-[50px]" />
+                                    </TableCell>
+                                    <TableCell className="py-2">
+                                        <Skeleton className="h-4 w-[200px]" />
+                                    </TableCell>
+                                    <TableCell className="py-2">
+                                        <Skeleton className="h-4 w-[150px]" />
+                                    </TableCell>
+                                    <TableCell className="py-2">
+                                        <Skeleton className="h-6 w-[70px] rounded-full" />
+                                    </TableCell>
+                                    <TableCell className="py-2">
+                                        <div className="flex justify-center gap-2">
+                                            {Array.from({ length: 4 }).map((_, i) => (
+                                                <Skeleton key={i} className="h-8 w-8 rounded-md" />
+                                            ))}
+                                        </div>
+                                    </TableCell>
+                                </TableRow>
+                            ))
+                        ) : (
+                            filteredRubrics.map((rubric) => (
+                                <TableRow key={rubric.idRubrica} className={rubric.estado === "INACTIVO" ? "opacity-70 hover:bg-gray-50" : "hover:bg-gray-50"}>
+                                    <TableCell
+                                        className={`py-2 cursor-pointer ${selectedRubricId === String(rubric.idRubrica) ? "text-blue-600" : ""}`}
+                                        onClick={() => handleDetail(rubric.idRubrica)}
+                                    >
+                                        {rubric.idRubrica}
+                                    </TableCell>
+                                    <TableCell
+                                        className={`py-2 cursor-pointer ${selectedRubricId === String(rubric.idRubrica) ? "text-blue-600" : ""}`}
+                                        onClick={() => handleDetail(rubric.idRubrica)}
+                                    >
+                                        {rubric.nombreRubrica}
+                                    </TableCell>
+                                    <TableCell
+                                        className={`py-2 cursor-pointer ${selectedRubricId === String(rubric.idRubrica) ? "text-blue-600" : ""}`}
+                                        onClick={() => handleDetail(rubric.idRubrica)}
+                                    >
+                                        {rubric.nombreMateria}
+                                    </TableCell>
+                                    <TableCell className="py-2">
+                                        {getStatusBadge(rubric.estado)}
+                                    </TableCell>
+                                    <TableCell className="py-2">
+                                        <div className="flex justify-center gap-1 sm:gap-2 flex-wrap">
+                                            <Button
+                                                variant="ghost"
+                                                size="icon"
+                                                className="h-7 w-7 p-0"
+                                                onClick={() => handleEdit(rubric.idRubrica)}
+                                                disabled={rubric.estado === "INACTIVO"}
+                                                title="Editar"
+                                            >
+                                                <Pencil className="h-3.5 w-3.5" />
+                                            </Button>
+                                            <Button
+                                                variant="ghost"
+                                                size="icon"
+                                                className="h-7 w-7 p-0 text-orange-500 hover:text-orange-600"
+                                                onClick={() => handleOpenDeleteModal(rubric)}
+                                                title="Eliminar"
+                                            >
+                                                <Trash2 className="h-3.5 w-3.5" />
+                                            </Button>
+                                            <Button
+                                                variant="ghost"
+                                                size="icon"
+                                                className="h-7 w-7 p-0 text-indigo-500 hover:text-indigo-600"
+                                                onClick={() => handleOpenDuplicateModal(rubric)}
+                                                disabled={rubric.estado === "INACTIVO"}
+                                                title="Duplicar"
+                                            >
+                                                <Copy className="h-3.5 w-3.5" />
+                                            </Button>
+                                            <Button
+                                                variant="ghost"
+                                                size="icon"
+                                                className="h-7 w-7 p-0 text-black-500 hover:text-black-600"
+                                                onClick={() => handleOpenShareModal(rubric)}
+                                                disabled={rubric.estado === "INACTIVO"}
+                                                title="Compartir"
+                                            >
+                                                <Share2 className="h-3.5 w-3.5" />
+                                            </Button>
+                                        </div>
+                                    </TableCell>
+                                </TableRow>
+                            ))
+                        )}
+                    </TableBody>
+                </Table>
+            </div>
+
+            <DuplicateRubricModal
+                open={showDuplicateModal}
+                onClose={() => setShowDuplicateModal(false)}
+                originalName={rubricToDuplicate?.nombreRubrica || ""}
+                onDuplicate={handleDuplicate}
+            />
+            <ShareRubricModal
+                open={showShareModal}
+                onClose={() => setShowShareModal(false)}
+                onShare={handleShareRubric}
+                rubricName={rubricToDuplicate?.nombreRubrica || ""}
+            />
+            <ConfirmDeleteModal
+                open={showDeleteModal}
+                onClose={() => setShowDeleteModal(false)}
+                onConfirmDelete={handleConfirmDelete}
+                rubricName={rubricToDelete?.nombreRubrica || ""}
+            />
+
+            {notification && (
+                <Notification
+                    type={notification.type}
+                    title={notification.title}
+                    message={notification.message}
+                    onClose={() => setNotification(null)}
                 />
-                <ShareRubricModal
-                    open={showShareModal}
-                    onClose={() => setShowShareModal(false)}
-                    onShare={handleShareRubric}
-                    rubricName={rubricToDuplicate?.nombreRubrica || ""}
-                />
-                <ConfirmDeleteModal
-                    open={showDeleteModal}
-                    onClose={() => setShowDeleteModal(false)}
-                    onConfirmDelete={handleConfirmDelete}
-                    rubricName={rubricToDelete?.nombreRubrica || ""}
-                />
-            </main>
+            )}
         </div>
     );
 }
