@@ -23,6 +23,7 @@ public class CorsConfig {
         corsConfig.addAllowedOrigin("http://localhost:80");
         corsConfig.addAllowedOrigin("http://localhost:3000");
         corsConfig.addAllowedOrigin("http://localhost");
+        corsConfig.addAllowedOrigin("http://34.173.230.51:3000");
         corsConfig.addAllowedMethod("*");
         corsConfig.addAllowedHeader("*");
         corsConfig.setAllowCredentials(true);
