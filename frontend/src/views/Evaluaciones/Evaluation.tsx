@@ -7,6 +7,7 @@ import { useEvaluationData } from "./hooks/useEvaluationData";
 import { Criterio } from "./types";
 import "../../assets/css/evaluaciones.css";
 import { useNavigate } from "react-router-dom";
+import { CircularProgress, Alert, Box, Typography } from '@mui/material';
 
 const Evaluaciones: React.FC = () => {
   const {
@@ -43,7 +44,8 @@ const Evaluaciones: React.FC = () => {
             nivelDescripcion: n.nivelDescripcion,
             inferior,
             superior,
-            texto: n.nivelDescripcion, // Usamos nivelDescripcion como texto
+            texto: n.nivelDescripcion,
+            rangoNota: n.rangoNota,
           };
         }),
       }));
@@ -64,7 +66,7 @@ const Evaluaciones: React.FC = () => {
             navigate("/estadisticas", {
               state: {
                 materia: selectedMateria,
-                rubrica: selectedRubrica?.name || "",
+                rubrica: selectedRubrica?.nombreRubrica || "",
                 periodo: selectedPeriodo,
               },
             });
@@ -74,11 +76,11 @@ const Evaluaciones: React.FC = () => {
 
       <RubricaInfo
         materias={materias.map((m) => m.name)}
-        rubricas={rubricas.map((r) => r.name)}
+        rubricas={rubricas.map((r) => r.nombreRubrica)}
         periodos={periodos}
         estudiantes={estudiantes}
         materiaSeleccionada={selectedMateria}
-        rubricaSeleccionada={selectedRubrica?.name || ""}
+        rubricaSeleccionada={selectedRubrica?.nombreRubrica || ""}
         periodoSeleccionado={selectedPeriodo}
         estudianteSeleccionado={selectedEstudiante}
         resultadoAprendizaje={raName}
@@ -88,15 +90,13 @@ const Evaluaciones: React.FC = () => {
         onSelectEstudiante={setSelectedEstudiante}
       />
 
-      {selectedRubrica && enrollId && (
-        <>
-          <EvaluationTable
-            estudiante={selectedEstudiante}
-            criterios={transformCriterios(selectedRubrica.criterios || [])}
-            rubricaId={selectedRubrica.id}
-            enrollId={enrollId}
-          />
-        </>
+      {selectedRubrica && enrollId && selectedPeriodo && selectedEstudiante && (
+        <EvaluationTable
+          estudiante={selectedEstudiante}
+          criterios={transformCriterios(selectedRubrica.criterios || [])}
+          rubricaId={selectedRubrica.idRubrica}
+          enrollId={enrollId}
+        />
       )}
     </>
   );

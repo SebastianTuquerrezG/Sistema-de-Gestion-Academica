@@ -18,12 +18,16 @@ export interface CourseStatsDTO {
   studentsCount: number;
 }
 
-export interface HistogramByCriteriaDTO {
-  criteriaId: number;
-  criteriaDescription: string;
-  countNivel1: number;
-  countNivel2: number;
-  countNivel3: number;
+export interface CriteriaDTO {
+  rubricId: number;
+  subjectId: number;
+  semester: string;
+}
+
+export interface CriteriaStatsResponseDTO {
+  levels: Record<string, number>;
+  crfDescripcion: string;
+  idCriterio: number;
 }
 
 export interface CriteriaAverageDTO {
@@ -53,14 +57,13 @@ export const getStatsByRubric = async (filter: FilterStatsDTO): Promise<CourseSt
   }
 };
 
-export const getHistogramByCriteria = async (filter: FilterStatsDTO): Promise<HistogramByCriteriaDTO[]> => {
-  try {
-    const response = await axios.post(`${baseUrl}/stats/by-criteria`, filter, { headers: getAuthHeaders() });
-    return response.data;
-  } catch (error) {
-    console.error('Error al obtener histograma por criterios:', error);
-    throw new Error('Error al obtener el histograma por criterios');
-  }
+export const getHistogramByCriteria = async (criteria: CriteriaDTO): Promise<CriteriaStatsResponseDTO[]> => {
+  const response = await axios.post(
+    `${baseUrl}/evaluations/Stats`,
+    criteria,
+    { headers: getAuthHeaders() }
+  );
+  return response.data;
 };
 
 export const getCriteriaAverages = async (filter: FilterStatsDTO): Promise<CriteriaAverageDTO[]> => {

@@ -25,7 +25,7 @@ export const useEstadisticasData = () => {
   useEffect(() => {
     const materia = materias.find((m) => m.name === selectedMateria);
     if (materia) {
-      getRubricsBySubjectId(Number(materia.id)).then(setRubricas);
+      getRubricsBySubjectId(Number(materia.idMateria ?? materia.id)).then(setRubricas);
     } else {
       setRubricas([]);
     }
@@ -40,8 +40,8 @@ export const useEstadisticasData = () => {
 
   // Obtener nombre del RA cuando cambia la rúbrica seleccionada
   useEffect(() => {
-    if (selectedRubrica?.ra_id) {
-      getRANameById(selectedRubrica.ra_id).then(setRaName);
+    if (selectedRubrica?.raId) {
+      getRANameById(selectedRubrica.raId).then(setRaName);
     } else {
       setRaName("");
     }

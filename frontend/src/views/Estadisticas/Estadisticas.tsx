@@ -14,11 +14,11 @@ import {
   getStatsByRubric, 
   getHistogramByCriteria,
   getCriteriaAverages,
-  HistogramByCriteriaDTO,
   CriteriaAverageDTO,
   CourseStatsDTO
 } from "../../services/estadisticasService";
 import { CourseStatsDTO as CourseStatsDTOType } from "./types/index.ts";
+import { CriteriaStatsResponseDTO } from "../../services/estadisticasService";
 
 const Estadisticas: React.FC = () => {
   const location = useLocation();
@@ -37,13 +37,22 @@ const Estadisticas: React.FC = () => {
   } = useEstadisticasData();
 
   const [estadisticas, setEstadisticas] = useState<CourseStatsDTO | null>(null);
-  const [histogramas, setHistogramas] = useState<HistogramByCriteriaDTO[]>([]);
+  const [histogramas, setHistogramas] = useState<CriteriaStatsResponseDTO[]>([]);
   const [promediosCriterios, setPromediosCriterios] = useState<CriteriaAverageDTO[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isPrintMode, setIsPrintMode] = useState(false);
   const printRef = useRef<HTMLDivElement | null>(null);
   const [aplicadoFiltrosIniciales, setAplicadoFiltrosIniciales] = useState(false);
+
+  // Limpiar datos si falta algún filtro
+  useEffect(() => {
+    if (!selectedMateria || !selectedRubrica || !selectedPeriodo) {
+      setEstadisticas(null);
+      setHistogramas([]);
+      setPromediosCriterios([]);
+    }
+  }, [selectedMateria, selectedRubrica, selectedPeriodo]);
 
   const handleBeforePrint = () => {
     setIsPrintMode(true);
@@ -74,8 +83,20 @@ const Estadisticas: React.FC = () => {
       setEstadisticas(statsData);
 
       // Cargar histogramas por criterio
-      const histogramData = await getHistogramByCriteria(filter);
-      console.log('Datos de histogramas:', histogramData);
+      const materiaObj = materias.find(m => m.name === selectedMateria);
+      const subjectId = materiaObj ? Number(materiaObj.idMateria) : null;
+      if (!subjectId) {
+        setError("No se pudo determinar el ID de la materia seleccionada.");
+        setLoading(false);
+        return;
+      }
+      const histogramCriteriaDTO = {
+        rubricId: selectedRubrica.idRubrica,
+        subjectId: subjectId,
+        semester: selectedPeriodo
+      };
+      const histogramData = await getHistogramByCriteria(histogramCriteriaDTO);
+      console.log('Datos de histogramas recibidos del servicio:', histogramData);
       setHistogramas(histogramData);
 
       // Cargar promedios por criterio
@@ -167,9 +188,10 @@ const Estadisticas: React.FC = () => {
         loading={loading}
         error={error}
         hasData={hasData}
+        filtrosCompletos={Boolean(selectedMateria && selectedRubrica && selectedPeriodo)}
       />
 
-      {!loading && !error && hasData && estadisticas && (
+      {selectedMateria && selectedRubrica && selectedPeriodo && !loading && !error && hasData && estadisticas && (
         <div className="estadisticas-content-centered">
           <EstadisticasCards
             media={estadisticas.average}
@@ -179,13 +201,12 @@ const Estadisticas: React.FC = () => {
           />
           <HistogramaCriterioChart 
             histogramas={histogramas.map(h => ({
-              criterio: h.criteriaDescription,
-              descripcion: h.criteriaDescription,
-              niveles: [
-                { nivel: 'Nivel 1', cantidad: h.countNivel1 },
-                { nivel: 'Nivel 2', cantidad: h.countNivel2 },
-                { nivel: 'Nivel 3', cantidad: h.countNivel3 }
-              ]
+              criterio: h.crfDescripcion,
+              descripcion: h.crfDescripcion,
+              niveles: Object.entries(h.levels).map(([nivel, cantidad]) => ({
+                nivel,
+                cantidad
+              }))
             }))}
             isPrintMode={isPrintMode}
           />
@@ -209,17 +230,24 @@ const Estadisticas: React.FC = () => {
           >
             <ExportarExcelButton 
               estadisticas={estadisticas} 
+              criterios={promediosCriterios}
+              histogramas={histogramas}
               filtros={{
                 materia: selectedMateria,
                 rubrica: selectedRubrica?.name || selectedRubrica?.nombreRubrica || "",
                 periodo: selectedPeriodo,
-                resultadoAprendizaje: selectedRubrica?.objetivoEstudio || "",
+                resultadoAprendizaje: raName,
               }}
             />
             <ExportarPDFButton 
               targetRef={printRef} 
               onBeforePrint={handleBeforePrint}
               onAfterPrint={handleAfterPrint}
+              filtros={{
+                materia: selectedMateria,
+                rubrica: selectedRubrica?.name || selectedRubrica?.nombreRubrica || "",
+                periodo: selectedPeriodo
+              }}
             />
           </div>
         </div>

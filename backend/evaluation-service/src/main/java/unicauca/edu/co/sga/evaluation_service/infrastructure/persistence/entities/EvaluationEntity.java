@@ -24,6 +24,16 @@ import java.util.Objects;
 @Builder
 @Table(name = "evaluation")
 public class EvaluationEntity {
+
+    public EvaluationEntity(Long id, EnrollEntity enroll, RubricEntity rubric, EvaluationStatus evaluationStatus, String description, BigDecimal score, String evidenceUrl) {
+        this.id = id;
+        this.enroll = enroll;
+        this.rubric = rubric;
+        this.evaluationStatus = evaluationStatus;
+        this.description = description;
+        this.score = score;
+        this.evidenceUrl = evidenceUrl;
+}
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "evaluation_id", unique = true, nullable = false, updatable = false)

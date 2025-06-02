@@ -11,7 +11,7 @@ import {
 } from '../../../services/evaluationService';
 
 export const useEvaluationData = () => {
-  const [materias, setMaterias] = useState<{ id: number; name: string }[]>([]);
+  const [materias, setMaterias] = useState<{ idMateria: number; name: string }[]>([]);
   const [selectedMateria, setSelectedMateria] = useState<string>("");
   const [rubricas, setRubricas] = useState<Rubrica[]>([]);
   const [selectedRubrica, setSelectedRubrica] = useState<Rubrica | null>(null);
@@ -31,7 +31,7 @@ export const useEvaluationData = () => {
   useEffect(() => {
     const materia = materias.find((m) => m.name === selectedMateria);
     if (materia) {
-      getRubricsBySubjectId(materia.id)
+      getRubricsBySubjectId(materia.idMateria)
         .then((data) => {
           setRubricas(data);
           console.log("Contenido retornado (string) en el hook:", JSON.stringify(data, null, 2));
@@ -54,8 +54,8 @@ export const useEvaluationData = () => {
 
   // Obtener nombre del RA cuando cambia la rúbrica seleccionada
   useEffect(() => {
-    if (selectedRubrica?.ra_id) {
-      getRANameById(selectedRubrica.ra_id).then(setRaName);
+    if (selectedRubrica?.raId) {
+      getRANameById(selectedRubrica.raId).then(setRaName);
     } else {
       setRaName("");
     }
@@ -64,6 +64,8 @@ export const useEvaluationData = () => {
   // Obtener estudiantes por curso y período
   useEffect(() => {
     if (selectedPeriodo && selectedMateria) {
+      setSelectedEstudiante("");
+      setEnrollId(null);
       const materia = materias.find((m) => m.name === selectedMateria);
       if (!materia) {
         console.log("No se encontró la materia:", selectedMateria, materias);
@@ -71,7 +73,7 @@ export const useEvaluationData = () => {
       }
 
       getAllCourses().then((cursos) => {
-        const curso = cursos.find((c: any) => c.subject === materia.id);
+        const curso = cursos.find((c: any) => c.subject === materia.idMateria);
         if (!curso) {
           console.log("No se encontró el curso para la materia:", materia, cursos);
           return;
@@ -100,7 +102,7 @@ export const useEvaluationData = () => {
   }, [selectedEstudiante, selectedPeriodo]);
 
   const handleSelectRubrica = (nombre: string) => {
-    const rubrica = rubricas.find((r) => r.name === nombre) || null;
+    const rubrica = rubricas.find((r) => r.nombreRubrica === nombre) || null;
     setSelectedRubrica(rubrica);
     setSelectedPeriodo("");
     setSelectedEstudiante("");

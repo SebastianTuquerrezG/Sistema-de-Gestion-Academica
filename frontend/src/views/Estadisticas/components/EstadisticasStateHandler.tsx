@@ -7,12 +7,14 @@ interface EstadisticasStateHandlerProps {
   loading: boolean;
   error: string | null;
   hasData: boolean;
+  filtrosCompletos?: boolean;
 }
 
 const EstadisticasStateHandler: React.FC<EstadisticasStateHandlerProps> = ({
   loading,
   error,
-  hasData
+  hasData,
+  filtrosCompletos = true
 }) => {
   if (loading) {
     return (
@@ -59,6 +61,29 @@ const EstadisticasStateHandler: React.FC<EstadisticasStateHandlerProps> = ({
   }
 
   if (!hasData) {
+    if (!filtrosCompletos) {
+      return (
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            minHeight: '300px',
+            gap: 2,
+            p: 3
+          }}
+        >
+          <InfoOutlinedIcon sx={{ fontSize: 60, color: 'info.main' }} />
+          <Typography variant="h6" color="text.secondary" align="center">
+            Complete todos los filtros para ver las estadísticas
+          </Typography>
+          <Typography variant="body1" color="text.secondary" align="center">
+            Seleccione materia, período y rúbrica para mostrar los resultados
+          </Typography>
+        </Box>
+      );
+    }
     return (
       <Box
         sx={{

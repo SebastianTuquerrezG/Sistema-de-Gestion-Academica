@@ -22,6 +22,18 @@ const CustomTooltip = ({ active, payload, label }: any) => {
   return null;
 };
 
+// Custom tick para rotar etiquetas del eje X
+const CustomTick = (props: any) => {
+  const { x, y, payload } = props;
+  return (
+    <g transform={`translate(${x},${y})`}>
+      <text x={0} y={0} dy={16} textAnchor="start" fontSize={13} fill="#222" transform="rotate(30)">
+        {payload.value}
+      </text>
+    </g>
+  );
+};
+
 const PromedioPorCriterioChart: React.FC<PromedioPorCriterioChartProps> = ({ data }) => {
   return (
     <div style={{ background: "#fff", borderRadius: 12, boxShadow: "0 2px 8px rgba(44,62,80,0.07)", padding: 24, minHeight: 350, marginTop: 40 }}>
@@ -29,7 +41,12 @@ const PromedioPorCriterioChart: React.FC<PromedioPorCriterioChartProps> = ({ dat
       <ResponsiveContainer width="100%" height={280}>
         <BarChart data={data} margin={{ top: 10, right: 20, left: 0, bottom: 0 }}>
           <CartesianGrid strokeDasharray="3 3" vertical={false} />
-          <XAxis dataKey="nombre" tick={{ fontSize: 15 }} />
+          <XAxis 
+            dataKey="nombre"
+            tick={<CustomTick />}
+            interval={0}
+            height={60}
+          />
           <YAxis domain={[0, 5]} tick={{ fontSize: 15 }} />
           <Tooltip content={<CustomTooltip />} />
           <Bar dataKey="promedio" fill="#0d47a1" radius={[8, 8, 0, 0]} >

@@ -1,14 +1,21 @@
 export interface Rubrica {
-  id: string;
-  nombreRubrica: string;
+  id: number;
+  idRubrica: number;
+  name: string;
+  materia: string;
+  notaRubrica: number;
   objetivoEstudio: string;
-  name?: string;
+  courseId: number;
+  criterios: any[];
   ra_id?: number;
+  nombreRubrica: string;
+  raId: number;
 }
 
 export interface Materia {
   id: string;
   name: string;
+  idMateria?: string | number;
 }
 
 export interface EstadisticasFilters {

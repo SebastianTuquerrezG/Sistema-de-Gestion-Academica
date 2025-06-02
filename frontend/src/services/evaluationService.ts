@@ -16,11 +16,13 @@ function getAuthHeaders(): Record<string, string> {
 // Obtener todas las materias (subjects)
 export async function getAllSubjects(): Promise<any[]> {
   try {
-    const response = await fetch(`${baseUrl}/subject`, {
+    const response = await fetch(`${baseUrl}/api/rubricas/materias`, {
       headers: getAuthHeaders(),
     });
     if (!response.ok) throw new Error(`HTTP error: ${response.status}`);
-    return await response.json();
+    const data = await response.json();
+    console.log("Respuesta de getAllSubjects:", data);
+    return data;
   } catch (error) {
     console.error("Error al obtener materias:", error);
     return [];
@@ -30,7 +32,7 @@ export async function getAllSubjects(): Promise<any[]> {
 // Obtener rúbricas por materia (subject)
 export async function getRubricsBySubjectId(idMateria: number): Promise<any[]> {
   try {
-    const response = await fetch(`${baseUrl}/rubrics/subject/${idMateria}`, {
+    const response = await fetch(`${baseUrl}/api/rubricas/materias/${idMateria}`, {
       headers: getAuthHeaders(),
     });
     if (!response.ok) throw new Error(`HTTP error: ${response.status}`);
@@ -126,6 +128,7 @@ export async function submitEvaluation(evaluation: any): Promise<any> {
 
 // Enviar cada registro de calificación
 export async function submitCalificationRegister(register: any): Promise<any> {
+  console.log("Registro de calificación enviado:", register);
   const response = await fetch(`${baseUrl}/calification-register`, {
     method: "POST",
     headers: getAuthHeaders(),
@@ -139,7 +142,7 @@ export async function updateCriterios(
   register: any,
   criterioId: number
 ): Promise<any> {
-  const response = await fetch(`${baseUrl}/criterios?id=${criterioId}`, {
+  const response = await fetch(`${baseUrl}/criteria/${criterioId}`, {
     method: "PUT",
     headers: getAuthHeaders(),
     body: JSON.stringify(register),
@@ -233,5 +236,23 @@ export async function getRANameById(raId: number): Promise<string> {
     return data?.name || "No definido";
   } catch {
     return "No definido";
+  }
+}
+
+export async function getEvaluationByEnrollAndRubric(
+  enrollId: number,
+  rubricaId: number
+): Promise<any | null> {
+  try {
+    const response = await fetch(`${baseUrl}/evaluations/${enrollId}/${rubricaId}`, {
+      headers: getAuthHeaders(),
+    });
+    if (!response.ok) return null;
+    const data = await response.json();
+    console.log("Respuesta de getEvaluationByEnrollAndRubric:", data);
+    return data && data.id ? data : null;
+  } catch (error) {
+    console.error("Error al buscar evaluación por enroll y rúbrica:", error);
+    return null;
   }
 }

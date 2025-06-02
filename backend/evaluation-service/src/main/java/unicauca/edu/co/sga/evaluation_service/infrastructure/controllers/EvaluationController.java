@@ -8,11 +8,15 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.server.ResponseStatusException;
 import unicauca.edu.co.sga.evaluation_service.application.dto.request.EvaluationRequestDTO;
 import unicauca.edu.co.sga.evaluation_service.application.dto.response.EvaluationResponseDTO;
+import unicauca.edu.co.sga.evaluation_service.application.dto.response.stats.CriteriaDTO;
+import unicauca.edu.co.sga.evaluation_service.application.dto.response.stats.CriteriaStatsResponseDTO;
 import unicauca.edu.co.sga.evaluation_service.application.ports.EvaluationPort;
 import org.springframework.web.bind.annotation.*;
 import unicauca.edu.co.sga.evaluation_service.domain.exceptions.NotFoundException;
+import unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.entities.EvaluationEntity;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/evaluations")
@@ -77,6 +81,17 @@ public class EvaluationController {
         return ResponseEntity.ok(evaluations);
     }
 
+    @GetMapping("/{enrollId}/{rubricId}")
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN_ROLE', 'ROLE_COORDINATOR_ROLE', 'ROLE_TEACHER_ROLE', 'ROLE_STUDENT_ROLE')")
+    public ResponseEntity<EvaluationResponseDTO> getEvaluationsByRubricAndEnroll(@PathVariable Long enrollId, @PathVariable Long rubricId) {
+        Optional<EvaluationResponseDTO> evaluations = evaluationPort.getEvaluationsByEnrollAndRubric(enrollId, rubricId);
+        if (evaluations.isEmpty()) {
+            throw new NotFoundException("No evaluations found for rubric " + rubricId);
+        }
+        return ResponseEntity.ok(evaluations.get());
+    }
+
     @GetMapping("/rubric/{rubricId}")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAnyRole('ROLE_ADMIN_ROLE', 'ROLE_COORDINATOR_ROLE', 'ROLE_TEACHER_ROLE', 'ROLE_STUDENT_ROLE')")
@@ -86,6 +101,17 @@ public class EvaluationController {
             throw new NotFoundException("No evaluations found for rubric " + rubricId);
         }
         return ResponseEntity.ok(evaluations);
+    }
+
+    @PostMapping("/Stats")
+    @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN_ROLE', 'ROLE_COORDINATOR_ROLE', 'ROLE_TEACHER_ROLE', 'ROLE_STUDENT_ROLE')")
+    public ResponseEntity<List<CriteriaStatsResponseDTO>> getEvaluationsWithCalificationsByRubricAndEnroll(@RequestBody CriteriaDTO criteriaDTO) {
+        List<CriteriaStatsResponseDTO> criteria = evaluationPort.getCalificationsByCriteria(criteriaDTO.getRubricId(), criteriaDTO.getSubjectId(), criteriaDTO.getSemester());
+        if (criteria.isEmpty()) {
+            throw new NotFoundException("No evaluations found for data: " + criteriaDTO);
+        }
+        return ResponseEntity.ok(criteria);
     }
 }
 

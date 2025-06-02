@@ -1,4 +1,4 @@
-INSERT INTO student (student_id, name, identification, identification_type) VALUES (1, 'María González', 1001234567, 'CC'), (2, 'Carlos Rodríguez', 1007654321, 'TI'), (3, 'Laura Martínez', 1001122334, 'CC'), (4, 'Jesus Parra', 1085903234, 'CC'), (5, 'Elkin Morillo', 1004523871, 'CC'), (6, 'Edwin Orlando', 5654124584, 'CC'), (7, 'Sebastian Tuquerres', 123456789, 'CC');
+INSERT INTO student (student_id, name, identification, identification_type) VALUES (1, 'María González', 1001234567, 'CC'), (2, 'Carlos Rodríguez', 1007654321, 'TI'), (3, 'Laura Martínez', 1001122334, 'CC'), (4, 'Jesus Parra', 1085903234, 'CC'), (5, 'Elkin Morillo', 1004523871, 'CC'), (6, 'Edwin Orlando', 5654124584, 'CC'), (7, 'Joan Tuquerrez Gomez', 123456789, 'CC'), (8, 'Oscar Fernando Hoyos Carvajal', 1009876543, 'CC');
 
 INSERT INTO subject (subject_id, credits, objectives, name, created_at, updated_at) VALUES (1, 4, '', 'Redes 2', '2025-01-10', '2025-01-10'), (2, 3, '', 'Base de datos 2', '2025-01-10', '2025-01-10'), (3, 3, '', 'Proyecto 1', '2025-01-10', '2025-01-10'), (4, 3, '', 'Redes', '2025-01-10', '2025-01-10');
 
@@ -8,13 +8,58 @@ INSERT INTO learning_results (ra_id, name) VALUES (101, 'Gestión de Proyectos T
 
 INSERT INTO course (course_id, subject_id, ra_id) VALUES (10, 1, 101), (20, 2, 102), (30, 3, 103), (40, 4, 104), (50, 4, 104), (60, 3, 104);
 
-INSERT INTO enroll (enroll_id, course_id, student_id, semester) VALUES (1000, 10, 1, '2025-1'), (1001, 20, 1, '2024-1'), (1002, 30, 1, '2025-1'), (1003, 40, 2, '2025-1'), (1005, 30,2,'2025-1'), (1006, 40, 3, '2025-1'), (1007, 40, 4, '2025-1'), (1008, 40, 5, '2025-1'), (1009, 50, 6, '2025-1'), (1010, 60, 7, '2025-1');
+INSERT INTO enroll (enroll_id, course_id, student_id, semester) VALUES (1000, 10, 1, '2025-1'), (1001, 20, 1, '2024-1'), (1002, 30, 1, '2025-1'), (1003, 40, 2, '2025-1'), (1005, 30,2,'2025-1'), (1006, 40, 3, '2025-1'), (1007, 40, 4, '2025-1'), (1008, 40, 5, '2025-1'), (1009, 50, 6, '2025-1'), (1010, 60, 7, '2025-1'), (1011, 40, 7, '2024-1'), (1012, 40, 7, '2025-1'), (1013, 40, 8, '2024-1'), (1014, 40, 8, '2025-1');
 
-INSERT INTO rubrica (id_rubrica, nombre_rubrica, objetivo_estudio, nota_rubrica, subject_id, ra_id, estado) VALUES (100, 'Rúbrica Redes', 'Diseñar topologías de red', 5, 1, 101, 'ACTIVO'), (200, 'Rúbrica BD2', 'Modelado de bases de datos', 5, 2, 102, 'ACTIVO'), (300, 'Rúbrica Proyecto', 'Gestión de proyectos TI', 5, 3, 103, 'ACTIVO'), (400, 'Rubrica redes', 'Es importante que los estudiantes aprendan a configurar las topologias dadas para poder desempeñarse en el mundo laboral', 5, 4, 104, 'ACTIVO');
+INSERT INTO rubrica (id_rubrica, nombre_rubrica, objetivo_estudio, nota_rubrica, subject_id, ra_id, estado) VALUES
+(100, 'Rúbrica Redes', 'Diseñar topologías de red', 5.0, 1, 101, 'ACTIVO'),
+(200, 'Rúbrica BD2', 'Modelado de bases de datos', 5.0, 2, 102, 'ACTIVO'),
+(300, 'Rúbrica Proyecto', 'Gestión de proyectos TI', 5.0, 3, 103, 'ACTIVO'),
+(400, 'Rúbrica Redes Avanzada', 'Es importante que los estudiantes aprendan a configurar las topologías dadas para poder desempeñarse en el mundo laboral', 5.0, 4, 104, 'ACTIVO');
+INSERT INTO criterio (id_criterio, id_rubrica, crf_descripcion, crf_porcentaje, crf_nota, crf_comentario) VALUES
+(1, 400, 'Calidad del código', 0.30, 4.2, 'Mejorable'),
+(2, 400, 'Documentación técnica', 0.20, 3.0, 'Regular mijo'),
+(3, 400, 'Cumplimiento de requisitos', 0.50, 4.0, 'Buen diseño de topología'),
+(9, 300, 'Planificación y gestión del proyecto', 0.30, 4.5, 'Se evidencia planificación en cronograma y fases'),
+(10, 300, 'Calidad del código y estructura del software', 0.40, 4.8, 'El código es limpio, bien estructurado y documentado'),
+(11, 300, 'Trabajo en equipo y comunicación', 0.30, 4.6, 'Buena colaboración entre los miembros del equipo'),
+(12, 400, 'Topología completa', 0.30, 1.2, 'Suerte en la topología');
 
-INSERT INTO criterio (id_criterio, id_rubrica, crf_descripcion, crf_porcentaje, crf_nota, crf_comentario) VALUES (12, 400, 'Topologia completa', 0.3, 1.2, 'Suerte en la topologia'), (1, 400, 'Calidad del código', 0.3, 4.2, "Mejorable"), (2, 400, 'Documentación técnica', 0.2, 3.0, "Regular mijo"), (3, 400, 'Cumplimiento de requisitos', 0.5, 4.0, "Buen diseño de topologia"), (9, 300, 'Planificación y gestión del proyecto', 0.3, NULL, NULL), (10, 300, 'Calidad del código y estructura del software', 0.4, NULL, NULL), (11, 300, 'Trabajo en equipo y comunicación', 0.3, NULL, NULL);
+INSERT INTO nivel (id_nivel, nivel_descripcion, rango_nota, id_criterio) VALUES
+-- Criterio 1
+(1, 'Desempeño básico', '2.5', 1),
+(2, 'Desempeño intermedio', '4.0', 1),
+(3, 'Desempeño avanzado', '5.0', 1),
 
-INSERT INTO nivel (id_nivel, nivel_descripcion, rango_nota, id_criterio) VALUES (30,  'Topologia implementada con exito', '5.0', 12),(29, 'No cumple todos los criterios topologicos', '5.0', 12),(28,  'Mal  uso de recursos de la topologia', '5.0', 12), (1, 'Desempeño básico', '2.5', 1), (2,  'Desempeño intermedio', '4.0', 1), (3,  'Desempeño avanzado', '5.0', 1), (4,  'Desempeño básico2a', '2.5', 2), (5,  'Desempeño intermedio2b', '4.0', 2), (6, 'Desempeño avanzado2c', '5.0', 2), (7, 'Desempeño básico', '2.5', 3), (8,  'Desempeño intermedio', '4.0', 3), (9,  'Desempeño avanzado', '5.0', 3), (19,  'No hay planificación clara ni control del cronograma.', '2.5', 9), (20,  'Planificación parcial con algunos retrasos.', '4.0', 9), (21,  'Planificación detallada y cumplimiento de plazos.', '5.0', 9), (22,  'Código desorganizado con errores frecuentes.', '2.5', 10), (23,  'Código funcional pero con algunas malas prácticas.', '4.0', 10), (24, 'Código limpio, modular y bien documentado.', '5.0', 10), (25, 'Poca comunicación y colaboración entre los miembros.', '2.5', 11), (26,  'Buena comunicación, pero con dificultades ocasionales.', '4.0', 11), (27,  'Trabajo en equipo eficiente con comunicación fluida.', '5.0', 11);
+-- Criterio 2
+(4, 'Desempeño básico2a', '2.5', 2),
+(5, 'Desempeño intermedio2b', '4.0', 2),
+(6, 'Desempeño avanzado2c', '5.0', 2),
+
+-- Criterio 3
+(7, 'Desempeño básico', '2.5', 3),
+(8, 'Desempeño intermedio', '4.0', 3),
+(9, 'Desempeño avanzado', '5.0', 3),
+
+-- Criterio 9
+(19, 'No hay planificación clara ni control del cronograma.', '2.5', 9),
+(20, 'Planificación parcial con algunos retrasos.', '4.0', 9),
+(21, 'Planificación detallada y cumplimiento de plazos.', '5.0', 9),
+
+-- Criterio 10
+(22, 'Código desorganizado con errores frecuentes.', '2.5', 10),
+(23, 'Código funcional pero con algunas malas prácticas.', '4.0', 10),
+(24, 'Código limpio, modular y bien documentado.', '5.0', 10),
+
+-- Criterio 11
+(25, 'Poca comunicación y colaboración entre los miembros.', '2.5', 11),
+(26, 'Buena comunicación, pero con dificultades ocasionales.', '4.0', 11),
+(27, 'Trabajo en equipo eficiente con comunicación fluida.', '5.0', 11),
+
+-- Criterio 12
+(28, 'Mal uso de recursos de la topología', '3.0', 12),
+(29, 'No cumple todos los criterios topológicos', '4.0', 12),
+(30, 'Topología implementada con éxito', '5.0', 12);
+
 
 INSERT INTO course_teacher (course_id, teacher_id) VALUES (10, 1), (20, 2), (30, 3), (40, 1);
 
@@ -25,9 +70,3 @@ INSERT INTO calification_register (calification_id, calification, message, level
 INSERT INTO learning_results (ra_id, name) VALUES (105, 'Desarrollar un software funcional'), (106, 'Implementar prácticas de programación avanzadas'), (107, 'Diseñar una arquitectura de software eficiente'),(108, 'Crear documentación técnica de software');
 
 INSERT INTO subject (subject_id, name, credits, objectives, status) VALUES (10, 'Desarrollo de Software', 3, 'Sofrtware', 'ACTIVO'), (11, 'Programación Avanzada', 3, 'Sofrtware', 'INACTIVO'), (12, 'Arquitectura de Software', 3, 'Sofrtware', 'ACTIVO'), (13, 'Ingeniería de Software', 3, 'Sofrtware', 'INACTIVO'), (14, 'Pruebas de Software', 3, 'Sofrtware', 'ACTIVO');
-
-INSERT INTO rubrica (id_rubrica, nombre_rubrica, objetivo_estudio, nota_rubrica, subject_id, ra_id, estado) VALUES (407, 'Evaluación de Proyecto de Software', 'Objetivo 1', 1, 3, 102,'ACTIVO'), (408, 'Evaluación de Prácticas de Programación', 'Objetivo 2', 2, 3, 103, 'INACTIVO'), (409, 'Evaluación de Presentación de Arquitectura de Software', 'Objetivo 3', 3, 3, 105,'ACTIVO'), (410, 'Evaluación de Documentación Técnica', 'Objetivo 4', 4, 3, 101,'INACTIVO'), (411, 'Evaluación de Testeo de Software', 'Objetivo 5', 5, 3, 102,'ACTIVO');
-
-INSERT INTO criterio (id_criterio, id_rubrica, crf_descripcion, crf_porcentaje, crf_nota, crf_comentario) VALUES (24, 407, 'Cumple con los requisitos del proyecto', 30, 0.0, 'Comentario 1: El proyecto cumple parcialmente con los requisitos establecidos.'), (25, 411, 'Cumple con los estándares de calidad', 30, 0.0, 'Comentario 2: El proyecto muestra un nivel básico de calidad, pero algunos estándares clave no se cumplen.'), (26, 408, 'Presentación y documentación del proyecto', 40, 0.0, 'Comentario 3: La presentación es clara, pero la documentación necesita mejoras significativas'), (27, 408, 'Trabajo en equipo y colaboración', 30, 0.0, 'Comentario 4: El equipo ha trabajado de forma efectiva, aunque la colaboración podría mejorar en algunos aspectos'), (28, 407, 'Claridad en la documentación', 30, 0.0, 'Comentario 5: El equipo ha trabajado de forma efectiva, aunque la colaboración podría mejorar en algunos aspectos'), (29, 408, 'Cumple con los plazos establecidos', 40, 0.0, 'Comentario 6: El equipo ha trabajado de forma efectiva, aunque la colaboración podría mejorar en algunos aspectos'), (30, 410, 'Cumple con los requisitos del proyecto', 30, 0.0, 'Comentario 7: El equipo ha trabajado de forma efectiva, aunque la colaboración podría mejorar en algunos aspectos'), (31, 409, 'Cumple con los estándares de calidad', 30, 0.0, 'Comentario 8: El equipo ha trabajado de forma efectiva, aunque la colaboración podría mejorar en algunos aspectos'), (32, 409, 'Cumple con los plazos establecidos', 40, 0.0, 'Comentario 9: El equipo ha trabajado de forma efectiva, aunque la colaboración podría mejorar en algunos aspectos'), (33, 410, 'Cumple con los requisitos del proyecto', 30, 0.0, 'Comentario 10: El equipo ha trabajado de forma efectiva, aunque la colaboración podría mejorar en algunos aspectos');
-
-INSERT INTO nivel (id_nivel, id_criterio, nivel_descripcion, rango_nota) VALUES (35, 1, 'No se cumplen los requisitos básicos del proyecto.', '0-1'), (36, 1, 'Se cumplen algunos de los requisitos, pero hay áreas clave que no están completas.', '1-2'), (37, 1, 'Todos los requisitos del proyecto están cumplidos satisfactoriamente.', '2-3'), (38, 2, 'La presentación es desordenada, y la documentación está incompleta', '3-4'), (39, 2, 'La presentación es aceptable, pero la documentación está parcialmente desarrollada.', '4-5');

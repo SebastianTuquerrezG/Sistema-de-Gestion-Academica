@@ -7,9 +7,11 @@ import unicauca.edu.co.sga.evaluation_service.application.dto.request.Calificati
 import unicauca.edu.co.sga.evaluation_service.application.dto.response.CalificationRegisterResponseDTO;
 import unicauca.edu.co.sga.evaluation_service.application.ports.CalificationRegisterPort;
 import unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.entities.CalificationRegisterEntity;
+import unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.entities.CriteriaEntity;
 import unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.entities.EvaluationEntity;
 import unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.mappers.CalificationRegisterMapper;
 import unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.repositories.CalificationRegisterRepository;
+import unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.repositories.CriteriaRepository;
 import unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.repositories.EvaluationRepository;
 
 import java.util.List;
@@ -22,6 +24,7 @@ import java.util.stream.Collectors;
 public class CalificationRegisterService implements CalificationRegisterPort {
     private final CalificationRegisterRepository calificationRegisterRepository;
     private final EvaluationRepository evaluationRepository;
+    private final CriteriaRepository criteriaRepository;
 
     @Override
     public List<CalificationRegisterResponseDTO> getCalificationRegisters() {
@@ -42,9 +45,10 @@ public class CalificationRegisterService implements CalificationRegisterPort {
     public CalificationRegisterResponseDTO saveCalificationRegister(CalificationRegisterRequestDTO calificationRegister) {
         EvaluationEntity evaluationEntity = evaluationRepository.findById(calificationRegister.getEvaluationId())
                 .orElseThrow(() -> new RuntimeException("Evaluation not found"));
-
+        CriteriaEntity criteriaId = criteriaRepository.findById(calificationRegister.getCriteriaId()).orElseThrow(() -> new RuntimeException("Evaluation not found"));
         CalificationRegisterEntity calificationRegisterEntity = CalificationRegisterEntity.builder()
                 .calification(calificationRegister.getCalification())
+                .criterio(criteriaId)
                 .message(calificationRegister.getMessage())
                 .level(calificationRegister.getLevel())
                 .evaluation(evaluationEntity)

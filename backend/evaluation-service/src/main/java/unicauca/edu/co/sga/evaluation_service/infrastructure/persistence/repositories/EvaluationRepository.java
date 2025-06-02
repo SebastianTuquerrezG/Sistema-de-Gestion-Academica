@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import unicauca.edu.co.sga.evaluation_service.application.dto.response.stats.CriteriaAverageDTO;
+import unicauca.edu.co.sga.evaluation_service.application.dto.response.stats.CriteriaStatsDTO;
 import unicauca.edu.co.sga.evaluation_service.application.dto.response.stats.HistogramByCriteriaDTO;
 import unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.entities.EvaluationEntity;
 import unicauca.edu.co.sga.evaluation_service.application.dto.response.stats.EvaluationStats;
@@ -126,6 +127,31 @@ SELECT new unicauca.edu.co.sga.evaluation_service.application.dto.response.stats
             @Param("rubricName") String rubricName,
             @Param("period") String period
     );
+
+    @Query("SELECT new unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.entities.EvaluationEntity(" +
+            "e.id, e.enroll, e.rubric, e.evaluationStatus, e.description, e.score, e.evidenceUrl) " +
+            " FROM EvaluationEntity e"
+            + " JOIN e.enroll en " +
+            " JOIN e.rubric r " +
+            " WHERE en.id = :enrollId AND r.idRubrica = :rubricId"
+    )
+    EvaluationEntity findByEnrollAndRubricId(@Param("enrollId") Long enrollId, @Param("rubricId") Long rubricId);
+
+    @Query("SELECT new unicauca.edu.co.sga.evaluation_service.application.dto.response.stats.CriteriaStatsDTO" +
+            " (ni.rangoNota, cr.calification, cr.level, cri.crfDescripcion, cri.idCriterio ) " +
+            " FROM CalificationRegisterEntity cr" +
+            " JOIN cr.criterio cri " +
+            " JOIN cr.evaluation e " +
+            " JOIN cri.niveles ni " +
+            " JOIN e.enroll en" +
+            " JOIN e.rubric r" +
+            " JOIN r.subject s " +
+            " JOIN en.course co " +
+            " WHERE r.idRubrica = :rubricaId" +
+            " AND s.id = :subjectId" +
+            " AND en.semester = :semester")
+    List<CriteriaStatsDTO> findCalificationAndLevel(@Param("rubricaId") Long rubricaId, @Param("subjectId") Long subjectId, @Param("semester") String semester);
+
 
 
 }
