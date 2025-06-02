@@ -10,56 +10,11 @@ INSERT INTO course (course_id, subject_id, ra_id) VALUES (10, 1, 101), (20, 2, 1
 
 INSERT INTO enroll (enroll_id, course_id, student_id, semester) VALUES (1000, 10, 1, '2025-1'), (1001, 20, 1, '2024-1'), (1002, 30, 1, '2025-1'), (1003, 40, 2, '2025-1'), (1005, 30,2,'2025-1'), (1006, 40, 3, '2025-1'), (1007, 40, 4, '2025-1'), (1008, 40, 5, '2025-1'), (1009, 50, 6, '2025-1'), (1010, 60, 7, '2025-1'), (1011, 40, 7, '2024-1'), (1012, 40, 7, '2025-1'), (1013, 40, 8, '2024-1'), (1014, 40, 8, '2025-1');
 
-INSERT INTO rubrica (id_rubrica, nombre_rubrica, objetivo_estudio, nota_rubrica, subject_id, ra_id, estado) VALUES
-(100, 'Rúbrica Redes', 'Diseñar topologías de red', 5.0, 1, 101, 'ACTIVO'),
-(200, 'Rúbrica BD2', 'Modelado de bases de datos', 5.0, 2, 102, 'ACTIVO'),
-(300, 'Rúbrica Proyecto', 'Gestión de proyectos TI', 5.0, 3, 103, 'ACTIVO'),
-(400, 'Rúbrica Redes Avanzada', 'Es importante que los estudiantes aprendan a configurar las topologías dadas para poder desempeñarse en el mundo laboral', 5.0, 4, 104, 'ACTIVO');
-INSERT INTO criterio (id_criterio, id_rubrica, crf_descripcion, crf_porcentaje, crf_nota, crf_comentario) VALUES
-(1, 400, 'Calidad del código', 0.30, 4.2, 'Mejorable'),
-(2, 400, 'Documentación técnica', 0.20, 3.0, 'Regular mijo'),
-(3, 400, 'Cumplimiento de requisitos', 0.50, 4.0, 'Buen diseño de topología'),
-(9, 300, 'Planificación y gestión del proyecto', 0.30, 4.5, 'Se evidencia planificación en cronograma y fases'),
-(10, 300, 'Calidad del código y estructura del software', 0.40, 4.8, 'El código es limpio, bien estructurado y documentado'),
-(11, 300, 'Trabajo en equipo y comunicación', 0.30, 4.6, 'Buena colaboración entre los miembros del equipo'),
-(12, 400, 'Topología completa', 0.30, 1.2, 'Suerte en la topología');
+INSERT INTO rubrica (id_rubrica, nombre_rubrica, objetivo_estudio, nota_rubrica, subject_id, ra_id, estado) VALUES (100, 'Rúbrica Redes', 'Diseñar topologías de red', 5.0, 1, 101, 'ACTIVO'), (200, 'Rúbrica BD2', 'Modelado de bases de datos', 5.0, 2, 102, 'ACTIVO'), (300, 'Rúbrica Proyecto', 'Gestión de proyectos TI', 5.0, 3, 103, 'ACTIVO'), (400, 'Rúbrica Redes Avanzada', 'Es importante que los estudiantes aprendan a configurar las topologías dadas para poder desempeñarse en el mundo laboral', 5.0, 4, 104, 'ACTIVO');
 
-INSERT INTO nivel (id_nivel, nivel_descripcion, rango_nota, id_criterio) VALUES
--- Criterio 1
-(1, 'Desempeño básico', '2.5', 1),
-(2, 'Desempeño intermedio', '4.0', 1),
-(3, 'Desempeño avanzado', '5.0', 1),
+INSERT INTO criterio (id_criterio, id_rubrica, crf_descripcion, crf_porcentaje, crf_nota, crf_comentario) VALUES (1, 400, 'Calidad del código', 30, 4.2, 'Mejorable'), (2, 400, 'Documentación técnica', 20, 3.0, 'Regular mijo'), (3, 400, 'Cumplimiento de requisitos', 50, 4.0, 'Buen diseño de topología'), (9, 300, 'Planificación y gestión del proyecto', 30, 4.5, 'Se evidencia planificación en cronograma y fases'), (10, 300, 'Calidad del código y estructura del software', 40, 4.8, 'El código es limpio, bien estructurado y documentado'), (11, 300, 'Trabajo en equipo y comunicación', 30, 4.6, 'Buena colaboración entre los miembros del equipo'), (12, 400, 'Topología completa', 30, 1.2, 'Suerte en la topología');
 
--- Criterio 2
-(4, 'Desempeño básico2a', '2.5', 2),
-(5, 'Desempeño intermedio2b', '4.0', 2),
-(6, 'Desempeño avanzado2c', '5.0', 2),
-
--- Criterio 3
-(7, 'Desempeño básico', '2.5', 3),
-(8, 'Desempeño intermedio', '4.0', 3),
-(9, 'Desempeño avanzado', '5.0', 3),
-
--- Criterio 9
-(19, 'No hay planificación clara ni control del cronograma.', '2.5', 9),
-(20, 'Planificación parcial con algunos retrasos.', '4.0', 9),
-(21, 'Planificación detallada y cumplimiento de plazos.', '5.0', 9),
-
--- Criterio 10
-(22, 'Código desorganizado con errores frecuentes.', '2.5', 10),
-(23, 'Código funcional pero con algunas malas prácticas.', '4.0', 10),
-(24, 'Código limpio, modular y bien documentado.', '5.0', 10),
-
--- Criterio 11
-(25, 'Poca comunicación y colaboración entre los miembros.', '2.5', 11),
-(26, 'Buena comunicación, pero con dificultades ocasionales.', '4.0', 11),
-(27, 'Trabajo en equipo eficiente con comunicación fluida.', '5.0', 11),
-
--- Criterio 12
-(28, 'Mal uso de recursos de la topología', '3.0', 12),
-(29, 'No cumple todos los criterios topológicos', '4.0', 12),
-(30, 'Topología implementada con éxito', '5.0', 12);
-
+INSERT INTO nivel (id_nivel, nivel_descripcion, rango_nota, id_criterio) VALUES (1, 'Desempeño básico', '2.5', 1), (2, 'Desempeño intermedio', '4.0', 1), (3, 'Desempeño avanzado', '5.0', 1), (4, 'Desempeño básico2a', '2.5', 2), (5, 'Desempeño intermedio2b', '4.0', 2), (6, 'Desempeño avanzado2c', '5.0', 2), (7, 'Desempeño básico', '2.5', 3), (8, 'Desempeño intermedio', '4.0', 3), (9, 'Desempeño avanzado', '5.0', 3), (19, 'No hay planificación clara ni control del cronograma.', '2.5', 9), (20, 'Planificación parcial con algunos retrasos.', '4.0', 9), (21, 'Planificación detallada y cumplimiento de plazos.', '5.0', 9), (22, 'Código desorganizado con errores frecuentes.', '2.5', 10), (23, 'Código funcional pero con algunas malas prácticas.', '4.0', 10), (24, 'Código limpio, modular y bien documentado.', '5.0', 10), (25, 'Poca comunicación y colaboración entre los miembros.', '2.5', 11), (26, 'Buena comunicación, pero con dificultades ocasionales.', '4.0', 11), (27, 'Trabajo en equipo eficiente con comunicación fluida.', '5.0', 11), (28, 'Mal uso de recursos de la topología', '3.0', 12), (29, 'No cumple todos los criterios topológicos', '4.0', 12), (30, 'Topología implementada con éxito', '5.0', 12);
 
 INSERT INTO course_teacher (course_id, teacher_id) VALUES (10, 1), (20, 2), (30, 3), (40, 1);
 

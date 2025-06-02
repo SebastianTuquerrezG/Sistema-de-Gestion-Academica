@@ -38,6 +38,9 @@ public class ConectorBDRubricaAdapter implements IConectorBDRubricaPort {
         List<Rubrica> listRubrica = this.rubricaMapper.map(listRubricaEntity, new TypeToken<List<Rubrica>>() {
         }.getType());
         for (Rubrica rubric : listRubrica) {
+            rubric.setIdMateria(this.rubricaRepository.findById(rubric.getIdRubrica())
+                    .map(r -> r.getSubject().getId())
+                    .orElse(null));
             rubric.setNombreMateria(this.rubricaRepository.findSubjectNameByRubricaId(rubric.getIdRubrica()));
             if(rubric.getCriterios() != null)
             {

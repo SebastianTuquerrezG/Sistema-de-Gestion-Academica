@@ -2,6 +2,7 @@ package org.unicauca.modulorubricacriterio.Dominio.Modelos;
 
 import java.util.List;
 
+import lombok.NoArgsConstructor;
 import org.unicauca.modulorubricacriterio.Infraestructura.Input.validacionEstados.EstadosEnum;
 
 import lombok.AllArgsConstructor;
@@ -9,6 +10,7 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class Rubrica {
     private Long idRubrica;
     private Long idMateria;
@@ -19,9 +21,4 @@ public class Rubrica {
     List<Criterio> criterios;
     private EstadosEnum estado;
     private Long raId;
-
-    /*Constructor no parametrizado
-    usar para deserialización de datos*/
-    public Rubrica(){}
-
 }
