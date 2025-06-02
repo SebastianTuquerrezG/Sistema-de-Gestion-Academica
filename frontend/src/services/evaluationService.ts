@@ -1,27 +1,8 @@
-// services/evaluationService.ts
+import api from "@/services/api";
 
-const baseUrl = "http://localhost:8080";
-
-function getAuthHeaders(): Record<string, string> {
-  const access_token = localStorage.getItem('auth-token');
-  const headers: Record<string, string> = {
-    "Content-Type": "application/json",
-  };
-  if (access_token) {
-    headers["Authorization"] = `Bearer ${access_token}`;
-  }
-  return headers;
-}
-
-// Obtener todas las materias (subjects)
 export async function getAllSubjects(): Promise<any[]> {
   try {
-    const response = await fetch(`${baseUrl}/api/rubricas/materias`, {
-      headers: getAuthHeaders(),
-    });
-    if (!response.ok) throw new Error(`HTTP error: ${response.status}`);
-    const data = await response.json();
-    console.log("Respuesta de getAllSubjects:", data);
+    const { data } = await api.get("/api/rubricas/materias");
     return data;
   } catch (error) {
     console.error("Error al obtener materias:", error);
@@ -29,17 +10,9 @@ export async function getAllSubjects(): Promise<any[]> {
   }
 }
 
-// Obtener rúbricas por materia (subject)
 export async function getRubricsBySubjectId(idMateria: number): Promise<any[]> {
   try {
-    const response = await fetch(`${baseUrl}/api/rubricas/materias/${idMateria}`, {
-      headers: getAuthHeaders(),
-    });
-    if (!response.ok) throw new Error(`HTTP error: ${response.status}`);
-
-    const data = await response.json();
-    console.log("Contenido retornado (string) en el servicio:", JSON.stringify(data, null, 2));
-
+    const { data } = await api.get(`/api/rubricas/materias/${idMateria}`);
     return data;
   } catch (error) {
     console.error("Error al obtener rúbricas por materia:", error);
@@ -47,53 +20,30 @@ export async function getRubricsBySubjectId(idMateria: number): Promise<any[]> {
   }
 }
 
-// Obtener todos los estudiantes
 export async function getAllStudents(): Promise<any[]> {
   try {
-    const response = await fetch(`${baseUrl}/students`, {
-      headers: getAuthHeaders(),
-    });
-    if (!response.ok) throw new Error(`HTTP error: ${response.status}`);
-    return await response.json();
+    const { data } = await api.get("/students");
+    return data;
   } catch (error) {
     console.error("Error al obtener estudiantes:", error);
     return [];
   }
 }
 
-// Obtener estudiantes por curso y período
-export async function getStudentsByCourseAndPeriod(
-  courseId: number,
-  period: string
-): Promise<any[]> {
+export async function getStudentsByCourseAndPeriod(courseId: number, period: string): Promise<any[]> {
   try {
-    const response = await fetch(
-      `${baseUrl}/students/courseAndPeriod/${courseId}/${period}`,
-      { headers: getAuthHeaders() }
-    );
-    if (!response.ok) throw new Error(`HTTP error: ${response.status}`);
-    return await response.json();
+    const { data } = await api.get(`/students/courseAndPeriod/${courseId}/${period}`);
+    return data;
   } catch (error) {
-    console.error(
-      `Error al obtener estudiantes del curso ${courseId} y periodo ${period}:`,
-      error
-    );
+    console.error(`Error al obtener estudiantes del curso ${courseId} y periodo ${period}:`, error);
     return [];
   }
 }
 
-// Obtener todos los períodos únicos desde los enrolls
 export async function getAllSemesters(): Promise<string[]> {
   try {
-    const response = await fetch(`${baseUrl}/enroll`, {
-      headers: getAuthHeaders(),
-    });
-    if (!response.ok) throw new Error(`HTTP error: ${response.status}`);
-    const data: { semester: string }[] = await response.json();
-
-    const uniqueSemesters = Array.from(
-      new Set(data.map((enroll) => enroll.semester))
-    );
+    const { data } = await api.get("/enroll");
+    const uniqueSemesters = Array.from(new Set(data.map((enroll: any) => enroll.semester)));
     return uniqueSemesters;
   } catch (error) {
     console.error("Error al obtener períodos:", error);
@@ -101,65 +51,47 @@ export async function getAllSemesters(): Promise<string[]> {
   }
 }
 
-// Obtener todos los enrolls
 export async function getAllEnrolls(): Promise<any[]> {
   try {
-    const response = await fetch(`${baseUrl}/enroll`, {
-      headers: getAuthHeaders(),
-    });
-    if (!response.ok) throw new Error(`HTTP error: ${response.status}`);
-    return await response.json();
+    const { data } = await api.get("/enroll");
+    return data;
   } catch (error) {
     console.error("Error al obtener enrolls:", error);
     return [];
   }
 }
 
-// Enviar evaluación principal
 export async function submitEvaluation(evaluation: any): Promise<any> {
-  const response = await fetch(`${baseUrl}/evaluations`, {
-    method: "POST",
-    headers: getAuthHeaders(),
-    body: JSON.stringify(evaluation),
-  });
-  if (!response.ok) throw new Error("Error al guardar evaluación");
-  return await response.json();
+  try {
+    const { data } = await api.post("/evaluations", evaluation);
+    return data;
+  } catch (error) {
+    console.error("Error al guardar evaluación:", error);
+    throw new Error("Error al guardar evaluación");
+  }
 }
 
-// Enviar cada registro de calificación
 export async function submitCalificationRegister(register: any): Promise<any> {
-  console.log("Registro de calificación enviado:", register);
-  const response = await fetch(`${baseUrl}/calification-register`, {
-    method: "POST",
-    headers: getAuthHeaders(),
-    body: JSON.stringify(register),
-  });
-  if (!response.ok) throw new Error("Error al guardar calificación");
-  return await response.json();
+  try {
+    const { data } = await api.post("/calification-register", register);
+    return data;
+  } catch (error) {
+    console.error("Error al guardar calificación:", error);
+    throw new Error("Error al guardar calificación");
+  }
 }
 
-export async function updateCriterios(
-  register: any,
-  criterioId: number
-): Promise<any> {
-  const response = await fetch(`${baseUrl}/criteria/${criterioId}`, {
-    method: "PUT",
-    headers: getAuthHeaders(),
-    body: JSON.stringify(register),
-  });
-
-  if (!response.ok) {
+export async function updateCriterios(register: any, criterioId: number): Promise<any> {
+  try {
+    const { data } = await api.put(`/criteria/${criterioId}`, register);
+    return data;
+  } catch (error) {
+    console.error("Error al actualizar criterio:", error);
     throw new Error("Error al actualizar criterio");
   }
-
-  return await response.json();
 }
 
-// Obtener el enrollId cruzando nombre del estudiante y período
-export async function getEnrollIdFromStudentAndPeriod(
-  studentName: string,
-  semester: string
-): Promise<number | null> {
+export async function getEnrollIdFromStudentAndPeriod(studentName: string, semester: string): Promise<number | null> {
   try {
     const [enrolls, students] = await Promise.all([
       getAllEnrolls(),
@@ -188,15 +120,9 @@ export async function getEnrollIdFromStudentAndPeriod(
   }
 }
 
-export async function getEvaluationByEnroll(
-  enrollId: number
-): Promise<any | null> {
+export async function getEvaluationByEnroll(enrollId: number): Promise<any | null> {
   try {
-    const response = await fetch(`${baseUrl}/evaluations/enroll/${enrollId}`, {
-      headers: getAuthHeaders(),
-    });
-    if (!response.ok) throw new Error("No hay evaluación previa");
-    const data = await response.json();
+    const { data } = await api.get(`/evaluations/enroll/${enrollId}`);
     return data.length > 0 ? data[0] : null;
   } catch (error) {
     console.error("Error al buscar evaluación:", error);
@@ -204,16 +130,10 @@ export async function getEvaluationByEnroll(
   }
 }
 
-export async function getCalificationsByEvaluationId(
-  evaluationId: number
-): Promise<any[]> {
+export async function getCalificationsByEvaluationId(evaluationId: number): Promise<any[]> {
   try {
-    const response = await fetch(
-      `${baseUrl}/calification-register/evaluation/${evaluationId}`,
-      { headers: getAuthHeaders() }
-    );
-    if (!response.ok) throw new Error("No hay calificaciones");
-    return await response.json();
+    const { data } = await api.get(`/calification-register/evaluation/${evaluationId}`);
+    return data;
   } catch (error) {
     console.error("Error al buscar calificaciones:", error);
     return [];
@@ -221,35 +141,27 @@ export async function getCalificationsByEvaluationId(
 }
 
 export async function getAllCourses(): Promise<any[]> {
-  const response = await fetch(`${baseUrl}/course`, {
-    headers: getAuthHeaders(),
-  });
-  if (!response.ok) throw new Error(`HTTP error: ${response.status}`);
-  return await response.json();
+  try {
+    const { data } = await api.get("/course");
+    return data;
+  } catch (error) {
+    console.error("Error al obtener cursos:", error);
+    return [];
+  }
 }
 
 export async function getRANameById(raId: number): Promise<string> {
   try {
-    const response = await fetch(`${baseUrl}/ra/${raId}`, { headers: getAuthHeaders() });
-    if (!response.ok) throw new Error("Error al obtener el nombre del RA");
-    const data = await response.json();
+    const { data } = await api.get(`/ra/${raId}`);
     return data?.name || "No definido";
   } catch {
     return "No definido";
   }
 }
 
-export async function getEvaluationByEnrollAndRubric(
-  enrollId: number,
-  rubricaId: number
-): Promise<any | null> {
+export async function getEvaluationByEnrollAndRubric(enrollId: number, rubricaId: number): Promise<any | null> {
   try {
-    const response = await fetch(`${baseUrl}/evaluations/${enrollId}/${rubricaId}`, {
-      headers: getAuthHeaders(),
-    });
-    if (!response.ok) return null;
-    const data = await response.json();
-    console.log("Respuesta de getEvaluationByEnrollAndRubric:", data);
+    const { data } = await api.get(`/evaluations/${enrollId}/${rubricaId}`);
     return data && data.id ? data : null;
   } catch (error) {
     console.error("Error al buscar evaluación por enroll y rúbrica:", error);

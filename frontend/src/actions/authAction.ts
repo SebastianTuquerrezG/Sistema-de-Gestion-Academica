@@ -1,3 +1,5 @@
+import { clearAuthTokens } from "@/lib/auth";
+
 export async function authAction(data: { username: string; password: string }) {
     try {
         const response = await fetch("http://localhost:9090/auth/login", {
@@ -15,6 +17,10 @@ export async function authAction(data: { username: string; password: string }) {
             localStorage.setItem('roles', JSON.stringify(result.roles));
             localStorage.setItem('auth-token', result.access_token);
             localStorage.setItem('refresh-token', result.refresh_token);
+            localStorage.setItem('expires_in', result.expires_in.toString());
+            const expiresAt = Date.now() + result.expires_in * 1000;
+            localStorage.setItem('expires_at', expiresAt.toString());
+
             return {
                 success: true,
                 data: {
@@ -58,13 +64,7 @@ export async function logoutAction() {
 
             });
         }
-        localStorage.removeItem('username');
-        localStorage.removeItem('fullname');
-        localStorage.removeItem('email');
-        localStorage.removeItem('roles');
-        localStorage.removeItem('auth-token');
-        localStorage.removeItem('refresh-token');
-
+        clearAuthTokens()
         return { success: true };
     } catch (error) {
         return {

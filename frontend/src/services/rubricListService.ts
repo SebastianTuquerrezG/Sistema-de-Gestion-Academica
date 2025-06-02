@@ -1,31 +1,31 @@
-const API_BASE = "http://localhost:8080/api/RubricEvaluation";
+import api from "@/services/api";
 
-function getAuthHeaders(): Record<string, string> {
-    const access_token = localStorage.getItem('auth-token');
-    if (!access_token) {
-        throw new Error("No se encontró el token de autenticación");
-    }
-    const headers: Record<string, string> = {
-        "Content-Type": "application/json",
-    };
-    if (access_token) {
-        headers["Authorization"] = `Bearer ${access_token}`;
-    }
-    return headers;
-}
+const API_BASE = "/api/RubricEvaluation";
 
-export const getRubrics = async (idStudent :number, idSubject: number, period :string) => {
-    const response = await fetch(`${API_BASE}/${idStudent}/${idSubject}/${period}`,{
-        headers: getAuthHeaders(),
-    });
-    if (!response.ok) throw new Error("Error al obtener las rúbricas");
-    return await response.json();
+export const getRubrics = async (
+  idStudent: number,
+  idSubject: number,
+  period: string
+): Promise<any> => {
+  try {
+    const { data } = await api.get(`${API_BASE}/${idStudent}/${idSubject}/${period}`);
+    return data;
+  } catch (error) {
+    console.error("Error al obtener las rúbricas:", error);
+    throw new Error("Error al obtener las rúbricas");
+  }
 };
 
-export const getSubjectHeader = async (idSubject : number, period: string, idRubric: number) => {
-    const response = await fetch(`${API_BASE}/bySubject/${idSubject}/${period}/${idRubric}`,{
-        headers: getAuthHeaders(),
-    });
-    if (!response.ok) throw new Error("Error al obtener la cabecera");
-    return await response.json();
+export const getSubjectHeader = async (
+  idSubject: number,
+  period: string,
+  idRubric: number
+): Promise<any> => {
+  try {
+    const { data } = await api.get(`${API_BASE}/bySubject/${idSubject}/${period}/${idRubric}`);
+    return data;
+  } catch (error) {
+    console.error("Error al obtener la cabecera:", error);
+    throw new Error("Error al obtener la cabecera");
+  }
 };

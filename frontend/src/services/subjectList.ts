@@ -1,95 +1,67 @@
-const API_BASE = "http://localhost:8080/api/RubricEvaluation";
+import api from "@/services/api";
 
-function getAuthHeaders(): Record<string, string> {
-    const access_token = localStorage.getItem('auth-token');
-    if (!access_token) {
-        throw new Error("No se encontró el token de autenticación");
+export const getSubject = async (idStudent: number, period: string): Promise<any> => {
+  try {
+    const { data } = await api.get(`/api/RubricEvaluation/${idStudent}/${period}`);
+
+    if (!data || (Array.isArray(data) && data.length === 0)) {
+      throw new Error("No se encontraron materias para el estudiante en el periodo seleccionado");
     }
-    const headers: Record<string, string> = {
-        "Content-Type": "application/json",
-    };
-    if (access_token) {
-        headers["Authorization"] = `Bearer ${access_token}`;
-    }
-    return headers;
-}
-
-export const getSubject = async (idStudent: number, period: string) => {
-    const response = await fetch(`${API_BASE}/${idStudent}/${period}`, {
-        headers: getAuthHeaders(),
-    });
-
-    if (!response.ok) throw new Error("Error al obtener las Materias");
-
-    const data = await response.json();
 
     console.log("Datos obtenidos:", data);
-
-    if (data === null || (Array.isArray(data) && data.length === 0)) {
-        throw new Error("No se encontraron materias para el estudiante en el periodo seleccionado");
-    }
-
     return data;
+  } catch (error) {
+    console.error("Error al obtener materias:", error);
+    throw new Error("Error al obtener las materias");
+  }
 };
 
+export const getPeriod = async (idStudent: string | undefined): Promise<any> => {
+  if (!idStudent) throw new Error("ID de estudiante no definido");
 
-
-export const getPeriod = async (idStudent : string|undefined) => {
-    const response = await fetch(`${API_BASE}/${idStudent}`,{
-        headers: getAuthHeaders(),
-    });
-    if (!response.ok) throw new Error("Error al obtener la cabecera");
-    return await response.json();
+  try {
+    const { data } = await api.get(`/api/RubricEvaluation/${idStudent}`);
+    return data;
+  } catch (error) {
+    console.error("Error al obtener los períodos:", error);
+    throw new Error("Error al obtener los períodos");
+  }
 };
 
-export const parseJwt =(token: string): any =>{
-    try {
-        const base64Payload = token.split('.')[1]; // El segundo segmento es el payload
-        const decodedPayload = atob(base64Payload); // Decodifica Base64
-        return JSON.parse(decodedPayload); // Convierte a objeto
-
-    } catch (e) {
-        throw new Error("Token inválido");
-    }
-
+export const parseJwt = (token: string): any => {
+  try {
+    const base64Payload = token.split(".")[1];
+    const decodedPayload = atob(base64Payload);
+    return JSON.parse(decodedPayload);
+  } catch {
+    throw new Error("Token inválido");
+  }
 };
 
 export const getLoggedUserFullName = (): string => {
-    const tokenRaw = localStorage.getItem("auth-token");
+  const tokenRaw = localStorage.getItem("auth-token");
 
-    if (!tokenRaw) {
-        throw new Error("Token no encontrado en localStorage");
-    }
+  if (!tokenRaw) {
+    throw new Error("Token no encontrado en localStorage");
+  }
 
-    try {
-        const base64Payload = tokenRaw.split(".")[1];
-        const payload = JSON.parse(atob(base64Payload));
-        return payload.name; // ← Este es el campo correcto según tu token
-    } catch (error) {
-        console.error("Error al decodificar el token:", error);
-        throw new Error("Token inválido");
-    }
+  try {
+    const payload = parseJwt(tokenRaw);
+    return payload.name;
+  } catch (error) {
+    console.error("Error al decodificar el token:", error);
+    throw new Error("Token inválido");
+  }
 };
 
+export const getIdStudent = async (): Promise<any> => {
+  const fullName = getLoggedUserFullName();
 
-
-export const getIdStudent = async () => {
-    const fullName = getLoggedUserFullName();
-
-    const response = await fetch(`${API_BASE}/byName/${fullName}`,{
-        headers: getAuthHeaders(),
-    });
-
-    if (!response.ok) {
-        throw new Error("Error al obtener el estudiante");
-    }
-
-    return await response.json();
+  try {
+    const { data } = await api.get(`/api/RubricEvaluation/byName/${fullName}`);
+    return data;
+  } catch (error) {
+    console.error("Error al obtener el estudiante:", error);
+    throw new Error("Error al obtener el estudiante");
+  }
 };
-
-
-
-
-
-
-
