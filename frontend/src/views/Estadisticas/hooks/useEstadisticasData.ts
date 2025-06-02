@@ -18,14 +18,20 @@ export const useEstadisticasData = () => {
 
   // Cargar materias
   useEffect(() => {
-    getAllSubjects().then(setMaterias);
+    getAllSubjects().then((data) => {
+      const ordenadas = data.slice().sort((a, b) => a.name.localeCompare(b.name, 'es', { sensitivity: 'base' }));
+      setMaterias(ordenadas);
+    });
   }, []);
 
   // Obtener rúbricas por materia
   useEffect(() => {
     const materia = materias.find((m) => m.name === selectedMateria);
     if (materia) {
-      getRubricsBySubjectId(Number(materia.idMateria ?? materia.id)).then(setRubricas);
+      getRubricsBySubjectId(Number(materia.idMateria ?? materia.id)).then((data) => {
+        const ordenadas = data.slice().sort((a, b) => (a.nombreRubrica || a.name).localeCompare(b.nombreRubrica || b.name, 'es', { sensitivity: 'base' }));
+        setRubricas(ordenadas);
+      });
     } else {
       setRubricas([]);
     }
@@ -35,7 +41,15 @@ export const useEstadisticasData = () => {
 
   // Obtener períodos
   useEffect(() => {
-    getAllSemesters().then(setPeriodos);
+    getAllSemesters().then((data) => {
+      const ordenados = data.slice().sort((a, b) => {
+        const [añoA, semA] = a.split('-').map(Number);
+        const [añoB, semB] = b.split('-').map(Number);
+        if (añoA !== añoB) return añoB - añoA;
+        return semB - semA;
+      });
+      setPeriodos(ordenados);
+    });
   }, []);
 
   // Obtener nombre del RA cuando cambia la rúbrica seleccionada

@@ -98,10 +98,10 @@ const EstadisticasStateHandler: React.FC<EstadisticasStateHandlerProps> = ({
       >
         <InfoOutlinedIcon sx={{ fontSize: 60, color: 'info.main' }} />
         <Typography variant="h6" color="text.secondary" align="center">
-          No hay datos para esta combinación de filtros
+          No hay estadísticas relacionadas a estos filtros.
         </Typography>
         <Typography variant="body1" color="text.secondary" align="center">
-          Intente seleccionar diferentes filtros para ver los resultados
+          Intenta con otra materia, período o rúbrica para ver resultados.
         </Typography>
       </Box>
     );

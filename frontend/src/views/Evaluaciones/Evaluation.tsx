@@ -51,12 +51,6 @@ const Evaluaciones: React.FC = () => {
       }));
   };
 
-  // Agregar logs para depuración
-  if (selectedRubrica && enrollId) {
-    console.log("Contenido de la evaluación seleccionada:", selectedRubrica);
-    console.log("EnrollId seleccionado:", enrollId);
-  }
-
   return (
     <>
       <div className="header-row">

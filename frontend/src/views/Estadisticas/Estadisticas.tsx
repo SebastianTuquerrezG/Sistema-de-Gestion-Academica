@@ -19,6 +19,7 @@ import {
 } from "../../services/estadisticasService";
 import { CourseStatsDTO as CourseStatsDTOType } from "./types/index.ts";
 import { CriteriaStatsResponseDTO } from "../../services/estadisticasService";
+import axios from "axios";
 
 const Estadisticas: React.FC = () => {
   const location = useLocation();
@@ -47,6 +48,7 @@ const Estadisticas: React.FC = () => {
 
   // Limpiar datos si falta algún filtro
   useEffect(() => {
+    setError(null); // Limpia el error al cambiar filtros
     if (!selectedMateria || !selectedRubrica || !selectedPeriodo) {
       setEstadisticas(null);
       setHistogramas([]);
@@ -96,19 +98,29 @@ const Estadisticas: React.FC = () => {
         semester: selectedPeriodo
       };
       const histogramData = await getHistogramByCriteria(histogramCriteriaDTO);
-      console.log('Datos de histogramas recibidos del servicio:', histogramData);
       setHistogramas(histogramData);
 
       // Cargar promedios por criterio
       const promediosData = await getCriteriaAverages(filter);
-      console.log('Datos de promedios por criterio:', promediosData);
       setPromediosCriterios(promediosData);
 
     } catch (err) {
-      setError(
-        "Error al cargar los datos. Por favor, inténtalo de nuevo más tarde."
-      );
-      console.error("Error al cargar estadísticas:", err);
+      // Detectar si es un 404 y el mensaje es "No evaluations found"
+      if (
+        axios.isAxiosError(err) &&
+        err.response?.status === 404 &&
+        typeof err.response?.data === 'string' &&
+        err.response.data.includes('No evaluations found')
+      ) {
+        setEstadisticas(null);
+        setHistogramas([]);
+        setPromediosCriterios([]);
+        setError(null);
+      } else {
+        setError(
+          "No se encontraron datos para los filtros seleccionados."
+        );
+      }
     } finally {
       setLoading(false);
     }

@@ -189,19 +189,21 @@ const ExportarExcelButton: React.FC<ExportarExcelButtonProps> = ({
     });
     // Filas de datos (verde muy suave)
     histogramas.forEach(h => {
-      const rows = [
-        [h.criteriaDescription, h.criteriaDescription, 'Nivel 1', h.countNivel1],
-        [h.criteriaDescription, h.criteriaDescription, 'Nivel 2', h.countNivel2],
-        [h.criteriaDescription, h.criteriaDescription, 'Nivel 3', h.countNivel3],
-      ];
-      rows.forEach(fila => {
-        const row = wsHist.addRow(fila);
-        row.eachCell(cell => {
-          cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'E2EFDA' } }; // Verde muy suave
-          cell.border = borderStyle;
-          cell.alignment = { vertical: 'middle', wrapText: true };
+      if (h.levels && typeof h.levels === 'object') {
+        Object.entries(h.levels).forEach(([nivel, cantidad]) => {
+          const row = wsHist.addRow([
+            h.crfDescripcion || h.criteriaDescription,
+            h.crfDescripcion || h.criteriaDescription,
+            nivel,
+            cantidad
+          ]);
+          row.eachCell(cell => {
+            cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'E2EFDA' } }; // Verde muy suave
+            cell.border = borderStyle;
+            cell.alignment = { vertical: 'middle', wrapText: true };
+          });
         });
-      });
+      }
     });
     autoWidth(wsHist);
 
