@@ -1,16 +1,17 @@
+import axios from "axios";
 import { clearAuthTokens } from "@/lib/auth";
+
+const API_URL = import.meta.env.VITE_API_AUTH_URL || "http://localhost:9090";
 
 export async function authAction(data: { username: string; password: string }) {
     try {
-        const response = await fetch("http://localhost:9090/auth/login", {
-            method: "POST",
+        const response = await axios.post(`${API_URL}/auth/login`, data, {
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(data),
         });
 
-        const result = await response.json();
+        const result = response.data;
 
-        if (response.ok && result.access_token) {
+        if (response.status === 200 && result.access_token) {
             localStorage.setItem('username', result.username);
             localStorage.setItem('fullname', result.fullName);
             localStorage.setItem('email', result.email);
@@ -40,10 +41,10 @@ export async function authAction(data: { username: string; password: string }) {
                 field: 'root'
             };
         }
-    } catch (error) {
+    } catch (error: any) {
         return {
             success: false,
-            error: "Error de red o servidor",
+            error: error.response?.data?.error || "Error de red o servidor",
             field: 'root'
         };
     }
@@ -55,16 +56,12 @@ export async function logoutAction() {
         const refresh_token = localStorage.getItem('refresh-token');
 
         if (access_token && refresh_token) {
-            await fetch("http://localhost:9090/auth/logout", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ refreshToken: refresh_token }),
-
-            });
+            await axios.post(`${API_URL}/auth/logout`,
+                { refreshToken: refresh_token },
+                { headers: { "Content-Type": "application/json" } }
+            );
         }
-        clearAuthTokens()
+        clearAuthTokens();
         return { success: true };
     } catch (error) {
         return {
