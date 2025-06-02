@@ -71,7 +71,6 @@ export default function CreateRubric() {
     useEffect(() => {
         getAllMaterias()
             .then(data => {
-                console.log("Materias obtenidas:", data);
                 setMaterias(data);
             })
             .catch(() => setMaterias([]));
@@ -80,7 +79,6 @@ export default function CreateRubric() {
     useEffect(() => {
         getAllRAs()
             .then(data => {
-                console.log("Resultados de Aprendizaje obtenidos:", data);
                 setResultadosAprendizaje(data);
             })
             .catch(() => setResultadosAprendizaje([]));
@@ -406,7 +404,6 @@ export default function CreateRubric() {
         };
 
         try {
-            console.log(rubricData);
             await createRubric(rubricData);
             setNotification({
                 type: "success",

@@ -8,7 +8,6 @@ export const getSubject = async (idStudent: number, period: string): Promise<any
       throw new Error("No se encontraron materias para el estudiante en el periodo seleccionado");
     }
 
-    console.log("Datos obtenidos:", data);
     return data;
   } catch (error) {
     console.error("Error al obtener materias:", error);

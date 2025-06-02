@@ -51,12 +51,8 @@ const RubricList: React.FC<RubricListProps> = ({ idStudent, idSubject, period })
         fetchData();
     }, [idStudent, idSubject, period]);
 
-    const handleClick = (idRubric: any, rubricName : any, nameTeacher :any) => {
-        // alert("¡Haz hecho clic en la rubrica con id:" + idSubject)
-        //console.log("idRubric", idRubric);
-        // const idStudent = '123';
-        // const idSubject = '456';
-        // const period = '2024-1';
+    const handleClick = (idRubric: any, rubricName: any, nameTeacher: any) => {
+        ;
 
         navigate(`/rubric/${idStudent}/${idSubject}/${period}/${idRubric}`, {
             state: {

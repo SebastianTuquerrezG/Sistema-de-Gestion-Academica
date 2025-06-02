@@ -1,7 +1,5 @@
 "use client"
 
-"use client"
-
 import { useEffect, useState } from "react";
 import { Search, Plus, Pencil, Trash2, Share2, Copy } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -122,27 +120,9 @@ export default function ConsultarRubrica() {
         setShowDuplicateModal(true);
     };
 
-    // Duplicar rúbrica usando la interfaz correcta
     const handleDuplicate = async (data: { newName: string; shareWithSamePeople: boolean; copyComments: boolean; resolvedComments: boolean }) => {
         if (!rubricToDuplicate) return;
 
-        /*const duplicatedRubric: RubricInterface = {
-            idRubrica: 0, // El ID se asignará automáticamente al crear la rúbrica
-            nombreRubrica: `${data.newName}`,
-            materia: rubricToDuplicate.materia,
-            notaRubrica: rubricToDuplicate.notaRubrica,
-            objetivoEstudio: rubricToDuplicate.objetivoEstudio,
-            estado: "ACTIVO",
-            criterios: rubricToDuplicate.criterios.map(criterio => ({
-                idCriterio: 0,
-                crfDescripcion: criterio.crfDescripcion,
-                crfPorcentaje: criterio.crfPorcentaje,
-                crfNota: criterio.crfNota,
-                crfComentario: criterio.crfComentario,
-                niveles: criterio.niveles
-            })),
-            raId: rubricToDuplicate.raId,
-        };*/
         const duplicatedRubric: RubricInterfacePeticion = {
             idRubrica: null,
             nombreRubrica: data.newName,
@@ -152,7 +132,7 @@ export default function ConsultarRubrica() {
             estado: "ACTIVO",
             criterios: rubricToDuplicate.criterios.map(criterio => ({
                 ...criterio,
-                idRubrica: null // o el id correspondiente si aplica
+                idRubrica: null
             })),
             raId: rubricToDuplicate.raId,
         };
@@ -161,12 +141,11 @@ export default function ConsultarRubrica() {
         if (response && response.idRubrica !== null) {
             const newRubric: RubricInterface = {
                 ...response,
-                idRubrica: response.idRubrica, // Asegúrate de que el ID se asigne correctamente
+                idRubrica: response.idRubrica,
                 materia: rubricToDuplicate.materia,
                 nombreMateria: rubricToDuplicate.nombreMateria,
                 criterios: response.criterios.map(criterio => ({
                     ...criterio
-                    // Completa aquí si faltan campos para CriterionInterface
                 }))
             };
             setRubrics((prev) => [...prev, newRubric]);
@@ -177,8 +156,8 @@ export default function ConsultarRubrica() {
             });
         }
         setShowDuplicateModal(false)
-
     };
+
     const handleShareRubric = async (data: {
         email: string;
         permission: string;
@@ -188,8 +167,6 @@ export default function ConsultarRubrica() {
         linkPermission: string
     }) => {
         if (!rubricToDuplicate) return;
-        // Lógica de compartir
-        console.log("Compartiendo rúbrica:", rubricToDuplicate, data);
         setShowShareModal(false);
     };
 
@@ -313,6 +290,25 @@ export default function ConsultarRubrica() {
                                     </TableCell>
                                 </TableRow>
                             ))
+                        ) : filteredRubrics.length === 0 ? (
+                            <TableRow>
+                                <TableCell colSpan={5} className="py-8 text-center">
+                                    <div className="flex flex-col items-center justify-center space-y-2">
+                                        <Search className="h-12 w-12 text-gray-400" />
+                                        <p className="text-lg font-medium text-gray-600">
+                                            {rubrics.length === 0
+                                                ? "No tienes ninguna rúbrica creada todavía."
+                                                : "No se encontraron rúbricas con los filtros aplicados."}
+                                        </p>
+                                        {rubrics.length === 0 && (
+                                            <Button onClick={handleAdd} className="mt-4">
+                                                <Plus className="h-4 w-4 mr-2" />
+                                                Crear mi primera rúbrica
+                                            </Button>
+                                        )}
+                                    </div>
+                                </TableCell>
+                            </TableRow>
                         ) : (
                             filteredRubrics.map((rubric) => (
                                 <TableRow key={rubric.idRubrica} className={rubric.estado === "INACTIVO" ? "opacity-70 hover:bg-gray-50" : "hover:bg-gray-50"}>
@@ -379,6 +375,7 @@ export default function ConsultarRubrica() {
                                                         size="icon"
                                                         className="h-7 w-7 p-0 text-orange-500 hover:text-orange-600"
                                                         onClick={() => handleOpenDeleteModal(rubric)}
+                                                        disabled={rubric.estado === "INACTIVO"}
                                                     >
                                                         <Trash2 className="h-3.5 w-3.5" />
                                                         <span className="sr-only">Eliminar</span>

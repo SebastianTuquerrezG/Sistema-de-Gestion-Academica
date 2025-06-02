@@ -76,7 +76,6 @@ export default function CreateRubric() {
         if (id) {
             getRubricById(id).then((data) => {
                 if (!data) return;
-                console.log(data)
                 setNota(data.notaRubrica || "");
                 setMateria(data.idMateria?.toString() || "");
                 setResultadoAprendizaje(data.raId?.toString() || "");
@@ -118,7 +117,6 @@ export default function CreateRubric() {
     useEffect(() => {
         getAllMaterias()
             .then(data => {
-                console.log("Materias obtenidas:", data);
                 setMaterias(data);
             })
             .catch(() => setMaterias([]));
@@ -127,7 +125,6 @@ export default function CreateRubric() {
     useEffect(() => {
         getAllRAs()
             .then(data => {
-                console.log("Resultados de Aprendizaje obtenidos:", data);
                 setResultadosAprendizaje(data);
             })
             .catch(() => setResultadosAprendizaje([]));
@@ -452,7 +449,6 @@ export default function CreateRubric() {
             estado: "ACTIVO"
         };
         try {
-            console.log(rubricData);
             await updateRubric(rubricData.idRubrica, rubricData);
             setNotification({
                 type: "success",
