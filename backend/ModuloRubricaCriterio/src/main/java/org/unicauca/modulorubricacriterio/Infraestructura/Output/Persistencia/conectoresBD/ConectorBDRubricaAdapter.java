@@ -64,6 +64,7 @@ public class ConectorBDRubricaAdapter implements IConectorBDRubricaPort {
         objRubrica.setNombreMateria(this.rubricaRepository.findSubjectNameByRubricaId(objRubrica.getIdRubrica()));
         if(objRubrica.getCriterios()!= null)
         {
+            objRubrica.setIdMateria(objRubricaEntity.getSubject().getId());
             objRubrica.getCriterios().forEach(criterio -> {
                 criterio.setIdRubrica(objRubrica.getIdRubrica());
                 if(criterio.getNiveles() != null) {

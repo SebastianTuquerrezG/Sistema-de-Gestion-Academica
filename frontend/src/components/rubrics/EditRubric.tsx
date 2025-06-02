@@ -12,6 +12,18 @@ import { useNavigate } from "react-router-dom";
 import { MateriaInterface } from "@/interfaces/MateriaInterface.ts";
 import { RubricInterfacePeticion } from "@/interfaces/RubricInterfacePeticion.ts";
 import { useParams } from "react-router-dom";
+import { getAllRAs } from "@/services/raService.ts";
+import { RaInteface } from "@/interfaces/RaInterface";
+import { getRubricById } from "@/services/rubricService";
+import {
+    Select,
+    SelectContent,
+    SelectGroup,
+    SelectItem,
+    SelectLabel,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select"
 //Definicion del tipo de notificacion
 type NotificationType = {
     type: "error" | "info" | "success";
@@ -57,6 +69,42 @@ export default function CreateRubric() {
     const [notification, setNotification] = useState<NotificationType | null>(null);
     const [materia, setMateria] = useState("");
     const [materias, setMaterias] = useState<MateriaInterface[]>([]);
+    const [resultadosAprendizaje, setResultadosAprendizaje] = useState<RaInteface[]>([]);
+    const [resultadoAprendizaje, setResultadoAprendizaje] = useState("");
+
+    useEffect(() => {
+        if (id) {
+            getRubricById(id).then((data) => {
+                if (!data) return;
+                console.log(data)
+                setNota(data.notaRubrica || "");
+                setMateria(data.idMateria?.toString() || "");
+                setResultadoAprendizaje(data.raId?.toString() || "");
+                if (data.criterios && data.criterios.length > 0) {
+                    setLevels(data.criterios[0].niveles.map((nivel: any) => ({
+                        idNivel: nivel.idNivel,
+                        nivelDescripcion: nivel.nivelDescripcion,
+                        rangoNota: nivel.rangoNota
+                    })));
+                }
+                setRows(data.criterios.map((criterio: any, idx: number) => ({
+                    idCriterio: idx + 1,
+                    crfDescripcion: criterio.crfDescripcion,
+                    niveles: criterio.niveles.map((nivel: any) => ({
+                        idNivel: nivel.idNivel,
+                        nivelDescripcion: nivel.nivelDescripcion,
+                        rangoNota: nivel.rangoNota
+                    })),
+                    crfPorcentaje: criterio.crfPorcentaje.toString(),
+                    crfNota: criterio.crfNota,
+                    crfComentario: criterio.crfComentario || ""
+                })));
+                // Rellena los inputs manualmente si no son controlados
+                (document.getElementById("nombreRubrica") as HTMLInputElement).value = data.nombreRubrica || "";
+                (document.getElementById("objetivoEstudio") as HTMLInputElement).value = data.objetivoEstudio || "";
+            });
+        }
+    }, [id]);
 
     //Efecto de la notificacion
     useEffect(() => {
@@ -76,7 +124,14 @@ export default function CreateRubric() {
             .catch(() => setMaterias([]));
     }, []);
 
-
+    useEffect(() => {
+        getAllRAs()
+            .then(data => {
+                console.log("Resultados de Aprendizaje obtenidos:", data);
+                setResultadosAprendizaje(data);
+            })
+            .catch(() => setResultadosAprendizaje([]));
+    }, []);
 
     // Añade un nuevo nivel a la rúbrica, hasta un máximo de 5
     const addLevel = () => {
@@ -317,18 +372,6 @@ export default function CreateRubric() {
                 crfPorcentaje: "",
                 crfNota: 0,
                 crfComentario: ""
-            },
-            {
-                idCriterio: 2,
-                crfDescripcion: "",
-                niveles: [
-                    { idNivel: 1, nivelDescripcion: "", rangoNota: "" },
-                    { idNivel: 2, nivelDescripcion: "", rangoNota: "" },
-                    { idNivel: 3, nivelDescripcion: "", rangoNota: "" }
-                ],
-                crfPorcentaje: "",
-                crfNota: 0,
-                crfComentario: ""
             }
         ]);
     };
@@ -337,7 +380,7 @@ export default function CreateRubric() {
         // Validar campos obligatorios
         const requiredFields = [
             { field: (document.getElementById("nombreRubrica") as HTMLInputElement)?.value, name: "Nombre Rúbrica" },
-            { field: (document.getElementById("materia") as HTMLInputElement)?.value, name: "Materia" },
+            { field: materia, name: "Materia" },
             { field: (document.getElementById("objetivoEstudio") as HTMLInputElement)?.value, name: "Objetivo de Estudio" }
         ];
 
@@ -389,7 +432,7 @@ export default function CreateRubric() {
         const rubricData: RubricInterfacePeticion = {
             idRubrica: Number(id),
             nombreRubrica: (document.getElementById("nombreRubrica") as HTMLInputElement)?.value,
-            idMateria: Number((document.getElementById("materia") as HTMLInputElement)?.value),
+            idMateria: parseFloat(materia),
             notaRubrica: parseFloat((document.getElementById("notaRubrica") as HTMLInputElement)?.value || "0"),
             objetivoEstudio: (document.getElementById("objetivoEstudio") as HTMLInputElement)?.value,
             criterios: rows.map(row => ({
@@ -405,7 +448,7 @@ export default function CreateRubric() {
                 })),
                 idRubrica: null
             })),
-            raId: 1,
+            raId: resultadoAprendizaje ? parseInt(resultadoAprendizaje) : 0,
             estado: "ACTIVO"
         };
         try {
@@ -431,147 +474,188 @@ export default function CreateRubric() {
     }
 
     return (
-        <Card className="w-full max-w-[1200px] relative">
-            {notification && (
-                <Notification
-                    type={notification.type}
-                    title={notification.title}
-                    message={notification.message}
-                    onClose={() => setNotification(null)}
-                />
-            )}
-            <CardHeader>
-                <CardTitle>Editar Rúbrica de Evaluación</CardTitle>
-                <CardDescription>Ingresa los datos de la rúbrica en el formulario.</CardDescription>
-            </CardHeader>
-            <CardContent>
-                <div className="space-y-4">
-                    <div className="grid grid-cols-2 gap-4">
-                        <div className="grid w-full max-w-sm items-center gap-1.5">
-                            <Label htmlFor="nombreRubrica">Nombre Rúbrica</Label>
-                            <Input id="nombreRubrica" placeholder="Nombre de la rúbrica" />
-                        </div>
-                        <div className="grid w-full max-w-sm items-center gap-1.5">
-                            <Label htmlFor="materia">Materia</Label>
-                            <select id="materia" value={materia} onChange={(e) => setMateria(e.target.value)}
-                                className="w-full rounded-md border px-3 py-2 text-sm">
-                                <option value="">Seleccione una materia</option>
-                                {materias.map((mat) => (
-                                    <option key={mat.idMateria} value={mat.idMateria}>
-                                        {mat.name}
-                                    </option>
-                                ))}
-                            </select>
-                        </div>
-                        <div className="grid w-full max-w-sm items-center gap-1.5">
-                            <Label htmlFor="notaRubrica" className="whitespace-nowrap">Nota Máxima Rúbrica</Label>
-                            <Input
-                                id="notaRubrica"
-                                type="number"
-                                min={0}
-                                max={5}
-                                step={0.1}
-                                value={nota}
-                                onChange={handleChange}
-                                placeholder="0.0 - 5.0"
-                            />
-                        </div>
-                        <div className="grid w-full max-w-sm items-center gap-1.5">
-                            <Label htmlFor="objetivoEstudio">Objetivo de Estudio</Label>
-                            <Input id="objetivoEstudio" placeholder="Objetivo de la evaluación" />
+        <div className="container mx-auto p-4 space-y-6">
+            <div className="flex justify-between items-center">
+                <h2 className="title2 border-b-2 border-red-500 inline-block" style={{ color: "var(--primary-regular-color)" }}>
+                    Editar Rúbrica
+                </h2>
+            </div>
+            <Card>
+                {notification && (
+                    <Notification
+                        type={notification.type}
+                        title={notification.title}
+                        message={notification.message}
+                        onClose={() => setNotification(null)}
+                    />
+                )}
+                <CardHeader>
+                    <CardTitle>Editar Rúbrica de Evaluación</CardTitle>
+                    <CardDescription>Ingresa los datos de la rúbrica en el formulario.</CardDescription>
+                </CardHeader>
+                <CardContent>
+                    <div className="space-y-4">
+                        <div className="flex flex-col gap-4 sm:grid sm:grid-cols-2">
+                            <div className="grid w-full items-center gap-1.5">
+                                <Label htmlFor="nombreRubrica">Nombre Rúbrica</Label>
+                                <Input id="nombreRubrica" placeholder="Nombre de la rúbrica" />
+                            </div>
+                            <div className="grid w-full items-center gap-1.5">
+                                <Label htmlFor="materia">Materia</Label>
+                                <Select value={materia} onValueChange={setMateria}>
+                                    <SelectTrigger className="w-50">
+                                        <SelectValue placeholder="Seleccione una materia" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectGroup>
+                                            <SelectLabel>Materias</SelectLabel>
+                                            {materias.map((mat) => (
+                                                <SelectItem key={mat.idMateria} value={mat.idMateria.toString()}>
+                                                    {mat.name}
+                                                </SelectItem>
+                                            ))}
+                                        </SelectGroup>
+                                    </SelectContent>
+                                </Select>
+                            </div>
+                            <div className="grid w-full items-center gap-1.5">
+                                <Label htmlFor="resultadoAprendizaje">Resultado de Aprendizaje</Label>
+                                <Select value={resultadoAprendizaje} onValueChange={setResultadoAprendizaje}>
+                                    <SelectTrigger className="w-50">
+                                        <SelectValue placeholder="Seleccione un resultado" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectGroup>
+                                            <SelectLabel>Resultados de Aprendizaje</SelectLabel>
+                                            {resultadosAprendizaje.map((ra) => (
+                                                <SelectItem key={ra.id} value={ra.id.toString()}>
+                                                    {ra.name}
+                                                </SelectItem>
+                                            ))}
+                                        </SelectGroup>
+                                    </SelectContent>
+                                </Select>
+                            </div>
+                            <div className="grid w-full items-center gap-1.5">
+                                <Label htmlFor="notaRubrica" className="whitespace-nowrap">Nota Máxima Rúbrica</Label>
+                                <Input
+                                    id="notaRubrica"
+                                    type="number"
+                                    min={0}
+                                    max={5}
+                                    step={0.1}
+                                    value={nota}
+                                    onChange={handleChange}
+                                    placeholder="0.0 - 5.0"
+                                />
+                            </div>
+                            <div className="grid w-full items-center gap-1.5 sm:col-span-2">
+                                <Label htmlFor="objetivoEstudio">Objetivo de Estudio</Label>
+                                <Input id="objetivoEstudio" placeholder="Objetivo de la evaluación" />
+                            </div>
                         </div>
                     </div>
-                </div>
-                <CardTitle className="mt-6">Criterios de Evaluación</CardTitle>
-                <CardDescription className="mb-4">Ingresa los criterios de evaluación y sus niveles.</CardDescription>
-                <Table>
-                    <TableHeader>
-                        <TableRow>
-                            <TableHead>Criterio Evaluación</TableHead>
-                            <TableHead>Porcentaje</TableHead>
-                            <TableHead>Comentario</TableHead>
-                            {levels.map((level, index) => (
-                                <TableHead key={index}>
-                                    <div className="flex flex-col">
-                                        <span>Nivel {level.idNivel}</span>
-                                        <span className="text-xs">{level.rangoNota}</span>
-                                    </div>
-                                </TableHead>
-                            ))}
-                            <TableHead>
-                                <Button onClick={addLevel} variant="ghost" size="icon">
-                                    <PlusCircle className="h-4 w-4" />
-                                </Button>
-                                <Button onClick={removeLevel} variant="ghost" size="icon" className="text-red-600">
-                                    <Trash2 className="h-4 w-4" />
-                                </Button>
-                            </TableHead>
-                        </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                        {rows.map((row, rowIndex) => (
-                            <TableRow key={rowIndex}>
-                                <TableCell>
-                                    <Textarea
-                                        value={row.crfDescripcion}
-                                        onChange={(e) => handleCriterioChange(rowIndex, e.target.value)}
-                                        placeholder="Descripción del criterio"
-                                    />
-                                </TableCell>
-                                <TableCell>
-                                    <div className="flex items-center">
-                                        {/* Input controlado */}
-                                        <Input
-                                            type="number"
-                                            min="0"
-                                            max="100"
-                                            step="0.1"
-                                            onChange={(e) => handlePorcentajeChange(rowIndex, e.target.value)}
-                                            value={row.crfPorcentaje}
-                                            placeholder="0.0%"
-                                        />
-                                    </div>
-                                </TableCell>
-                                <TableCell>
-                                    <Textarea
-                                        value={row.crfComentario}
-                                        onChange={(e) => handleComentarioChange(rowIndex, e.target.value)}
-                                        placeholder="Comentario para el criterio"
-                                    />
-                                </TableCell>
-                                {row.niveles.map((nivel, nivelIndex) => (
-                                    <TableCell key={nivelIndex}>
-                                        <Textarea
-                                            value={nivel.nivelDescripcion}
-                                            onChange={(e) => handleNivelChange(rowIndex, nivelIndex, e.target.value)}
-                                            placeholder={`Descripción nivel ${nivel.idNivel}`}
-                                        />
-                                    </TableCell>
+
+                    <CardTitle className="mt-6">Criterios de Evaluación</CardTitle>
+                    <CardDescription className="mb-4">Ingresa los criterios de evaluación y sus niveles.</CardDescription>
+
+                    <div className="overflow-x-auto">
+                        <Table className="min-w-[800px]">
+                            <TableHeader>
+                                <TableRow>
+                                    <TableHead className="min-w-[150px]">Criterio Evaluación</TableHead>
+                                    <TableHead className="w-[100px]">Porcentaje</TableHead>
+                                    <TableHead className="min-w-[150px]">Comentario</TableHead>
+                                    {levels.map((level, index) => (
+                                        <TableHead key={index} className="min-w-[150px]">
+                                            <div className="flex flex-col">
+                                                <span>Nivel {level.idNivel}</span>
+                                                <span className="text-xs">{level.rangoNota}</span>
+                                            </div>
+                                        </TableHead>
+                                    ))}
+                                    <TableHead className="w-[100px]">
+                                        <div className="flex gap-1">
+                                            <Button onClick={addLevel} variant="ghost" size="icon">
+                                                <PlusCircle className="h-4 w-4" />
+                                            </Button>
+                                            <Button onClick={removeLevel} variant="ghost" size="icon" className="text-red-600">
+                                                <Trash2 className="h-4 w-4" />
+                                            </Button>
+                                        </div>
+                                    </TableHead>
+                                </TableRow>
+                            </TableHeader>
+                            <TableBody>
+                                {rows.map((row, rowIndex) => (
+                                    <TableRow key={rowIndex}>
+                                        <TableCell>
+                                            <Textarea
+                                                value={row.crfDescripcion}
+                                                onChange={(e) => handleCriterioChange(rowIndex, e.target.value)}
+                                                placeholder="Descripción del criterio"
+                                                className="min-h-[80px]"
+                                            />
+                                        </TableCell>
+                                        <TableCell>
+                                            <Input
+                                                type="number"
+                                                min="0"
+                                                max="100"
+                                                step="0.1"
+                                                onChange={(e) => handlePorcentajeChange(rowIndex, e.target.value)}
+                                                value={row.crfPorcentaje}
+                                                placeholder="0.0%"
+                                            />
+                                        </TableCell>
+                                        <TableCell>
+                                            <Textarea
+                                                value={row.crfComentario}
+                                                onChange={(e) => handleComentarioChange(rowIndex, e.target.value)}
+                                                placeholder="Comentario para el criterio"
+                                                className="min-h-[80px]"
+                                            />
+                                        </TableCell>
+                                        {row.niveles.map((nivel, nivelIndex) => (
+                                            <TableCell key={nivelIndex}>
+                                                <Textarea
+                                                    value={nivel.nivelDescripcion}
+                                                    onChange={(e) => handleNivelChange(rowIndex, nivelIndex, e.target.value)}
+                                                    placeholder={`Descripción nivel ${nivel.idNivel}`}
+                                                    className="min-h-[80px]"
+                                                />
+                                            </TableCell>
+                                        ))}
+                                        <TableCell className="text-center">
+                                            <Button
+                                                onClick={() => removeRow(rowIndex)}
+                                                variant="ghost"
+                                                size="icon"
+                                                className="text-red-600"
+                                            >
+                                                <Trash2 className="h-4 w-4" />
+                                            </Button>
+                                        </TableCell>
+                                    </TableRow>
                                 ))}
-                                <TableCell className="text-center">
-                                    <Button onClick={() => removeRow(rowIndex)} variant="ghost" size="icon" className="text-red-600">
-                                        <Trash2 className="h-1 w-1" />
-                                    </Button>
-                                </TableCell>
-                            </TableRow>
-                        ))}
-                    </TableBody>
-                </Table>
-                <div className="mt-4">
-                    <Button onClick={addRow}>
-                        <Plus className="h-4 w-4 mr-2" />Añadir Criterio
-                    </Button>
-                </div>
-            </CardContent>
-            <CardFooter className="flex justify-between">
-                <Button onClick={handleCancel} variant="outline">Cancelar</Button>
+                            </TableBody>
+                        </Table>
+                    </div>
 
-                <div className="flex justify-end gap-4">
-                    <Button onClick={handleBackToHome} variant="outline">Volver</Button>
-                    <Button onClick={handleCreate}>Editar</Button>
-                </div>
-
-            </CardFooter>
-        </Card>
+                    <div className="mt-4">
+                        <Button onClick={addRow}>
+                            <Plus className="h-4 w-4 mr-2" />Añadir Criterio
+                        </Button>
+                    </div>
+                </CardContent>
+                <CardFooter className="flex flex-col gap-4 sm:flex-row sm:justify-between">
+                    <Button onClick={handleCancel} variant="outline" className="w-full sm:w-auto">Cancelar</Button>
+                    <div className="flex flex-col gap-2 sm:flex-row sm:gap-4 w-full sm:w-auto">
+                        <Button onClick={handleBackToHome} variant="outline" className="w-full sm:w-auto">Volver</Button>
+                        <Button onClick={handleCreate} className="w-full sm:w-auto">Editar</Button>
+                    </div>
+                </CardFooter>
+            </Card>
+        </div >
     );
 }
