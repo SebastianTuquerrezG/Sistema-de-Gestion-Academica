@@ -89,11 +89,11 @@ services:
     depends_on:
       - eureka-server
       - gateway
-      - rubric_mariadb
+      - mariadb
     environment:
-      RUBRIC_DATASOURCE_URL: ${RUBRIC_DOCKER_DATASOURCE_URL}
-      RUBRIC_DATASOURCE_USERNAME: ${RUBRIC_DATASOURCE_USERNAME}
-      RUBRIC_DATASOURCE_PASSWORD: ${RUBRIC_DATASOURCE_PASSWORD}
+      EVALUATION_DATASOURCE_URL: ${EVALUATION_DOCKER_DATASOURCE_URL}
+      EVALUATION_DATASOURCE_USERNAME: ${EVALUATION_DATASOURCE_USERNAME}
+      EVALUATION_DATASOURCE_PASSWORD: ${EVALUATION_DATASOURCE_PASSWORD}
       EUREKA_USERNAME: ${EUREKA_USERNAME}
       EUREKA_PASSWORD: ${EUREKA_PASSWORD}
       ACTIVE_PROFILE: docker
@@ -160,10 +160,12 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: ${EVALUATION_DATASOURCE_PASSWORD}
       MYSQL_DATABASE: ${EVALUATION_DATASOURCE_NAME}
+      MARIADB_AUTO_UPGRADE: 1
+      MARIADB_DISABLE_UPGRADE_BACKUP: 1
     ports:
       - "3306:3306"
     volumes:
-      - mariadb_data:/var/lib/mysql      -
+      - mariadb_data:/var/lib/mysql
       - ./init/mariadb.sql:/docker-entrypoint-initdb.d/mariadb.sql
     networks:
       - backend-network
@@ -176,27 +178,13 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: ${COMMON_DATASOURCE_PASSWORD}
       MYSQL_DATABASE: ${COMMON_DATASOURCE_NAME}
+      MARIADB_AUTO_UPGRADE: 1
+      MARIADB_DISABLE_UPGRADE_BACKUP: 1
     ports:
       - "3308:3306"
     volumes:
       - common_utilities_data:/var/lib/mysql
       - ./init/common.sql:/docker-entrypoint-initdb.d/common.sql
-    networks:
-      - backend-network
-
-  rubric_mariadb:
-    image: mariadb:10.5
-    restart: always
-    env_file:
-      - .env
-    environment:
-      MYSQL_ROOT_PASSWORD: ${RUBRIC_DATASOURCE_PASSWORD}
-      MYSQL_DATABASE: ${RUBRIC_DATASOURCE_NAME}
-    ports:
-      - "3310:3306"
-    volumes:
-      - rubric_data:/var/lib/mysql
-      - ./init/rubric.sql:/docker-entrypoint-initdb.d/rubric.sql
     networks:
       - backend-network
 
@@ -233,7 +221,6 @@ services:
     depends_on:
       - mariadb
       - common_utilities_mariadb
-      - rubric_mariadb
 
 networks:
   backend-network:
