@@ -6,6 +6,8 @@ import ActionButtons from "../../components/utils/actionButtons";
 import { useEvaluationData } from "./hooks/useEvaluationData";
 import { Criterio } from "./types";
 import "../../assets/css/evaluaciones.css";
+import { useNavigate } from "react-router-dom";
+import { CircularProgress, Alert, Box, Typography } from '@mui/material';
 
 const Evaluaciones: React.FC = () => {
   const {
@@ -22,7 +24,10 @@ const Evaluaciones: React.FC = () => {
     setSelectedEstudiante,
     enrollId,
     handleSelectRubrica,
+    raName,
   } = useEvaluationData();
+
+  const navigate = useNavigate();
 
   const transformCriterios = (criterios: any[]): Criterio[] => {
     return criterios
@@ -39,7 +44,8 @@ const Evaluaciones: React.FC = () => {
             nivelDescripcion: n.nivelDescripcion,
             inferior,
             superior,
-            texto: n.nivelDescripcion, // Usamos nivelDescripcion como texto
+            texto: n.nivelDescripcion,
+            rangoNota: n.rangoNota,
           };
         }),
       }));
@@ -49,7 +55,17 @@ const Evaluaciones: React.FC = () => {
     <>
       <div className="header-row">
         <PageTitle title="Evaluaciones" />
-        <ActionButtons />
+        <ActionButtons
+          onEstadisticas={() => {
+            navigate("/estadisticas", {
+              state: {
+                materia: selectedMateria,
+                rubrica: selectedRubrica?.nombreRubrica || "",
+                periodo: selectedPeriodo,
+              },
+            });
+          }}
+        />
       </div>
 
       <RubricaInfo
@@ -61,17 +77,17 @@ const Evaluaciones: React.FC = () => {
         rubricaSeleccionada={selectedRubrica?.nombreRubrica || ""}
         periodoSeleccionado={selectedPeriodo}
         estudianteSeleccionado={selectedEstudiante}
-        resultadoAprendizaje={selectedRubrica?.objetivoEstudio || ""}
+        resultadoAprendizaje={raName}
         onSelectMateria={setSelectedMateria}
         onSelectRubrica={handleSelectRubrica}
         onSelectPeriodo={setSelectedPeriodo}
         onSelectEstudiante={setSelectedEstudiante}
       />
 
-      {selectedRubrica && enrollId && (
+      {selectedRubrica && enrollId && selectedPeriodo && selectedEstudiante && (
         <EvaluationTable
           estudiante={selectedEstudiante}
-          criterios={transformCriterios(selectedRubrica.criterios)}
+          criterios={transformCriterios(selectedRubrica.criterios || [])}
           rubricaId={selectedRubrica.idRubrica}
           enrollId={enrollId}
         />

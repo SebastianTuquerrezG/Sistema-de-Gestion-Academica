@@ -1,0 +1,41 @@
+.curso-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 18px 28px;
+  background: var(
+    --primary-regular-color
+  ); /* Fondo con el color de la variable */
+  color: #fff;
+  border-radius: 16px;
+  font-family: var(--title-font, Arial), serif;
+  font-size: 1.2rem;
+  font-weight: 500;
+  margin-bottom: 18px;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition:
+          background-color 0.2s ease,
+          color 0.2s ease,
+          border-color 0.2s ease,
+          box-shadow 0.2s ease;
+
+}
+
+.curso-item:hover {
+  color: var(--primary-regular-color);
+  background-color: var(--hover-regular-color);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-color: var(--primary-regular-color);/* Color al pasar el mouse */
+
+}
+
+.curso-nombre {
+  font-weight: bold;
+}
+
+.curso-docente {
+  font-weight: 400;
+  font-size: 1.1rem;
+}

@@ -1,6 +1,6 @@
 package unicauca.edu.co.sga.evaluation_service.application.services;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import unicauca.edu.co.sga.evaluation_service.application.dto.request.SubjectRequestDTO;
 import unicauca.edu.co.sga.evaluation_service.application.dto.response.SubjectResponseDTO;
@@ -8,7 +8,6 @@ import unicauca.edu.co.sga.evaluation_service.application.ports.SubjectPort;
 import unicauca.edu.co.sga.evaluation_service.domain.enums.GeneralEnums;
 import unicauca.edu.co.sga.evaluation_service.domain.models.Subject;
 import unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.entities.SubjectEntity;
-import unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.mappers.StudentMapper;
 import unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.mappers.SubjectMapper;
 import unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.repositories.SubjectRepository;
 
@@ -17,14 +16,10 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class SubjectService implements SubjectPort {
 
-    @Autowired
     private final SubjectRepository subjectRepository;
-
-    public SubjectService(SubjectRepository subjectRepository) {
-        this.subjectRepository = subjectRepository;
-    }
 
     @Override
     public List<SubjectResponseDTO> getSubjects(){

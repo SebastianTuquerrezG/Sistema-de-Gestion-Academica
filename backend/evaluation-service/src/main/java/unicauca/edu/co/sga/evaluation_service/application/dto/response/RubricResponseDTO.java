@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import unicauca.edu.co.sga.evaluation_service.domain.enums.GeneralEnums;
 
 @Data
 @AllArgsConstructor
@@ -14,6 +15,7 @@ public class RubricResponseDTO {
     private String name;
     private String studyObjective;
     private int rubricScore;
-
     private Long ra_id;
+    private String raName;
+    private GeneralEnums.status status;
 }

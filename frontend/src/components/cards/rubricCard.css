@@ -1,0 +1,44 @@
+.rubric-card {
+    background-color: #f3f4f6; /* equivalente a Tailwind bg-gray-100 */
+    border-radius: 8px;
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    transition: box-shadow 0.2s ease;
+}
+
+.rubric-card:hover {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    color: var(--text-regular-color); /* equivalente a Tailwind bg-gray-200 */
+}
+
+.rubric-icon {
+    background-color: var(--primary-regular-color);
+    color: white;
+    padding: 5px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.icon {
+    width: 24px;
+    height: 24px;
+}
+
+.rubric-title {
+    font-weight: 600;
+    margin: 0;
+    font-family: var(--title-font), serif;
+
+}
+
+.rubric-date {
+    font-size: 0.875rem;
+    color: #6b7280; /* gray-500 */
+    margin: 0;
+    font-family: var(--title-font), serif;
+}

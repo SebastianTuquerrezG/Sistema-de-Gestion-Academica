@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class PerformanceLevelResponseDTO {
     private Long id;
-    private String name;
+    private Long idCriterio;
     private String description;
-    private Double range;
+    private String range;
 }

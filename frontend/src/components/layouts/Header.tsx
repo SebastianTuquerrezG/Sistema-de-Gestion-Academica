@@ -9,9 +9,9 @@ import {
 export default function Header() {
     const data = {
         user: {
-            name: "Nombre completo del usuario",
-            email: "Rol de usuario",
-            avatar: "https://ui.shadcn.com/avatars/01.png",
+            name: localStorage.getItem("fullname") || "Nombre de usuario",
+            email: localStorage.getItem("email") || "Email",
+            avatar: "https://github.com/Viperexz.png",
         }
     }
     return (

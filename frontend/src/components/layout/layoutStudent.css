@@ -1,0 +1,67 @@
+.layout-container {
+  /*display: flex;*/
+  height: 100vh;
+}
+
+.sidebar {
+  width: 268px; /* Ancho del SidebarStudent */
+}
+
+.header {
+  height: 75px; /* Altura del HeaderStudent */
+  border-bottom: 5px var(--hover-regular-color) solid;
+}
+
+.content-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  /* width: 100%;  Asegura que ocupe el espacio */
+  margin-left: 268px; /* Ajustar al ancho del sidebar */
+}
+
+.content {
+  flex: 1; /* Permite que el contenido ocupe el espacio restante */
+  /*width: 100%;*/
+  padding: 1rem;
+  overflow-y: auto;
+  display: flex; /* Usa flexbox para alinear el contenido */
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: stretch; /* En lugar de flex-start */
+  margin-top: 75px; /* Ajustar al alto del header */
+}
+
+.periodo-actual {
+  display: flex; /* Usa flexbox para alinear el contenido */
+  font-family: var(--title-font), serif; /* Fuente definida en las variables CSS */
+  font-size: var(
+    --title-size
+  ); /* Tamaño de fuente definido en las variables CSS */
+  font-weight: var(--semibold); /* Peso de fuente semibold */
+  color: var(
+    --primary-regular-color
+  ); /* Color primario definido en las variables CSS */
+  /* margin-left: 36px; /* Margen izquierdo para separar del borde */
+  border-bottom: 3px solid var(--secondary-regular-color); /* Barra roja debajo del texto */
+  padding-bottom: 4px; /* Espaciado entre el texto y la barra */
+  width: fit-content; /* Ajusta el ancho de la barra al contenido del texto */
+}
+.Curso-actuales {
+  display: flex; /* Usa flexbox para alinear el contenido */
+  justify-content: center; /* Centra el texto horizontalmente */
+  align-items: center; /* Centra el texto verticalmente */
+  font-family: var(--title-font), serif; /* Fuente definida */
+  color: var(
+          --primary-regular-color
+  ); /* Color primario definido en las variables CSS */
+  font-size: var(
+          --title-size
+  ); /* Tamaño de fuente definido en las variables CSS */
+  font-weight: var(--semibold); /* Peso de fuente semibold */
+  text-align: center; /* Asegura que el texto esté centrado */
+  border-bottom: 3px solid var(--secondary-regular-color); /* Barra roja debajo del texto */
+  padding-bottom: 4px; /* Espaciado entre el texto y la barra */
+  width: fit-content; /* Ajusta el ancho de la barra al contenido del texto */
+  margin: -10px auto 38px auto; /* Menos margen arriba, más abajo */
+}

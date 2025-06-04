@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class PerformanceLevel {
     private Long id;
-    private String name;
+    private Long idCriterio;
     private String description;
-    private Double range_rating; // This could be changed for other type of data
+    private String rangoNota; // This could be changed for other
 }

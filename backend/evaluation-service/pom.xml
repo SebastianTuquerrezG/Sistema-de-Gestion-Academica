@@ -1,48 +1,64 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
+
 	<parent>
 		<groupId>com.unicauca</groupId>
 		<artifactId>backend</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
-	<groupId>unicauca.edu.co.sga</groupId>
+
 	<artifactId>evaluation-service</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>evaluation-service</name>
 	<description>EvaluationsService</description>
+
 	<url/>
 	<licenses>
 		<license/>
 	</licenses>
+
 	<developers>
 		<developer/>
 	</developers>
+
 	<scm>
 		<connection/>
 		<developerConnection/>
 		<tag/>
 		<url/>
 	</scm>
+
 	<properties>
 		<java.version>21</java.version>
-		<spring-boot.version>3.4.3</spring-boot.version>
+		<spring-boot.version>3.4.4</spring-boot.version>
 		<spring-ai.version>1.0.0-M6</spring-ai.version>
-		<spring-cloud.version>2024.0.0</spring-cloud.version>
+		<lombok.version>1.18.32</lombok.version>
+		<dotenv-java.version>3.0.0</dotenv-java.version>
+		<mariadb.version>3.5.3</mariadb.version>
+		<mapstruct.version>1.6.3</mapstruct.version>
+		<spring-restdocs.version>3.0.1</spring-restdocs.version>
+		<springdoc-openapi.version>2.5.0</springdoc-openapi.version>
+		<lombok-mapstruct-binding.version>0.2.0</lombok-mapstruct-binding.version>
+		<maven-resources-plugin.version>3.3.1</maven-resources-plugin.version>
+		<spring-actuator.version>3.4.3</spring-actuator.version>
+		<spring-validation>3.4.3</spring-validation>
+		<maven-compiler-plugin.version>3.12.1</maven-compiler-plugin.version>
+		<spring-security-test.version>6.1.7</spring-security-test.version>
+		<asciidoctor-maven-plugin.version>2.2.1</asciidoctor-maven-plugin.version>
 	</properties>
+
 	<dependencies>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-dependencies</artifactId>
-			<version>${spring-boot.version}</version> <!-- Actualiza a la versión más reciente compatible -->
-			<type>pom</type>
-			<scope>import</scope>
-		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-actuator</artifactId>
 			<version>${spring-actuator.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>io.github.cdimascio</groupId>
+			<artifactId>dotenv-java</artifactId>
+			<version>${dotenv-java.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -52,7 +68,7 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-validation</artifactId>
-			<version>${spring-validation}</version>
+			<version>3.4.5</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -62,17 +78,11 @@
 		<dependency>
 			<groupId>org.springframework.ai</groupId>
 			<artifactId>spring-ai-mariadb-store-spring-boot-starter</artifactId>
-			<version>${spring-ai.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-starter-gateway</artifactId>
-			<version>4.2.0</version>
+			<version>1.0.0-M6</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
-			<version>4.2.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -80,6 +90,16 @@
 			<version>${spring-boot.version}</version>
 			<scope>runtime</scope>
 			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>jakarta.servlet</groupId>
+			<artifactId>jakarta.servlet-api</artifactId>
+			<version>6.0.0</version> <scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-amqp</artifactId>
+			<version>3.4.3</version>
 		</dependency>
 		<dependency>
 			<groupId>org.mariadb.jdbc</groupId>
@@ -113,30 +133,37 @@
 		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-test</artifactId>
-			<version>6.1.7</version>
+			<version>${spring-security-test.version}</version>
 			<scope>test</scope>
 		</dependency>
-		<dependency>
-			<groupId>me.paulschwarz</groupId>
-			<artifactId>spring-dotenv</artifactId>
-			<version>${dotenv.version}</version>
-		</dependency>
-			<!-- Documentation Dependency -->
+			<!-- Documentation Dependency
 		<dependency>
 			<groupId>org.springdoc</groupId>
-			<artifactId>springdoc-openapi-starter-webflux-ui</artifactId>
-			<version>2.5.0</version>
+			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+			<version>2.0.2</version>
+		</dependency>-->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-oauth2-jose</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>io.projectreactor</groupId>
+			<artifactId>reactor-test</artifactId>
+			<version>3.7.4</version>
+			<scope>test</scope>
 		</dependency>
 	</dependencies>
+
 	<dependencyManagement>
 		<dependencies>
-			<dependency>
-				<groupId>org.springframework.cloud</groupId>
-				<artifactId>spring-cloud-dependencies</artifactId>
-				<version>${spring-cloud.version}</version>
-				<type>pom</type>
-				<scope>import</scope>
-			</dependency>
 			<dependency>
 				<groupId>org.springframework.ai</groupId>
 				<artifactId>spring-ai-bom</artifactId>
@@ -152,7 +179,11 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
+
+				<version>3.10.1</version>
 				<configuration>
+					<source>21</source>
+					<target>21</target>
 					<compilerArgs>
 						<arg>-parameters</arg>
 					</compilerArgs>
@@ -160,7 +191,7 @@
 					<path>
 						<groupId>org.mapstruct</groupId>
 						<artifactId>mapstruct-processor</artifactId>
-						<version>1.6.3</version>
+						<version>${mapstruct.version}</version>
 					</path>
 					<path>
 						<groupId>org.projectlombok</groupId>
@@ -170,14 +201,22 @@
 					<path>
 						<groupId>org.projectlombok</groupId>
 						<artifactId>lombok-mapstruct-binding</artifactId>
-						<version>0.2.0</version>
+						<version>${lombok-mapstruct-binding.version}</version>
 					</path>
 					</annotationProcessorPaths>
 				</configuration>
-      </plugin>
-      <plugin>
+		  	</plugin>
+		  	<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+				<version>${spring-boot.version}</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>repackage</goal>
+						</goals>
+					</execution>
+				</executions>
 				<configuration>
 					<excludes>
 						<exclude>
@@ -190,7 +229,25 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-resources-plugin</artifactId>
-				<version>${maven-resources-plugin.version}</version>
+				<version>3.3.1</version>
+			</plugin>
+			<plugin>
+				<groupId>org.asciidoctor</groupId>
+				<artifactId>asciidoctor-maven-plugin</artifactId>
+				<version>${asciidoctor-maven-plugin.version}</version>
+				<executions>
+					<execution>
+						<id>generate-docs</id>
+						<phase>prepare-package</phase>
+						<goals>
+							<goal>process-asciidoc</goal>
+						</goals>
+						<configuration>
+							<backend>html</backend>
+							<doctype>book</doctype>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>

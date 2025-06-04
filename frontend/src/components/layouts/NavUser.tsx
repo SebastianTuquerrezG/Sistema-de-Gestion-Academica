@@ -1,5 +1,8 @@
 "use client"
 
+import { useNavigate } from "react-router-dom";
+import { logoutAction } from "@/actions/authAction";
+
 import {
     BadgeCheck,
     Bell,
@@ -44,6 +47,13 @@ export default function NavUser({
 }) {
     const { isMobile } = useSidebar()
 
+    const navigate = useNavigate();
+
+    const handleLogout = async () => {
+        await logoutAction();
+        navigate("/login");
+    };
+
     return (
         <SidebarMenu>
             <SidebarMenuItem>
@@ -85,29 +95,18 @@ export default function NavUser({
                         <DropdownMenuSeparator />
                         <DropdownMenuGroup>
                             <DropdownMenuItem>
-                                <Sparkles />
-                                Upgrade to Pro
-                            </DropdownMenuItem>
-                        </DropdownMenuGroup>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuGroup>
-                            <DropdownMenuItem>
                                 <BadgeCheck />
-                                Account
-                            </DropdownMenuItem>
-                            <DropdownMenuItem>
-                                <CreditCard />
-                                Billing
+                                Cuenta
                             </DropdownMenuItem>
                             <DropdownMenuItem>
                                 <Bell />
-                                Notifications
+                                Notificaciones
                             </DropdownMenuItem>
                         </DropdownMenuGroup>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem>
+                        <DropdownMenuItem onClick={handleLogout}>
                             <LogOut />
-                            Log out
+                            Cerrar sesión
                         </DropdownMenuItem>
                     </DropdownMenuContent>
                 </DropdownMenu>

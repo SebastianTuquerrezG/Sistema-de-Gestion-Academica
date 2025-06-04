@@ -11,6 +11,7 @@ import unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.entitie
 public class CalificationRegisterMapper {
     public static CalificationsRegister toModel(CalificationRegisterRequestDTO dto){
         return CalificationsRegister.builder()
+                .criteriaId(dto.getCriteriaId())
                 .calification(dto.getCalification())
                 .message(dto.getMessage())
                 .level(dto.getLevel())
@@ -21,6 +22,7 @@ public class CalificationRegisterMapper {
     public static CalificationRegisterResponseDTO toDTO(CalificationsRegister domain){
         return CalificationRegisterResponseDTO.builder()
                 .id(domain.getId())
+                .criteriaId(domain.getCriteriaId())
                 .calification(domain.getCalification())
                 .message(domain.getMessage())
                 .level(domain.getLevel())
@@ -31,6 +33,7 @@ public class CalificationRegisterMapper {
     public static CalificationsRegister toModel(CalificationRegisterEntity entity){
         return CalificationsRegister.builder()
                 .id(entity.getId())
+                .criteriaId(entity.getCriterio().getIdCriterio())
                 .calification(entity.getCalification())
                 .message(entity.getMessage())
                 .level(entity.getLevel())

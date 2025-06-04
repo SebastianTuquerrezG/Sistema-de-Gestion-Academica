@@ -9,11 +9,11 @@ import java.util.Optional;
 
 public interface RubricPort {
     List<RubricResponseDTO> getRubrics();
-    Optional<RubricPort> getRubricById(Long id);
+    Optional<RubricResponseDTO> getRubricById(Long id);
     RubricResponseDTO saveRubric(RubricRequestDTO rubric);
     boolean deleteRubric(Long id);
     boolean updateRubric(Long id, RubricRequestDTO rubric);
-    Optional<RubricResponseDTO> getRubricByName(String name);
+    List<RubricResponseDTO> getRubricByName(String name);
     List<RubricResponseDTO> getRubricsBySubject(Long id);
     List<RubricResponseDTO> getRubricsByRA(Long id);
     List<RubricResponseDTO> getRubricsByCriteria(Long id);

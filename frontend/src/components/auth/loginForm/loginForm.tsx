@@ -1,4 +1,4 @@
-/*"use client";
+"use client";
 
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -9,73 +9,106 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { userSchema } from "@/validations/userSchema";
 import { toast } from "sonner";
 import { useState, useEffect } from "react";
-
+import { useNavigate } from "react-router-dom";
 import { loadCredentials, saveCredentials, clearCredentials } from "@/lib/rememberMe";
 import { authAction } from "@/actions/authAction";
 import { LoginResponse } from "@/actions/responseType";
+import { Loader2 } from "lucide-react";
+import { isAuthenticated } from "@/lib/auth";
 
 export default function LoginForm() {
-
+    const navigate = useNavigate();
     const [rememberMe, setRememberMe] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
 
     const { register, handleSubmit, formState: { errors }, setValue, setError } = useForm({
         resolver: zodResolver(userSchema),
         defaultValues: {
-            email: "",
+            username: "",
             password: ""
         },
         mode: "onSubmit"
     });
 
     useEffect(() => {
+        if (isAuthenticated()) {
+            redirectToRolePage();
+        }
+    }, [navigate]);
+
+    useEffect(() => {
         const savedCredentials = loadCredentials();
         if (savedCredentials) {
-            setValue("email", savedCredentials.email);
+            setValue("username", savedCredentials.username);
             setValue("password", savedCredentials.password);
             setRememberMe(true);
         }
     }, [setValue]);
 
     interface FormData {
-        email: string;
+        username: string;
         password: string;
     }
 
     const onSubmit = async (data: FormData) => {
+        setIsLoading(true);
         try {
-
             const res = await authAction(data);
 
-            if (res.status === 200) {
+            if (res.success) {
                 handleSuccessfulLogin(data);
                 return;
             }
-            handleAuthError(res.data);
+            handleAuthError(res);
         } catch (error) {
             console.error("Error al ejecutar Server Action:", error);
-            setError("email", { type: "server", message: "" });
+            setError("username", { type: "server", message: "" });
             setError("password", { type: "server", message: "" });
             setError("root", {
                 type: "server",
                 message: "Error al iniciar sesión. Por favor, inténtalo nuevamente."
             });
             toast.error("Error al iniciar sesión. Por favor, inténtalo nuevamente.");
+        } finally {
+            setIsLoading(false);
         }
     };
 
     const handleSuccessfulLogin = (data: FormData) => {
         if (rememberMe) {
-            saveCredentials(data.email, data.password);
+            saveCredentials(data.username, data.password);
         } else {
             clearCredentials();
         }
 
         toast.success("¡Inicio de sesión exitoso!");
-
+        redirectToRolePage();
     };
 
-    const handleAuthError = (result: unknown) => {
-        setError("email", { type: "server", message: "" });
+    const redirectToRolePage = () => {
+        const rolesString = localStorage.getItem("roles");
+        let roles: string[] = [];
+        if (rolesString) {
+            try {
+                roles = JSON.parse(rolesString);
+            } catch {
+                roles = [];
+            }
+        }
+
+
+        if (roles.some(role => ["ADMIN_ROLE", "TEACHER_ROLE", "COORDINATOR_ROLE"].includes(role))) {
+            navigate("/rubricas");
+        }
+        else if (roles.includes("STUDENT_ROLE")) {
+            navigate("/estudiante");
+        } else {
+            navigate("/");
+        }
+    };
+
+    const handleAuthError = (result: LoginResponse) => {
+        setError("username", { type: "server", message: "" });
         setError("password", { type: "server", message: "" });
 
         setError("root", { type: "server", message: result.error });
@@ -98,16 +131,16 @@ export default function LoginForm() {
                     onSubmit={handleSubmit(onSubmit)}
                 >
                     <LabeledInput
-                        label="Correo institucional"
-                        id="email"
-                        type="email"
-                        placeholder="Correo institucional"
+                        label="Correo institucional o usuario"
+                        id="username"
+                        type="text"
+                        placeholder="Correo institucional o usuario"
                         required={true}
-                        className={errors.email ? "border-error" : ""}
-                        {...register("email")}
+                        className={errors.username ? "border-error" : ""}
+                        {...register("username")}
                     />
-                    {errors.email && errors.email.message !== "" && (
-                        <span className="text-xs md:text-sm text-error font-medium">{errors.email.message}</span>
+                    {errors.username && errors.username.message !== "" && (
+                        <span className="text-xs md:text-sm text-error font-medium">{errors.username.message}</span>
                     )}
 
                     <LabeledInput
@@ -138,11 +171,18 @@ export default function LoginForm() {
                         </label>
                     </div>
 
-                    <Button variant="default" type="submit" className="w-full">
-                        Iniciar sesión
+                    <Button type="submit" className="w-full" disabled={isLoading}>
+                        {isLoading ? (
+                            <span className="flex items-center justify-center gap-2">
+                                <Loader2 className="animate-spin h-4 w-4" />
+                                Iniciando...
+                            </span>
+                        ) : (
+                            "Iniciar sesión"
+                        )}
                     </Button>
                 </form>
             </div>
         </div>
     );
-}*/
+}

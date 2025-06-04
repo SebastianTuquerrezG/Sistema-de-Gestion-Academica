@@ -4,6 +4,7 @@ export interface Descriptor {
   superior: number;
   inferior: number;
   nivelDescripcion: string;
+  rangoNota: string;
 }
 
 export interface Criterio {
@@ -14,8 +15,9 @@ export interface Criterio {
 }
 
 export interface Rubrica {
+  id: number;
   idRubrica: number;
-  nombreRubrica: string;
+  name: string;
   materia: string;
   notaRubrica: number;
   objetivoEstudio: string;
@@ -30,6 +32,9 @@ export interface Rubrica {
       rangoNota: string;
     }[];
   }[];
+  ra_id?: number;
+  nombreRubrica: string;
+  raId: number;
 }
 
 export interface Estudiante {

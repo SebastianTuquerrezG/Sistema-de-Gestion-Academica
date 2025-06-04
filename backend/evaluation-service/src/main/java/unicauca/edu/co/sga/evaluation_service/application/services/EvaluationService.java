@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import unicauca.edu.co.sga.evaluation_service.application.dto.request.EvaluationRequestDTO;
 import unicauca.edu.co.sga.evaluation_service.application.dto.response.EvaluationResponseDTO;
+import unicauca.edu.co.sga.evaluation_service.application.dto.response.stats.CriteriaStatsDTO;
+import unicauca.edu.co.sga.evaluation_service.application.dto.response.stats.CriteriaStatsResponseDTO;
 import unicauca.edu.co.sga.evaluation_service.application.ports.EvaluationPort;
 import unicauca.edu.co.sga.evaluation_service.domain.enums.EvaluationStatus;
 import unicauca.edu.co.sga.evaluation_service.domain.exceptions.NotFoundException;
@@ -19,8 +21,8 @@ import unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.reposit
 import unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.repositories.EvaluationRepository;
 import unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.repositories.RubricRepository;
 
-import java.util.List;
-import java.util.Optional;
+import java.math.BigDecimal;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -30,6 +32,10 @@ public class EvaluationService implements EvaluationPort {
     private final EvaluationRepository evaluationRepository;
     private final EnrollRepository enrollRepository;
     private final RubricRepository rubricRepository;
+    private final EvaluationMapper evaluationMapper;
+
+    //Rabbit communication
+    private final RabbitService rabbitService;
 
     @Transactional
     public EvaluationResponseDTO saveEvaluation(EvaluationRequestDTO evaluationRequestDTO) {
@@ -53,6 +59,10 @@ public class EvaluationService implements EvaluationPort {
                         "Rubric no encontrado con id: " + evaluationRequestDTO.getRubric()));
 
         Evaluation evaluation = EvaluationMapper.toModel(evaluationRequestDTO);
+
+        // Sending message for Common_utilities_service
+       // rabbitService.sendEvaluation(evaluationRequestDTO);
+
         EvaluationEntity evaluationEntity = EvaluationMapper.toEntity(evaluation);
 
         evaluationEntity.setEnroll(enroll);
@@ -70,6 +80,49 @@ public class EvaluationService implements EvaluationPort {
                 EvaluationMapper.toModel(
                         evaluationRepository.saveAndFlush(evaluationEntity))
         );
+    }
+
+    @Override
+    public Optional<EvaluationResponseDTO> getEvaluationsByEnrollAndRubric(Long enrollId, Long rubricId) {
+        EvaluationEntity evaluationEntity = evaluationRepository.findByEnrollAndRubricId(enrollId, rubricId);
+        return Optional.ofNullable(EvaluationMapper.toDTO(EvaluationMapper.toModel(evaluationEntity)));
+    }
+
+    @Override
+    public List<CriteriaStatsResponseDTO> getCalificationsByCriteria(Long rubricaId, Long subjectId, String semester) {
+        List<CriteriaStatsDTO> criteriaStatsDTOS = evaluationRepository.findCalificationAndLevel(rubricaId, subjectId, semester);
+
+        if (criteriaStatsDTOS.isEmpty()) {
+            return List.of();
+        }
+
+        // Agrupamos por ID de criterio y luego por nivel
+        Map<Long, Map<String, Long>> grouped = criteriaStatsDTOS.stream()
+                .collect(Collectors.groupingBy(
+                        CriteriaStatsDTO::getIdCriterio,
+                        Collectors.groupingBy(
+                                CriteriaStatsDTO::getLevel,
+                                Collectors.counting()
+                        )
+                ));
+
+        // Mapeo auxiliar para obtener la descripción del criterio desde su ID
+        Map<Long, String> idToDescription = criteriaStatsDTOS.stream()
+                .collect(Collectors.toMap(
+                        CriteriaStatsDTO::getIdCriterio,
+                        CriteriaStatsDTO::getCrfDescripcion,
+                        (v1, v2) -> v1 // en caso de conflicto, se queda con el primero
+                ));
+
+        // Crear la lista final
+        List<CriteriaStatsResponseDTO> response = new ArrayList<>();
+
+        grouped.forEach((idCriterio, levelsMap) -> {
+            String descripcion = idToDescription.get(idCriterio);
+            response.add(new CriteriaStatsResponseDTO(levelsMap, descripcion, idCriterio));
+        });
+
+        return response;
     }
 
     @Override
@@ -94,6 +147,12 @@ public class EvaluationService implements EvaluationPort {
 
     @Override
     public boolean deleteEvaluation(Long id) {
+        Optional<EvaluationEntity> evaluationEntity = evaluationRepository.findById(id);
+        if (evaluationEntity.isPresent()){
+            rabbitService.sendDeleteEvaluation(evaluationEntity.get());
+            evaluationRepository.deleteById(id);
+            return true;
+        }
         return false;
     }
 
@@ -134,6 +193,9 @@ public class EvaluationService implements EvaluationPort {
             );
             existingEvaluation.setScore(evaluationRequestDTO.getScore());
             existingEvaluation.setEvidenceUrl(evaluationRequestDTO.getEvidenceUrl());
+
+            rabbitService.sendUpdateEvaluation(existingEvaluation);
+
             evaluationRepository.saveAndFlush(existingEvaluation);
             return true;
         } catch (NotFoundException | ResponseStatusException e) {
@@ -157,5 +219,10 @@ public class EvaluationService implements EvaluationPort {
                 .map(EvaluationMapper::toModel)
                 .map(EvaluationMapper::toDTO)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public Optional<BigDecimal> findEvaluationsByStudentAndSubject(Long studentId, Long subjectId, String semester, Long rubricId) {
+        return evaluationRepository.findEvaluationsByStudentAndSubject(studentId, subjectId, semester, rubricId);
     }
 }

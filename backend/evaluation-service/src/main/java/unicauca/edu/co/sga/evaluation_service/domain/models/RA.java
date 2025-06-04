@@ -1,7 +1,5 @@
 package unicauca.edu.co.sga.evaluation_service.domain.models;
 
-
-import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,5 +13,6 @@ import java.util.Set;
 @Builder
 public class RA {
     private Long id;
+    private String name;
     private Set<Long> course;
 }

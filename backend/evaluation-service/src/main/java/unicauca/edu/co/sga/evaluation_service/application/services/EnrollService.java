@@ -1,12 +1,11 @@
 package unicauca.edu.co.sga.evaluation_service.application.services;
 
-import jakarta.ws.rs.NotFoundException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import unicauca.edu.co.sga.evaluation_service.application.dto.request.EnrollRequestDTO;
 import unicauca.edu.co.sga.evaluation_service.application.dto.response.EnrollResponseDTO;
 import unicauca.edu.co.sga.evaluation_service.application.ports.EnrollPort;
-import unicauca.edu.co.sga.evaluation_service.domain.models.Enroll;
 import unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.entities.CourseEntity;
 import unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.entities.EnrollEntity;
 import unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.entities.StudentEntity;
@@ -19,6 +18,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class EnrollService implements EnrollPort {
@@ -27,6 +27,9 @@ public class EnrollService implements EnrollPort {
     private final StudentRepository studentRepository;
     private final CourseRepository courseRepository;
     private final EnrollMapper enrollMapper;
+
+    //Rabbit communication
+    private final RabbitService rabbitService;
 
     @Override
     public List<EnrollResponseDTO> getEnrolls() {
@@ -46,12 +49,18 @@ public class EnrollService implements EnrollPort {
     @Override
     public EnrollResponseDTO saveEnroll(EnrollRequestDTO enroll) {
         EnrollEntity enrollEntity = enrollMapper.toEntity(enrollMapper.toModel(enroll));
+
+        // RABBIT INTEGRATION
+        rabbitService.sendEnroll(enroll);
+
         return enrollMapper.toDTO(enrollMapper.toModel(enrollRepository.save(enrollEntity)));
     }
 
     @Override
     public boolean deleteEnroll(Long id) {
-        if (enrollRepository.existsById(id)){
+        Optional<EnrollEntity> enrollExist = enrollRepository.findById(id);
+        if (enrollExist.isPresent()){
+            rabbitService.sendDeleteEnroll(enrollExist.get());
             enrollRepository.deleteById(id);
             return true;
         }
@@ -68,6 +77,9 @@ public class EnrollService implements EnrollPort {
             studentEntity.ifPresent(enrollEntity::setStudent);
             courseEntity.ifPresent(enrollEntity::setCourse);
             enrollEntity.setSemester(enroll.getSemester());
+
+            rabbitService.sendUpdateEnroll(enrollEntity);
+
             enrollRepository.save(enrollEntity);
             return true;
         }

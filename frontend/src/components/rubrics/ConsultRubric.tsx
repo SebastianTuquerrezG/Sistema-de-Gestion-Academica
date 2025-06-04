@@ -1,72 +1,213 @@
 "use client"
 
-import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
-import { Search, Plus, Pencil, Trash2 } from "lucide-react";
+import { Search, Plus, Pencil, Trash2, Share2, Copy } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import {
+    Table,
+    TableHeader,
+    TableRow,
+    TableHead,
+    TableBody,
+    TableCell
+} from "@/components/ui/table";
+import { Badge } from "@/components/ui/badge";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue
+} from "@/components/ui/select";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { Eye } from "lucide-react";
+import { Skeleton } from "@/components/ui/skeleton";
 import { useNavigate } from "react-router-dom";
-import { getAllRubrics } from "@/services/rubricService";
+import Notification from "@/components/notifications/notification";
 import { RubricInterface } from "@/interfaces/RubricInterface";
-import { deleteRubric } from "@/services/rubricService";
+import { getAllRubrics, deleteRubric, createRubric } from "@/services/rubricService";
+import DuplicateRubricModal from "@/components/Modal/DuplicateRubricModal.tsx";
+import ShareRubricModal from "@/components/Modal/ShareRubricModal.tsx";
+import ConfirmDeleteModal from "@/components/Modal/ConfirmDeleteModal";
+import { RubricInterfacePeticion } from "@/interfaces/RubricInterfacePeticion.ts";
 
+type NotificationType = {
+    type: "error" | "info" | "success";
+    title: string;
+    message: string;
+};
 
 export default function ConsultarRubrica() {
     const [searchTerm, setSearchTerm] = useState("");
+    const [selectedMateria, setSelectedMateria] = useState("");
+    const [selectedEstado, setSelectedEstado] = useState("");
     const [rubrics, setRubrics] = useState<RubricInterface[]>([]);
-    const navigate = useNavigate(); // Hook to navigate between pages
+    const [isLoading, setIsLoading] = useState(true);
+    const navigate = useNavigate();
     const [selectedRubricId, setSelectedRubricId] = useState<string | null>(null);
-
+    const [showDuplicateModal, setShowDuplicateModal] = useState(false);
+    const [rubricToDuplicate, setRubricToDuplicate] = useState<RubricInterface | null>(null);
+    const [showShareModal, setShowShareModal] = useState(false);
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [rubricToDelete, setRubricToDelete] = useState<RubricInterface | null>(null);
+    const [notification, setNotification] = useState<NotificationType | null>(null);
 
     useEffect(() => {
+        setIsLoading(true);
         getAllRubrics()
-            .then((data) => {
-                const activeRubrics = data.filter((rubric: RubricInterface) => rubric.estado !== "INACTIVO");
-                setRubrics(activeRubrics);
+            .then(data => {
+                setRubrics(data);
+                setIsLoading(false);
             })
-            .catch((error) => console.error(error));
+            .catch((error) => {
+                console.error(error);
+                setIsLoading(false);
+            });
     }, []);
+
+    useEffect(() => {
+        if (notification) {
+            const timeout = setTimeout(() => setNotification(null), 4000);
+            return () => clearTimeout(timeout);
+        }
+    }, [notification]);
 
     const filteredRubrics = rubrics.filter(
         (rubric) =>
-            rubric.nombreRubrica.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            rubric.idRubrica.toLowerCase().includes(searchTerm.toLowerCase())
-     /*       rubric.materia.toLowerCase().includes(searchTerm.toLowerCase())*/
+            (rubric.nombreRubrica.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                String(rubric.idRubrica).includes(searchTerm)) &&
+            (selectedMateria == "Todas las materias" || selectedMateria === "" || rubric.nombreMateria === selectedMateria) &&
+            (selectedEstado == "Todos los estados" || selectedEstado === "" || rubric.estado === selectedEstado)
     );
 
-    // Funcion para navegar a la pagina de editar
-    const handleEdit = (id: string) => {
+    const handleEdit = (id: number) => {
         navigate(`/rubricas/editar/${id}`);
     };
-    // Function para navegar a la pagina de crear
     const handleAdd = () => {
         navigate(`/rubricas/crear`);
     };
-
-    // Función para navegar a RubricDetail
-    const handleDetail = (id: string) => {
-        setSelectedRubricId(id);
+    const handleDetail = (id: number) => {
+        setSelectedRubricId(String(id));
         navigate(`/rubricas/detalle/${id}`);
     };
 
-    // Function to delete a rubric
-    const handleDelete = async (id: string) => {
+    // Eliminar rúbrica
+    const handleDelete = async (id: number) => {
         const success = await deleteRubric(id);
-        if(success) {
-            setRubrics(rubrics.filter(rubric => rubric.idRubrica !== id));
-        }else{
-            alert("Error deleting rubric");
+        if (success) {
+            setRubrics(rubrics.map(rubric =>
+                rubric.idRubrica === id
+                    ? { ...rubric, estado: "INACTIVO" }
+                    : rubric
+            ));
+            setNotification({
+                type: "success",
+                title: "Rúbrica inactivada",
+                message: "La rúbrica ha sido inactivada correctamente.",
+            });
+        } else {
+            setNotification({
+                type: "error",
+                title: "Error",
+                message: "No se pudo inactivar la rúbrica.",
+            });
         }
+    };
+
+    const handleOpenDuplicateModal = (rubric: RubricInterface) => {
+        setRubricToDuplicate(rubric);
+        setShowDuplicateModal(true);
+    };
+
+    const handleDuplicate = async (data: { newName: string; shareWithSamePeople: boolean; copyComments: boolean; resolvedComments: boolean }) => {
+        if (!rubricToDuplicate) return;
+
+        const duplicatedRubric: RubricInterfacePeticion = {
+            idRubrica: null,
+            nombreRubrica: data.newName,
+            idMateria: rubricToDuplicate.materia,
+            notaRubrica: rubricToDuplicate.notaRubrica,
+            objetivoEstudio: rubricToDuplicate.objetivoEstudio,
+            estado: "ACTIVO",
+            criterios: rubricToDuplicate.criterios.map(criterio => ({
+                ...criterio,
+                idRubrica: null
+            })),
+            raId: rubricToDuplicate.raId,
+        };
+
+        const response = await createRubric(duplicatedRubric);
+        if (response && response.idRubrica !== null) {
+            const newRubric: RubricInterface = {
+                ...response,
+                idRubrica: response.idRubrica,
+                materia: rubricToDuplicate.materia,
+                nombreMateria: rubricToDuplicate.nombreMateria,
+                criterios: response.criterios.map(criterio => ({
+                    ...criterio
+                }))
+            };
+            setRubrics((prev) => [...prev, newRubric]);
+            setNotification({
+                type: "success",
+                title: "Rúbrica duplicada",
+                message: `La rúbrica ${data.newName} ha sido duplicada exitosamente.`,
+            });
+        }
+        setShowDuplicateModal(false)
+    };
+
+    const handleShareRubric = async (data: {
+        email: string;
+        permission: string;
+        message: string;
+        notifyUsers: boolean;
+        createLink: boolean;
+        linkPermission: string
+    }) => {
+        if (!rubricToDuplicate) return;
+        setShowShareModal(false);
+    };
+
+    const handleOpenShareModal = (rubric: RubricInterface) => {
+        setRubricToDuplicate(rubric);
+        setShowShareModal(true);
     }
 
+    const getStatusBadge = (status: string) => {
+        switch (status) {
+            case "ACTIVO":
+                return <Badge className="bg-green-500">Activo</Badge>;
+            case "INACTIVO":
+                return <Badge className="bg-gray-500">Inactivo</Badge>;
+            default:
+                return <Badge className="text-purple-500">Desconocido</Badge>;
+        }
+    };
+
+    const handleOpenDeleteModal = (rubric: RubricInterface) => {
+        setRubricToDelete(rubric);
+        setShowDeleteModal(true);
+    };
+
+    const handleConfirmDelete = async () => {
+        if (rubricToDelete) {
+            await handleDelete(rubricToDelete.idRubrica);
+            setRubricToDelete(null);
+            setShowDeleteModal(false);
+        }
+    };
 
     return (
-        <div>
-            <h2 className="title2 border-b-2 border-red-500 inline-block" style={{ color: "var(--primary-regular-color)" }}>
+        <div className="container mx-auto p-4">
+            <h2 className="title2 border-b-2 border-red-500 inline-block mb-4" style={{ color: "var(--primary-regular-color)" }}>
                 Mis Rubricas
             </h2>
-            <main className="max-w-7xl mx-auto px-4 py-8">
-                <div className="mb-6 flex flex-col sm:flex-row gap-4 justify-between items-start sm:items-center">
-                    <div className="relative flex-1 max-w-md">
+
+            <div className="mb-6 space-y-4">
+                <div className="flex flex-col md:flex-row gap-4 items-stretch">
+                    <div className="relative flex-1">
                         <Input
                             type="text"
                             placeholder="Ingrese Rubrica a buscar..."
@@ -76,54 +217,244 @@ export default function ConsultarRubrica() {
                         />
                         <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
                     </div>
-                    <div className="flex gap-2">
-                        <Button className="outline" onClick={() => handleAdd()}>
-                            <Plus className="h-4 w-4 mr-2" />
-                            Añadir Rubrica
-                        </Button>
+
+                    <div className="flex flex-col sm:flex-row gap-2 flex-1">
+                        <Select value={selectedMateria} onValueChange={setSelectedMateria}>
+                            <SelectTrigger className="w-full">
+                                <SelectValue placeholder="Filtrar por materia" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="Todas las materias">Todas las materias</SelectItem>
+                                {[...new Set(rubrics.map(r => r.nombreMateria))]
+                                    .filter((materia): materia is string => typeof materia === "string")
+                                    .map((materia) => (
+                                        <SelectItem key={materia} value={materia}>
+                                            {materia}
+                                        </SelectItem>
+                                    ))}
+                            </SelectContent>
+                        </Select>
+
+                        <Select value={selectedEstado} onValueChange={setSelectedEstado}>
+                            <SelectTrigger className="w-full">
+                                <SelectValue placeholder="Filtrar por estado" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="Todos los estados">Todos los estados</SelectItem>
+                                <SelectItem value="ACTIVO">Activo</SelectItem>
+                                <SelectItem value="INACTIVO">Inactivo</SelectItem>
+                            </SelectContent>
+                        </Select>
                     </div>
+
+                    <Button className="w-full md:w-auto" onClick={handleAdd}>
+                        <Plus className="h-4 w-4 mr-2" />
+                        Crear Rubrica
+                    </Button>
                 </div>
-                <div>
-                    <table className="w-full">
-                        <thead>
-                            <tr className="title5 bg-[#000066] text-white ">
-                                <th className="py-3 text-left ">Identificador</th>
-                                <th className="px-6 py-3 text-left">Nombre Rubrica</th>
-                                <th className="px-6 py-3 text-left">Materia</th>
-                                <th className="px-6 py-3 text-center">Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {filteredRubrics.map((rubric, index) => (
-                                <tr key={rubric.idRubrica} className={index % 2 === 0 ? "bg-gray-50" : "bg-white"}>
-                                    <td className={`px-6 py-4 cursor-pointer ${selectedRubricId === rubric.idRubrica ? "text-blue-600" : ""}`}
-                                        onClick={() => handleDetail(rubric.idRubrica)}>
-                                        {rubric.idRubrica}
-                                    </td>
-                                    <td className={`px-6 py-4 cursor-pointer ${selectedRubricId === rubric.idRubrica ? "text-blue-600" : ""}`}
-                                        onClick={() => handleDetail(rubric.idRubrica)}>
-                                        {rubric.nombreRubrica}
-                                    </td>
-                                    <td className={`px-6 py-4 cursor-pointer ${selectedRubricId === rubric.idRubrica ? "text-blue-600" : ""}`}
-                                        onClick={() => handleDetail(rubric.idRubrica)}>
-                                        {rubric.materia}
-                                    </td>
-                                    <td className="px-6 py-4">
+            </div>
+
+            <div className="overflow-x-auto border border-gray-200">
+                <Table className="min-w-[600px]">
+                    <TableHeader className="sticky top-0 z-10">
+                        <TableRow className="bg-[#000066] hover:bg-[#000066]">
+                            <TableHead className="text-white py-3">ID</TableHead>
+                            <TableHead className="text-white py-3">Nombre</TableHead>
+                            <TableHead className="text-white py-3">Materia</TableHead>
+                            <TableHead className="text-white py-3">Estado</TableHead>
+                            <TableHead className="text-center text-white py-3">Acciones</TableHead>
+                        </TableRow>
+                    </TableHeader>
+                    <TableBody className="divide-y divide-gray-200">
+                        {isLoading ? (
+                            Array.from({ length: 5 }).map((_, index) => (
+                                <TableRow key={index}>
+                                    <TableCell className="py-2">
+                                        <Skeleton className="h-4 w-[50px]" />
+                                    </TableCell>
+                                    <TableCell className="py-2">
+                                        <Skeleton className="h-4 w-[200px]" />
+                                    </TableCell>
+                                    <TableCell className="py-2">
+                                        <Skeleton className="h-4 w-[150px]" />
+                                    </TableCell>
+                                    <TableCell className="py-2">
+                                        <Skeleton className="h-6 w-[70px] rounded-full" />
+                                    </TableCell>
+                                    <TableCell className="py-2">
                                         <div className="flex justify-center gap-2">
-                                            <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => handleEdit(rubric.idRubrica)}>
-                                                <Pencil className="h-4 w-4" />
-                                            </Button>
-                                            <Button variant="ghost" size="icon" className="h-8 w-8 text-orange-500 hover:text-orange-600" onClick={() => handleDelete(rubric.idRubrica)}>
-                                                <Trash2 className="h-4 w-4" />
-                                            </Button>
+                                            {Array.from({ length: 4 }).map((_, i) => (
+                                                <Skeleton key={i} className="h-8 w-8 rounded-md" />
+                                            ))}
                                         </div>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
-            </main>
+                                    </TableCell>
+                                </TableRow>
+                            ))
+                        ) : filteredRubrics.length === 0 ? (
+                            <TableRow>
+                                <TableCell colSpan={5} className="py-8 text-center">
+                                    <div className="flex flex-col items-center justify-center space-y-2">
+                                        <Search className="h-12 w-12 text-gray-400" />
+                                        <p className="text-lg font-medium text-gray-600">
+                                            {rubrics.length === 0
+                                                ? "No tienes ninguna rúbrica creada todavía."
+                                                : "No se encontraron rúbricas con los filtros aplicados."}
+                                        </p>
+                                        {rubrics.length === 0 && (
+                                            <Button onClick={handleAdd} className="mt-4">
+                                                <Plus className="h-4 w-4 mr-2" />
+                                                Crear mi primera rúbrica
+                                            </Button>
+                                        )}
+                                    </div>
+                                </TableCell>
+                            </TableRow>
+                        ) : (
+                            filteredRubrics.map((rubric) => (
+                                <TableRow key={rubric.idRubrica} className={rubric.estado === "INACTIVO" ? "opacity-70 hover:bg-gray-50" : "hover:bg-gray-50"}>
+                                    <TableCell
+                                        className={`py-2 cursor-pointer ${selectedRubricId === String(rubric.idRubrica) ? "text-blue-600" : ""}`}
+                                        onClick={() => handleDetail(rubric.idRubrica)}
+                                    >
+                                        {rubric.idRubrica}
+                                    </TableCell>
+                                    <TableCell
+                                        className={`py-2 cursor-pointer ${selectedRubricId === String(rubric.idRubrica) ? "text-blue-600" : ""}`}
+                                        onClick={() => handleDetail(rubric.idRubrica)}
+                                    >
+                                        {rubric.nombreRubrica}
+                                    </TableCell>
+                                    <TableCell
+                                        className={`py-2 cursor-pointer ${selectedRubricId === String(rubric.idRubrica) ? "text-blue-600" : ""}`}
+                                        onClick={() => handleDetail(rubric.idRubrica)}
+                                    >
+                                        {rubric.nombreMateria}
+                                    </TableCell>
+                                    <TableCell className="py-2">
+                                        {getStatusBadge(rubric.estado)}
+                                    </TableCell>
+                                    <TableCell className="py-2">
+                                        <div className="flex justify-center gap-1 sm:gap-2 flex-wrap">
+                                            <Tooltip>
+                                                <TooltipTrigger asChild>
+                                                    <Button
+                                                        variant="ghost"
+                                                        size="icon"
+                                                        className="h-7 w-7 p-0 text-primary hover:text-primary/80"
+                                                        onClick={() => handleDetail(rubric.idRubrica)}
+                                                    >
+                                                        <Eye className="h-3.5 w-3.5" />
+                                                        <span className="sr-only">Ver detalles</span>
+                                                    </Button>
+                                                </TooltipTrigger>
+                                                <TooltipContent>
+                                                    <p>Ver detalles</p>
+                                                </TooltipContent>
+                                            </Tooltip>
+                                            <Tooltip>
+                                                <TooltipTrigger asChild>
+                                                    <Button
+                                                        variant="ghost"
+                                                        size="icon"
+                                                        className="h-7 w-7 p-0"
+                                                        onClick={() => handleEdit(rubric.idRubrica)}
+                                                        disabled={rubric.estado === "INACTIVO"}
+                                                    >
+                                                        <Pencil className="h-3.5 w-3.5" />
+                                                        <span className="sr-only">Editar</span>
+                                                    </Button>
+                                                </TooltipTrigger>
+                                                <TooltipContent>
+                                                    <p>Editar</p>
+                                                </TooltipContent>
+                                            </Tooltip>
+                                            <Tooltip>
+                                                <TooltipTrigger asChild>
+                                                    <Button
+                                                        variant="ghost"
+                                                        size="icon"
+                                                        className="h-7 w-7 p-0 text-orange-500 hover:text-orange-600"
+                                                        onClick={() => handleOpenDeleteModal(rubric)}
+                                                        disabled={rubric.estado === "INACTIVO"}
+                                                    >
+                                                        <Trash2 className="h-3.5 w-3.5" />
+                                                        <span className="sr-only">Eliminar</span>
+                                                    </Button>
+                                                </TooltipTrigger>
+                                                <TooltipContent>
+                                                    <p>Eliminar</p>
+                                                </TooltipContent>
+                                            </Tooltip>
+                                            <Tooltip>
+                                                <TooltipTrigger asChild>
+                                                    <Button
+                                                        variant="ghost"
+                                                        size="icon"
+                                                        className="h-7 w-7 p-0 text-indigo-500 hover:text-indigo-600"
+                                                        onClick={() => handleOpenDuplicateModal(rubric)}
+                                                        disabled={rubric.estado === "INACTIVO"}
+                                                    >
+                                                        <Copy className="h-3.5 w-3.5" />
+                                                        <span className="sr-only">Duplicar</span>
+                                                    </Button>
+                                                </TooltipTrigger>
+                                                <TooltipContent>
+                                                    <p>Duplicar</p>
+                                                </TooltipContent>
+                                            </Tooltip>
+                                            <Tooltip>
+                                                <TooltipTrigger asChild>
+                                                    <Button
+                                                        variant="ghost"
+                                                        size="icon"
+                                                        className="h-7 w-7 p-0 text-black-500 hover:text-black-600"
+                                                        onClick={() => handleOpenShareModal(rubric)}
+                                                        disabled={rubric.estado === "INACTIVO"}
+                                                    >
+                                                        <Share2 className="h-3.5 w-3.5" />
+                                                        <span className="sr-only">Compartir</span>
+                                                    </Button>
+                                                </TooltipTrigger>
+                                                <TooltipContent>
+                                                    <p>Compartir</p>
+                                                </TooltipContent>
+                                            </Tooltip>
+                                        </div>
+                                    </TableCell>
+                                </TableRow>
+                            ))
+                        )}
+                    </TableBody>
+                </Table>
+            </div>
+
+            <DuplicateRubricModal
+                open={showDuplicateModal}
+                onClose={() => setShowDuplicateModal(false)}
+                originalName={rubricToDuplicate?.nombreRubrica || ""}
+                onDuplicate={handleDuplicate}
+            />
+            <ShareRubricModal
+                open={showShareModal}
+                onClose={() => setShowShareModal(false)}
+                onShare={handleShareRubric}
+                rubricName={rubricToDuplicate?.nombreRubrica || ""}
+            />
+            <ConfirmDeleteModal
+                open={showDeleteModal}
+                onClose={() => setShowDeleteModal(false)}
+                onConfirmDelete={handleConfirmDelete}
+                rubricName={rubricToDelete?.nombreRubrica || ""}
+            />
+
+            {notification && (
+                <Notification
+                    type={notification.type}
+                    title={notification.title}
+                    message={notification.message}
+                    onClose={() => setNotification(null)}
+                />
+            )}
         </div>
     );
 }

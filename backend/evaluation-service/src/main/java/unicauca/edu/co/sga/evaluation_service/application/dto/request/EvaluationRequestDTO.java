@@ -24,7 +24,7 @@ public class EvaluationRequestDTO {
     private String description;
 
     @NotNull(message = "El estado de la evaluacion es requerido")
-    private EvaluationStatus evaluationStatus = EvaluationStatus.NO_EVALUADO;
+    private EvaluationStatus evaluationStatus;
 
     @NotNull(message = "La calificacion es requerida")
     private BigDecimal score;

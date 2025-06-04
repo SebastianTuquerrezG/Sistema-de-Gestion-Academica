@@ -1,6 +1,6 @@
 [
   {
-    "idRubrica": "IS101",
+    "idRubrica": "100",
     "nombreRubrica": "Evaluación de Proyecto de Software",
     "materia": "Ingeniería de Software III",
     "notaRubrica": 3,
@@ -106,7 +106,7 @@
     "estado": "ACTIVO"
   },
   {
-    "idRubrica": "IS102",
+    "idRubrica": "200",
     "nombreRubrica": "Evaluación de Proyecto de Software",
     "materia": "Ingeniería de Software III",
     "notaRubrica": 3,
@@ -164,7 +164,7 @@
     "estado": "ACTIVO"
   },
   {
-    "idRubrica": "IS103",
+    "idRubrica": "300",
     "nombreRubrica": "Evaluación de Documentación Técnica",
     "materia": "Ingeniería de Software III",
     "notaRubrica": 4,
@@ -246,7 +246,7 @@
     "estado": "ACTIVO"
   },
   {
-    "idRubrica": "IS104",
+    "idRubrica": "400",
     "nombreRubrica": "Evaluación de Prueba de Software",
     "materia": "Ingeniería de Software III",
     "notaRubrica": 5,
@@ -325,6 +325,6 @@
         ]
       }
     ],
-    "estado": "ACTIVO"
+    "estado": "INACTIVO"
   }
 ]

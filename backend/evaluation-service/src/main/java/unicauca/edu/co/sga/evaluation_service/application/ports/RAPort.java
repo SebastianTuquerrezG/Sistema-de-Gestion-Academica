@@ -12,4 +12,5 @@ public interface RAPort {
     RAResponseDTO saveRA(RARequestDTO RA);
     boolean deleteRA(Long id);
     boolean updateRA(Long id, RARequestDTO RA);
+    List<RAResponseDTO> getRAsByName(String name);
 }

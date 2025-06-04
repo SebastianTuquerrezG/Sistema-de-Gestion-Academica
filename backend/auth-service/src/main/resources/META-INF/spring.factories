@@ -1,0 +1,1 @@
+org.springframework.boot.env.EnvironmentPostProcessor=unicauca.edu.co.auth_service.infrastructure.config.DotenvEnvironmentPostProcessor

@@ -3,14 +3,21 @@ package unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.entiti
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import jakarta.transaction.Transactional;
 import lombok.*;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+import org.hibernate.proxy.HibernateProxy;
 import unicauca.edu.co.sga.evaluation_service.domain.enums.GeneralEnums;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
-@Data
+@Getter
+@Setter
+@ToString
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -31,20 +38,20 @@ public class RubricEntity {
     private int notaRubrica;
 
 //    @Column(nullable = false, length = 300)
-//    private String competence; // This is a entity that we don't know, Take care of this shit bro
+//    private String competence; // This is an entity that we don't know, Take care of this shit bro
 
     @ManyToOne
     @JoinColumn(name = "subject_id", nullable = false)
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    @JsonBackReference
+    @JsonBackReference("subject-rubric")
     private SubjectEntity subject;
 
     @ManyToOne
     @JoinColumn(name = "ra_id", nullable = false, foreignKey = @ForeignKey(name = "fk_learning_results"))
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    @JsonBackReference
+    @JsonBackReference("ra-rubric")
     private RAEntity ra;
 
     /*@ManyToOne
@@ -54,14 +61,16 @@ public class RubricEntity {
     @EqualsAndHashCode.Exclude
     private CriteriaEntity criteria;*/
 
-    @OneToMany(mappedBy = "rubric", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JsonManagedReference
+    @OneToMany(mappedBy = "rubric", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JsonManagedReference("rubric-criteria")
+    @ToString.Exclude
     private List<CriteriaEntity> criterios;
 
     @OneToMany(mappedBy = "rubric", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonManagedReference
+    @JsonManagedReference("rubric-evaluation")
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
+    @Fetch(FetchMode.JOIN)
     private Set<EvaluationEntity> evaluation;
 
 //    @Column(updatable = false)
@@ -76,4 +85,20 @@ public class RubricEntity {
     @Column(name = "estado", nullable = false)
     @Enumerated(EnumType.STRING)
     private GeneralEnums.status estado;
+
+    @Override
+    public final boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null) return false;
+        Class<?> oEffectiveClass = o instanceof HibernateProxy ? ((HibernateProxy) o).getHibernateLazyInitializer().getPersistentClass() : o.getClass();
+        Class<?> thisEffectiveClass = this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass() : this.getClass();
+        if (thisEffectiveClass != oEffectiveClass) return false;
+        RubricEntity that = (RubricEntity) o;
+        return getIdRubrica() != null && Objects.equals(getIdRubrica(), that.getIdRubrica());
+    }
+
+    @Override
+    public final int hashCode() {
+        return this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass().hashCode() : getClass().hashCode();
+    }
 }

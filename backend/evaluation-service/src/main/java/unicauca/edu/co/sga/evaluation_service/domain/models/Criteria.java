@@ -16,7 +16,10 @@ import java.util.Set;
 @Builder
 public class Criteria {
     private Long id;
+    private String comment;
     private String description;
-    private Long score;
+    private Integer percentage;
+    private Float score;
     private Set<Long> performance_level;
+    private Long rubricId;
 }

@@ -1,45 +1,233 @@
 services:
+  keycloak:
+    env_file:
+      - .env
+    container_name: keycloak_sga
+    image: quay.io/keycloak/keycloak:26.2.0
+    command: [ "start-dev" ]
+    ports:
+      - "8181:8181"
+    environment:
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://${KEYCLOAK_DB_HOST}:${KEYCLOAK_DB_PORT}/${KEYCLOAK_DB_NAME}?sslmode=require
+      KC_DB_USERNAME: ${KEYCLOAK_DB_USER}
+      KC_DB_PASSWORD: ${KEYCLOAK_DB_PASSWORD}
+      KC_DB_SCHEMA: ${KEYCLOAK_DB_SCHEMA}
+      KEYCLOAK_ADMIN: ${KEYCLOAK_ADMIN_USER}
+      KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
+      KC_HTTP_PORT: 8181
+      KC_HOSTNAME: keycloak.local
+    networks:
+      - backend-network
+    volumes:
+      - keycloak_data_sga:/opt/keycloak/data
+
+  auth-service:
+    env_file:
+      - .env
+    container_name: auth-service-sga
+    build:
+      context: ./auth-service
+      dockerfile: Dockerfile
+    ports:
+      - "9090:9090"
+    depends_on:
+      - keycloak
+    environment:
+      KC_CLIENT_SECRET: ${KC_CLIENT_SECRET}
+    networks:
+      - backend-network
+    extra_hosts:
+      - "keycloak.local:host-gateway"
+
   eureka-server:
-    build: ./eureka-server
+    env_file:
+      - .env
+    build:
+      context: ./eureka-server
+      dockerfile: Dockerfile
+    container_name: eureka-server
     ports:
       - "8761:8761"
     networks:
       - backend-network
+    environment:
+      EUREKA_USERNAME: ${EUREKA_USERNAME}
+      EUREKA_PASSWORD: ${EUREKA_PASSWORD}
 
   gateway:
-    build: ./gateway
+    env_file:
+      - .env
+    build:
+      context: ./gateway
+      dockerfile: Dockerfile
+    container_name: gateway-sga
     ports:
       - "8080:8080"
     depends_on:
       - eureka-server
+      - keycloak
+    networks:
+      - backend-network
+    extra_hosts:
+      - "keycloak.local:host-gateway"
+    environment:
+      EUREKA_USERNAME: ${EUREKA_USERNAME}
+      EUREKA_PASSWORD: ${EUREKA_PASSWORD}
+      KC_CLIENT_SECRET: ${KC_CLIENT_SECRET}
+      ACTIVE_PROFILE: docker
+
+  modulorubricacriterio:
+    env_file:
+      - .env
+    build:
+      context: ./ModuloRubricaCriterio
+      dockerfile: Dockerfile
+    container_name: modulorubricacriterio
+    ports:
+      - "0:5001"
+    depends_on:
+      - eureka-server
+      - gateway
+      - mariadb
+    environment:
+      EVALUATION_DATASOURCE_URL: ${EVALUATION_DOCKER_DATASOURCE_URL}
+      EVALUATION_DATASOURCE_USERNAME: ${EVALUATION_DATASOURCE_USERNAME}
+      EVALUATION_DATASOURCE_PASSWORD: ${EVALUATION_DATASOURCE_PASSWORD}
+      EUREKA_USERNAME: ${EUREKA_USERNAME}
+      EUREKA_PASSWORD: ${EUREKA_PASSWORD}
+      ACTIVE_PROFILE: docker
     networks:
       - backend-network
 
-  modulorubricacriterio:
-    build: ./ModuloRubricaCriterio_Hexagonal
+  evaluation-service:
+    env_file:
+      - .env
+    build:
+      context: ./evaluation-service
+      dockerfile: Dockerfile
+    container_name: evaluation-service
     ports:
-      - "5001:5001"
+      - "0:5002"
     depends_on:
       - eureka-server
-      - mariadb   # 👈 importante para que espere a la base de datos
+      - gateway
+      - mariadb
     environment:
-      - SPRING_DATASOURCE_URL=${SPRING_DATASOURCE_URL}
-      - SPRING_DATASOURCE_USERNAME=${SPRING_DATASOURCE_USERNAME}
-      - SPRING_DATASOURCE_PASSWORD=${SPRING_DATASOURCE_PASSWORD}
+      EVALUATION_DATASOURCE_URL: ${EVALUATION_DOCKER_DATASOURCE_URL}
+      EVALUATION_DATASOURCE_USERNAME: ${EVALUATION_DATASOURCE_USERNAME}
+      EVALUATION_DATASOURCE_PASSWORD: ${EVALUATION_DATASOURCE_PASSWORD}
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS}
+      EUREKA_USERNAME: ${EUREKA_USERNAME}
+      EUREKA_PASSWORD: ${EUREKA_PASSWORD}
+      ACTIVE_PROFILE: docker
+    networks:
+      - backend-network
+
+  common-utilities-service:
+    env_file:
+      - .env
+    build:
+        context: ./common-utilities-service
+        dockerfile: Dockerfile
+    container_name: common-utilities-service
+    ports:
+      - "0:5004"
+    depends_on:
+      - eureka-server
+      - gateway
+      - common_utilities_mariadb
+      - evaluation-service
+    environment:
+      COMMON_DATASOURCE_URL: ${COMMON_DOCKER_DATASOURCE_URL}
+      COMMON_DATASOURCE_USERNAME: ${COMMON_DATASOURCE_USERNAME}
+      COMMON_DATASOURCE_PASSWORD: ${COMMON_DATASOURCE_PASSWORD}
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS}
+      EUREKA_USERNAME: ${EUREKA_USERNAME}
+      EUREKA_PASSWORD: ${EUREKA_PASSWORD}
+      ACTIVE_PROFILE: docker
+      SPRING_RABBITMQ_HOST: rabbit
     networks:
       - backend-network
 
   mariadb:
     image: mariadb:10.5
     restart: always
+    env_file:
+      - .env
     environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: unicauca
+      MYSQL_ROOT_PASSWORD: ${EVALUATION_DATASOURCE_PASSWORD}
+      MYSQL_DATABASE: ${EVALUATION_DATASOURCE_NAME}
+      MARIADB_AUTO_UPGRADE: 1
+      MARIADB_DISABLE_UPGRADE_BACKUP: 1
     ports:
       - "3306:3306"
+    volumes:
+      - mariadb_data:/var/lib/mysql
+      - ./init/mariadb.sql:/docker-entrypoint-initdb.d/mariadb.sql
     networks:
       - backend-network
+
+  common_utilities_mariadb:
+    image: mariadb:10.5
+    restart: always
+    env_file:
+      - .env
+    environment:
+      MYSQL_ROOT_PASSWORD: ${COMMON_DATASOURCE_PASSWORD}
+      MYSQL_DATABASE: ${COMMON_DATASOURCE_NAME}
+      MARIADB_AUTO_UPGRADE: 1
+      MARIADB_DISABLE_UPGRADE_BACKUP: 1
+    ports:
+      - "3308:3306"
+    volumes:
+      - common_utilities_data:/var/lib/mysql
+      - ./init/common.sql:/docker-entrypoint-initdb.d/common.sql
+    networks:
+      - backend-network
+
+  rabbit-1:
+    image: rabbitmq:3.12-management
+    container_name: rabbit
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    env_file:
+      - .env
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS}
+    networks:
+      backend-network:
+        aliases:
+          - rabbit
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    container_name: phpmyadmin_sga
+    restart: always
+    env_file:
+      - .env
+    ports:
+      - "8888:80" # Accede a phpMyAdmin en localhost:8888
+    environment:
+      PMA_ARBITRARY: 1  # Permite conexión a cualquier servidor
+      PMA_HOST: mariadb  # Servidor por defecto (primera BD)
+      MYSQL_ROOT_PASSWORD: ${PHPMYADMIN_ROOT_PASSWORD}
+    networks:
+      - backend-network
+    depends_on:
+      - mariadb
+      - common_utilities_mariadb
 
 networks:
   backend-network:
     driver: bridge
+
+volumes:
+  keycloak_data_sga:
+  mariadb_data:
+  common_utilities_data:
+  rubric_data:

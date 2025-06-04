@@ -2,16 +2,13 @@ package unicauca.edu.co.sga.evaluation_service.application.services;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import unicauca.edu.co.sga.evaluation_service.application.dto.request.CourseRequestDTO;
 import unicauca.edu.co.sga.evaluation_service.application.dto.response.CourseResponseDTO;
-import unicauca.edu.co.sga.evaluation_service.application.dto.response.TeacherResponseDTO;
 import unicauca.edu.co.sga.evaluation_service.application.ports.CoursePort;
 import unicauca.edu.co.sga.evaluation_service.domain.exceptions.NotFoundException;
 import unicauca.edu.co.sga.evaluation_service.domain.models.Course;
 import unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.entities.CourseEntity;
-import unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.entities.SubjectEntity;
 import unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.entities.TeacherEntity;
 import unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.mappers.CourseMapper;
 import unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.repositories.CourseRepository;
@@ -19,7 +16,6 @@ import unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.reposit
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service

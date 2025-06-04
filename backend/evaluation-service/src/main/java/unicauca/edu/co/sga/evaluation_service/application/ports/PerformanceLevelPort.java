@@ -2,6 +2,7 @@ package unicauca.edu.co.sga.evaluation_service.application.ports;
 
 import unicauca.edu.co.sga.evaluation_service.application.dto.request.PerformanceLevelRequestDTO;
 import unicauca.edu.co.sga.evaluation_service.application.dto.response.PerformanceLevelResponseDTO;
+import unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.entities.PerformanceEntity;
 
 import java.util.List;
 import java.util.Optional;
