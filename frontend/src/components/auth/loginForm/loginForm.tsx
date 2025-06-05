@@ -158,9 +158,13 @@ export default function LoginForm() {
                         {...register("password")}
                     />
                     {errors.password && errors.password.message !== "" && (
-                        <span className="text-xs md:text-sm text-error font-medium">{errors.password.message}</span>
+                        <span className="text-xs md:text-sm text-error font-medium text-red-600">{errors.password.message}</span>
                     )}
-                    {errors.root && <span className="text-error text-[12px] md:text-sm">{errors.root.message as string}</span>}
+                    {errors.root && (
+                        <span className="text-error text-[12px] md:text-sm text-red-600">
+                            {errors.root.message as string}
+                        </span>
+                    )}
 
                     <div className="flex items-center space-x-2 pb-2">
                         <Checkbox
