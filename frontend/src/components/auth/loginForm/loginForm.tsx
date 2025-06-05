@@ -111,8 +111,13 @@ export default function LoginForm() {
         setError("username", { type: "server", message: "" });
         setError("password", { type: "server", message: "" });
 
-        setError("root", { type: "server", message: result.error });
-        toast.error(result.error);
+        let errorMessage = "Error al iniciar sesión. Por favor, inténtalo nuevamente.";
+
+        if (result.success === false) {
+            errorMessage = "Contraseña incorrecta o usuario no encontrado.";
+        }
+        setError("root", { type: "server", message: errorMessage });
+        toast.error(errorMessage);
     };
 
     return (
