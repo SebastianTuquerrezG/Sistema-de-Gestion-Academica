@@ -21,48 +21,76 @@ public class HistogramCriteriaService {
     //private final ObjectMapper objectMapper;
 
     public List<HistogramByCriteriaDTO> getHistogramByCriteria(String subjectName, String rubricName, String period) {
-        List<Object[]> criteriaData = evaluationRepository.findCriteriaWithActualLevels(
+        /*List<Object[]> criteriaData = evaluationRepository.findCriteriaWithActualLevels(
                 subjectName, rubricName, period);
 
-        Map<Long, HistogramByCriteriaDTO> result = new LinkedHashMap<>();
+        // 2. Organizar por criterio
+        Map<Long, List<Object[]>> criteriaMap = criteriaData.stream()
+                .collect(Collectors.groupingBy(row -> (Long) row[0]));
 
-        // Primero organizamos todos los niveles por criterio
-        Map<Long, List<LevelInfo>> levelsByCriteria = new HashMap<>();
+        List<HistogramByCriteriaDTO> result = new ArrayList<>();
 
-        for (Object[] row : criteriaData) {
-            Long criteriaId = (Long) row[0];
-            String criteriaDescription = (String) row[1];
-            Long levelId = (Long) row[2];
-            String levelDescription = (String) row[3];
-            Double minRango = (Double) row[4];
-            Double maxRango = (Double) row[5];
+        // 3. Procesar cada criterio
+        for (Map.Entry<Long, List<Object[]>> entry : criteriaMap.entrySet()) {
+            Long criteriaId = entry.getKey();
+            List<Object[]> levels = entry.getValue();
 
-            // Creamos el DTO si no existe
-            result.computeIfAbsent(criteriaId, id ->
-                    new HistogramByCriteriaDTO(id, criteriaDescription, new LinkedHashMap<>()));
+            // Ordenar niveles por ID
+            levels.sort(Comparator.comparing(row -> (Long) row[2]));
 
-            // Agregamos la info del nivel
-            levelsByCriteria.computeIfAbsent(criteriaId, k -> new ArrayList<>())
-                    .add(new LevelInfo(levelId, levelDescription, minRango, maxRango));
+            // Obtener descripción del criterio (usamos el primer registro)
+            String criteriaDescription = (String) levels.get(0)[1];
+
+            Map<String, Long> levelCounts = new LinkedHashMap<>();
+
+            // 4. Contar estudiantes para cada nivel
+            for (Object[] level : levels) {
+                Long levelId = (Long) level[2];
+                String levelDescription = (String) level[3];
+                Double minRango = (Double) level[4];
+                Double maxRango = (Double) level[5];
+
+                // Determinar si es el último nivel
+                boolean isLastLevel = levelId.equals(levels.get(levels.size()-1)[2]);
+
+                Long count = evaluationRepository.countStudentsByLevelRange(
+                        criteriaId,
+                        minRango,
+                        isLastLevel ? maxRango : maxRango - 0.1,
+                        subjectName,
+                        rubricName,
+                        period
+                );
+
+                String levelKey = levelDescription + " (" + minRango + "-" + maxRango + ")";
+                levelCounts.put(levelKey, count);
+            }
+
+            result.add(new HistogramByCriteriaDTO(criteriaId, criteriaDescription, levelCounts));
         }
 
-        // Luego contamos estudiantes para cada nivel
-        levelsByCriteria.forEach((criteriaId, levels) -> {
-            HistogramByCriteriaDTO dto = result.get(criteriaId);
+        return result;*/
+        List<Object[]> results = evaluationRepository.findCriteriaWithAccurateCounts(
+                subjectName, rubricName, period);
 
-            levels.forEach(level -> {
-                Long count = evaluationRepository.countStudentsByLevelRange(
-                        criteriaId, level.minRango, level.maxRango,
-                        subjectName, rubricName, period);
+        Map<Long, HistogramByCriteriaDTO> resultMap = new LinkedHashMap<>();
 
-                String levelKey = String.format("%s (%.1f-%.1f)",
-                        level.description, level.minRango, level.maxRango);
+        for (Object[] row : results) {
+            Long criteriaId = (Long) row[0];
+            String criteriaDesc = (String) row[1];
+            String levelDesc = (String) row[3];
+            String rangeNota = (String) row[4];
+            Long count = (Long) row[5];
 
-                dto.getLevelCounts().put(levelKey, count);
-            });
-        });
+            HistogramByCriteriaDTO dto = resultMap.computeIfAbsent(
+                    criteriaId,
+                    id -> new HistogramByCriteriaDTO(id, criteriaDesc, new LinkedHashMap<>()));
 
-        return new ArrayList<>(result.values());
+            String levelKey = levelDesc + " (" + rangeNota + ")";
+            dto.getLevelCounts().put(levelKey, count);
+        }
+
+        return new ArrayList<>(resultMap.values());
     }
     private static class LevelInfo {
         Long id;
