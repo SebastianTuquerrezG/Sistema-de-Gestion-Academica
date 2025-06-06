@@ -4,11 +4,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-import unicauca.edu.co.sga.evaluation_service.application.dto.response.stats.CriteriaAverageDTO;
-import unicauca.edu.co.sga.evaluation_service.application.dto.response.stats.CriteriaStatsDTO;
-import unicauca.edu.co.sga.evaluation_service.application.dto.response.stats.HistogramByCriteriaDTO;
+import unicauca.edu.co.sga.evaluation_service.application.dto.response.stats.*;
 import unicauca.edu.co.sga.evaluation_service.infrastructure.persistence.entities.EvaluationEntity;
-import unicauca.edu.co.sga.evaluation_service.application.dto.response.stats.EvaluationStats;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -60,44 +57,90 @@ public interface EvaluationRepository extends JpaRepository<EvaluationEntity, Lo
                                              @Param("period") String period);
 
     //HISTOGRAMA POR CRITERIO
-
-    @Query(
+    /*@Query(
             """
-                    SELECT new unicauca.edu.co.sga.evaluation_service.application.dto.response.stats.HistogramByCriteriaDTO(
-                                        
-                        c.idCriterio,
-                                        
-                        c.crfDescripcion,
-                                        
-                        SUM(CASE WHEN e.score BETWEEN 0 AND 2.9 THEN 1 ELSE 0 END),
-                                        
-                        SUM(CASE WHEN e.score BETWEEN 3.0 AND 4.5 THEN 1 ELSE 0 END),
-                                        
-                        SUM(CASE WHEN e.score BETWEEN 4.6 AND 5.0 THEN 1 ELSE 0 END)
-                                        
-                    )
-                                        
-                    FROM CriteriaEntity c
-                                        
-                    JOIN c.rubric r
-                    JOIN EvaluationEntity e ON e.rubric = r
-                    JOIN e.enroll en
-                    JOIN en.course co
-                    JOIN co.subject s
-                                        
-                    WHERE (:subjectName IS NULL OR s.name = :subjectName)
-                      AND (:rubricName IS NULL OR r.nombreRubrica = :rubricName)
-                      AND (:period IS NULL OR en.semester = :period)
-                                        
-                    GROUP BY c.idCriterio, c.crfDescripcion
-                                        
-                    """
+            SELECT 
+                c.idCriterio as criteriaId,
+                c.crfDescripcion as criteriaDescription,
+                (
+                    SELECT JSON_OBJECTAGG(n.nivelDescripcion, COUNT(cr.id))
+                    FROM PerformanceEntity n
+                    LEFT JOIN CalificationRegisterEntity cr ON cr.criterio.idCriterio = c.idCriterio 
+                        AND cr.evaluation.id = e.id
+                        AND cr.calification BETWEEN 
+                            CAST(SUBSTRING_INDEX(n.rangoNota, '-', 1) AS double) 
+                            AND 
+                            CAST(SUBSTRING_INDEX(n.rangoNota, '-', -1) AS double)
+                    WHERE n.criterio.idCriterio = c.idCriterio
+                    GROUP BY n.criterio.idCriterio
+                ) as levelCounts
+            FROM CriteriaEntity c
+            JOIN c.rubric r
+            JOIN EvaluationEntity e ON e.rubric = r
+            JOIN e.enroll en
+            JOIN en.course co
+            JOIN co.subject s
+            WHERE (:subjectName IS NULL OR s.name = :subjectName)
+              AND (:rubricName IS NULL OR r.nombreRubrica = :rubricName)
+              AND (:period IS NULL OR en.semester = :period)
+            GROUP BY c.idCriterio, c.crfDescripcion
+            """
     )
-    List<HistogramByCriteriaDTO> findHistogramByCriteria(
+    List<HistogramByCriteriaProjection> findHistogramByCriteria(
+            @Param("subjectName") String subjectName,
+            @Param("rubricName") String rubricName,
+            @Param("period") String period
+    );*/
+
+    @Query("""
+    SELECT 
+        c.idCriterio,
+        c.crfDescripcion,
+        n.idNivel,
+        n.nivelDescripcion,
+        CAST(SUBSTRING_INDEX(n.rangoNota, '-', 1) AS double) as minRango,
+        CAST(SUBSTRING_INDEX(n.rangoNota, '-', -1) AS double) as maxRango
+    FROM CriteriaEntity c
+    JOIN c.niveles n
+    JOIN c.rubric r
+    JOIN EvaluationEntity e ON e.rubric = r
+    JOIN e.enroll en
+    JOIN en.course co
+    JOIN co.subject s
+    WHERE (:subjectName IS NULL OR s.name = :subjectName)
+      AND (:rubricName IS NULL OR r.nombreRubrica = :rubricName)
+      AND (:period IS NULL OR en.semester = :period)
+    ORDER BY c.idCriterio, n.idNivel
+""")
+    List<Object[]> findCriteriaWithActualLevels(
             @Param("subjectName") String subjectName,
             @Param("rubricName") String rubricName,
             @Param("period") String period
     );
+
+    @Query("""
+    SELECT COUNT(cr.id)
+    FROM CalificationRegisterEntity cr
+    JOIN cr.evaluation e
+    JOIN e.enroll en
+    JOIN en.course co
+    JOIN co.subject s
+    WHERE cr.criterio.idCriterio = :criteriaId
+      AND cr.calification >= :minRango
+      AND cr.calification < :maxRango
+      AND (:subjectName IS NULL OR s.name = :subjectName)
+      AND (:rubricName IS NULL OR e.rubric.nombreRubrica = :rubricName)
+      AND (:period IS NULL OR en.semester = :period)
+""")
+    Long countStudentsByLevelRange(
+            @Param("criteriaId") Long criteriaId,
+            @Param("minRango") Double minRango,
+            @Param("maxRango") Double maxRango,
+            @Param("subjectName") String subjectName,
+            @Param("rubricName") String rubricName,
+            @Param("period") String period
+    );
+
 
     //PROMEDIO POR CRITERIO
 
