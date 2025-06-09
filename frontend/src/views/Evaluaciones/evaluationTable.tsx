@@ -9,7 +9,8 @@ import {
   getCalificationsByEvaluationId,
 } from "../../services/evaluationService";
 import { Criterio, NotificationType, COLORS_BASE } from "./types";
-import { getNivel, calculateTotalScore } from "./utils/evaluationUtils";
+import { getNivelDinamico, calculateTotalScore } from "./utils/evaluationUtils";
+import { getNivelGenerico } from "./utils/evaluationUtils";
 
 interface Props {
   criterios: Criterio[];
@@ -130,7 +131,7 @@ const EvaluationTable: React.FC<Props> = ({ criterios, enrollId, rubricaId, estu
   }, [enrollId, rubricaId, estudiante, criterios, forceCleanState]);
 
   const handleChange = (index: number, event: React.ChangeEvent<HTMLInputElement>) => {
-    let value = event.target.value;
+    let value = event.target.value.replace(',', '.');
     const numericValue = parseFloat(value);
     if ((!isNaN(numericValue) && numericValue > 5) || /[^\d.]/.test(value)) {
       setNotification({ type: "error", title: "Error", message: "Rango de calificación [0, 5]." });
@@ -215,7 +216,7 @@ const EvaluationTable: React.FC<Props> = ({ criterios, enrollId, rubricaId, estu
             calification: valores[index],
             criteriaId: criterio.idCriterio,
             evaluationId: evaluation.id,
-            level: getNivel(Number(valores[index])),
+            level: getNivelGenerico(Number(valores[index]), criterio.descriptores),
             message: comentarios[index] || "",
           })
         )
@@ -339,11 +340,22 @@ const EvaluationTable: React.FC<Props> = ({ criterios, enrollId, rubricaId, estu
                         onKeyDown={(e) => {
                           if (!disabledInputs) handleKeyDown(e);
                         }}
+                        onBlur={(e) => {
+                          // Formatear a dos decimales solo al perder el foco
+                          if (e.target.value !== "" && !isNaN(Number(e.target.value))) {
+                            const num = Number(e.target.value);
+                            setValores((prev) => {
+                              const copy = [...prev];
+                              copy[index] = Number(num.toFixed(2));
+                              return copy;
+                            });
+                          }
+                        }}
                         disabled={disabledInputs}
-                        step="0.1"
+                        step="0.01"
                         min="0"
                         max="5"
-                        placeholder="0.0"
+                        placeholder="0.00"
                         className="evaluation-input"
                       />
                     </td>

@@ -5,6 +5,7 @@ services:
     container_name: keycloak_sga
     image: quay.io/keycloak/keycloak:26.2.0
     command: [ "start-dev" ]
+    restart: always
     ports:
       - "8181:8181"
     environment:
@@ -87,9 +88,19 @@ services:
     ports:
       - "0:5001"
     depends_on:
-      - eureka-server
-      - gateway
-      - mariadb
+      eureka-server:
+        condition: service_started
+      gateway:
+        condition: service_started
+      mariadb:
+        condition: service_healthy
+    healthcheck:
+      test: |
+        curl -sSf http://localhost:5001/actuator/health | grep -q '"db":{"status":"UP"}' || exit 1
+      interval: 15s
+      timeout: 5s
+      retries: 3
+    restart: unless-stopped
     environment:
       EVALUATION_DATASOURCE_URL: ${EVALUATION_DOCKER_DATASOURCE_URL}
       EVALUATION_DATASOURCE_USERNAME: ${EVALUATION_DATASOURCE_USERNAME}
@@ -110,9 +121,19 @@ services:
     ports:
       - "0:5002"
     depends_on:
-      - eureka-server
-      - gateway
-      - mariadb
+      eureka-server:
+        condition: service_started
+      gateway:
+        condition: service_started
+      mariadb:
+        condition: service_healthy
+    healthcheck:
+      test: |
+        curl -sSf http://localhost:5002/actuator/health | grep -q '"db":{"status":"UP"}' || exit 1
+      interval: 15s
+      timeout: 5s
+      retries: 3
+    restart: unless-stopped
     environment:
       EVALUATION_DATASOURCE_URL: ${EVALUATION_DOCKER_DATASOURCE_URL}
       EVALUATION_DATASOURCE_USERNAME: ${EVALUATION_DATASOURCE_USERNAME}
@@ -135,10 +156,21 @@ services:
     ports:
       - "0:5004"
     depends_on:
-      - eureka-server
-      - gateway
-      - common_utilities_mariadb
-      - evaluation-service
+      eureka-server:
+        condition: service_started
+      gateway:
+        condition: service_started
+      common_utilities_mariadb:
+        condition: service_healthy
+      evaluation-service:
+        condition: service_started
+    healthcheck:
+      test: |
+        curl -sSf http://localhost:5004/actuator/health | grep -q '"db":{"status":"UP"}' || exit 1
+      interval: 15s
+      timeout: 5s
+      retries: 3
+    restart: unless-stopped
     environment:
       COMMON_DATASOURCE_URL: ${COMMON_DOCKER_DATASOURCE_URL}
       COMMON_DATASOURCE_USERNAME: ${COMMON_DATASOURCE_USERNAME}
@@ -169,6 +201,14 @@ services:
       - ./init/mariadb.sql:/docker-entrypoint-initdb.d/mariadb.sql
     networks:
       - backend-network
+    command:
+      - --init-file=/docker-entrypoint-initdb.d/mariadb.sql
+    healthcheck:
+      test: mysqladmin ping -uroot -p"$$MYSQL_ROOT_PASSWORD"
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
 
   common_utilities_mariadb:
     image: mariadb:10.5
@@ -187,10 +227,19 @@ services:
       - ./init/common.sql:/docker-entrypoint-initdb.d/common.sql
     networks:
       - backend-network
+    command:
+      - --init-file=/docker-entrypoint-initdb.d/common.sql
+    healthcheck:
+      test: mysqladmin ping -uroot -p"$$MYSQL_ROOT_PASSWORD"
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
 
   rabbit-1:
     image: rabbitmq:3.12-management
     container_name: rabbit
+    restart: always
     ports:
       - "5672:5672"
       - "15672:15672"
