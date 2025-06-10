@@ -5,17 +5,14 @@ on:
     branches: [ main, auth-WTF ]
     paths: 
       - 'backend/**'
-      - '!backend/**/*.md'  # Ignora archivos no relevantes
+      - '!backend/**/*.md' 
 
 jobs:
-  build-and-deploy:
+  backend-ci-cd:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
-
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v2
 
     - name: Cache Maven packages
       uses: actions/cache@v3
@@ -24,16 +21,6 @@ jobs:
         key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
         restore-keys: ${{ runner.os }}-m2-
 
-    - name: Build JARs
-      run: |
-        cd backend
-        if git diff --name-only HEAD^ HEAD | grep -E 'src/|pom.xml'; then
-          chmod +x build-jar.sh
-          ./build-jar.sh
-        else
-          echo "No hay cambios relevantes en el backend. Saltando construcción de JARs."
-        fi
-
     - name: Deploy to server
       uses: appleboy/ssh-action@master
       with:
@@ -41,6 +28,12 @@ jobs:
         username: ${{ secrets.SERVER_USER }}
         key: ${{ secrets.SERVER_SSH_KEY }}
         script: |
-          cd /home/Proyecto1/backend
+          cd /home/Sistema-de-Gestion-Academica
+          git pull origin main
+          cd backend
+          chmod +x build-jar.sh
+          ./build-jar.sh
+          docker compose stop
+          docker compose rm -f
           docker compose build --no-cache
           docker compose up -d

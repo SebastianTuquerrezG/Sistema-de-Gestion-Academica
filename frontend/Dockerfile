@@ -1,31 +1,16 @@
-# Etapa 1: Build del Frontend
-FROM node:20 AS builder
+FROM node:20
 
 WORKDIR /app
 
+# Copiar dependencias
 COPY package*.json ./
 COPY pnpm-lock.yaml ./
-RUN npm install -g pnpm && pnpm install
+RUN npm install -g pnpm pm2 && pnpm install
 
+# Copiar el resto del código
 COPY . .
 
-RUN pnpm run build
+EXPOSE 3000
 
-RUN pnpm run build
-
-# Etapa 2: Servir en Apache
-FROM httpd:2.4-bullseye
-
-# Habilitar mod_rewrite "a mano"
-RUN sed -i '/LoadModule rewrite_module/s/^#//g' /usr/local/apache2/conf/httpd.conf
-
-# Permitir .htaccess
-RUN sed -i '/<Directory "\/usr\/local\/apache2\/htdocs">/,/<\/Directory>/ s/AllowOverride None/AllowOverride All/' /usr/local/apache2/conf/httpd.conf
-
-# Copiar el build y .htaccess
-COPY --from=builder /app/dist/ /usr/local/apache2/htdocs/
-COPY .htaccess /usr/local/apache2/htdocs/
-
-EXPOSE 80
-
-CMD ["httpd-foreground"]
+# Usar PM2 para ejecutar en modo desarrollo con host 0.0.0.0 y puerto 3000
+CMD ["pm2-runtime", "npm", "--name", "frontend-dev", "--", "run", "dev", "--", "--host=0.0.0.0", "--port=3000"]

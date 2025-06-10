@@ -92,8 +92,6 @@ services:
         condition: service_started
       gateway:
         condition: service_started
-      mariadb:
-        condition: service_healthy
     healthcheck:
       test: |
         curl -sSf http://localhost:5001/actuator/health | grep -q '"db":{"status":"UP"}' || exit 1
@@ -125,8 +123,6 @@ services:
         condition: service_started
       gateway:
         condition: service_started
-      mariadb:
-        condition: service_healthy
     healthcheck:
       test: |
         curl -sSf http://localhost:5002/actuator/health | grep -q '"db":{"status":"UP"}' || exit 1
@@ -160,8 +156,6 @@ services:
         condition: service_started
       gateway:
         condition: service_started
-      common_utilities_mariadb:
-        condition: service_healthy
       evaluation-service:
         condition: service_started
     healthcheck:
@@ -184,58 +178,6 @@ services:
     networks:
       - backend-network
 
-  mariadb:
-    image: mariadb:10.5
-    restart: always
-    env_file:
-      - .env
-    environment:
-      MYSQL_ROOT_PASSWORD: ${EVALUATION_DATASOURCE_PASSWORD}
-      MYSQL_DATABASE: ${EVALUATION_DATASOURCE_NAME}
-      MARIADB_AUTO_UPGRADE: 1
-      MARIADB_DISABLE_UPGRADE_BACKUP: 1
-    ports:
-      - "3306:3306"
-    volumes:
-      - mariadb_data:/var/lib/mysql
-      - ./init/mariadb.sql:/docker-entrypoint-initdb.d/mariadb.sql
-    networks:
-      - backend-network
-    command:
-      - --init-file=/docker-entrypoint-initdb.d/mariadb.sql
-    healthcheck:
-      test: mysqladmin ping -uroot -p"$$MYSQL_ROOT_PASSWORD"
-      interval: 10s
-      timeout: 5s
-      retries: 3
-      start_period: 30s
-
-  common_utilities_mariadb:
-    image: mariadb:10.5
-    restart: always
-    env_file:
-      - .env
-    environment:
-      MYSQL_ROOT_PASSWORD: ${COMMON_DATASOURCE_PASSWORD}
-      MYSQL_DATABASE: ${COMMON_DATASOURCE_NAME}
-      MARIADB_AUTO_UPGRADE: 1
-      MARIADB_DISABLE_UPGRADE_BACKUP: 1
-    ports:
-      - "3308:3306"
-    volumes:
-      - common_utilities_data:/var/lib/mysql
-      - ./init/common.sql:/docker-entrypoint-initdb.d/common.sql
-    networks:
-      - backend-network
-    command:
-      - --init-file=/docker-entrypoint-initdb.d/common.sql
-    healthcheck:
-      test: mysqladmin ping -uroot -p"$$MYSQL_ROOT_PASSWORD"
-      interval: 10s
-      timeout: 5s
-      retries: 3
-      start_period: 30s
-
   rabbit-1:
     image: rabbitmq:3.12-management
     container_name: rabbit
@@ -253,30 +195,9 @@ services:
         aliases:
           - rabbit
 
-  phpmyadmin:
-    image: phpmyadmin/phpmyadmin:latest
-    container_name: phpmyadmin_sga
-    restart: always
-    env_file:
-      - .env
-    ports:
-      - "8888:80" # Accede a phpMyAdmin en localhost:8888
-    environment:
-      PMA_ARBITRARY: 1  # Permite conexión a cualquier servidor
-      PMA_HOST: mariadb  # Servidor por defecto (primera BD)
-      MYSQL_ROOT_PASSWORD: ${PHPMYADMIN_ROOT_PASSWORD}
-    networks:
-      - backend-network
-    depends_on:
-      - mariadb
-      - common_utilities_mariadb
-
 networks:
   backend-network:
     driver: bridge
 
 volumes:
   keycloak_data_sga:
-  mariadb_data:
-  common_utilities_data:
-  rubric_data:
