@@ -1,7 +1,7 @@
 import axios from "axios";
 import { clearAuthTokens } from "@/lib/auth";
 
-const API_URL = import.meta.env.VITE_API_AUTH_URL || "http://localhost:9090";
+const API_URL = import.meta.env.VITE_API_AUTH_URL ?? "http://localhost:9090";
 
 export async function authAction(data: { username: string; password: string }) {
     try {
@@ -37,14 +37,14 @@ export async function authAction(data: { username: string; password: string }) {
         } else {
             return {
                 success: false,
-                error: result.error || "Credenciales inválidas",
+                error: result.error ?? "Credenciales inválidas",
                 field: 'root'
             };
         }
     } catch (error: any) {
         return {
             success: false,
-            error: error.response?.data?.error || "Error de red o servidor",
+            error: error.response?.data?.error ?? "Error de red o servidor",
             field: 'root'
         };
     }
