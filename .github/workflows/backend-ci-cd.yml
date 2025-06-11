@@ -29,9 +29,8 @@ jobs:
         username: ${{ secrets.SERVER_USER }}
         key: ${{ secrets.SERVER_SSH_KEY }}
         script: |
-          cd /home/Sistema-de-Gestion-Academica
+          cd /home/joangomezsebas/Sistema-de-Gestion-Academica/backend
           git pull origin main
-          cd backend
           chmod +x build-jar.sh
           ./build-jar.sh
           docker compose stop
